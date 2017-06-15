@@ -255,7 +255,7 @@ public class Util
 
     public static void RefreshSuggestStockForToday()
     {
-        if (IsTransacDay(DateTime.Now) && DateTime.Now.Hour ==9 && DateTime.Now.Minute > 30)
+        if (IsTransacDay(DateTime.Now) && DateTime.Now.Hour ==9 && DateTime.Now.Minute > 28)
         {
             RefreshSuggestStock(DateTime.Parse(DateTime.Now.ToShortDateString()));
         }
