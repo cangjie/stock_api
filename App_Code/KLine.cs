@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Data;
 
 /// <summary>
 /// Summary description for KLine
@@ -67,6 +68,8 @@ public class KLine
     public static string GetKLineDayJSONFromSohu(string gid, DateTime startDate, DateTime endDate)
     {
         string code = gid.Replace("sh", "cn_").Replace("sz", "cn_");
+        if (code.StartsWith("3"))
+            code = "cn_" + code;
         string startDateStr = startDate.Year.ToString() + startDate.Month.ToString().PadLeft(2, '0') 
             + startDate.Day.ToString().PadLeft(2, '0');
         //endDate = endDate.AddDays(1);
@@ -79,6 +82,8 @@ public class KLine
     public static KLine[] GetKLineDayFromSohu(string gid, DateTime startDate, DateTime endDate)
     {
         string kLineJsonStr = GetKLineDayJSONFromSohu(gid, startDate, endDate).Trim();
+        if (kLineJsonStr.Trim().Equals("{}"))
+            return new KLine[0];
         if (kLineJsonStr.StartsWith("["))
         {
             kLineJsonStr = kLineJsonStr.Remove(0, 1);
@@ -105,8 +110,54 @@ public class KLine
             kLine.change = double.Parse(kLineData[9].ToString().Replace("%", ""));
             kLineArr[oArr.Length - 1 - i] = kLine;
         }
+        if (endDate >= DateTime.Parse(DateTime.Now.ToShortDateString()) && Util.IsTransacDay(endDate) 
+            && kLineArr[kLineArr.Length - 1].startDateTime < endDate )
+        {
+            KLine k = GetTodayKLine(gid);
+            if (k!=null)
+            {
+                KLine[] kLineArrNew = new KLine[kLineArr.Length + 1];
+
+                for (int i = 0; i < kLineArr.Length; i++)
+                {
+                    kLineArrNew[i] = kLineArr[i];
+                }
+                kLineArrNew[kLineArr.Length] = k;
+                return kLineArrNew;
+            }
+            
+        }
         return kLineArr;
     }
+
+    public static KLine GetTodayKLine(string stockCode)
+    {
+        if (Util.IsTransacDay(DateTime.Now))
+        {
+            DateTime nowDate = DateTime.Parse(DateTime.Now.ToShortDateString());
+            string sqlStr = " select  * from " + stockCode.Trim() + "_timeline  where ticktime >= '" + nowDate.ToShortDateString()
+                + "' and ticktime < '" + nowDate.AddDays(1).ToShortDateString() + "' order by ticktime desc ";
+            DataTable dt = DBHelper.GetDataTable(sqlStr);
+            if (dt.Rows.Count > 1)
+            {
+                KLine k = new KLine();
+                k.type = "day";
+                k.startDateTime = nowDate;
+                k.startPrice = double.Parse(dt.Rows[0]["open"].ToString());
+                k.highestPrice = double.Parse(dt.Rows[0]["high"].ToString());
+                k.lowestPrice = double.Parse(dt.Rows[0]["low"].ToString());
+                k.endPrice = double.Parse(dt.Rows[0]["buy"].ToString());
+                k.gid = stockCode;
+                return k;
+            }
+            else
+                return null;
+
+        }
+        else
+            return null;
+    }
+     
 
 
 
