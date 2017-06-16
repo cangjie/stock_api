@@ -25,7 +25,7 @@
 
     public DataTable GetData()
     {
-        DateTime currentDate = calendar.SelectedDate;
+        DateTime currentDate = DateTime.Parse(calendar.SelectedDate.ToShortDateString());
         DataTable dtOri = DBHelper.GetDataTable(" select * from suggest_stock where suggest_date = '" + currentDate.ToShortDateString() + "'");
         if (dtOri.Rows.Count == 0)
         {
@@ -109,11 +109,15 @@
 
         DataTable dtNew = dt.Clone();
         DataRow[] drSortArr =  dt.Select("", " 今涨幅 desc ");
-        if (!drSortArr[0]["5日最高"].ToString().Equals("0"))
-            drSortArr =  dt.Select("", " 5日涨幅 desc ");
-        if (!drSortArr[0]["3日最高"].ToString().Equals("0"))
-            drSortArr =  dt.Select("", " 3日涨幅 desc ");
+        if (drSortArr.Length > 0)
+        {
+            if (!drSortArr[0]["5日最高"].ToString().Equals("0"))
+                drSortArr =  dt.Select("", " 5日涨幅 desc ");
+            if (!drSortArr[0]["3日最高"].ToString().Equals("0"))
+                drSortArr =  dt.Select("", " 3日涨幅 desc ");
 
+        }
+        
         foreach (DataRow drSort in drSortArr)
         {
             DataRow drNew = dtNew.NewRow();
@@ -142,7 +146,7 @@
             if (kArr[2].startDateTime < DateTime.Parse(DateTime.Now.ToShortDateString()))
                 Update3DHighestPrice(gid, date, ret);
         }
-        
+
         return ret;
     }
 
@@ -159,7 +163,7 @@
             if (kArr[4].startDateTime < DateTime.Parse(DateTime.Now.ToShortDateString()))
                 Update5DHighestPrice(gid, date, ret);
         }
-        
+
         return ret;
     }
 
