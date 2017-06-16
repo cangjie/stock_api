@@ -157,9 +157,18 @@ public class KLine
         else
             return null;
     }
-     
 
-
-
+    /*
+    public static double GetHighestPrice(string gid, DateTime startDate, DateTime endDate)
+    {
+        KLine[] kArr = GetKLineDayFromSohu(gid, startDate, endDate);
+        double ret = 0;
+        foreach (KLine k in kArr)
+        {
+            ret = Math.Max(ret, k.highestPrice);
+        }
+        return ret;
+    }
+    */
 
 }
