@@ -135,9 +135,10 @@
         {
             ret = Math.Max(kArr[0].highestPrice, kArr[1].highestPrice);
             ret = Math.Max(ret, kArr[2].highestPrice);
+            if (kArr[2].startDateTime < DateTime.Parse(DateTime.Now.ToShortDateString()))
+                Update3DHighestPrice(gid, date, ret);
         }
-        if (kArr[2].startDateTime < DateTime.Parse(DateTime.Now.ToShortDateString()))
-            Update3DHighestPrice(gid, date, ret);
+        
         return ret;
     }
 
@@ -151,9 +152,10 @@
             ret = Math.Max(ret, kArr[2].highestPrice);
             ret = Math.Max(ret, kArr[3].highestPrice);
             ret = Math.Max(ret, kArr[4].highestPrice);
+            if (kArr[4].startDateTime < DateTime.Parse(DateTime.Now.ToShortDateString()))
+                Update5DHighestPrice(gid, date, ret);
         }
-        if (kArr[4].startDateTime < DateTime.Parse(DateTime.Now.ToShortDateString()))
-            Update5DHighestPrice(gid, date, ret);
+        
         return ret;
     }
 
