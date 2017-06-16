@@ -147,6 +147,8 @@ public class KLine
                 k.highestPrice = double.Parse(dt.Rows[0]["high"].ToString());
                 k.lowestPrice = double.Parse(dt.Rows[0]["low"].ToString());
                 k.endPrice = double.Parse(dt.Rows[0]["buy"].ToString());
+                if (k.endPrice==0)
+                    k.endPrice = double.Parse(dt.Rows[0]["sell"].ToString());
                 k.gid = stockCode;
                 return k;
             }
