@@ -83,7 +83,7 @@
             }
             else
             {
-                dr["3日最高"] = "0";
+                dr["3日最高"] = drOri["highest_3_day"];
             }
             if (drOri["highest_5_day"].ToString().Trim().Equals("0") && currentDate.AddDays(5) <= DateTime.Now)
             {
@@ -100,7 +100,7 @@
             }
             else
             {
-                dr["5日最高"] = "0";
+                dr["5日最高"] = drOri["highest_5_day"];
             }
             dr["3日涨幅"] = (double.Parse(dr["3日最高"].ToString()) - double.Parse(dr["今开"].ToString())) / double.Parse(dr["今开"].ToString());
             dr["5日涨幅"] = (double.Parse(dr["5日最高"].ToString()) - double.Parse(dr["今开"].ToString())) / double.Parse(dr["今开"].ToString());
