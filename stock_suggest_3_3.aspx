@@ -26,13 +26,14 @@
     public DataTable GetData()
     {
         DateTime currentDate = DateTime.Parse(calendar.SelectedDate.ToShortDateString());
-        DataTable dtOri = DBHelper.GetDataTable(" select * from suggest_stock where suggest_date = '" + currentDate.ToShortDateString() + "'");
+        DataTable dtOri = DBHelper.GetDataTable(" select * from suggest_stock where suggest_date = '" + currentDate.ToShortDateString() 
+            + "'  order by  ((highest_5_day - [open]) / [open]) desc, ((highest_3_day - [open]) / [open]) desc, (([open] - settlement) / settlement) desc ");
         if (dtOri.Rows.Count == 0)
         {
             if (currentDate == DateTime.Parse(DateTime.Now.ToShortDateString()))
             {
                 ThreadStart ts = new ThreadStart(Util.RefreshSuggestStockForToday);
-                //Util.RefreshSuggestStockForToday();
+                ////Util.RefreshSuggestStockForToday();
                 Thread t = new Thread(ts);
                 t.Start();
             }
@@ -40,7 +41,7 @@
             {
                 Util.RefreshSuggestStock(currentDate);
             }
-            dtOri = DBHelper.GetDataTable(" select * from suggest_stock where suggest_date = '" + currentDate.ToShortDateString() 
+            dtOri = DBHelper.GetDataTable(" select * from suggest_stock where suggest_date = '" + currentDate.ToShortDateString()
                 + "'  order by  ((highest_5_day - [open]) / [open]) desc, ((highest_3_day - [open]) / [open]) desc, (([open] - settlement) / settlement) desc ");
         }
         DataTable dt = new DataTable();
