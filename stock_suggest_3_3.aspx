@@ -73,7 +73,7 @@
                 double highest_3_d = Get3DayHighest(drOri["gid"].ToString().Trim(), currentDate);
                 if (highest_3_d > 0)
                 {
-                    Update3DHighestPrice(drOri["gid"].ToString().Trim(), currentDate, highest_3_d);
+                    //Update3DHighestPrice(drOri["gid"].ToString().Trim(), currentDate, highest_3_d);
                     dr["3日最高"] = highest_3_d.ToString();
                 }
                 else
@@ -90,7 +90,7 @@
                 double highest_5_d = Get5DayHighest(drOri["gid"].ToString().Trim(), currentDate);
                 if (highest_5_d > 0)
                 {
-                    Update3DHighestPrice(drOri["gid"].ToString().Trim(), currentDate, highest_5_d);
+                    //Update3DHighestPrice(drOri["gid"].ToString().Trim(), currentDate, highest_5_d);
                     dr["5日最高"] = highest_5_d.ToString();
                 }
                 else
@@ -108,7 +108,8 @@
         }
 
         DataTable dtNew = dt.Clone();
-        DataRow[] drSortArr = dt.Select("", " 3日涨幅, 5日涨幅, 今涨幅 desc ");
+        DataRow[] drSortArr =  dt.Select("", "5日涨幅, 3日涨幅, 今涨幅 desc ");
+
         foreach (DataRow drSort in drSortArr)
         {
             DataRow drNew = dtNew.NewRow();
@@ -135,6 +136,8 @@
             ret = Math.Max(kArr[0].highestPrice, kArr[1].highestPrice);
             ret = Math.Max(ret, kArr[2].highestPrice);
         }
+        if (kArr[2].startDateTime < DateTime.Parse(DateTime.Now.ToShortDateString()))
+            Update3DHighestPrice(gid, date, ret);
         return ret;
     }
 
@@ -149,6 +152,8 @@
             ret = Math.Max(ret, kArr[3].highestPrice);
             ret = Math.Max(ret, kArr[4].highestPrice);
         }
+        if (kArr[4].startDateTime < DateTime.Parse(DateTime.Now.ToShortDateString()))
+            Update5DHighestPrice(gid, date, ret);
         return ret;
     }
 
