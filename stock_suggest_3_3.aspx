@@ -40,7 +40,8 @@
             {
                 Util.RefreshSuggestStock(currentDate);
             }
-            dtOri = DBHelper.GetDataTable(" select * from suggest_stock where suggest_date = '" + currentDate.ToShortDateString() + "'");
+            dtOri = DBHelper.GetDataTable(" select * from suggest_stock where suggest_date = '" + currentDate.ToShortDateString() 
+                + "'  order by  ((highest_5_day - [open]) / [open]) desc, ((highest_3_day - [open]) / [open]) desc, (([open] - settlement) / settlement) desc ");
         }
         DataTable dt = new DataTable();
         dt.Columns.Add("代码");
@@ -108,7 +109,9 @@
         }
 
         DataTable dtNew = dt.Clone();
-        DataRow[] drSortArr =  dt.Select("", " 今涨幅 desc ");
+
+        //DataRow[] drSortArr =  dt.Select("", " 今涨幅 desc ");
+        /*
         if (drSortArr.Length > 0)
         {
             if (!drSortArr[0]["5日最高"].ToString().Equals("0"))
@@ -117,8 +120,8 @@
                 drSortArr =  dt.Select("", " 3日涨幅 desc ");
 
         }
-        
-        foreach (DataRow drSort in drSortArr)
+        */
+        foreach (DataRow drSort in dt.Rows)
         {
             DataRow drNew = dtNew.NewRow();
             foreach (DataColumn dc in dtNew.Columns)
