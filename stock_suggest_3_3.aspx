@@ -108,7 +108,11 @@
         }
 
         DataTable dtNew = dt.Clone();
-        DataRow[] drSortArr =  dt.Select("", "5日涨幅, 3日涨幅, 今涨幅 desc ");
+        DataRow[] drSortArr =  dt.Select("", " 今涨幅 desc ");
+        if (!drSortArr[0]["5日最高"].ToString().Equals("0"))
+            drSortArr =  dt.Select("", " 5日涨幅 desc ");
+        if (!drSortArr[0]["3日最高"].ToString().Equals("0"))
+            drSortArr =  dt.Select("", " 3日涨幅 desc ");
 
         foreach (DataRow drSort in drSortArr)
         {
