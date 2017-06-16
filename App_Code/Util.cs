@@ -255,7 +255,7 @@ public class Util
 
     public static void RefreshSuggestStockForToday()
     {
-        if (IsTransacDay(DateTime.Now) && DateTime.Now.Hour ==9 && DateTime.Now.Minute > 28)
+        if (IsTransacDay(DateTime.Now) && ((DateTime.Now.Hour ==9 && DateTime.Now.Minute > 28) || DateTime.Now.Hour > 9))
         {
             RefreshSuggestStock(DateTime.Parse(DateTime.Now.ToShortDateString()));
         }
@@ -327,6 +327,8 @@ public class Util
     {
         KLine[] kArr = KLine.GetKLine("day", stockCode, day.AddMonths(-1), day);
         if (kArr.Length < 6)
+            return new KLine[0];
+        if (kArr[kArr.Length - 1].startDateTime != day)
             return new KLine[0];
         double price_3_3_yesterday = Util.Compute_3_3_Price(kArr, kArr[kArr.Length - 2].startDateTime);
         double price_3_3_today = Util.Compute_3_3_Price(kArr, kArr[kArr.Length - 1].startDateTime);
