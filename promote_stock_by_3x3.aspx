@@ -66,9 +66,21 @@
             dr["代码"] = drOri["gid"].ToString().Trim().Remove(0, 2);
             dr["名称"] = drOri["name"].ToString().Trim();
             dr["今开"] = drOri["open"].ToString().Trim();
-            dr["跳空幅度"] = Math.Round(((double.Parse(drOri["open"].ToString().Trim()) - double.Parse(drOri["settlement"].ToString().Trim()))
-                / double.Parse(drOri["settlement"].ToString().Trim())) * 100, 2).ToString() + "%";
+            double rate = 0;
+            rate = Math.Round(((double.Parse(drOri["open"].ToString().Trim()) - double.Parse(drOri["settlement"].ToString().Trim()))
+                / double.Parse(drOri["settlement"].ToString().Trim())) * 100, 2);
+            
+            if (rate == -100)
+            {
+                dr["跳空幅度"] = "-";
+            }
+            else
+            {
+                dr["跳空幅度"] =  "<font color=\"" + (rate >=1.5? "red": (rate < 0.75? "green" : "black")) + "\" >"
+                + rate.ToString() + "%</font>";
+            }
             double highestPrice = 0;
+            
             if (drOri["highest_0_day"].ToString().Equals("0"))
             {
                 highestPrice = GetNextNDayHighest(drOri["gid"].ToString().Trim(), currentDate, 0);
@@ -77,8 +89,9 @@
             {
                 highestPrice = double.Parse(drOri["highest_0_day"].ToString().Trim());
             }
-            dr["今日最高"] = Math.Round(((highestPrice - double.Parse(drOri["open"].ToString().Trim()))
-                / double.Parse(drOri["open"].ToString().Trim())) * 100, 2).ToString() + "%";
+            rate = Math.Round(((highestPrice - double.Parse(drOri["open"].ToString().Trim()))
+                / double.Parse(drOri["open"].ToString().Trim())) * 100, 2);
+            dr["今日最高"] = "<font color=\"" + (rate >=1? "red": (rate < 0? "green" : "black")) + "\" >" + rate.ToString() + "%</font>";
             if (drOri["highest_1_day"].ToString().Equals("0"))
             {
                 highestPrice = GetNextNDayHighest(drOri["gid"].ToString().Trim(), currentDate, 1);
@@ -87,8 +100,17 @@
             {
                 highestPrice = double.Parse(drOri["highest_1_day"].ToString().Trim());
             }
-            dr["1日最高"] = Math.Round(((highestPrice - double.Parse(drOri["open"].ToString().Trim()))
-                / double.Parse(drOri["open"].ToString().Trim())) * 100, 2).ToString() + "%";
+            rate = Math.Round(((highestPrice - double.Parse(drOri["open"].ToString().Trim()))
+                / double.Parse(drOri["open"].ToString().Trim())) * 100, 2);
+            if (rate == -100)
+            {
+                dr["1日最高"] = "-";
+            }
+            else
+            {
+                dr["1日最高"] =  "<font color=\"" + (rate >=1? "red": (rate < 0? "green" : "black")) + "\" >"
+                + rate.ToString() + "%</font>";
+            }
             if (drOri["highest_2_day"].ToString().Equals("0"))
             {
                 highestPrice = GetNextNDayHighest(drOri["gid"].ToString().Trim(), currentDate, 2);
@@ -97,8 +119,17 @@
             {
                 highestPrice = double.Parse(drOri["highest_2_day"].ToString().Trim());
             }
-            dr["2日最高"] = Math.Round(((highestPrice - double.Parse(drOri["open"].ToString().Trim()))
-                / double.Parse(drOri["open"].ToString().Trim())) * 100, 2).ToString() + "%";
+            rate = Math.Round(((highestPrice - double.Parse(drOri["open"].ToString().Trim()))
+                / double.Parse(drOri["open"].ToString().Trim())) * 100, 2);
+            if (rate == -100)
+            {
+                dr["2日最高"] = "-";
+            }
+            else
+            {
+                dr["2日最高"] =  "<font color=\"" + (rate >=1? "red": (rate < 0? "green" : "black")) + "\" >"
+                + rate.ToString() + "%</font>";
+            }
             if (drOri["highest_3_day"].ToString().Equals("0"))
             {
                 highestPrice = GetNextNDayHighest(drOri["gid"].ToString().Trim(), currentDate, 3);
@@ -107,8 +138,17 @@
             {
                 highestPrice = double.Parse(drOri["highest_3_day"].ToString().Trim());
             }
-            dr["3日最高"] = Math.Round(((highestPrice - double.Parse(drOri["open"].ToString().Trim()))
-                / double.Parse(drOri["open"].ToString().Trim())) * 100, 2).ToString() + "%";
+            rate = Math.Round(((highestPrice - double.Parse(drOri["open"].ToString().Trim()))
+                / double.Parse(drOri["open"].ToString().Trim())) * 100, 2);
+            if (rate == -100)
+            {
+                dr["3日最高"] = "-";
+            }
+            else
+            {
+                dr["3日最高"] =  "<font color=\"" + (rate >=1? "red": (rate < 0? "green" : "black")) + "\" >"
+                + rate.ToString() + "%</font>";
+            }
             if (drOri["highest_4_day"].ToString().Equals("0"))
             {
                 highestPrice = GetNextNDayHighest(drOri["gid"].ToString().Trim(), currentDate, 4);
@@ -117,8 +157,17 @@
             {
                 highestPrice = double.Parse(drOri["highest_4_day"].ToString().Trim());
             }
-            dr["4日最高"] = Math.Round(((highestPrice - double.Parse(drOri["open"].ToString().Trim()))
-                / double.Parse(drOri["open"].ToString().Trim())) * 100, 2).ToString() + "%";
+            rate = Math.Round(((highestPrice - double.Parse(drOri["open"].ToString().Trim()))
+                / double.Parse(drOri["open"].ToString().Trim())) * 100, 2);
+            if (rate == -100)
+            {
+                dr["4日最高"] = "-";
+            }
+            else
+            {
+                dr["4日最高"] =  "<font color=\"" + (rate >=1? "red": (rate < 0? "green" : "black")) + "\" >"
+                + rate.ToString() + "%</font>";
+            }
             if (drOri["highest_5_day"].ToString().Equals("0"))
             {
                 highestPrice = GetNextNDayHighest(drOri["gid"].ToString().Trim(), currentDate, 5);
@@ -127,8 +176,18 @@
             {
                 highestPrice = double.Parse(drOri["highest_5_day"].ToString().Trim());
             }
-            dr["5日最高"] = Math.Round(((highestPrice - double.Parse(drOri["open"].ToString().Trim()))
-                / double.Parse(drOri["open"].ToString().Trim())) * 100, 2).ToString() + "%";
+            rate = Math.Round(((highestPrice - double.Parse(drOri["open"].ToString().Trim()))
+                / double.Parse(drOri["open"].ToString().Trim())) * 100, 2);
+            if (rate == -100)
+            {
+                dr["5日最高"] = "-";
+            }
+            else
+            {
+                dr["5日最高"] =  "<font color=\"" + (rate >=1? "red": (rate < 0? "green" : "black")) + "\" >"
+                + rate.ToString() + "%</font>";
+            }
+            
             dt.Rows.Add(dr);
         }
         return dt;
@@ -144,7 +203,6 @@
         int k = -1;
         for (int i = 0; i < kArr.Length; i++)
         {
-
             if (kArr[i].startDateTime == currentDate)
             {
                 k = i;
@@ -159,7 +217,6 @@
                 }
                 break;
             }
-
         }
         return ret;
     }
