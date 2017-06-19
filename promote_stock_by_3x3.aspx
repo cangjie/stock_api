@@ -2,6 +2,7 @@
 <%@ Import Namespace="System.Data" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
 <%@ Import Namespace="System.Threading" %>
+<%@ Import Namespace="System.Text" %>
 <!DOCTYPE html>
 
 <script runat="server">
@@ -69,7 +70,7 @@
             double rate = 0;
             rate = Math.Round(((double.Parse(drOri["open"].ToString().Trim()) - double.Parse(drOri["settlement"].ToString().Trim()))
                 / double.Parse(drOri["settlement"].ToString().Trim())) * 100, 2);
-            
+
             if (rate == -100)
             {
                 dr["跳空幅度"] = "-";
@@ -80,7 +81,7 @@
                 + rate.ToString() + "%</font>";
             }
             double highestPrice = 0;
-            
+
             if (drOri["highest_0_day"].ToString().Equals("0"))
             {
                 highestPrice = GetNextNDayHighest(drOri["gid"].ToString().Trim(), currentDate, 0);
@@ -187,7 +188,7 @@
                 dr["5日最高"] =  "<font color=\"" + (rate >=1? "red": (rate < 0? "green" : "black")) + "\" >"
                 + rate.ToString() + "%</font>";
             }
-            
+
             dt.Rows.Add(dr);
         }
         return dt;
@@ -294,6 +295,72 @@
     }
 
 
+    protected void dg_SortCommand(object source, DataGridSortCommandEventArgs e)
+    {
+        string sortCommand = e.SortExpression;
+        string colmunName = sortCommand.Split('|')[0].Trim();
+        string command = sortCommand.Split('|')[1].Trim();
+
+        DataTable dt = GetData1();
+        DataTable dtSort = dt.Clone();
+        dtSort.Columns.Add("跳空幅度double", Type.GetType("System.Double"));
+        dtSort.Columns.Add("今日最高double", Type.GetType("System.Double"));
+        dtSort.Columns.Add("1日最高double", Type.GetType("System.Double"));
+        dtSort.Columns.Add("2日最高double", Type.GetType("System.Double"));
+        dtSort.Columns.Add("3日最高double", Type.GetType("System.Double"));
+        dtSort.Columns.Add("4日最高double", Type.GetType("System.Double"));
+        dtSort.Columns.Add("5日最高double", Type.GetType("System.Double"));
+        for (int i = 0; i < dt.Rows.Count; i++)
+        {
+            DataRow drSort = dtSort.NewRow();
+            foreach (DataColumn dc in dt.Columns)
+            {
+                drSort[dc.Caption] = dt.Rows[i][dc];
+            }
+            drSort["跳空幅度double"] = GetPercentValue(drSort["跳空幅度"].ToString()); //double.Parse(drSort["跳空幅度"].ToString().Replace("%", ""));
+            drSort["今日最高double"] = GetPercentValue(drSort["今日最高"].ToString());//double.Parse(drSort["今日最高"].ToString().Replace("%", ""));
+            drSort["1日最高double"] = GetPercentValue(drSort["1日最高"].ToString());//double.Parse(drSort["1日最高"].ToString().Replace("%", ""));
+            drSort["2日最高double"] = GetPercentValue(drSort["2日最高"].ToString());//double.Parse(drSort["2日最高"].ToString().Replace("%", ""));
+            drSort["3日最高double"] = GetPercentValue(drSort["3日最高"].ToString());//double.Parse(drSort["3日最高"].ToString().Replace("%", ""));
+            drSort["4日最高double"] = GetPercentValue(drSort["4日最高"].ToString());//double.Parse(drSort["4日最高"].ToString().Replace("%", ""));
+            drSort["5日最高double"] = GetPercentValue(drSort["5日最高"].ToString());//double.Parse(drSort["5日最高"].ToString().Replace("%", ""));
+            dtSort.Rows.Add(drSort);
+        }
+
+        DataRow[] drSortArr = dtSort.Select("", colmunName.Trim() + "double " + (command.Trim().Equals("A-Z") ? " asc" : " desc"));
+
+        DataTable dtNew = dt.Clone();
+
+        foreach (DataRow drSort in drSortArr)
+        {
+            DataRow drNew = dtNew.NewRow();
+            foreach (DataColumn dc in dtNew.Columns)
+            {
+                drNew[dc] = drSort[dc.Caption.Trim()];
+            }
+            dtNew.Rows.Add(drNew);
+        }
+
+        dg.DataSource = dtNew;
+        dg.DataBind();
+
+        for (int i = 0; i < dg.Columns.Count; i++)
+        {
+            if (dg.Columns[i].SortExpression.StartsWith(colmunName))
+            {
+                dg.Columns[i].SortExpression = colmunName.Trim() + "|" + (command.Trim().Equals("Z-A")? "A-Z":"Z-A");
+            }
+        }
+
+    }
+
+    public static double GetPercentValue(string str)
+    {
+        if (str.Trim().Equals("-"))
+            return 0;
+        Match m = Regex.Match(str, @">-*\d+.*\d*%<");
+        return double.Parse(m.Value.Replace(">", "").Replace("<", "").Replace("%", ""));
+    }
 </script>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -317,8 +384,20 @@
             </tr>
             <tr><td>&nbsp;</td></tr>
             <tr>
-                <td><asp:DataGrid runat="server" id="dg" Width="100%" BackColor="White" BorderColor="#999999" BorderStyle="None" BorderWidth="1px" CellPadding="3" GridLines="Vertical" >
+                <td><asp:DataGrid runat="server" id="dg" Width="100%" BackColor="White" BorderColor="#999999" BorderStyle="None" BorderWidth="1px" CellPadding="3" GridLines="Vertical" OnSortCommand="dg_SortCommand" AllowSorting="True" AutoGenerateColumns="False" ShowFooter="True" >
                     <AlternatingItemStyle BackColor="#DCDCDC" />
+                    <Columns>
+                        <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
+                        <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
+                        <asp:BoundColumn DataField="今开" HeaderText="今开"></asp:BoundColumn>
+                        <asp:BoundColumn DataField="跳空幅度" HeaderText="跳空幅度" SortExpression="跳空幅度|A-Z"></asp:BoundColumn>
+                        <asp:BoundColumn DataField="今日最高" HeaderText="今日最高" SortExpression="今日最高|A-Z"></asp:BoundColumn>
+                        <asp:BoundColumn DataField="1日最高" HeaderText="1日最高" SortExpression="1日最高|A-Z"></asp:BoundColumn>
+                        <asp:BoundColumn DataField="2日最高" HeaderText="2日最高" SortExpression="2日最高|A-Z"></asp:BoundColumn>
+                        <asp:BoundColumn DataField="3日最高" HeaderText="3日最高" SortExpression="3日最高|A-Z"></asp:BoundColumn>
+                        <asp:BoundColumn DataField="4日最高" HeaderText="4日最高" SortExpression="4日最高|A-Z"></asp:BoundColumn>
+                        <asp:BoundColumn DataField="5日最高" HeaderText="5日最高" SortExpression="5日最高|A-Z"></asp:BoundColumn>
+                    </Columns>
                     <FooterStyle BackColor="#CCCCCC" ForeColor="Black" />
                     <HeaderStyle BackColor="#000084" Font-Bold="True" ForeColor="White" />
                     <ItemStyle BackColor="#EEEEEE" ForeColor="Black" />
