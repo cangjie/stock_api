@@ -1,0 +1,276 @@
+﻿<%@ Page Language="C#" %>
+<%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="System.Data.SqlClient" %>
+<%@ Import Namespace="System.Threading" %>
+<!DOCTYPE html>
+
+<script runat="server">
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (!IsPostBack)
+        {
+            calendar.SelectedDate = DateTime.Now;
+            dg.DataSource = GetData1();
+            dg.DataBind();
+        }
+
+    }
+
+    protected void calendar_SelectionChanged(object sender, EventArgs e)
+    {
+        dg.DataSource = GetData1();
+        dg.DataBind();
+    }
+
+    public DataTable GetData1()
+    {
+        DateTime currentDate = DateTime.Parse(calendar.SelectedDate.ToShortDateString());
+        DataTable dtOri = DBHelper.GetDataTable(" select * from suggest_stock where suggest_date = '" + currentDate.ToShortDateString()
+                + "'  order by  ((highest_5_day - [open]) / [open]) desc, ((highest_4_day - [open]) / [open]) desc, "
+                + " ((highest_3_day - [open]) / [open]) desc, ((highest_2_day - [open]) / [open]) desc , "
+                + " ((highest_1_day - [open]) / [open]) desc , ((highest_0_day - [open]) / [open]) desc , (([open] - settlement) / settlement) desc ");
+        if (dtOri.Rows.Count == 0)
+        {
+            if (currentDate == DateTime.Parse(DateTime.Now.ToShortDateString()))
+            {
+                ThreadStart ts = new ThreadStart(Util.RefreshSuggestStockForToday);
+                ////Util.RefreshSuggestStockForToday();
+                Thread t = new Thread(ts);
+                t.Start();
+            }
+            else
+            {
+                Util.RefreshSuggestStock(currentDate);
+            }
+            dtOri = DBHelper.GetDataTable(" select * from suggest_stock where suggest_date = '" + currentDate.ToShortDateString()
+                + "'  order by  ((highest_5_day - [open]) / [open]) desc, ((highest_4_day - [open]) / [open]) desc, "
+                + " ((highest_3_day - [open]) / [open]) desc, ((highest_2_day - [open]) / [open]) desc , "
+                + " ((highest_1_day - [open]) / [open]) desc , ((highest_0_day - [open]) / [open]) desc , (([open] - settlement) / settlement) desc ");
+        }
+
+        DataTable dt = new DataTable();
+        dt.Columns.Add("代码");
+        dt.Columns.Add("名称");
+        dt.Columns.Add("今开");
+        dt.Columns.Add("跳空幅度");
+        dt.Columns.Add("今日最高");
+        dt.Columns.Add("1日最高");
+        dt.Columns.Add("2日最高");
+        dt.Columns.Add("3日最高");
+        dt.Columns.Add("4日最高");
+        dt.Columns.Add("5日最高");
+        foreach (DataRow drOri in dtOri.Rows)
+        {
+            DataRow dr = dt.NewRow();
+            dr["代码"] = drOri["gid"].ToString().Trim().Remove(0, 2);
+            dr["名称"] = drOri["name"].ToString().Trim();
+            dr["今开"] = drOri["open"].ToString().Trim();
+            dr["跳空幅度"] = Math.Round(((double.Parse(drOri["open"].ToString().Trim()) - double.Parse(drOri["settlement"].ToString().Trim()))
+                / double.Parse(drOri["settlement"].ToString().Trim())) * 100, 2).ToString() + "%";
+            double highestPrice = 0;
+            if (drOri["highest_0_day"].ToString().Equals("0"))
+            {
+                highestPrice = GetNextNDayHighest(drOri["gid"].ToString().Trim(), currentDate, 0);
+            }
+            else
+            {
+                highestPrice = double.Parse(drOri["highest_0_day"].ToString().Trim());
+            }
+            dr["今日最高"] = Math.Round(((highestPrice - double.Parse(drOri["open"].ToString().Trim()))
+                / double.Parse(drOri["open"].ToString().Trim())) * 100, 2).ToString() + "%";
+            if (drOri["highest_1_day"].ToString().Equals("0"))
+            {
+                highestPrice = GetNextNDayHighest(drOri["gid"].ToString().Trim(), currentDate, 1);
+            }
+            else
+            {
+                highestPrice = double.Parse(drOri["highest_1_day"].ToString().Trim());
+            }
+            dr["1日最高"] = Math.Round(((highestPrice - double.Parse(drOri["open"].ToString().Trim()))
+                / double.Parse(drOri["open"].ToString().Trim())) * 100, 2).ToString() + "%";
+            if (drOri["highest_2_day"].ToString().Equals("0"))
+            {
+                highestPrice = GetNextNDayHighest(drOri["gid"].ToString().Trim(), currentDate, 2);
+            }
+            else
+            {
+                highestPrice = double.Parse(drOri["highest_2_day"].ToString().Trim());
+            }
+            dr["2日最高"] = Math.Round(((highestPrice - double.Parse(drOri["open"].ToString().Trim()))
+                / double.Parse(drOri["open"].ToString().Trim())) * 100, 2).ToString() + "%";
+            if (drOri["highest_3_day"].ToString().Equals("0"))
+            {
+                highestPrice = GetNextNDayHighest(drOri["gid"].ToString().Trim(), currentDate, 3);
+            }
+            else
+            {
+                highestPrice = double.Parse(drOri["highest_3_day"].ToString().Trim());
+            }
+            dr["3日最高"] = Math.Round(((highestPrice - double.Parse(drOri["open"].ToString().Trim()))
+                / double.Parse(drOri["open"].ToString().Trim())) * 100, 2).ToString() + "%";
+            if (drOri["highest_4_day"].ToString().Equals("0"))
+            {
+                highestPrice = GetNextNDayHighest(drOri["gid"].ToString().Trim(), currentDate, 4);
+            }
+            else
+            {
+                highestPrice = double.Parse(drOri["highest_4_day"].ToString().Trim());
+            }
+            dr["4日最高"] = Math.Round(((highestPrice - double.Parse(drOri["open"].ToString().Trim()))
+                / double.Parse(drOri["open"].ToString().Trim())) * 100, 2).ToString() + "%";
+            if (drOri["highest_5_day"].ToString().Equals("0"))
+            {
+                highestPrice = GetNextNDayHighest(drOri["gid"].ToString().Trim(), currentDate, 5);
+            }
+            else
+            {
+                highestPrice = double.Parse(drOri["highest_5_day"].ToString().Trim());
+            }
+            dr["5日最高"] = Math.Round(((highestPrice - double.Parse(drOri["open"].ToString().Trim()))
+                / double.Parse(drOri["open"].ToString().Trim())) * 100, 2).ToString() + "%";
+            dt.Rows.Add(dr);
+        }
+        return dt;
+    }
+
+
+    public static double GetNextNDayHighest(string gid, DateTime currentDate, int n)
+    {
+        if (currentDate.AddDays(n) > DateTime.Parse(DateTime.Now.ToShortDateString()))
+            return 0;
+        KLine[] kArr = KLine.GetKLineDayFromSohu(gid, currentDate.AddDays(-20), currentDate.AddDays(n+20));
+        double ret = 0;
+        int k = -1;
+        for (int i = 0; i < kArr.Length; i++)
+        {
+
+            if (kArr[i].startDateTime == currentDate)
+            {
+                k = i;
+            }
+            if (k != -1 && i == k + n)
+            {
+                ret = kArr[i].highestPrice;
+                if (kArr[i].startDateTime < DateTime.Parse(DateTime.Now.ToShortDateString())
+                    || (kArr[i].startDateTime == DateTime.Parse(DateTime.Now.ToShortDateString()) && (DateTime.Now.Hour > 15 || (DateTime.Now.Hour == 15 && DateTime.Now.Minute > 15) )))
+                {
+                    UpdateNextNDayHighest(gid, currentDate, n, ret);
+                }
+                break;
+            }
+
+        }
+        return ret;
+    }
+
+
+    public static void UpdateNextNDayHighest(string gid, DateTime currentDate, int n, double highestPrice)
+    {
+        string sqlStr = " update suggest_stock set highest_" + n.ToString() +  "_day =  " + highestPrice.ToString() + "  where "
+            + "  suggest_date = '" + currentDate.ToShortDateString() + "'  and gid = '" + gid.Trim().Replace("'", "") + "' ";
+        SqlConnection conn = new SqlConnection(Util.conStr);
+        SqlCommand cmd = new SqlCommand(sqlStr, conn);
+        conn.Open();
+        cmd.ExecuteNonQuery();
+        conn.Close();
+        cmd.Dispose();
+        conn.Dispose();
+
+    }
+
+    public static double Get3DayHighest(string gid, DateTime date)
+    {
+        double ret = 0;
+        KLine[] kArr = KLine.GetKLineDayFromSohu(gid, date.AddDays(1), date.AddMonths(1));
+        if (kArr.Length > 2)
+        {
+            ret = Math.Max(kArr[0].highestPrice, kArr[1].highestPrice);
+            ret = Math.Max(ret, kArr[2].highestPrice);
+            if (kArr[2].startDateTime < DateTime.Parse(DateTime.Now.ToShortDateString()))
+                Update3DHighestPrice(gid, date, ret);
+        }
+
+        return ret;
+    }
+
+    public static double Get5DayHighest(string gid, DateTime date)
+    {
+        double ret = 0;
+        KLine[] kArr = KLine.GetKLineDayFromSohu(gid, date.AddDays(1), date.AddMonths(1));
+        if (kArr.Length > 4)
+        {
+            ret = Math.Max(kArr[0].highestPrice, kArr[1].highestPrice);
+            ret = Math.Max(ret, kArr[2].highestPrice);
+            ret = Math.Max(ret, kArr[3].highestPrice);
+            ret = Math.Max(ret, kArr[4].highestPrice);
+            if (kArr[4].startDateTime < DateTime.Parse(DateTime.Now.ToShortDateString()))
+                Update5DHighestPrice(gid, date, ret);
+        }
+
+        return ret;
+    }
+
+    public static void Update3DHighestPrice(string gid, DateTime date, double price)
+    {
+        string sqlStr = " update suggest_stock set highest_3_day =  " + price.ToString() + "  where "
+            + "  suggest_date = '" + date.ToShortDateString() + "'  and gid = '" + gid.Trim().Replace("'", "") + "' ";
+        SqlConnection conn = new SqlConnection(Util.conStr);
+        SqlCommand cmd = new SqlCommand(sqlStr, conn);
+        conn.Open();
+        cmd.ExecuteNonQuery();
+        conn.Close();
+        cmd.Dispose();
+        conn.Dispose();
+    }
+    public static void Update5DHighestPrice(string gid, DateTime date, double price)
+    {
+        string sqlStr = " update suggest_stock set highest_5_day =  " + price.ToString() + "  where "
+            + "  suggest_date = '" + date.ToShortDateString() + "'  and gid = '" + gid.Trim().Replace("'", "") + "' ";
+        SqlConnection conn = new SqlConnection(Util.conStr);
+        SqlCommand cmd = new SqlCommand(sqlStr, conn);
+        conn.Open();
+        cmd.ExecuteNonQuery();
+        conn.Close();
+        cmd.Dispose();
+        conn.Dispose();
+    }
+
+
+</script>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title></title>
+</head>
+<body>
+    <form id="form1" runat="server">
+    <div>
+        <table width="100%" >
+            <tr>
+                <td><asp:Calendar runat="server" id="calendar" Width="100%" OnSelectionChanged="calendar_SelectionChanged" BackColor="White" BorderColor="Black" BorderStyle="Solid" CellSpacing="1" Font-Names="Verdana" Font-Size="9pt" ForeColor="Black" Height="250px" NextPrevFormat="ShortMonth" >
+                    <DayHeaderStyle Font-Bold="True" Font-Size="8pt" ForeColor="#333333" Height="8pt" />
+                    <DayStyle BackColor="#CCCCCC" />
+                    <NextPrevStyle Font-Bold="True" Font-Size="8pt" ForeColor="White" />
+                    <OtherMonthDayStyle ForeColor="#999999" />
+                    <SelectedDayStyle BackColor="#333399" ForeColor="White" />
+                    <TitleStyle BackColor="#333399" BorderStyle="Solid" Font-Bold="True" Font-Size="12pt" ForeColor="White" Height="12pt" />
+                    <TodayDayStyle BackColor="#999999" ForeColor="White" />
+                    </asp:Calendar></td>
+            </tr>
+            <tr><td>&nbsp;</td></tr>
+            <tr>
+                <td><asp:DataGrid runat="server" id="dg" Width="100%" BackColor="White" BorderColor="#999999" BorderStyle="None" BorderWidth="1px" CellPadding="3" GridLines="Vertical" >
+                    <AlternatingItemStyle BackColor="#DCDCDC" />
+                    <FooterStyle BackColor="#CCCCCC" ForeColor="Black" />
+                    <HeaderStyle BackColor="#000084" Font-Bold="True" ForeColor="White" />
+                    <ItemStyle BackColor="#EEEEEE" ForeColor="Black" />
+                    <PagerStyle BackColor="#999999" ForeColor="Black" HorizontalAlign="Center" Mode="NumericPages" />
+                    <SelectedItemStyle BackColor="#008A8C" Font-Bold="True" ForeColor="White" />
+                    </asp:DataGrid></td>
+            </tr>
+        </table>
+    </div>
+    </form>
+</body>
+</html>
