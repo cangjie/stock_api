@@ -110,8 +110,10 @@ public class KLine
             kLine.change = double.Parse(kLineData[9].ToString().Replace("%", ""));
             kLineArr[oArr.Length - 1 - i] = kLine;
         }
-        if (endDate >= DateTime.Parse(DateTime.Now.ToShortDateString()) && Util.IsTransacDay(endDate) 
-            && kLineArr[kLineArr.Length - 1].startDateTime < endDate )
+        //if (endDate >= DateTime.Parse(DateTime.Now.ToShortDateString()) && Util.IsTransacDay(endDate) 
+        //    && kLineArr[kLineArr.Length - 1].startDateTime < endDate )
+        if (endDate == DateTime.Parse(DateTime.Now.ToShortDateString()) && Util.IsTransacDay(endDate) 
+            && kLineArr[kLineArr.Length - 1].startDateTime < endDate)
         {
             KLine k = GetTodayKLine(gid);
             if (k!=null)

@@ -199,7 +199,7 @@
     {
         if (currentDate.AddDays(n) > DateTime.Parse(DateTime.Now.ToShortDateString()))
             return 0;
-        KLine[] kArr = KLine.GetKLineDayFromSohu(gid, currentDate.AddDays(-20), currentDate.AddDays(n+20));
+        KLine[] kArr = KLine.GetKLineDayFromSohu(gid, currentDate.AddDays(-20), DateTime.Parse(DateTime.Now.ToShortDateString()));
         double ret = 0;
         int k = -1;
         for (int i = 0; i < kArr.Length; i++)
