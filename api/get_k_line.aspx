@@ -3,9 +3,10 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        string gid = Util.GetSafeRequestValue(Request, "gid", "sz002579");
-        DateTime startDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "start", "2017-3-1"));
-        DateTime endDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "end", "2017-6-15"));
+        string gid = Util.GetSafeRequestValue(Request, "gid", "sh600031");
+        
+        DateTime endDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "end", DateTime.Now.ToShortDateString()));
+        DateTime startDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "start", DateTime.Now.AddYears(-1).ToShortDateString()));
         KLine[] kArr = KLine.GetKLine("day", gid, startDate, endDate);
         string jsonStr = "{\"type\": \"day\", \"gid\": \"" + gid.Trim() + "\", "
             + "\"start_time\": \"" + startDate.ToShortDateString()+"\", \"end_time\": \"" + endDate.ToShortDateString() + "\" , ";

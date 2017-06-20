@@ -64,7 +64,9 @@
         foreach (DataRow drOri in dtOri.Rows)
         {
             DataRow dr = dt.NewRow();
-            dr["代码"] = drOri["gid"].ToString().Trim().Remove(0, 2);
+            dr["代码"] = "<a href=\"show_k_line_day.aspx?gid=" + drOri["gid"].ToString().Trim() + "&name="
+                + Server.UrlEncode(drOri["name"].ToString().Trim()) + "\" target=\"_blank\" >" 
+                +  drOri["gid"].ToString().Trim().Remove(0, 2) + "</a>";
             dr["名称"] = drOri["name"].ToString().Trim();
             dr["今开"] = drOri["open"].ToString().Trim();
             double rate = 0;
