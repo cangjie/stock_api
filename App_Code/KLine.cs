@@ -50,7 +50,16 @@ public class KLine
         }
     }
 
-
+    public bool IsPositive
+    {
+        get
+        {
+            if (startPrice < endPrice)
+                return true;
+            else
+                return false;
+        }
+    }
     public static KLine[] GetKLine(string type, string gid, DateTime startDateTime, DateTime endDateTime)
     {
         KLine[] kLineArr = new KLine[0];

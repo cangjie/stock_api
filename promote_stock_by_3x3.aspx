@@ -67,7 +67,9 @@
             dr["代码"] = "<a href=\"show_k_line_day.aspx?gid=" + drOri["gid"].ToString().Trim() + "&name="
                 + Server.UrlEncode(drOri["name"].ToString().Trim()) + "\" target=\"_blank\" >" 
                 +  drOri["gid"].ToString().Trim().Remove(0, 2) + "</a>";
-            dr["名称"] = drOri["name"].ToString().Trim();
+            dr["名称"] = drOri["name"].ToString().Trim()
+                + (drOri["double_cross_3_3"].ToString().Trim().Equals("1")? "🐂" : "")
+                + (double.Parse(drOri["last_day_over_flow"].ToString().Trim()) >= 0.05 ? "🔥" :"");
             dr["今开"] = drOri["open"].ToString().Trim();
             double rate = 0;
             rate = Math.Round(((double.Parse(drOri["open"].ToString().Trim()) - double.Parse(drOri["settlement"].ToString().Trim()))

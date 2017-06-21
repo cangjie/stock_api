@@ -263,19 +263,6 @@ public class Util
 
     public static void RefreshSuggestStock(DateTime day)
     {
-        /*
-        DateTime start = day;
-        DateTime end = day;
-        DataTable dt = new DataTable();
-        dt.Columns.Add("date");
-        dt.Columns.Add("gid");
-        dt.Columns.Add("name");
-        dt.Columns.Add("settlement");
-        dt.Columns.Add("avg3_yesterday");
-        dt.Columns.Add("avg3_today");
-        dt.Columns.Add("open");
-        */
-        //string[] stockListArr = Util.GetAllStockCode();
         KeyValuePair<string, string>[] stockListArr = Util.GetAllStockCodeAndName();
         if (Util.IsTransacDay(day))
         {
@@ -286,6 +273,10 @@ public class Util
                 {
                     try
                     {
+                        Stock stockObj = new Stock();
+                        stockObj.gid = stock.Key.Trim();
+                        stockObj.kArr = kArr;
+
                         DBHelper.InsertData("suggest_stock", new string[,]{
                             { "suggest_date", "datetime", day.ToShortDateString() },
                             { "gid", "varchar", stock.Key.Trim()},
@@ -293,7 +284,9 @@ public class Util
                             { "settlement", "float", kArr[kArr.Length - 2].endPrice.ToString()},
                             { "[open]", "float", kArr[kArr.Length - 1].startPrice.ToString()},
                             { "avg_3_3_yesterday", "float", Compute_3_3_Price(kArr, kArr[kArr.Length - 2].startDateTime).ToString()},
-                            { "avg_3_3_today", "float", Compute_3_3_Price(kArr, kArr[kArr.Length - 1].startDateTime).ToString()}
+                            { "avg_3_3_today", "float", Compute_3_3_Price(kArr, kArr[kArr.Length - 1].startDateTime).ToString()},
+                            { "double_cross_3_3", "int", (stockObj.IsCross3X3Twice(day, 20)? "1" : "0")},
+                            { "last_day_over_flow", "float", stockObj.yesterdayPositiveRate(day).ToString()}
                         });
                     }
                     catch(Exception e)
@@ -325,7 +318,8 @@ public class Util
 
     public static KLine[] IsSuggest(DateTime day, string stockCode)
     {
-        KLine[] kArr = KLine.GetKLine("day", stockCode, day.AddMonths(-1), day);
+        /*
+        KLine[] kArr = KLine.GetKLine("day", stockCode, day.AddMonths(-3), day);
         if (kArr.Length < 6)
             return new KLine[0];
         if (kArr[kArr.Length - 1].startDateTime != day)
@@ -341,5 +335,13 @@ public class Util
             return kArr;
         }
         return new KLine[0];
+        */
+        Stock stock = new Stock();
+        stock.gid = stockCode;
+        stock.kArr = KLine.GetKLine("day", stockCode, day.AddMonths(-3), day);
+        if (stock.IsCross3X3(day))
+            return stock.kArr;
+        else
+            return new KLine[0];
     }
 }
