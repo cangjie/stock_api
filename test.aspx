@@ -11,7 +11,7 @@
         //Util.RefreshSuggestStockForToday();
         //Util.RefreshSuggestStock(DateTime.Parse("2017-6-13"));
 
-        for (DateTime i = DateTime.Parse("2017-5-15"); i <= DateTime.Parse("2016-5-1"); i = i.AddDays(-1))
+        for (DateTime i = DateTime.Parse("2017-5-15"); i >= DateTime.Parse("2016-5-1"); i = i.AddDays(-1))
         {
             if (Util.IsTransacDay(i))
             {
