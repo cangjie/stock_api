@@ -81,11 +81,20 @@
             dr["代码"] = "<a href=\"show_k_line_day.aspx?gid=" + drOri["gid"].ToString().Trim() + "&name="
                 + Server.UrlEncode(drOri["name"].ToString().Trim()) + "\" target=\"_blank\" >"
                 +  drOri["gid"].ToString().Trim().Remove(0, 2) + "</a>";
+
+
             dr["名称"] = drOri["name"].ToString().Trim()
                 + (drOri["double_cross_3_3"].ToString().Trim().Equals("1")? "<a title=\"20交易日内两次穿越3线\" >🐂</a>" : "")
                 + (double.Parse(drOri["last_day_over_flow"].ToString().Trim()) >= 0.05 ? "<a title=\"昨日收阳，涨幅："
-                + Math.Round(double.Parse(drOri["last_day_over_flow"].ToString().Trim()) * 100, 2).ToString() + "%\" >🔥</a>" :"");
+                + Math.Round(double.Parse(drOri["last_day_over_flow"].ToString().Trim()) * 100, 2).ToString() + "%\" >🔥</a>" :"")
+                + ((double.Parse(drOri["last_day_over_flow"].ToString().Trim()) < 0.05 && double.Parse(drOri["last_day_over_flow"].ToString().Trim()) > 0) ?
+                    "<a title=\"昨日收阳，涨幅："
+                + Math.Round(double.Parse(drOri["last_day_over_flow"].ToString().Trim()) * 100, 2).ToString() + "%\" >🕯️</a>" :"");
+
+
             dr["今开"] = drOri["open"].ToString().Trim();
+
+
             double rate = 0;
             rate = Math.Round(((double.Parse(drOri["open"].ToString().Trim()) - double.Parse(drOri["settlement"].ToString().Trim()))
                 / double.Parse(drOri["settlement"].ToString().Trim())) * 100, 2);
@@ -258,6 +267,9 @@
                 red4++;
             if (dr["5日最高"].ToString().IndexOf("red") > 0)
                 red5++;
+            if ((dr["跳空幅度"].ToString().IndexOf("green") >= 0 && dr["今日最高"].ToString().IndexOf("black") >= 0)
+                || (dr["跳空幅度"].ToString().IndexOf("black") >= 0 && dr["今日最高"].ToString().IndexOf("red") >= 0))
+                dr["名称"] = dr["名称"].ToString() + "📈";
         }
         DataRow drTotal = dt.NewRow();
         drTotal["代码"] = "";
