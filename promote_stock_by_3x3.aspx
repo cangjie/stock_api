@@ -68,8 +68,9 @@
                 + Server.UrlEncode(drOri["name"].ToString().Trim()) + "\" target=\"_blank\" >" 
                 +  drOri["gid"].ToString().Trim().Remove(0, 2) + "</a>";
             dr["名称"] = drOri["name"].ToString().Trim()
-                + (drOri["double_cross_3_3"].ToString().Trim().Equals("1")? "🐂" : "")
-                + (double.Parse(drOri["last_day_over_flow"].ToString().Trim()) >= 0.05 ? "🔥" :"");
+                + (drOri["double_cross_3_3"].ToString().Trim().Equals("1")? "<a title=\"20交易日内两次穿越3线\" >🐂</a>" : "")
+                + (double.Parse(drOri["last_day_over_flow"].ToString().Trim()) >= 0.05 ? "<a title=\"昨日收阳，涨幅：" 
+                + Math.Round(double.Parse(drOri["last_day_over_flow"].ToString().Trim()) * 100, 2).ToString() + "%\" >🔥</a>" :"");
             dr["今开"] = drOri["open"].ToString().Trim();
             double rate = 0;
             rate = Math.Round(((double.Parse(drOri["open"].ToString().Trim()) - double.Parse(drOri["settlement"].ToString().Trim()))
