@@ -13,10 +13,14 @@
 
         for (DateTime i = DateTime.Parse("2017-5-15"); i <= DateTime.Parse("2016-5-1"); i = i.AddDays(-1))
         {
-            queue.Enqueue(i);
+            if (Util.IsTransacDay(i))
+            {
+                queue.Enqueue(i);
             ThreadStart ts = new ThreadStart(RunData);
             Thread t = new Thread(ts);
             t.Start();
+            }
+            
         }
     }
 
