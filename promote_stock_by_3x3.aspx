@@ -12,7 +12,9 @@
         if (!IsPostBack)
         {
             calendar.SelectedDate = DateTime.Now;
-            dg.DataSource = GetData1();
+            DataTable dt = GetData1();
+            AddTotal(dt);
+            dg.DataSource = dt;
             dg.DataBind();
         }
 
@@ -61,7 +63,7 @@
         dt.Columns.Add("3日最高");
         dt.Columns.Add("4日最高");
         dt.Columns.Add("5日最高");
-
+        /*
         int total = 0;
         int red0 = 0;
         int red1 = 0;
@@ -69,10 +71,10 @@
         int red3 = 0;
         int red4 = 0;
         int red5 = 0;
-
+        */
         foreach (DataRow drOri in dtOri.Rows)
         {
-            total++;
+            //total++;
             DataRow dr = dt.NewRow();
             dr["代码"] = "<a href=\"show_k_line_day.aspx?gid=" + drOri["gid"].ToString().Trim() + "&name="
                 + Server.UrlEncode(drOri["name"].ToString().Trim()) + "\" target=\"_blank\" >"
@@ -109,8 +111,7 @@
             rate = Math.Round(((highestPrice - double.Parse(drOri["open"].ToString().Trim()))
                 / double.Parse(drOri["open"].ToString().Trim())) * 100, 2);
             dr["今日最高"] = "<font color=\"" + (rate >=1? "red": (rate < 0? "green" : "black")) + "\" >" + rate.ToString() + "%</font>";
-            if (rate >= 1)
-                red0++;
+
             if (drOri["highest_1_day"].ToString().Equals("0"))
             {
                 highestPrice = GetNextNDayHighest(drOri["gid"].ToString().Trim(), currentDate, 1);
@@ -129,8 +130,7 @@
             {
                 dr["1日最高"] =  "<font color=\"" + (rate >=1? "red": (rate < 0? "green" : "black")) + "\" >"
                 + rate.ToString() + "%</font>";
-                if (rate >= 1)
-                    red1++;
+
             }
             if (drOri["highest_2_day"].ToString().Equals("0"))
             {
@@ -150,8 +150,7 @@
             {
                 dr["2日最高"] =  "<font color=\"" + (rate >=1? "red": (rate < 0? "green" : "black")) + "\" >"
                 + rate.ToString() + "%</font>";
-                if (rate >= 1)
-                    red2++;
+
             }
             if (drOri["highest_3_day"].ToString().Equals("0"))
             {
@@ -171,8 +170,7 @@
             {
                 dr["3日最高"] =  "<font color=\"" + (rate >=1? "red": (rate < 0? "green" : "black")) + "\" >"
                 + rate.ToString() + "%</font>";
-                if (rate >= 1)
-                    red3++;
+
             }
             if (drOri["highest_4_day"].ToString().Equals("0"))
             {
@@ -192,8 +190,7 @@
             {
                 dr["4日最高"] =  "<font color=\"" + (rate >=1? "red": (rate < 0? "green" : "black")) + "\" >"
                 + rate.ToString() + "%</font>";
-                if (rate >= 1)
-                    red4++;
+
             }
             if (drOri["highest_5_day"].ToString().Equals("0"))
             {
@@ -213,13 +210,12 @@
             {
                 dr["5日最高"] =  "<font color=\"" + (rate >=1? "red": (rate < 0? "green" : "black")) + "\" >"
                 + rate.ToString() + "%</font>";
-                if (rate >= 1)
-                    red5++;
+
             }
 
             dt.Rows.Add(dr);
         }
-
+        /*
         DataRow drTotal = dt.NewRow();
         drTotal["代码"] = "";
         drTotal["名称"] = "";
@@ -232,10 +228,48 @@
         drTotal["4日最高"] = (Math.Round(10000 * (double)red4 / (double)total) / 100).ToString() + "%";
         drTotal["5日最高"] = (Math.Round(10000 * (double)red5 / (double)total) / 100).ToString() + "%";
         dt.Rows.Add(drTotal);
-
+        */
         return dt;
     }
 
+
+    public static void AddTotal(DataTable dt)
+    {
+        int red0 = 0;
+        int red1 = 0;
+        int red2 = 0;
+        int red3 = 0;
+        int red4 = 0;
+        int red5 = 0;
+        int total = dt.Rows.Count;
+        foreach (DataRow dr in dt.Rows)
+        {
+            if (dr["今日最高"].ToString().IndexOf("red") > 0)
+                red0++;
+            if (dr["1日最高"].ToString().IndexOf("red") > 0)
+                red1++;
+            if (dr["2日最高"].ToString().IndexOf("red") > 0)
+                red2++;
+            if (dr["3日最高"].ToString().IndexOf("red") > 0)
+                red3++;
+            if (dr["4日最高"].ToString().IndexOf("red") > 0)
+                red4++;
+            if (dr["5日最高"].ToString().IndexOf("red") > 0)
+                red5++;
+        }
+        DataRow drTotal = dt.NewRow();
+        drTotal["代码"] = "";
+        drTotal["名称"] = "";
+        drTotal["今开"] = "";
+        drTotal["跳空幅度"] = "";
+        drTotal["今日最高"] = (Math.Round(10000 * (double)red0 / (double)total) / 100).ToString() + "%";
+        drTotal["1日最高"] = (Math.Round(10000 * (double)red1 / (double)total) / 100).ToString() + "%";
+        drTotal["2日最高"] = (Math.Round(10000 * (double)red2 / (double)total) / 100).ToString() + "%";
+        drTotal["3日最高"] = (Math.Round(10000 * (double)red3 / (double)total) / 100).ToString() + "%";
+        drTotal["4日最高"] = (Math.Round(10000 * (double)red4 / (double)total) / 100).ToString() + "%";
+        drTotal["5日最高"] = (Math.Round(10000 * (double)red5 / (double)total) / 100).ToString() + "%";
+        dt.Rows.Add(drTotal);
+    }
 
     public static double GetNextNDayHighest(string gid, DateTime currentDate, int n)
     {
@@ -384,7 +418,7 @@
             }
             dtNew.Rows.Add(drNew);
         }
-
+        AddTotal(dtNew);
         dg.DataSource = dtNew;
         dg.DataBind();
 
