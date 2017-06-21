@@ -219,6 +219,7 @@
 
             dt.Rows.Add(dr);
         }
+/*
         DataRow drTotal = dt.NewRow();
         drTotal["代码"] = "";
         drTotal["名称"] = "";
@@ -231,6 +232,7 @@
         drTotal["4日最高"] = (Math.Round(10000 * (double)red4 / (double)total) / 100).ToString() + "%";
         drTotal["5日最高"] = (Math.Round(10000 * (double)red5 / (double)total) / 100).ToString() + "%";
         dt.Rows.Add(drTotal);
+*/
         return dt;
     }
 
@@ -370,6 +372,8 @@
         DataRow[] drSortArr = dtSort.Select("", colmunName.Trim() + "double " + (command.Trim().Equals("A-Z") ? " asc" : " desc"));
 
         DataTable dtNew = dt.Clone();
+
+
 
         foreach (DataRow drSort in drSortArr)
         {
