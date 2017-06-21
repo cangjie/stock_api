@@ -22,7 +22,9 @@
 
     protected void calendar_SelectionChanged(object sender, EventArgs e)
     {
-        dg.DataSource = GetData1();
+        DataTable dt = GetData1();
+        AddTotal(dt);
+        dg.DataSource = dt;
         dg.DataBind();
     }
 
