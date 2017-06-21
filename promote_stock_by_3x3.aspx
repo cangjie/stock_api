@@ -253,6 +253,15 @@
         int red4 = 0;
         int red5 = 0;
         int total = dt.Rows.Count;
+
+        
+        int countOxCandlePoly = 0;
+        int d1OxCandlePoly = 0;
+        int d2OxCandlePoly = 0;
+        int d3OxCandlePoly = 0;
+        int d4OxCandlePoly = 0;
+        int d5OxCandlePoly = 0;
+
         foreach (DataRow dr in dt.Rows)
         {
             if (dr["今日最高"].ToString().IndexOf("red") > 0)
@@ -270,6 +279,22 @@
             if ((dr["跳空幅度"].ToString().IndexOf("green") >= 0 && dr["今日最高"].ToString().IndexOf("black") >= 0)
                 || (dr["跳空幅度"].ToString().IndexOf("black") >= 0 && dr["今日最高"].ToString().IndexOf("red") >= 0))
                 dr["名称"] = dr["名称"].ToString() + "📈";
+
+            if (dr["名称"].ToString().IndexOf("🐂") >= 0 && dr["名称"].ToString().IndexOf("🕯️") >= 0 && dr["名称"].ToString().IndexOf("📈") >= 0)
+            {
+                countOxCandlePoly++;
+
+                if (dr["1日最高"].ToString().IndexOf("red") > 0)
+                    d1OxCandlePoly++;
+                if (dr["2日最高"].ToString().IndexOf("red") > 0)
+                    d2OxCandlePoly++;
+                if (dr["3日最高"].ToString().IndexOf("red") > 0)
+                    d3OxCandlePoly++;
+                if (dr["4日最高"].ToString().IndexOf("red") > 0)
+                    d4OxCandlePoly++;
+                if (dr["5日最高"].ToString().IndexOf("red") > 0)
+                    d5OxCandlePoly++;
+            }
         }
         DataRow drTotal = dt.NewRow();
         drTotal["代码"] = "";
@@ -283,6 +308,18 @@
         drTotal["4日最高"] = (Math.Round(10000 * (double)red4 / (double)total) / 100).ToString() + "%";
         drTotal["5日最高"] = (Math.Round(10000 * (double)red5 / (double)total) / 100).ToString() + "%";
         dt.Rows.Add(drTotal);
+        DataRow drOxCandlePoly = dt.NewRow();
+        drOxCandlePoly["代码"] = "🐂🕯️📈";
+        drOxCandlePoly["名称"] = "";
+        drOxCandlePoly["今开"] = "";
+        drOxCandlePoly["跳空幅度"] = "";
+        drOxCandlePoly["今日最高"] = "";
+        drOxCandlePoly["1日最高"] = (Math.Round(10000 * (double)d1OxCandlePoly / (double)countOxCandlePoly) / 100).ToString() + "%";
+        drOxCandlePoly["2日最高"] = (Math.Round(10000 * (double)d2OxCandlePoly / (double)countOxCandlePoly) / 100).ToString() + "%";
+        drOxCandlePoly["3日最高"] = (Math.Round(10000 * (double)d3OxCandlePoly / (double)countOxCandlePoly) / 100).ToString() + "%";
+        drOxCandlePoly["4日最高"] = (Math.Round(10000 * (double)d4OxCandlePoly / (double)countOxCandlePoly) / 100).ToString() + "%";
+        drOxCandlePoly["5日最高"] = (Math.Round(10000 * (double)d5OxCandlePoly / (double)countOxCandlePoly) / 100).ToString() + "%";
+        dt.Rows.Add(drOxCandlePoly);
     }
 
     public static double GetNextNDayHighest(string gid, DateTime currentDate, int n)
