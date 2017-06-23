@@ -148,7 +148,7 @@
                 / double.Parse(drOri["open"].ToString().Trim())) * 100, 2);
 
 
-
+		int valve = 2;
 
             if (rate == -100)
             {
@@ -156,7 +156,7 @@
             }
             else
             {
-                dr["1日最高"] =  "<font color=\"" + (rate >=1? "red": (rate < 0? "green" : "black")) + "\" >"
+                dr["1日最高"] =  "<font color=\"" + (rate >=valve ? "red": (rate < 0? "green" : "black")) + "\" >"
                 + rate.ToString() + "%</font>";
 
             }
@@ -176,7 +176,7 @@
             }
             else
             {
-                dr["2日最高"] =  "<font color=\"" + (rate >=1? "red": (rate < 0? "green" : "black")) + "\" >"
+                dr["2日最高"] =  "<font color=\"" + (rate >=valve ? "red": (rate < 0? "green" : "black")) + "\" >"
                 + rate.ToString() + "%</font>";
 
             }
@@ -196,7 +196,7 @@
             }
             else
             {
-                dr["3日最高"] =  "<font color=\"" + (rate >=1? "red": (rate < 0? "green" : "black")) + "\" >"
+                dr["3日最高"] =  "<font color=\"" + (rate >=valve ? "red": (rate < 0? "green" : "black")) + "\" >"
                 + rate.ToString() + "%</font>";
 
             }
@@ -216,7 +216,7 @@
             }
             else
             {
-                dr["4日最高"] =  "<font color=\"" + (rate >=1? "red": (rate < 0? "green" : "black")) + "\" >"
+                dr["4日最高"] =  "<font color=\"" + (rate >=valve ? "red": (rate < 0? "green" : "black")) + "\" >"
                 + rate.ToString() + "%</font>";
 
             }
@@ -236,7 +236,7 @@
             }
             else
             {
-                dr["5日最高"] =  "<font color=\"" + (rate >=1? "red": (rate < 0? "green" : "black")) + "\" >"
+                dr["5日最高"] =  "<font color=\"" + (rate >=valve ? "red": (rate < 0? "green" : "black")) + "\" >"
                 + rate.ToString() + "%</font>";
 
             }
