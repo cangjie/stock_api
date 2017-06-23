@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Data;
 
 /// <summary>
 /// Summary description for Stock
@@ -12,11 +13,21 @@ public class Stock
 
     public KLine[] kArr;
 
+    public DataRow drLastTimeline;
+
     public Stock()
     {
         //
         // TODO: Add constructor logic here
         //
+    }
+
+    public Stock(string gid)
+    {
+        this.gid = gid;
+        DataTable dt = DBHelper.GetDataTable(" select top 1 * from " + gid.Trim() + "_timeline order by ticktime desc ");
+        if (dt.Rows.Count > 0)
+            drLastTimeline = dt.Rows[0];
     }
 
     public double GetAverageSettlePrice(int index, int itemsCount, int displacement)
@@ -112,5 +123,44 @@ public class Stock
             return 0;
         else
             return rate;
+    }
+
+    public double LastBuy
+    {
+        get
+        {
+            if (drLastTimeline != null)
+            {
+                return double.Parse(drLastTimeline["buy"].ToString().Trim());
+            }
+            else
+                return 0;
+        }
+    }
+
+    public double LastSell
+    {
+        get
+        {
+            if (drLastTimeline != null)
+            {
+                return double.Parse(drLastTimeline["sell"].ToString().Trim());
+            }
+            else
+                return 0;
+        }
+    }
+
+    public double LastTrade
+    {
+        get
+        {
+            if (drLastTimeline != null)
+            {
+                return double.Parse(drLastTimeline["trade"].ToString().Trim());
+            }
+            else
+                return 0;
+        }
     }
 }
