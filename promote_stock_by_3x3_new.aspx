@@ -274,12 +274,12 @@
         int candlePolyD4 = 0;
         int candlePolyD5 = 0;
 
-        int allCount = 0;
-        int allD1 = 0;
-        int allD2 = 0;
-        int allD3 = 0;
-        int allD4 = 0;
-        int allD5 = 0;
+        int oxStarCount = 0;
+        int oxStarD1 = 0;
+        int oxStarD2 = 0;
+        int oxStarD3 = 0;
+        int oxStarD4 = 0;
+        int oxStarD5 = 0;
 
         foreach (DataRow dr in dt.Rows)
         {
@@ -345,19 +345,19 @@
                     d5OxCandlePoly++;
             }
 
-            if (dr["名称"].ToString().IndexOf("🐂") >= 0 && dr["名称"].ToString().IndexOf("🕯️") >= 0 && dr["名称"].ToString().IndexOf("📈") >= 0 && dr["名称"].ToString().IndexOf("🌟") >= 0 )
+            if (dr["名称"].ToString().IndexOf("🐂") >= 0  && dr["名称"].ToString().IndexOf("🌟") >= 0 )
             {
-                allCount++;
+                oxStarCount++;
                 if (dr["1日最高"].ToString().IndexOf("red") > 0)
-                    allD1++;
+                    oxStarD1++;
                 if (dr["2日最高"].ToString().IndexOf("red") > 0)
-                    allD2++;
+                    oxStarD2++;
                 if (dr["3日最高"].ToString().IndexOf("red") > 0)
-                    allD3++;
+                    oxStarD3++;
                 if (dr["4日最高"].ToString().IndexOf("red") > 0)
-                    allD4++;
+                    oxStarD4++;
                 if (dr["5日最高"].ToString().IndexOf("red") > 0)
-                    allD5++;
+                    oxStarD5++;
             }
         }
         DataRow drTotal = dt.NewRow();
@@ -413,17 +413,17 @@
         drOxCandlePoly["5日最高"] = (Math.Round(10000 * (double)d5OxCandlePoly / (double)countOxCandlePoly) / 100).ToString() + "%";
         dt.Rows.Add(drOxCandlePoly);
 
-        DataRow drAll = dt.NewRow();
-        drAll["代码"] = "🐂🕯️📈🌟";
-        drAll["今开"] = "";
-        drAll["跳空幅度"] = "";
-        drAll["今日最高"] = "";
-        drAll["1日最高"] = (Math.Round(10000 * (double)allD1 / (double)allCount) / 100).ToString() + "%";
-        drAll["2日最高"] = (Math.Round(10000 * (double)allD2 / (double)allCount) / 100).ToString() + "%";
-        drAll["3日最高"] = (Math.Round(10000 * (double)allD3 / (double)allCount) / 100).ToString() + "%";
-        drAll["4日最高"] = (Math.Round(10000 * (double)allD4 / (double)allCount) / 100).ToString() + "%";
-        drAll["5日最高"] = (Math.Round(10000 * (double)allD5 / (double)allCount) / 100).ToString() + "%";
-        dt.Rows.Add(drAll);
+        DataRow drOxStar = dt.NewRow();
+        drOxStar["代码"] = "🐂🌟";
+        drOxStar["今开"] = "";
+        drOxStar["跳空幅度"] = "";
+        drOxStar["今日最高"] = "";
+        drOxStar["1日最高"] = (Math.Round(10000 * (double)oxStarD1 / (double)oxStarCount) / 100).ToString() + "%";
+        drOxStar["2日最高"] = (Math.Round(10000 * (double)oxStarD2 / (double)oxStarCount) / 100).ToString() + "%";
+        drOxStar["3日最高"] = (Math.Round(10000 * (double)oxStarD3 / (double)oxStarCount) / 100).ToString() + "%";
+        drOxStar["4日最高"] = (Math.Round(10000 * (double)oxStarD4 / (double)oxStarCount) / 100).ToString() + "%";
+        drOxStar["5日最高"] = (Math.Round(10000 * (double)oxStarD5 / (double)oxStarCount) / 100).ToString() + "%";
+        dt.Rows.Add(drOxStar);
 
     }
 
