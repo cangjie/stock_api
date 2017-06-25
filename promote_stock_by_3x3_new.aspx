@@ -128,8 +128,9 @@
             double jumpRate = (double.Parse(drOri["open"].ToString()) - double.Parse(drOri["settlement"].ToString().Trim())) / double.Parse(drOri["settlement"].ToString().Trim());
             double currentPrice = (new Stock(drOri["gid"].ToString().Trim())).LastTrade;
 
-            if (currentPrice > double.Parse(drOri["open"].ToString())
-                && (jumpRate < 0.004 || (jumpRate > 0.01 && jumpRate < 0.07))
+            if (
+		currentPrice > double.Parse(drOri["open"].ToString()) && 
+		(jumpRate < 0.004 || (jumpRate > 0.01 && jumpRate < 0.07))
                 && (rate > 1) && double.Parse(drOri["last_day_over_flow"].ToString()) > 0)
                 dr["名称"] = dr["名称"] + "🌟";
 
