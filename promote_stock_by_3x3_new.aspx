@@ -126,16 +126,17 @@
             dr["今日最高"] = "<font color=\"" + (rate >=1? "red": (rate < 0? "green" : "black")) + "\" >" + rate.ToString() + "%</font>";
 
             double jumpRate = (double.Parse(drOri["open"].ToString()) - double.Parse(drOri["settlement"].ToString().Trim())) / double.Parse(drOri["settlement"].ToString().Trim());
-            double currentPrice = (new Stock(drOri["gid"].ToString().Trim())).LastTrade;
+            Stock stock = new Stock(drOri["gid"].ToString().Trim());
+            double currentPrice = stock.LastTrade;
 
             if (
-		currentPrice > double.Parse(drOri["open"].ToString()) && 
-		(jumpRate < 0.004 || (jumpRate > 0.01 && jumpRate < 0.07))
-                && (rate > 1) && double.Parse(drOri["last_day_over_flow"].ToString()) > 0)
+
+                    currentPrice > double.Parse(drOri["open"].ToString()) &&
+                    (jumpRate < 0.004 || (jumpRate > 0.01 && jumpRate < 0.07)
+
+                    )
+                    && (rate > 1) && double.Parse(drOri["last_day_over_flow"].ToString()) > 0)
                 dr["名称"] = dr["名称"] + "🌟";
-
-
-
 
             if (drOri["highest_1_day"].ToString().Equals("0"))
             {
@@ -144,6 +145,10 @@
             else
             {
                 highestPrice = double.Parse(drOri["highest_1_day"].ToString().Trim());
+
+
+
+
             }
             rate = Math.Round(((highestPrice - double.Parse(drOri["open"].ToString().Trim()))
                 / double.Parse(drOri["open"].ToString().Trim())) * 100, 2);
@@ -164,6 +169,28 @@
             else
             {
                 highestPrice = double.Parse(drOri["highest_2_day"].ToString().Trim());
+
+                stock.kArr = KLine.GetKLine("day", stock.gid, currentDate.AddDays(-10), currentDate.AddDays(2));
+                int d2Index = 0;
+                for (int i = stock.kArr.Length - 1; i >= 0; i--)
+                {
+                    if (stock.kArr[i].startDateTime == currentDate)
+                    {
+                        d2Index = i;
+                        break;
+                    }
+                }
+
+                if (d2Index> 1 && stock.kArr[d2Index].endPrice > stock.GetAverageSettlePrice(d2Index, 3, 3)
+                    && stock.kArr[d2Index - 1].endPrice > stock.GetAverageSettlePrice(d2Index - 1, 3, 3)
+                    && stock.kArr[d2Index - 2].endPrice > stock.GetAverageSettlePrice(d2Index - 2, 3, 3)
+                    && stock.GetAverageSettlePrice(d2Index, 3, 3) > stock.GetAverageSettlePrice(d2Index - 1, 3, 3)
+                    && stock.GetAverageSettlePrice(d2Index - 1, 3, 3) > stock.GetAverageSettlePrice(d2Index - 2, 3, 3))
+                {
+                    dr["名称"] = dr["名称"] + "🌞";
+                }
+
+
             }
             rate = Math.Round(((highestPrice - double.Parse(drOri["open"].ToString().Trim()))
                 / double.Parse(drOri["open"].ToString().Trim())) * 100, 2);
@@ -184,6 +211,9 @@
             else
             {
                 highestPrice = double.Parse(drOri["highest_3_day"].ToString().Trim());
+
+
+
             }
             rate = Math.Round(((highestPrice - double.Parse(drOri["open"].ToString().Trim()))
                 / double.Parse(drOri["open"].ToString().Trim())) * 100, 2);
