@@ -183,9 +183,9 @@
 
                 if (d2Index> 1 && stock.kArr[d2Index].endPrice > stock.GetAverageSettlePrice(d2Index, 3, 3)
                     && stock.kArr[d2Index - 1].endPrice > stock.GetAverageSettlePrice(d2Index - 1, 3, 3)
-                    && stock.kArr[d2Index - 2].endPrice > stock.GetAverageSettlePrice(d2Index - 2, 3, 3)
-                    && stock.GetAverageSettlePrice(d2Index, 3, 3) > stock.GetAverageSettlePrice(d2Index - 1, 3, 3)
-                    && stock.GetAverageSettlePrice(d2Index - 1, 3, 3) > stock.GetAverageSettlePrice(d2Index - 2, 3, 3))
+                    && stock.kArr[d2Index - 2].endPrice > stock.GetAverageSettlePrice(d2Index - 2, 3, 3))
+                    //&& stock.GetAverageSettlePrice(d2Index, 3, 3) > stock.GetAverageSettlePrice(d2Index - 1, 3, 3)
+                    //&& stock.GetAverageSettlePrice(d2Index - 1, 3, 3) > stock.GetAverageSettlePrice(d2Index - 2, 3, 3))
                 {
                     dr["名称"] = dr["名称"] + "🌞";
                 }
