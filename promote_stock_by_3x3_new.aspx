@@ -446,21 +446,21 @@
                 if (!dr["3日最高"].ToString().Trim().Equals("-"))
                 {
                     double d3Highest = GetPercentValue(dr["3日最高"].ToString());
-                    if (d3Highest >= settlement + 3)
+                    if (d3Highest >= settlement + 1)
                         sunD3++;
                 }
 
                 if (!dr["4日最高"].ToString().Trim().Equals("-"))
                 {
                     double d4Highest = GetPercentValue(dr["4日最高"].ToString());
-                    if (d4Highest >= settlement + 3)
+                    if (d4Highest >= settlement + 1)
                         sunD4++;
                 }
 
                 if (!dr["5日最高"].ToString().Trim().Equals("-"))
                 {
                     double d5Highest = GetPercentValue(dr["5日最高"].ToString());
-                    if (d5Highest >= settlement + 3)
+                    if (d5Highest >= settlement + 1)
                         sunD5++;
                 }
             }
