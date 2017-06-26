@@ -62,6 +62,7 @@
         dt.Columns.Add("今日最高");
         dt.Columns.Add("1日最高");
         dt.Columns.Add("2日最高");
+        dt.Columns.Add("2日收盘");
         dt.Columns.Add("3日最高");
         dt.Columns.Add("4日最高");
         dt.Columns.Add("5日最高");
@@ -126,7 +127,10 @@
             dr["今日最高"] = "<font color=\"" + (rate >=1? "red": (rate < 0? "green" : "black")) + "\" >" + rate.ToString() + "%</font>";
 
             double jumpRate = (double.Parse(drOri["open"].ToString()) - double.Parse(drOri["settlement"].ToString().Trim())) / double.Parse(drOri["settlement"].ToString().Trim());
+
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
+            stock.kArr = KLine.GetKLine("day", stock.gid, currentDate.AddDays(-30), DateTime.Parse(DateTime.Now.ToShortDateString()));
+
             double currentPrice = stock.LastTrade;
 
             if (
@@ -136,7 +140,7 @@
 
                     )
                     && (rate > 1) && double.Parse(drOri["last_day_over_flow"].ToString()) > 0)
-                dr["名称"] = dr["名称"] + "🌟";
+                dr["名称"] = dr["名称"] + "<a title=\"两日连涨，跳空和涨幅在特定范围内，当日收阳\" >🌟</a>";
 
             if (drOri["highest_1_day"].ToString().Equals("0"))
             {
@@ -169,30 +173,26 @@
             else
             {
                 highestPrice = double.Parse(drOri["highest_2_day"].ToString().Trim());
-
-                stock.kArr = KLine.GetKLine("day", stock.gid, currentDate.AddDays(-10), currentDate.AddDays(2));
-                int currentIndex = 0;
-                for (int i = stock.kArr.Length - 1; i >= 0; i--)
-                {
-                    if (stock.kArr[i].startDateTime == currentDate)
-                    {
-                        currentIndex = i;
-                        break;
-                    }
-                }
-
-               
-
-
-                if (stock.kArr.Length - 1 >= currentIndex + 2 && stock.kArr[currentIndex].endPrice > stock.GetAverageSettlePrice(currentIndex, 3, 3)
-                    && stock.kArr[currentIndex + 1].endPrice > stock.GetAverageSettlePrice(currentIndex + 1, 3, 3)
-                    && stock.kArr[currentIndex + 2].endPrice > stock.GetAverageSettlePrice(currentIndex + 2, 3, 3))
-                //&& stock.GetAverageSettlePrice(d2Index, 3, 3) > stock.GetAverageSettlePrice(d2Index - 1, 3, 3)
-                //&& stock.GetAverageSettlePrice(d2Index - 1, 3, 3) > stock.GetAverageSettlePrice(d2Index - 2, 3, 3))
-                {
-                    dr["名称"] = dr["名称"] + "🌞";
-                }
-
+                /*       
+                            stock.kArr = KLine.GetKLine("day", stock.gid, currentDate.AddDays(-10), currentDate.AddDays(2));
+                            int currentIndex = 0;
+                            for (int i = stock.kArr.Length - 1; i >= 0; i--)
+                            {
+                                if (stock.kArr[i].startDateTime == currentDate)
+                                {
+                                    currentIndex = i;
+                                    break;
+                                }
+                            }
+                            if (stock.kArr.Length - 1 >= currentIndex + 2 && stock.kArr[currentIndex].endPrice > stock.GetAverageSettlePrice(currentIndex, 3, 3)
+                                && stock.kArr[currentIndex + 1].endPrice > stock.GetAverageSettlePrice(currentIndex + 1, 3, 3)
+                                && stock.kArr[currentIndex + 2].endPrice > stock.GetAverageSettlePrice(currentIndex + 2, 3, 3)
+                                && stock.GetAverageSettlePrice(currentIndex + 2, 3, 3) > stock.GetAverageSettlePrice(currentIndex + 1, 3, 3)
+                                && stock.GetAverageSettlePrice(currentIndex + 1, 3, 3) > stock.GetAverageSettlePrice(currentIndex, 3, 3) )
+                            {
+                                dr["名称"] = dr["名称"] + "🌞";
+                            }
+            */
 
             }
             rate = Math.Round(((highestPrice - double.Parse(drOri["open"].ToString().Trim()))
@@ -207,6 +207,44 @@
                 + rate.ToString() + "%</font>";
 
             }
+            double settlementPrice = 0;
+            if (drOri["settlement_2_day"].ToString().Equals("0"))
+            {
+                int currentKLineIndex = stock.GetKLineIndexForADay(currentDate);
+                if (currentKLineIndex + 2 <= stock.kArr.Length - 1)
+                {
+                    settlementPrice = stock.kArr[currentKLineIndex + 2].endPrice;
+                }
+                if (currentKLineIndex + 2 < stock.kArr.Length - 1)
+                {
+                    UpdateD2SettlementPrice(stock.gid, currentDate, settlementPrice);
+                }
+            }
+            else
+            {
+                settlementPrice = double.Parse(drOri["settlement_2_day"].ToString());
+            }
+            rate = Math.Round(((settlementPrice - double.Parse(drOri["open"].ToString().Trim()))
+                / double.Parse(drOri["open"].ToString().Trim())) * 100, 2);
+            if (rate == -100)
+            {
+                dr["2日收盘"] = "-";
+            }
+            else
+            {
+                int currentIndex = stock.GetKLineIndexForADay(currentDate);
+                dr["2日收盘"] = Math.Round(rate, 2).ToString() + "%";
+                if (stock.kArr.Length - 1 >= currentIndex + 2 && stock.kArr[currentIndex].endPrice > stock.GetAverageSettlePrice(currentIndex, 3, 3)
+                                && stock.kArr[currentIndex + 1].endPrice > stock.GetAverageSettlePrice(currentIndex + 1, 3, 3)
+                                && stock.kArr[currentIndex + 2].endPrice > stock.GetAverageSettlePrice(currentIndex + 2, 3, 3)
+                                && stock.GetAverageSettlePrice(currentIndex + 2, 3, 3) > stock.GetAverageSettlePrice(currentIndex + 1, 3, 3)
+                                && stock.GetAverageSettlePrice(currentIndex + 1, 3, 3) > stock.GetAverageSettlePrice(currentIndex, 3, 3) 
+                                )
+                {
+                    dr["名称"] = dr["名称"] + "<a title=\"连续3天收盘在3线上\" >🌞</a>";
+                }
+            }
+
             if (drOri["highest_3_day"].ToString().Equals("0"))
             {
                 highestPrice = GetNextNDayHighest(drOri["gid"].ToString().Trim(), currentDate, 3);
@@ -214,9 +252,6 @@
             else
             {
                 highestPrice = double.Parse(drOri["highest_3_day"].ToString().Trim());
-
-
-
             }
             rate = Math.Round(((highestPrice - double.Parse(drOri["open"].ToString().Trim()))
                 / double.Parse(drOri["open"].ToString().Trim())) * 100, 2);
@@ -278,6 +313,9 @@
 
     public static void AddTotal(DataTable dt)
     {
+
+        Regex reg = new Regex(@"\d+\.*\d*");
+
         int red0 = 0;
         int red1 = 0;
         int red2 = 0;
@@ -315,6 +353,11 @@
         int oxStarD4 = 0;
         int oxStarD5 = 0;
 
+        int sunCount = 0;
+        int sunD3 = 0;
+        int sunD4 = 0;
+        int sunD5 = 0;
+
         foreach (DataRow dr in dt.Rows)
         {
             if (dr["今日最高"].ToString().IndexOf("red") > 0)
@@ -329,10 +372,11 @@
                 red4++;
             if (dr["5日最高"].ToString().IndexOf("red") > 0)
                 red5++;
+            /*
             if ((dr["跳空幅度"].ToString().IndexOf("green") >= 0 && dr["今日最高"].ToString().IndexOf("black") >= 0)
                 || (dr["跳空幅度"].ToString().IndexOf("black") >= 0 && dr["今日最高"].ToString().IndexOf("red") >= 0))
                 dr["名称"] = dr["名称"].ToString() + "📈";
-
+                */
             if (dr["名称"].ToString().IndexOf("🌟") >= 0)
             {
                 starCount++;
@@ -393,6 +437,33 @@
                 if (dr["5日最高"].ToString().IndexOf("red") > 0)
                     oxStarD5++;
             }
+
+            if (dr["名称"].ToString().IndexOf("🌞") >= 0)
+            {
+
+                sunCount++;
+                double settlement = GetPercentValue(dr["2日收盘"].ToString()); //double.Parse(Getdr["2日收盘"].ToString()));
+                if (!dr["3日最高"].ToString().Trim().Equals("-"))
+                {
+                    double d3Highest = GetPercentValue(dr["3日最高"].ToString());
+                    if (d3Highest >= settlement + 3)
+                        sunD3++;
+                }
+
+                if (!dr["4日最高"].ToString().Trim().Equals("-"))
+                {
+                    double d4Highest = GetPercentValue(dr["4日最高"].ToString());
+                    if (d4Highest >= settlement + 3)
+                        sunD4++;
+                }
+
+                if (!dr["5日最高"].ToString().Trim().Equals("-"))
+                {
+                    double d5Highest = GetPercentValue(dr["5日最高"].ToString());
+                    if (d5Highest >= settlement + 3)
+                        sunD5++;
+                }
+            }
         }
         DataRow drTotal = dt.NewRow();
         drTotal["代码"] = "";
@@ -407,7 +478,7 @@
         drTotal["5日最高"] = (Math.Round(10000 * (double)red5 / (double)total) / 100).ToString() + "%";
         dt.Rows.Add(drTotal);
 
-
+        /*
         DataRow drCandlePoly = dt.NewRow();
         drCandlePoly["代码"] = "🕯️📈";
         drCandlePoly["名称"] = "";
@@ -420,7 +491,7 @@
         drCandlePoly["4日最高"] = (Math.Round(10000 * (double)candlePolyD4 / (double)candlePolyCount) / 100).ToString() + "%";
         drCandlePoly["5日最高"] = (Math.Round(10000 * (double)candlePolyD5 / (double)candlePolyCount) / 100).ToString() + "%";
         dt.Rows.Add(drCandlePoly);
-
+        */
         DataRow drStar = dt.NewRow();
         drStar["代码"] = "🌟";
         drStar["名称"] = "";
@@ -433,7 +504,7 @@
         drStar["4日最高"] = (Math.Round(10000 * (double)starD4 / (double)starCount) / 100).ToString() + "%";
         drStar["5日最高"] = (Math.Round(10000 * (double)starD5 / (double)starCount) / 100).ToString() + "%";
         dt.Rows.Add(drStar);
-
+        /*
         DataRow drOxCandlePoly = dt.NewRow();
         drOxCandlePoly["代码"] = "🐂🕯️📈";
         drOxCandlePoly["名称"] = "";
@@ -446,7 +517,7 @@
         drOxCandlePoly["4日最高"] = (Math.Round(10000 * (double)d4OxCandlePoly / (double)countOxCandlePoly) / 100).ToString() + "%";
         drOxCandlePoly["5日最高"] = (Math.Round(10000 * (double)d5OxCandlePoly / (double)countOxCandlePoly) / 100).ToString() + "%";
         dt.Rows.Add(drOxCandlePoly);
-
+        */
         DataRow drOxStar = dt.NewRow();
         drOxStar["代码"] = "🐂🌟";
         drOxStar["今开"] = "";
@@ -458,6 +529,19 @@
         drOxStar["4日最高"] = (Math.Round(10000 * (double)oxStarD4 / (double)oxStarCount) / 100).ToString() + "%";
         drOxStar["5日最高"] = (Math.Round(10000 * (double)oxStarD5 / (double)oxStarCount) / 100).ToString() + "%";
         dt.Rows.Add(drOxStar);
+
+        DataRow drSun = dt.NewRow();
+        drSun["代码"] = "🌞";
+        drSun["今开"] = "";
+        drSun["跳空幅度"] = "";
+        drSun["今日最高"] = "";
+        drSun["1日最高"] = "";
+        drSun["2日最高"] = "";
+        drSun["2日收盘"] = "";
+        drSun["3日最高"] = (Math.Round(10000 * (double)sunD3 / (double)sunCount) / 100).ToString() + "%";
+        drSun["4日最高"] = (Math.Round(10000 * (double)sunD4 / (double)sunCount) / 100).ToString() + "%";
+        drSun["5日最高"] = (Math.Round(10000 * (double)sunD5 / (double)sunCount) / 100).ToString() + "%";
+        dt.Rows.Add(drSun);
 
     }
 
@@ -502,6 +586,21 @@
         conn.Dispose();
 
     }
+
+    public static void UpdateD2SettlementPrice(string gid, DateTime currentDate, double price)
+    {
+        string sqlStr = " update suggest_stock set settlement_2_day =  " + price.ToString() + "  where "
+            + "  suggest_date = '" + currentDate.ToShortDateString() + "'  and gid = '" + gid.Trim().Replace("'", "") + "' ";
+        SqlConnection conn = new SqlConnection(Util.conStr);
+        SqlCommand cmd = new SqlCommand(sqlStr, conn);
+        conn.Open();
+        cmd.ExecuteNonQuery();
+        conn.Close();
+        cmd.Dispose();
+        conn.Dispose();
+    }
+
+
 
     public static double Get3DayHighest(string gid, DateTime date)
     {
@@ -573,6 +672,7 @@
         dtSort.Columns.Add("今日最高double", Type.GetType("System.Double"));
         dtSort.Columns.Add("1日最高double", Type.GetType("System.Double"));
         dtSort.Columns.Add("2日最高double", Type.GetType("System.Double"));
+        dtSort.Columns.Add("2日收盘double", Type.GetType("System.Double"));
         dtSort.Columns.Add("3日最高double", Type.GetType("System.Double"));
         dtSort.Columns.Add("4日最高double", Type.GetType("System.Double"));
         dtSort.Columns.Add("5日最高double", Type.GetType("System.Double"));
@@ -587,6 +687,7 @@
             drSort["今日最高double"] = GetPercentValue(drSort["今日最高"].ToString());//double.Parse(drSort["今日最高"].ToString().Replace("%", ""));
             drSort["1日最高double"] = GetPercentValue(drSort["1日最高"].ToString());//double.Parse(drSort["1日最高"].ToString().Replace("%", ""));
             drSort["2日最高double"] = GetPercentValue(drSort["2日最高"].ToString());//double.Parse(drSort["2日最高"].ToString().Replace("%", ""));
+            drSort["2日收盘double"] = GetPercentValue(drSort["2日收盘"].ToString());
             drSort["3日最高double"] = GetPercentValue(drSort["3日最高"].ToString());//double.Parse(drSort["3日最高"].ToString().Replace("%", ""));
             drSort["4日最高double"] = GetPercentValue(drSort["4日最高"].ToString());//double.Parse(drSort["4日最高"].ToString().Replace("%", ""));
             drSort["5日最高double"] = GetPercentValue(drSort["5日最高"].ToString());//double.Parse(drSort["5日最高"].ToString().Replace("%", ""));
@@ -626,7 +727,7 @@
     {
         if (str.Trim().Equals("-"))
             return 0;
-        Match m = Regex.Match(str, @">-*\d+.*\d*%<");
+        Match m = Regex.Match(str, @"-*\d+.*\d*%");
         return double.Parse(m.Value.Replace(">", "").Replace("<", "").Replace("%", ""));
     }
 </script>
@@ -662,6 +763,7 @@
                         <asp:BoundColumn DataField="今日最高" HeaderText="今日最高" SortExpression="今日最高|A-Z"></asp:BoundColumn>
                         <asp:BoundColumn DataField="1日最高" HeaderText="1日最高" SortExpression="1日最高|A-Z"></asp:BoundColumn>
                         <asp:BoundColumn DataField="2日最高" HeaderText="2日最高" SortExpression="2日最高|A-Z"></asp:BoundColumn>
+                        <asp:BoundColumn DataField="2日收盘" HeaderText="2日收盘" SortExpression="2日收盘|A-Z"></asp:BoundColumn>
                         <asp:BoundColumn DataField="3日最高" HeaderText="3日最高" SortExpression="3日最高|A-Z"></asp:BoundColumn>
                         <asp:BoundColumn DataField="4日最高" HeaderText="4日最高" SortExpression="4日最高|A-Z"></asp:BoundColumn>
                         <asp:BoundColumn DataField="5日最高" HeaderText="5日最高" SortExpression="5日最高|A-Z"></asp:BoundColumn>
