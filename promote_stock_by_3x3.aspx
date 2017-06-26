@@ -358,6 +358,11 @@
         int sunD4 = 0;
         int sunD5 = 0;
 
+        int sunOxCount = 0;
+        int sunOxD3 = 0;
+        int sunOxD4 = 0;
+        int sunOxD5 = 0;
+
         foreach (DataRow dr in dt.Rows)
         {
             if (dr["今日最高"].ToString().IndexOf("red") > 0)
@@ -464,6 +469,32 @@
                         sunD5++;
                 }
             }
+
+            if (dr["名称"].ToString().Trim().IndexOf("🐂") >= 0 && dr["名称"].ToString().Trim().IndexOf("🌞") >= 0)
+            {
+                sunOxCount++;
+                double settlement = GetPercentValue(dr["2日收盘"].ToString()); 
+                if (!dr["3日最高"].ToString().Trim().Equals("-"))
+                {
+                    double d3Highest = GetPercentValue(dr["3日最高"].ToString());
+                    if (d3Highest >= settlement + 3)
+                        sunOxD3++;
+                }
+
+                if (!dr["4日最高"].ToString().Trim().Equals("-"))
+                {
+                    double d4Highest = GetPercentValue(dr["4日最高"].ToString());
+                    if (d4Highest >= settlement + 3)
+                        sunOxD4++;
+                }
+
+                if (!dr["5日最高"].ToString().Trim().Equals("-"))
+                {
+                    double d5Highest = GetPercentValue(dr["5日最高"].ToString());
+                    if (d5Highest >= settlement + 3)
+                        sunOxD5++;
+                }
+            }
         }
         DataRow drTotal = dt.NewRow();
         drTotal["代码"] = "";
@@ -542,6 +573,19 @@
         drSun["4日最高"] = (Math.Round(10000 * (double)sunD4 / (double)sunCount) / 100).ToString() + "%";
         drSun["5日最高"] = (Math.Round(10000 * (double)sunD5 / (double)sunCount) / 100).ToString() + "%";
         dt.Rows.Add(drSun);
+
+        DataRow drSunOx = dt.NewRow();
+        drSunOx["代码"] = "🐂🌞";
+        drSunOx["今开"] = "";
+        drSunOx["跳空幅度"] = "";
+        drSunOx["今日最高"] = "";
+        drSunOx["1日最高"] = "";
+        drSunOx["2日最高"] = "";
+        drSunOx["2日收盘"] = "";
+        drSunOx["3日最高"] = (Math.Round(10000 * (double)sunOxD3 / (double)sunOxCount) / 100).ToString() + "%";
+        drSunOx["4日最高"] = (Math.Round(10000 * (double)sunOxD4 / (double)sunOxCount) / 100).ToString() + "%";
+        drSunOx["5日最高"] = (Math.Round(10000 * (double)sunOxD5 / (double)sunOxCount) / 100).ToString() + "%";
+        dt.Rows.Add(drSunOx);
 
     }
 
