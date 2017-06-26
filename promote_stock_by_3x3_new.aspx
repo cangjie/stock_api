@@ -180,7 +180,12 @@
                         break;
                     }
                 }
-                
+
+                if (stock.gid.Equals("sz000581"))
+                {
+                    string aa = "aa";
+                }
+
 
                 if (stock.kArr.Length - 1 >= currentIndex + 2 && stock.kArr[currentIndex].endPrice > stock.GetAverageSettlePrice(currentIndex, 3, 3)
                     && stock.kArr[currentIndex + 1].endPrice > stock.GetAverageSettlePrice(currentIndex + 1, 3, 3)
