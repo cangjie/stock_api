@@ -171,21 +171,22 @@
                 highestPrice = double.Parse(drOri["highest_2_day"].ToString().Trim());
 
                 stock.kArr = KLine.GetKLine("day", stock.gid, currentDate.AddDays(-10), currentDate.AddDays(2));
-                int d2Index = 0;
+                int currentIndex = 0;
                 for (int i = stock.kArr.Length - 1; i >= 0; i--)
                 {
                     if (stock.kArr[i].startDateTime == currentDate)
                     {
-                        d2Index = i;
+                        currentIndex = i;
                         break;
                     }
                 }
+                
 
-                if (d2Index> 1 && stock.kArr[d2Index].endPrice > stock.GetAverageSettlePrice(d2Index, 3, 3)
-                    && stock.kArr[d2Index - 1].endPrice > stock.GetAverageSettlePrice(d2Index - 1, 3, 3)
-                    && stock.kArr[d2Index - 2].endPrice > stock.GetAverageSettlePrice(d2Index - 2, 3, 3))
-                    //&& stock.GetAverageSettlePrice(d2Index, 3, 3) > stock.GetAverageSettlePrice(d2Index - 1, 3, 3)
-                    //&& stock.GetAverageSettlePrice(d2Index - 1, 3, 3) > stock.GetAverageSettlePrice(d2Index - 2, 3, 3))
+                if (stock.kArr.Length - 1 >= currentIndex + 2 && stock.kArr[currentIndex].endPrice > stock.GetAverageSettlePrice(currentIndex, 3, 3)
+                    && stock.kArr[currentIndex + 1].endPrice > stock.GetAverageSettlePrice(currentIndex + 1, 3, 3)
+                    && stock.kArr[currentIndex + 2].endPrice > stock.GetAverageSettlePrice(currentIndex + 2, 3, 3))
+                //&& stock.GetAverageSettlePrice(d2Index, 3, 3) > stock.GetAverageSettlePrice(d2Index - 1, 3, 3)
+                //&& stock.GetAverageSettlePrice(d2Index - 1, 3, 3) > stock.GetAverageSettlePrice(d2Index - 2, 3, 3))
                 {
                     dr["名称"] = dr["名称"] + "🌞";
                 }
