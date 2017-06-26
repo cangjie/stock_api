@@ -140,7 +140,7 @@
 
                     )
                     && (rate > 1) && double.Parse(drOri["last_day_over_flow"].ToString()) > 0)
-                dr["名称"] = dr["名称"] + "🌟";
+                dr["名称"] = dr["名称"] + "<a alt=\"两日连涨，跳空和涨幅在特定范围内，当日收阳\" >🌟</a>";
 
             if (drOri["highest_1_day"].ToString().Equals("0"))
             {
@@ -237,10 +237,11 @@
                 if (stock.kArr.Length - 1 >= currentIndex + 2 && stock.kArr[currentIndex].endPrice > stock.GetAverageSettlePrice(currentIndex, 3, 3)
                                 && stock.kArr[currentIndex + 1].endPrice > stock.GetAverageSettlePrice(currentIndex + 1, 3, 3)
                                 && stock.kArr[currentIndex + 2].endPrice > stock.GetAverageSettlePrice(currentIndex + 2, 3, 3)
-                                && stock.GetAverageSettlePrice(currentIndex + 2, 3, 3) > stock.GetAverageSettlePrice(currentIndex + 1, 3, 3)
-                                && stock.GetAverageSettlePrice(currentIndex + 1, 3, 3) > stock.GetAverageSettlePrice(currentIndex, 3, 3) )
+                                //&& stock.GetAverageSettlePrice(currentIndex + 2, 3, 3) > stock.GetAverageSettlePrice(currentIndex + 1, 3, 3)
+                                //&& stock.GetAverageSettlePrice(currentIndex + 1, 3, 3) > stock.GetAverageSettlePrice(currentIndex, 3, 3) 
+                                )
                 {
-                    dr["名称"] = dr["名称"] + "🌞";
+                    dr["名称"] = dr["名称"] + "<a alt=\"连续3天收盘在3线上\" >🌞</a>";
                 }
             }
 
@@ -371,10 +372,11 @@
                 red4++;
             if (dr["5日最高"].ToString().IndexOf("red") > 0)
                 red5++;
+            /*
             if ((dr["跳空幅度"].ToString().IndexOf("green") >= 0 && dr["今日最高"].ToString().IndexOf("black") >= 0)
                 || (dr["跳空幅度"].ToString().IndexOf("black") >= 0 && dr["今日最高"].ToString().IndexOf("red") >= 0))
                 dr["名称"] = dr["名称"].ToString() + "📈";
-
+                */
             if (dr["名称"].ToString().IndexOf("🌟") >= 0)
             {
                 starCount++;
@@ -440,26 +442,26 @@
             {
 
                 sunCount++;
-                double settlement = double.Parse(reg.Match(dr["2日收盘"].ToString()).Value);
+                double settlement = GetPercentValue(dr["2日收盘"].ToString()); //double.Parse(Getdr["2日收盘"].ToString()));
                 if (!dr["3日最高"].ToString().Trim().Equals("-"))
                 {
-                    double d3Highest = double.Parse(reg.Match(dr["3日最高"].ToString()).Value);
-                    if (d3Highest > settlement)
-                    sunD3++;
+                    double d3Highest = GetPercentValue(dr["3日最高"].ToString());
+                    if (d3Highest >= settlement + 3)
+                        sunD3++;
                 }
 
                 if (!dr["4日最高"].ToString().Trim().Equals("-"))
                 {
-                    double d4Highest = double.Parse(reg.Match(dr["4日最高"].ToString()).Value);
-                    if (d4Highest > settlement)
-                    sunD4++;
+                    double d4Highest = GetPercentValue(dr["4日最高"].ToString());
+                    if (d4Highest >= settlement + 3)
+                        sunD4++;
                 }
 
                 if (!dr["5日最高"].ToString().Trim().Equals("-"))
                 {
-                    double d5Highest = double.Parse(reg.Match(dr["5日最高"].ToString()).Value);
-                    if (d5Highest > settlement)
-                    sunD5++;
+                    double d5Highest = GetPercentValue(dr["5日最高"].ToString());
+                    if (d5Highest >= settlement + 3)
+                        sunD5++;
                 }
             }
         }
@@ -476,7 +478,7 @@
         drTotal["5日最高"] = (Math.Round(10000 * (double)red5 / (double)total) / 100).ToString() + "%";
         dt.Rows.Add(drTotal);
 
-
+        /*
         DataRow drCandlePoly = dt.NewRow();
         drCandlePoly["代码"] = "🕯️📈";
         drCandlePoly["名称"] = "";
@@ -489,7 +491,7 @@
         drCandlePoly["4日最高"] = (Math.Round(10000 * (double)candlePolyD4 / (double)candlePolyCount) / 100).ToString() + "%";
         drCandlePoly["5日最高"] = (Math.Round(10000 * (double)candlePolyD5 / (double)candlePolyCount) / 100).ToString() + "%";
         dt.Rows.Add(drCandlePoly);
-
+        */
         DataRow drStar = dt.NewRow();
         drStar["代码"] = "🌟";
         drStar["名称"] = "";
@@ -502,7 +504,7 @@
         drStar["4日最高"] = (Math.Round(10000 * (double)starD4 / (double)starCount) / 100).ToString() + "%";
         drStar["5日最高"] = (Math.Round(10000 * (double)starD5 / (double)starCount) / 100).ToString() + "%";
         dt.Rows.Add(drStar);
-
+        /*
         DataRow drOxCandlePoly = dt.NewRow();
         drOxCandlePoly["代码"] = "🐂🕯️📈";
         drOxCandlePoly["名称"] = "";
@@ -515,7 +517,7 @@
         drOxCandlePoly["4日最高"] = (Math.Round(10000 * (double)d4OxCandlePoly / (double)countOxCandlePoly) / 100).ToString() + "%";
         drOxCandlePoly["5日最高"] = (Math.Round(10000 * (double)d5OxCandlePoly / (double)countOxCandlePoly) / 100).ToString() + "%";
         dt.Rows.Add(drOxCandlePoly);
-
+        */
         DataRow drOxStar = dt.NewRow();
         drOxStar["代码"] = "🐂🌟";
         drOxStar["今开"] = "";
@@ -670,6 +672,7 @@
         dtSort.Columns.Add("今日最高double", Type.GetType("System.Double"));
         dtSort.Columns.Add("1日最高double", Type.GetType("System.Double"));
         dtSort.Columns.Add("2日最高double", Type.GetType("System.Double"));
+        dtSort.Columns.Add("2日收盘double", Type.GetType("System.Double"));
         dtSort.Columns.Add("3日最高double", Type.GetType("System.Double"));
         dtSort.Columns.Add("4日最高double", Type.GetType("System.Double"));
         dtSort.Columns.Add("5日最高double", Type.GetType("System.Double"));
@@ -684,6 +687,7 @@
             drSort["今日最高double"] = GetPercentValue(drSort["今日最高"].ToString());//double.Parse(drSort["今日最高"].ToString().Replace("%", ""));
             drSort["1日最高double"] = GetPercentValue(drSort["1日最高"].ToString());//double.Parse(drSort["1日最高"].ToString().Replace("%", ""));
             drSort["2日最高double"] = GetPercentValue(drSort["2日最高"].ToString());//double.Parse(drSort["2日最高"].ToString().Replace("%", ""));
+            drSort["2日收盘double"] = GetPercentValue(drSort["2日收盘"].ToString());
             drSort["3日最高double"] = GetPercentValue(drSort["3日最高"].ToString());//double.Parse(drSort["3日最高"].ToString().Replace("%", ""));
             drSort["4日最高double"] = GetPercentValue(drSort["4日最高"].ToString());//double.Parse(drSort["4日最高"].ToString().Replace("%", ""));
             drSort["5日最高double"] = GetPercentValue(drSort["5日最高"].ToString());//double.Parse(drSort["5日最高"].ToString().Replace("%", ""));
@@ -723,7 +727,7 @@
     {
         if (str.Trim().Equals("-"))
             return 0;
-        Match m = Regex.Match(str, @">-*\d+.*\d*%<");
+        Match m = Regex.Match(str, @"-*\d+.*\d*%");
         return double.Parse(m.Value.Replace(">", "").Replace("<", "").Replace("%", ""));
     }
 </script>
