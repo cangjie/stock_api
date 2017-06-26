@@ -140,7 +140,7 @@
 
                     )
                     && (rate > 1) && double.Parse(drOri["last_day_over_flow"].ToString()) > 0)
-                dr["名称"] = dr["名称"] + "<a alt=\"两日连涨，跳空和涨幅在特定范围内，当日收阳\" >🌟</a>";
+                dr["名称"] = dr["名称"] + "<a title=\"两日连涨，跳空和涨幅在特定范围内，当日收阳\" >🌟</a>";
 
             if (drOri["highest_1_day"].ToString().Equals("0"))
             {
@@ -241,7 +241,7 @@
                                 //&& stock.GetAverageSettlePrice(currentIndex + 1, 3, 3) > stock.GetAverageSettlePrice(currentIndex, 3, 3) 
                                 )
                 {
-                    dr["名称"] = dr["名称"] + "<a alt=\"连续3天收盘在3线上\" >🌞</a>";
+                    dr["名称"] = dr["名称"] + "<a title=\"连续3天收盘在3线上\" >🌞</a>";
                 }
             }
 
