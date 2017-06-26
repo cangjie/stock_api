@@ -42,6 +42,20 @@ public class Stock
         return sum / itemsCount;
     }
 
+    public int GetKLineIndexForADay(DateTime currentDate)
+    {
+        int ret = -1;
+        for (int i = kArr.Length - 1; i >= 0; i--)
+        {
+            if (kArr[i].startDateTime == currentDate)
+            {
+                ret = i;
+                break;
+            }
+        }
+        return ret;
+    }
+
     public int GetItemIndex(DateTime currentDate)
     {
         int k = -1;
