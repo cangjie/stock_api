@@ -15,6 +15,8 @@ public class Stock
 
     public DataRow drLastTimeline;
 
+    public double shakeRate = 1.5;
+
     public Stock()
     {
         //
@@ -228,5 +230,55 @@ public class Stock
             else
                 return 0;
         }
+    }
+
+    
+
+
+    public bool IsAtBuyPoint
+    {
+        get
+        {
+            bool ret = false;
+            if (drLastTimeline != null)
+            {
+                if (double.Parse(drLastTimeline["high"].ToString()) * (1 - shakeRate) > double.Parse(drLastTimeline["trade"].ToString()))
+                    ret = true;
+            }
+            return ret;
+            /*
+            bool ret = false;
+            KLine lastKLine = kArr[kArr.Length - 1];
+            if (DateTime.Parse(DateTime.Now.ToShortDateString()) == lastKLine.startDateTime)
+            {
+                if (lastKLine.endPrice < lastKLine.highestPrice * (1 - shakeRate))
+                    ret = true;
+            }
+            return ret;
+            */
+        }
+    }
+
+    public bool IsAtSellPoint
+    {
+        get
+        {
+            bool ret = false;
+            if (drLastTimeline != null)
+            {
+                if (double.Parse(drLastTimeline["low"].ToString()) * (1 + shakeRate) < double.Parse(drLastTimeline["trade"].ToString()))
+                    ret = true;
+            }
+            /*
+            KLine lastKLine = kArr[kArr.Length - 1];
+            if (DateTime.Parse(DateTime.Now.ToShortDateString()) == lastKLine.startDateTime)
+            {
+                if (lastKLine.endPrice > lastKLine.lowestPrice * (1 + shakeRate))
+                    ret = true;
+            }
+            */
+            return ret;
+        }
+
     }
 }

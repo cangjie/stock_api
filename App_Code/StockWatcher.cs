@@ -34,6 +34,7 @@ public class StockWatcher
                 {
                     Watch();
                     WatchEachStock();
+                    WatchWave();
                 }
                 catch
                 {
@@ -46,6 +47,9 @@ public class StockWatcher
 
     public static void WatchEachStock()
     {
+        if ((DateTime.Now.Hour < 9 || DateTime.Now.Hour >= 15) 
+            && Util.IsTransacDay(DateTime.Parse(DateTime.Now.ToShortDateString())))
+            return;
         DataTable dt = DBHelper.GetDataTable(" select [name]  from dbo.sysobjects where OBJECTPROPERTY(id, N'IsUserTable') = 1 and name like '%timeline'");
         foreach (DataRow dr in dt.Rows)
         {
@@ -64,6 +68,37 @@ public class StockWatcher
             }
 
 
+        }
+    }
+
+    public static void WatchWave()
+    {
+        DataTable dt = DBHelper.GetDataTable(" select gid from stock_wave_attention ");
+        foreach (DataRow dr in dt.Rows)
+        {
+            Stock s = new Stock(dr[0].ToString());
+            if (s.IsAtBuyPoint)
+            {
+                string name = s.Name;
+                string message = s.gid + "[" + name + "]" + " 低价：" + s.drLastTimeline["trade"].ToString();
+                if (AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()), s.gid, "wave_low", name, message))
+                {
+                    SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", message.Trim());
+                    //SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", message.Trim());
+                    SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", message.Trim());
+                }
+            }
+            if (s.IsAtSellPoint)
+            {
+                string name = s.Name;
+                string message = s.gid + "[" + name + "]" + " 高价：" + s.drLastTimeline["trade"].ToString();
+                if (AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()), s.gid, "wave_high", name, message))
+                {
+                    SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", message.Trim());
+                    //SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", message.Trim());
+                    SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", message.Trim());
+                }
+            }
         }
     }
 

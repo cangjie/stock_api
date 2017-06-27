@@ -31,8 +31,15 @@
 
         foreach (DataRow drOri in dtOri.Rows)
         {
-            int num = int.Parse(dt.Rows[int.Parse(drOri["振幅"].ToString())]["天数"].ToString());
-            dt.Rows[int.Parse(drOri["振幅"].ToString())]["天数"] = num+1;
+            try
+            {
+                int num = int.Parse(dt.Rows[int.Parse(drOri["振幅"].ToString())]["天数"].ToString());
+                dt.Rows[int.Parse(drOri["振幅"].ToString())]["天数"] = num + 1;
+            }
+            catch
+            {
+
+            }
         }
         return dt;
     }
@@ -48,8 +55,8 @@
         dt.Columns.Add("最低涨幅");
         dt.Columns.Add("振幅");
 
-        Stock s = new Stock(Util.GetSafeRequestValue(Request, "gid", "sh600031"));
-        s.kArr = KLine.GetKLine("day", s.gid, DateTime.Parse(Util.GetSafeRequestValue(Request, "start", "2017-5-1")), 
+        Stock s = new Stock(Util.GetSafeRequestValue(Request, "gid", "sh601111"));
+        s.kArr = KLine.GetKLine("day", s.gid, DateTime.Parse(Util.GetSafeRequestValue(Request, "start", "2017-1-1")),
             DateTime.Parse(DateTime.Now.ToShortDateString()));
         s.ComputeIncreasement();
 
