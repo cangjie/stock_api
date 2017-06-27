@@ -30,6 +30,21 @@ public class Stock
             drLastTimeline = dt.Rows[0];
     }
 
+    public string Name
+    {
+        get
+        {
+            string ret = "";
+            DataTable dt = DBHelper.GetDataTable(" select top 1 [name] from " + gid.Trim() + "_timeline ");
+            if (dt.Rows.Count > 0)
+            {
+                ret = dt.Rows[0][0].ToString().Trim();
+            }
+            dt.Dispose();
+            return ret;
+        }
+    }
+
     public double GetAverageSettlePrice(int index, int itemsCount, int displacement)
     {
         if (index - displacement - itemsCount + 1 < 0)
@@ -68,6 +83,31 @@ public class Stock
             }
         }
         return k;
+    }
+
+    public bool IsOver3X3(DateTime currentDate)
+    {
+        bool ret = false;
+        int dateIndex = GetItemIndex(currentDate);
+        if (dateIndex < 5)
+            return false;
+        double open = kArr[dateIndex].startPrice;
+        double end = kArr[dateIndex].endPrice;
+        double settle = 0;
+        try
+        {
+            settle = kArr[dateIndex - 1].endPrice;
+        }
+        catch
+        {
+
+        }
+        double avg3X3 = GetAverageSettlePrice(dateIndex, 3, 3);
+        if (settle > 0 && open < avg3X3 && end > avg3X3 && ((end - open) / open) >= 0.5 && ((end - settle) / settle) <= 0.9)
+        {
+            ret = true;
+        }
+        return ret;
     }
 
     public bool IsCross3X3(DateTime currentDate)

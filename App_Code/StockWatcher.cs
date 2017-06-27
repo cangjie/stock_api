@@ -33,6 +33,7 @@ public class StockWatcher
                 try
                 {
                     Watch();
+                    WatchEachStock();
                 }
                 catch
                 {
@@ -40,6 +41,29 @@ public class StockWatcher
                 }
             }
             Thread.Sleep(1000);
+        }
+    }
+
+    public static void WatchEachStock()
+    {
+        DataTable dt = DBHelper.GetDataTable(" select [name]  from dbo.sysobjects where OBJECTPROPERTY(id, N'IsUserTable') = 1 and name like '%timeline'");
+        foreach (DataRow dr in dt.Rows)
+        {
+            Stock s = new Stock(dr[0].ToString().Replace("_timeline", ""));
+            s.kArr = KLine.GetKLine("day", s.gid, DateTime.Now.AddDays(-50), DateTime.Now);
+            if (s.IsOver3X3(DateTime.Parse(DateTime.Now.ToShortDateString())))
+            {
+                string stockName = s.Name;
+                string message = s.gid.Trim() + "[" + stockName.Trim() + "]已经突破3线，并且当日涨幅超过5%";
+                if (AddAlert(DateTime.Now, s.gid, "over3line", s.Name.Trim(), message.Trim()))
+                {
+                    SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", message.Trim());
+                    //SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", message.Trim());
+                    SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", message.Trim());
+                }
+            }
+
+
         }
     }
 
