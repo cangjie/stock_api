@@ -139,8 +139,9 @@
                     (jumpRate < 0.004 || (jumpRate > 0.01 && jumpRate < 0.07)
 
                     )
-                    && (rate > 1) && double.Parse(drOri["last_day_over_flow"].ToString()) > 0)
-                dr["名称"] = dr["名称"] + "<a title=\"两日连涨，跳空和涨幅在特定范围内，当日收阳\" >🌟</a>";
+                    && (rate > 1) && double.Parse(drOri["last_day_over_flow"].ToString()) > 0
+                    && ((highestPrice - currentPrice) / currentPrice) <= 0.01 )
+                dr["名称"] = dr["名称"] + "<a title=\"两日连涨，跳空和涨幅在特定范围内，当日收阳，并且最高价和收盘价差在1%以内\" >🌟</a>";
 
             if (drOri["highest_1_day"].ToString().Equals("0"))
             {
