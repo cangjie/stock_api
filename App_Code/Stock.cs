@@ -240,7 +240,8 @@ public class Stock
         get
         {
             bool ret = false;
-            if (drLastTimeline != null)
+            if (drLastTimeline != null
+                && DateTime.Parse(drLastTimeline["ticktime"].ToString()) >= DateTime.Parse(DateTime.Now.ToShortDateString() + " 9:30"))
             {
                 if (double.Parse(drLastTimeline["high"].ToString()) * (1 - shakeRate) > double.Parse(drLastTimeline["trade"].ToString()))
                     ret = true;
@@ -264,7 +265,8 @@ public class Stock
         get
         {
             bool ret = false;
-            if (drLastTimeline != null)
+            if (drLastTimeline != null 
+                && DateTime.Parse(drLastTimeline["ticktime"].ToString()) >= DateTime.Parse(DateTime.Now.ToShortDateString() + " 9:30" ) )
             {
                 if (double.Parse(drLastTimeline["low"].ToString()) * (1 + shakeRate) < double.Parse(drLastTimeline["trade"].ToString()))
                     ret = true;
