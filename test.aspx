@@ -7,7 +7,8 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", "aaa");
+        StockWatcher.AddAlert(DateTime.Now, "sh600031", "top_f3", "三一重工", "balabala");
+        //StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", "aaa");
         //KLine[] kArr = KLine.GetKLineDayFromSohu("sh600031", DateTime.Parse("2017-5-25"), DateTime.Parse("2017-6-1"));
         //Util.RefreshSuggestStockForToday();
         //Util.RefreshSuggestStock(DateTime.Parse("2017-6-13"));
