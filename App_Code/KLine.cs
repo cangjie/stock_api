@@ -21,6 +21,12 @@ public class KLine
     public double volume = 0;
     public double change = 0;
 
+    public double increaseRateOpen = 0;
+    public double increaseRateHighest = 0;
+    public double increaseRateLowest = 0;
+    public double increaseRateShake = 0;
+    public double increaseRateSettle = 0;
+
     public KLine()
     {
         //

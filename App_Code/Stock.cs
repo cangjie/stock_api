@@ -45,6 +45,18 @@ public class Stock
         }
     }
 
+    public void ComputeIncreasement()
+    {
+        for (int i = 1; i < kArr.Length; i++)
+        {
+            kArr[i].increaseRateOpen = (kArr[i].startPrice - kArr[i - 1].endPrice) / kArr[i - 1].endPrice;
+            kArr[i].increaseRateHighest = (kArr[i].highestPrice - kArr[i - 1].endPrice) / kArr[i - 1].endPrice;
+            kArr[i].increaseRateLowest = (kArr[i].lowestPrice - kArr[i - 1].endPrice) / kArr[i - 1].endPrice;
+            kArr[i].increaseRateSettle = (kArr[i].endPrice - kArr[i - 1].endPrice) / kArr[i - 1].endPrice;
+            kArr[i].increaseRateShake = Math.Abs(kArr[i].increaseRateHighest - kArr[i].increaseRateLowest);
+        }
+    }
+
     public double GetAverageSettlePrice(int index, int itemsCount, int displacement)
     {
         if (index - displacement - itemsCount + 1 < 0)
