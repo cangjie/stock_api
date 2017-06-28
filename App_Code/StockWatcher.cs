@@ -69,9 +69,11 @@ public class StockWatcher
                 string message = "[" + gid + "]" + name + " was marked star just now.";
                 if (AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()), gid, "star", name, message))
                 {
-                    SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", message.Trim());
+                    SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", gid, name, s.LastTrade, "star");
+                    SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", gid, name, s.LastTrade, "star");
+                    //SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", message.Trim());
                     //SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", message.Trim());
-                    SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", message.Trim());
+                    //SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", message.Trim());
                 }
             }
         }
@@ -79,6 +81,42 @@ public class StockWatcher
         {
 
         }
+    }
+
+    public static void SendAlertMessage(string openId, string gid, string name, double price, string type)
+    {
+        string templateId = "K2ef8z8NubKY7pJsH-zunAilcE5RT2nTk74-VPqd3d0";
+        string json = "";
+        string first = "";
+        string keyword1 = "";
+        string keyword2 = "";
+        string keyword3 = "";
+        //string url = "http://stocks.sina.cn/" + gid.Substring(0,2) + "/levle2?code=" + gid+"&vt=4";
+        string url =   "http://stocks.sina.cn/sh/level2?code=" + gid + "&vt=4";
+        switch (type)
+        {
+            case "star":
+                templateId = "oioxM12STSFIEroKSVhzrq1pLbsFKSNEJxgsQcyoQpM";
+                first = "[" + gid.Trim() + "]" + name.Trim();
+                keyword1 = gid;
+                keyword2 = name;
+                keyword3 = price.ToString();
+                break;
+            default:
+                first = type.Replace("top", "压力位").Replace("bottom", "支撑位").Replace("wave", "波段").Replace("low", "低位").Replace("high", "高位").Trim();
+                keyword1 = "[" + gid.Trim() + "]" + name.Trim();
+                keyword2 = price.ToString();
+                keyword3 = DateTime.Now.ToString();
+                break;
+        }
+        json = "{\"touser\":\"" + openId + "\",\"template_id\":\"" + templateId + "\",\"url\":\"" + url + "\", \"topcolor\":\"#FF0000\", \"data\":{" 
+            + "\"first\":{\"value\":\"" + first + "\", \"color\":\"#000000\"}," 
+            + "\"keyword1\": {\"value\":\"" + keyword1 + "\", \"color\":\"#000000\"},"
+            + "\"keyword2\": {\"value\":\"" + keyword2 + "\", \"color\":\"#000000\"},"
+            + "\"keyword3\": {\"value\":\"" + keyword3 + "\", \"color\":\"#000000\"}"
+            + "}}";
+        Util.GetWebContent("http://weixin.luqinwenda.com/api/send_template_message.aspx", "POST", json, "application/raw");
+        
     }
 
     public static void WatchEachStock()
@@ -119,9 +157,11 @@ public class StockWatcher
                 string message = s.gid + "[" + name + "]" + " 低价：" + s.drLastTimeline["trade"].ToString();
                 if (AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()), s.gid, "wave_low", name, message))
                 {
-                    SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", message.Trim());
+                    SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", s.gid, name, s.LastTrade, "wave_low");
+                    SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", s.gid, name, s.LastTrade, "wave_low");
+                    //SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", message.Trim());
                     //SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", message.Trim());
-                    SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", message.Trim());
+                    //SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", message.Trim());
                 }
             }
             if (s.IsAtSellPoint)
@@ -130,9 +170,11 @@ public class StockWatcher
                 string message = s.gid + "[" + name + "]" + " 高价：" + s.drLastTimeline["trade"].ToString();
                 if (AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()), s.gid, "wave_high", name, message))
                 {
-                    SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", message.Trim());
+                    SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", s.gid, name, s.LastTrade, "wave_high");
+                    SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", s.gid, name, s.LastTrade, "wave_high");
+                    //SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", message.Trim());
                     //SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", message.Trim());
-                    SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", message.Trim());
+                    //SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", message.Trim());
                 }
             }
         }
@@ -177,9 +219,14 @@ public class StockWatcher
                     {
                         if (AddAlert(DateTime.Now, s.gid, type, dr["name"].ToString().Trim(), message))
                         {
-                            SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", message.Trim());
-                            SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", message.Trim());
-                            SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", message.Trim());
+                            string name = s.Name.Trim();
+                            SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", s.gid, name, s.LastTrade, type);
+                            SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", s.gid, name, s.LastTrade, type);
+                            SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", s.gid, name, s.LastTrade, type);
+
+                            //SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", message.Trim());
+                            //SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", message.Trim());
+                            //SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", message.Trim());
                         }
                     }
 

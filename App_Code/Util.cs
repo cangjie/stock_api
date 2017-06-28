@@ -49,6 +49,8 @@ public class Util
         return GetWebContent(url, "GET", "", "html/text");
     }
 
+    
+
     public static string GetSimpleJsonValueByKey(string jsonStr, string key)
     {
         JavaScriptSerializer serializer = new JavaScriptSerializer();
