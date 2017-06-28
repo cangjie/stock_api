@@ -131,7 +131,13 @@
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
             stock.kArr = KLine.GetKLine("day", stock.gid, currentDate.AddDays(-30), DateTime.Parse(DateTime.Now.ToShortDateString()));
 
-            double currentPrice = stock.LastTrade;
+            double currentPrice = 0;
+            if (DateTime.Parse(DateTime.Now.ToShortDateString()) == currentDate)
+                currentPrice = stock.LastTrade;
+            else
+            {
+                currentPrice = stock.kArr[stock.GetKLineIndexForADay(currentDate)].endPrice;
+            }
 
             if (
 
@@ -474,7 +480,7 @@
             if (dr["名称"].ToString().Trim().IndexOf("🐂") >= 0 && dr["名称"].ToString().Trim().IndexOf("🌞") >= 0)
             {
                 sunOxCount++;
-                double settlement = GetPercentValue(dr["2日收盘"].ToString()); 
+                double settlement = GetPercentValue(dr["2日收盘"].ToString());
                 if (!dr["3日最高"].ToString().Trim().Equals("-"))
                 {
                     double d3Highest = GetPercentValue(dr["3日最高"].ToString());

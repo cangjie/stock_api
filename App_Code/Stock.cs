@@ -15,7 +15,7 @@ public class Stock
 
     public DataRow drLastTimeline;
 
-    public double shakeRate = 1.5;
+    public double shakeRate = 0.02;
 
     public Stock()
     {
