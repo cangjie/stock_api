@@ -6,6 +6,7 @@ using System.Data;
 using System.Net;
 using System.IO;
 using System.Threading;
+using System.Text.RegularExpressions;
 /// <summary>
 /// Summary description for StockWatcher
 /// </summary>
@@ -32,9 +33,11 @@ public class StockWatcher
             {
                 try
                 {
+                    WatchStar();
                     Watch();
                     WatchEachStock();
                     WatchWave();
+                    
                 }
                 catch
                 {
@@ -42,6 +45,39 @@ public class StockWatcher
                 }
             }
             Thread.Sleep(1000);
+        }
+    }
+
+    public static void WatchStar()
+    {
+        try
+        {
+
+
+            string content = Util.GetWebContent("http://stock.tuyaa.com/promote_stock_by_3x3_new.aspx");
+            Regex reg = new Regex("alt=\"\\d\\d\\d\\d\\d\\d\"");
+            MatchCollection mc = reg.Matches(content);
+            foreach (Match m in mc)
+            {
+                string gid = m.Value.Trim().Replace("alt=\"", "").Replace("\"", "");
+                if (gid.StartsWith("600"))
+                    gid = "sh" + gid;
+                else
+                    gid = "sz" + gid;
+                Stock s = new Stock(gid);
+                string name = s.Name.Trim();
+                string message = "[" + gid + "]" + name + " was marked star just now.";
+                if (AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()), gid, "star", name, message))
+                {
+                    SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", message.Trim());
+                    //SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", message.Trim());
+                    SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", message.Trim());
+                }
+            }
+        }
+        catch
+        {
+
         }
     }
 
@@ -104,52 +140,61 @@ public class StockWatcher
 
     public static void Watch()
     {
-        DataTable dt = DBHelper.GetDataTable(" select * from stock_alert ");
-        foreach (DataRow dr in dt.Rows)
+        try
         {
-            try
+
+
+            DataTable dt = DBHelper.GetDataTable(" select * from stock_alert ");
+            foreach (DataRow dr in dt.Rows)
             {
-                Stock s = new Stock(dr["gid"].ToString().Trim().StartsWith("6") ? "sh" + dr["gid"].ToString().Trim() : "sz" + dr["gid"].ToString().Trim());
-                string message = "";
-                string type = "";
-                if (Math.Round(s.LastTrade, 2) == Math.Round(double.Parse(dr["top_f3"].ToString()), 2))
+                try
                 {
-                    type = "top_f3";
-                    message = s.gid + dr["name"].ToString() + " 现价：" + Math.Round(s.LastTrade, 2).ToString() + " 已经达到压力F3";
-                    //SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", message);
-                }
-                if (Math.Round(s.LastTrade, 2) == Math.Round(double.Parse(dr["top_f5"].ToString()), 2))
-                {
-                    type = "top_f5";
-                    message = s.gid + dr["name"].ToString() + " 现价：" + Math.Round(s.LastTrade, 2).ToString() + " 已经达到压力F5";
-                }
-                if (Math.Round(s.LastTrade, 2) == Math.Round(double.Parse(dr["bottom_f3"].ToString()), 2))
-                {
-                    type = "bottom_f3";
-                    message = s.gid + dr["name"].ToString() + " 现价：" + Math.Round(s.LastTrade, 2).ToString() + " 已经达到支撑F3";
-                }
-                if (Math.Round(s.LastTrade, 2) == Math.Round(double.Parse(dr["bottom_f5"].ToString()), 2))
-                {
-                    type = "bottom_f5";
-                    message = s.gid + dr["name"].ToString() + " 现价：" + Math.Round(s.LastTrade, 2).ToString() + " 已经达到支撑F5";
-                }
-                if (!message.Trim().Equals(""))
-                {
-                    if (AddAlert(DateTime.Now, s.gid, type, dr["name"].ToString().Trim(), message))
+                    Stock s = new Stock(dr["gid"].ToString().Trim().StartsWith("6") ? "sh" + dr["gid"].ToString().Trim() : "sz" + dr["gid"].ToString().Trim());
+                    string message = "";
+                    string type = "";
+                    if (Math.Round(s.LastTrade, 2) == Math.Round(double.Parse(dr["top_f3"].ToString()), 2))
                     {
-                        SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", message.Trim());
-                        SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", message.Trim());
-                        SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", message.Trim());
+                        type = "top_f3";
+                        message = s.gid + dr["name"].ToString() + " 现价：" + Math.Round(s.LastTrade, 2).ToString() + " 已经达到压力F3";
+                        //SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", message);
                     }
+                    if (Math.Round(s.LastTrade, 2) == Math.Round(double.Parse(dr["top_f5"].ToString()), 2))
+                    {
+                        type = "top_f5";
+                        message = s.gid + dr["name"].ToString() + " 现价：" + Math.Round(s.LastTrade, 2).ToString() + " 已经达到压力F5";
+                    }
+                    if (Math.Round(s.LastTrade, 2) == Math.Round(double.Parse(dr["bottom_f3"].ToString()), 2))
+                    {
+                        type = "bottom_f3";
+                        message = s.gid + dr["name"].ToString() + " 现价：" + Math.Round(s.LastTrade, 2).ToString() + " 已经达到支撑F3";
+                    }
+                    if (Math.Round(s.LastTrade, 2) == Math.Round(double.Parse(dr["bottom_f5"].ToString()), 2))
+                    {
+                        type = "bottom_f5";
+                        message = s.gid + dr["name"].ToString() + " 现价：" + Math.Round(s.LastTrade, 2).ToString() + " 已经达到支撑F5";
+                    }
+                    if (!message.Trim().Equals(""))
+                    {
+                        if (AddAlert(DateTime.Now, s.gid, type, dr["name"].ToString().Trim(), message))
+                        {
+                            SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", message.Trim());
+                            SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", message.Trim());
+                            SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", message.Trim());
+                        }
+                    }
+
+                }
+                catch
+                {
+
                 }
 
             }
-            catch
-            {
+        }
+        catch
+        {
 
-            }
-            
-        }  
+        } 
     }
 
     public static bool AddAlert(DateTime alertDate, string gid, string type, string name, string message)
