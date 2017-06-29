@@ -31,7 +31,7 @@
         dt.Columns.Add("总计");
 
         DataTable dtOri = DBHelper.GetDataTable(" select * from volume_increase_log where (price_end - price_start)/price_start > 0.0075 and   volume_increase_time > '" + currentDate.ToShortDateString()
-            + "' and volume_increase_time < '" + currentDate.AddDays(1).ToShortDateString() + "' order by volume_increase_time ,  (price_end - price_start)/ price_start desc ");
+            + "' and volume_increase_time < '" + currentDate.AddDays(1).ToShortDateString() + "' order by volume_increase_time desc ,  (price_end - price_start)/ price_start desc ");
 
         int[] redCount = new int[5];
         int maxCount = 0;
