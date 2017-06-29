@@ -57,8 +57,8 @@
                     double hiPrice = s.kArr[currentDateIndex + i + 1].highestPrice;
                     maxHiprice = Math.Max(maxHiprice, hiPrice);
                     dr[(i + 1).ToString() + "日最高"] =
-                        (((hiPrice - byPrice)/byPrice > 0.01) ? "<font color='red' >" + hiPrice.ToString() + "</font>"
-                        : "<font color='green' >" + hiPrice.ToString() + "</font>") ;
+                        (((hiPrice - byPrice)/byPrice > 0.01) ? "<font color='red' >" + Math.Round(100*hiPrice/byPrice, 2).ToString()+"%" + "</font>"
+                        : "<font color='green' >" +  Math.Round(100*hiPrice/byPrice, 2).ToString()+"%" + "</font>") ;
                     if (dr[(i + 1).ToString() + "日最高"].ToString().IndexOf("red") >= 0)
                         redCount[i]++;
                 }
@@ -67,8 +67,8 @@
                     dr[(i + 1).ToString() + "日最高"] = "-";
                 }
             }
-            dr["总计"] = (((maxHiprice - byPrice)/byPrice > 0.01) ? "<font color='red' >" + maxHiprice.ToString() + "</font>"
-                        : "<font color='green' >" + maxHiprice.ToString() + "</font>") ;
+            dr["总计"] = (((maxHiprice - byPrice)/byPrice > 0.01) ? "<font color='red' >" + Math.Round(100*maxHiprice/byPrice, 2).ToString()+"%" + "</font>"
+                        : "<font color='green' >" +  Math.Round(100*maxHiprice/byPrice, 2).ToString()+"%" + "</font>") ;
             if (dr["总计"].ToString().IndexOf("red") >= 0)
                 maxCount++;
             dt.Rows.Add(dr);
