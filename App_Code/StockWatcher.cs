@@ -150,7 +150,7 @@ public class StockWatcher
             {
                 string stockName = s.Name;
                 string message = s.gid.Trim() + "[" + stockName.Trim() + "]已经突破3线，并且当日涨幅超过5%";
-                if (AddAlert(DateTime.Now, s.gid, "volumeincrease", s.Name.Trim(), message.Trim()))
+                if (AddAlert(volumeTime, s.gid, "volumeincrease", s.Name.Trim(), message.Trim()))
                 {
                     SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", s.gid, stockName, s.LastTrade, "volumeincrease");
                     SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", s.gid, stockName, s.LastTrade, "volumeincrease");
