@@ -8,8 +8,21 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
+        DataTable dt = DBHelper.GetDataTable(" select [name]  from dbo.sysobjects where OBJECTPROPERTY(id, N'IsUserTable') = 1 and name like '%timeline'");
+        foreach (DataRow dr in dt.Rows)
+        {
+            string gid = dr[0].ToString().Replace("_timeline", "");
+            for (DateTime i = DateTime.Parse("2017-6-15"); i <= DateTime.Parse("2017-6-29"); i = i.AddDays(1))
+            {
+                if (Util.IsTransacDay(i))
+                {
+                    StockWatcher.GetVolumeIncrease(gid, i, true);
+                }
+            }
+        }
+
         //Response.Write(StockWatcher.GetVolumeIncrease("sh600378", DateTime.Parse("2017-6-28"), true));
-        Response.Write(StockWatcher.GetVolumeIncrease("sh600378", DateTime.Parse("2017-6-28"), true));
+        //Response.Write(StockWatcher.GetVolumeIncrease("sh600378", DateTime.Parse("2017-6-28"), true));
         //StockWatcher.WatchStar();
         //StockWatcher.AddAlert(DateTime.Now, "sh600031", "top_f3", "三一重工", "balabala");
         //StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", "aaa");

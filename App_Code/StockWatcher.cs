@@ -296,6 +296,17 @@ public class StockWatcher
             if (k != 0)
             {
                 tick = DateTime.Parse(dt.Rows[k]["ticktime"].ToString().Trim());
+                try
+                {
+                    DBHelper.InsertData("volume_increase_log", new string[,] { { "volume_increase_time", "datetime", tick.ToString() },
+                    { "gid", "varchar", gid}, {"volume_start", "float", dt.Rows[i]["volume"].ToString() },
+                    { "volume_end", "float", dt.Rows[k]["volume"].ToString()}, { "price_start", "float", dt.Rows[i]["trade"].ToString()},
+                    { "price_end", "float", dt.Rows[k]["trade"].ToString()} });
+                }
+                catch
+                {
+
+                }
                 break;
             }
         }
