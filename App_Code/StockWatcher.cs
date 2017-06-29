@@ -103,7 +103,7 @@ public class StockWatcher
                 keyword3 = price.ToString();
                 break;
             default:
-                first = type.Replace("top", "压力位").Replace("bottom", "支撑位").Replace("wave", "波段").Replace("low", "低位").Replace("high", "高位").Trim();
+                first = type.Replace("top", "压力位").Replace("bottom", "支撑位").Replace("wave", "波段").Replace("low", "低位").Replace("high", "高位").Trim().Replace("over3line", "突破三线").Replace("volumeincrease", "放量");
                 keyword1 = "[" + gid.Trim() + "]" + name.Trim();
                 keyword2 = price.ToString();
                 keyword3 = DateTime.Now.ToString();
@@ -135,9 +135,27 @@ public class StockWatcher
                 string message = s.gid.Trim() + "[" + stockName.Trim() + "]已经突破3线，并且当日涨幅超过5%";
                 if (AddAlert(DateTime.Now, s.gid, "over3line", s.Name.Trim(), message.Trim()))
                 {
-                    SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", message.Trim());
+                    SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", s.gid, stockName, s.LastTrade, "over3line");
+                    SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", s.gid, stockName, s.LastTrade, "over3line");
+                    SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", s.gid, stockName, s.LastTrade, "over3line");
+
+                    //SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", message.Trim());
                     //SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", message.Trim());
-                    SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", message.Trim());
+                    //SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", message.Trim());
+                }
+            }
+
+            DateTime volumeTime = GetVolumeIncrease(s.gid, DateTime.Parse(DateTime.Now.ToShortDateString()), true);
+            if (volumeTime > DateTime.Parse("2011-1-1"))
+            {
+                string stockName = s.Name;
+                string message = s.gid.Trim() + "[" + stockName.Trim() + "]已经突破3线，并且当日涨幅超过5%";
+                if (AddAlert(DateTime.Now, s.gid, "volumeincrease", s.Name.Trim(), message.Trim()))
+                {
+                    SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", s.gid, stockName, s.LastTrade, "volumeincrease");
+                    SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", s.gid, stockName, s.LastTrade, "volumeincrease");
+                    SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", s.gid, stockName, s.LastTrade, "volumeincrease");
+
                 }
             }
 
@@ -242,6 +260,46 @@ public class StockWatcher
         {
 
         } 
+    }
+
+    public static DataTable GetTimeLineTradeAndVolumeTable(string gid, DateTime date)
+    {
+        DataTable dt = DBHelper.GetDataTable("exec sp_snap '" + date.ToShortDateString() + "' , '" + gid  + "'  ");
+        return dt;
+    }
+
+    public static DateTime GetVolumeIncrease(string gid, DateTime date, bool isPriceUp)
+    {
+        DataTable dt = GetTimeLineTradeAndVolumeTable(gid, date);
+        double rate = 0.005;
+        DateTime tick = DateTime.Parse("2000-1-1");
+        int k = 0;
+        for (int i = 0; i < dt.Rows.Count; i++)
+        {
+            for (int j = i + 1; j < dt.Rows.Count; j++)
+            {
+                if (Math.Round(double.Parse(dt.Rows[j]["volume_alpha"].ToString()), 0) == 0)
+                {
+                    i = j;
+                    break;
+                }
+                double priceIncrease = double.Parse(dt.Rows[j]["trade"].ToString())
+                    - double.Parse(dt.Rows[i]["trade"].ToString());
+                if (!isPriceUp)
+                    priceIncrease = -1 * priceIncrease;
+                if (priceIncrease / double.Parse(dt.Rows[i]["trade"].ToString()) >= rate)
+                {
+                    k = j;
+                    break;
+                }
+            }
+            if (k != 0)
+            {
+                tick = DateTime.Parse(dt.Rows[k]["ticktime"].ToString().Trim());
+                break;
+            }
+        }
+        return tick;
     }
 
     public static bool AddAlert(DateTime alertDate, string gid, string type, string name, string message)
