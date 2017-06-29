@@ -73,6 +73,8 @@ public class Stock
 
     public int GetKLineIndexForADay(DateTime currentDate)
     {
+        if (kArr == null)
+            return -1;
         int ret = -1;
         for (int i = kArr.Length - 1; i >= 0; i--)
         {
