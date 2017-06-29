@@ -155,7 +155,7 @@ public class StockWatcher
                 if (AddAlert(volumeTime, s.gid, "volumeincrease", s.Name.Trim(), message.Trim()))
                 {
                     SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", s.gid, stockName, s.LastTrade, "volumeincrease");
-                    SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", s.gid, stockName, s.LastTrade, "volumeincrease");
+                    //SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", s.gid, stockName, s.LastTrade, "volumeincrease");
                     SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", s.gid, stockName, s.LastTrade, "volumeincrease");
 
                 }
