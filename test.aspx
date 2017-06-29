@@ -8,6 +8,10 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
+        StockWatcher.WatchEachStock();
+        //StockWatcher.SendAlertMessage
+        //StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", ", stockName, s.LastTrade, "volumeincrease");
+        /*
         DataTable dt = DBHelper.GetDataTable(" select [name]  from dbo.sysobjects where OBJECTPROPERTY(id, N'IsUserTable') = 1 and name like '%timeline'");
         foreach (DataRow dr in dt.Rows)
         {
@@ -20,7 +24,7 @@
                 }
             }
         }
-
+        */
         //Response.Write(StockWatcher.GetVolumeIncrease("sh600378", DateTime.Parse("2017-6-28"), true));
         //Response.Write(StockWatcher.GetVolumeIncrease("sh600378", DateTime.Parse("2017-6-28"), true));
         //StockWatcher.WatchStar();

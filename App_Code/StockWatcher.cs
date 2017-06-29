@@ -121,9 +121,11 @@ public class StockWatcher
 
     public static void WatchEachStock()
     {
+        
         if ((DateTime.Now.Hour < 9 || DateTime.Now.Hour >= 15) 
             && Util.IsTransacDay(DateTime.Parse(DateTime.Now.ToShortDateString())))
             return;
+            
         DataTable dt = DBHelper.GetDataTable(" select [name]  from dbo.sysobjects where OBJECTPROPERTY(id, N'IsUserTable') = 1 and name like '%timeline'");
         foreach (DataRow dr in dt.Rows)
         {
@@ -149,7 +151,7 @@ public class StockWatcher
             if (volumeTime > DateTime.Parse("2011-1-1"))
             {
                 string stockName = s.Name;
-                string message = s.gid.Trim() + "[" + stockName.Trim() + "]已经突破3线，并且当日涨幅超过5%";
+                string message = s.gid.Trim() + "[" + stockName.Trim() + "]放量";
                 if (AddAlert(volumeTime, s.gid, "volumeincrease", s.Name.Trim(), message.Trim()))
                 {
                     SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", s.gid, stockName, s.LastTrade, "volumeincrease");
@@ -271,7 +273,7 @@ public class StockWatcher
     public static DateTime GetVolumeIncrease(string gid, DateTime date, bool isPriceUp)
     {
         DataTable dt = GetTimeLineTradeAndVolumeTable(gid, date);
-        double rate = 0.005;
+        double rate = 0.01;
         DateTime tick = DateTime.Parse("2000-1-1");
         int k = 0;
         for (int i = 0; i < dt.Rows.Count; i++)
@@ -327,7 +329,7 @@ public class StockWatcher
             if (i > 0)
                 ret = true;
         }
-        catch
+        catch(Exception e)
         {
 
         }
