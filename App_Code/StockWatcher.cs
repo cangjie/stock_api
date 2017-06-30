@@ -280,7 +280,7 @@ public class StockWatcher
         {
             for (int j = i + 1; j < dt.Rows.Count; j++)
             {
-                if (Math.Round(double.Parse(dt.Rows[j]["volume_alpha"].ToString()), 0) >= s1)
+                if (Math.Round(double.Parse(dt.Rows[j]["volume_alpha"].ToString()), 0) >= 1)
                 {
                     i = j;
                     break;
