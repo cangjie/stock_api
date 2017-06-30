@@ -35,16 +35,21 @@
 
         int[] redCount = new int[5];
         int maxCount = 0;
+        int starCount = 0;
+        int[] starRed = new int[5];
+        int maxStarCount = 0;
         foreach (DataRow drOri in dtOri.Rows)
         {
             DataRow dr = dt.NewRow();
             dr["时间"] = DateTime.Parse(drOri["volume_increase_time"].ToString()).ToShortTimeString();
             dr["代码"] = drOri["gid"].ToString();
             Stock s = new Stock(drOri["gid"].ToString());
+            s.kArr = KLine.GetKLineDayFromSohu(s.gid, currentDate.AddDays(-20), currentDate);
             dr["名称"] = s.Name;
             if (s.IsGrowHighThan3X3(currentDate))
             {
-                dr["名称"] = "<a alt=\"" + s.gid + "\" title=\"盘中放量\" >" + dr["名称"].ToString().Trim() + "</a>";
+                dr["名称"] = dr["名称"].ToString() + "<a alt=\"" + s.gid + "\" title=\"盘中放量\" >🌟</a>";
+                starCount++;
             }
             double byPrice = Math.Round(double.Parse(drOri["price_end"].ToString().Trim()), 2);
             dr["价格"] = byPrice.ToString();
@@ -64,7 +69,11 @@
                         (((hiPrice - byPrice)/byPrice > 0.01) ? "<font color='red' >" + Math.Round(100*(hiPrice - byPrice)/byPrice, 2).ToString()+"%" + "</font>"
                         : "<font color='green' >" +  Math.Round(100*(hiPrice - byPrice)/byPrice, 2).ToString()+"%" + "</font>") ;
                     if (dr[(i + 1).ToString() + "日最高"].ToString().IndexOf("red") >= 0)
+                    {
                         redCount[i]++;
+                        if (dr["名称"].ToString().IndexOf("🌟") >= 0)
+                            starRed[i]++;
+                    }
                 }
                 else
                 {
@@ -74,17 +83,28 @@
             dr["总计"] = (((maxHiprice - byPrice)/byPrice > 0.01) ? "<font color='red' >" + Math.Round(100*(maxHiprice-byPrice)/byPrice, 2).ToString()+"%" + "</font>"
                         : "<font color='green' >" + Math.Round(100*(maxHiprice - byPrice)/byPrice, 2).ToString()+"%" + "</font>") ;
             if (dr["总计"].ToString().IndexOf("red") >= 0)
+            {
+                if (dr["名称"].ToString().IndexOf("🌟") >= 0)
+                    maxStarCount++;
+
                 maxCount++;
+            }
             dt.Rows.Add(dr);
         }
 
         DataRow drCount = dt.NewRow();
+        DataRow drStar = dt.NewRow();
         for (int i = 0; i < 5; i++)
         {
             drCount[(i + 1).ToString() + "日最高"] = Math.Round((double)redCount[i] * 100 / (double)dt.Rows.Count, 2).ToString() + "%";
+            drStar[(i + 1).ToString() + "日最高"] = Math.Round((double)starRed[i] * 100 / (double)starCount, 2).ToString() + "%";
         }
         drCount["总计"] = Math.Round((double)maxCount * 100 / (double)dt.Rows.Count, 2).ToString() + "%";
         dt.Rows.Add(drCount);
+
+        drStar["名称"] = "🌟";
+        drStar["总计"] = Math.Round((double)maxStarCount * 100 / (double)starCount, 2).ToString() + "%";
+        dt.Rows.Add(drStar);
         return dt;
     }
 
