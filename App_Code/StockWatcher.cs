@@ -273,14 +273,14 @@ public class StockWatcher
     public static DateTime GetVolumeIncrease(string gid, DateTime date, bool isPriceUp)
     {
         DataTable dt = GetTimeLineTradeAndVolumeTable(gid, date);
-        double rate = 0.01;
+        double rate = 0.005;
         DateTime tick = DateTime.Parse("2000-1-1");
         int k = 0;
         for (int i = 0; i < dt.Rows.Count; i++)
         {
             for (int j = i + 1; j < dt.Rows.Count; j++)
             {
-                if (Math.Round(double.Parse(dt.Rows[j]["volume_alpha"].ToString()), 0) == 0)
+                if (Math.Round(double.Parse(dt.Rows[j]["volume_alpha"].ToString()), 0) >= s1)
                 {
                     i = j;
                     break;

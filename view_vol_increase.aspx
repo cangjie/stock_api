@@ -30,8 +30,8 @@
         dt.Columns.Add("5日最高");
         dt.Columns.Add("总计");
 
-        DataTable dtOri = DBHelper.GetDataTable(" select * from volume_increase_log where (price_end - price_start)/price_start > 0.0075 and   volume_increase_time > '" + currentDate.ToShortDateString()
-            + " 14:45' and volume_increase_time < '" + currentDate.AddDays(1).ToShortDateString() + "' order by volume_increase_time desc ,  (price_end - price_start)/ price_start desc ");
+        DataTable dtOri = DBHelper.GetDataTable(" select * from volume_increase_log where (price_end - price_start)/price_start > 0.01 and   volume_increase_time > '" + currentDate.ToShortDateString()
+            + " 14:30' and volume_increase_time < '" + currentDate.AddDays(1).ToShortDateString() + "' order by volume_increase_time desc ,  (price_end - price_start)/ price_start desc ");
 
         int[] redCount = new int[5];
         int maxCount = 0;
