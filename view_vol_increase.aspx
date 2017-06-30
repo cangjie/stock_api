@@ -42,6 +42,10 @@
             dr["代码"] = drOri["gid"].ToString();
             Stock s = new Stock(drOri["gid"].ToString());
             dr["名称"] = s.Name;
+            if (s.IsGrowHighThan3X3(currentDate))
+            {
+                dr["名称"] = "<a alt=\"" + s.gid + "\" title=\"盘中放量\" >" + dr["名称"].ToString().Trim() + "</a>";
+            }
             double byPrice = Math.Round(double.Parse(drOri["price_end"].ToString().Trim()), 2);
             dr["价格"] = byPrice.ToString();
             if (currentDate < DateTime.Parse(DateTime.Now.ToShortDateString()))

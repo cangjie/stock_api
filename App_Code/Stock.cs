@@ -126,6 +126,31 @@ public class Stock
         return ret;
     }
 
+    public bool IsGrowHighThan3X3(DateTime currentDate)
+    {
+        bool ret = false;
+        int dateIndex = GetItemIndex(currentDate);
+        if (dateIndex < 5)
+            return false;
+        double open = kArr[dateIndex].startPrice;
+        double end = kArr[dateIndex].endPrice;
+        double settle = 0;
+        try
+        {
+            settle = kArr[dateIndex - 1].endPrice;
+        }
+        catch
+        {
+
+        }
+        double avg3X3 = GetAverageSettlePrice(dateIndex, 3, 3);
+        if (open < avg3X3 && end > avg3X3 )
+        {
+            ret = true;
+        }
+        return ret;
+    }
+
     public bool IsCross3X3(DateTime currentDate)
     {
         int dateIndex = GetItemIndex(currentDate);
