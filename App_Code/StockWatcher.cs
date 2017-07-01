@@ -154,7 +154,7 @@ public class StockWatcher
                 string message = s.gid.Trim() + "[" + stockName.Trim() + "]放量";
                 if (AddAlert(volumeTime, s.gid, "volumeincrease", s.Name.Trim(), message.Trim()))
                 {
-                    SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", s.gid, stockName, s.LastTrade, "volumeincrease");
+                    //SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", s.gid, stockName, s.LastTrade, "volumeincrease");
                     //SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", s.gid, stockName, s.LastTrade, "volumeincrease");
                     SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", s.gid, stockName, s.LastTrade, "volumeincrease");
 
@@ -269,7 +269,7 @@ public class StockWatcher
     public static DateTime GetVolumeIncrease(string gid, DateTime date, bool isPriceUp)
     {
         DataTable dt = GetTimeLineTradeAndVolumeTable(gid, date);
-        double rate = 0.005;
+        double rate = 0.01;
         DateTime tick = DateTime.Parse("2000-1-1");
         int k = 0;
         for (int i = 0; i < dt.Rows.Count; i++)
