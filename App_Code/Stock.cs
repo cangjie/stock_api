@@ -78,7 +78,7 @@ public class Stock
         int ret = -1;
         for (int i = kArr.Length - 1; i >= 0; i--)
         {
-            if (kArr[i].startDateTime == currentDate)
+            if (kArr[i].startDateTime <= currentDate)
             {
                 ret = i;
                 break;
@@ -309,5 +309,76 @@ public class Stock
             return ret;
         }
 
+    }
+
+    public double HighestPrice(DateTime currentDate, int days)
+    {
+        int currentDateIndex = GetKLineIndexForADay(currentDate);
+        if (currentDateIndex < 0)
+            return 0;
+        double maxPrice = 0;
+        for (int i = 0; i < days && currentDateIndex - i >=0 ; i++)
+        {
+            maxPrice = Math.Max(maxPrice, kArr[currentDateIndex-i].highestPrice);
+        }
+        return maxPrice;
+    }
+
+    public double LowestPrice(DateTime currentDate, int days)
+    {
+        int currentDateIndex = GetKLineIndexForADay(currentDate);
+        if (currentDateIndex < 0)
+            return 0;
+        double minPrice = 0;
+        for (int i = 0; i < days && currentDateIndex - i >= 0; i++)
+        {
+            minPrice = Math.Max(minPrice, kArr[currentDateIndex - i].lowestPrice);
+        }
+        return minPrice;
+    }
+
+
+    public static double[] GetGoldLineArray(double minPrice, double maxPrice)
+    {
+        double[] goldLineArray = new double[13];
+        goldLineArray[0] = maxPrice - (maxPrice - minPrice) * 2;
+        goldLineArray[1] = maxPrice - (maxPrice - minPrice) * 1.618;
+        goldLineArray[2] = maxPrice - (maxPrice - minPrice) * 1.382;
+        goldLineArray[3] = minPrice ;
+        goldLineArray[4] = maxPrice - (maxPrice - minPrice) * 0.809;
+        goldLineArray[5] = maxPrice - (maxPrice - minPrice) * 0.618;
+        goldLineArray[6] = maxPrice - (maxPrice - minPrice) * 0.382;
+        goldLineArray[7] = maxPrice - (maxPrice - minPrice) * 0.236;
+        goldLineArray[8] = maxPrice;
+        goldLineArray[9] = minPrice + (maxPrice - minPrice) * 1.382;
+        goldLineArray[10] = minPrice + (maxPrice - minPrice) * 1.618;
+        goldLineArray[11] = minPrice + (maxPrice - minPrice) * 2;
+        return goldLineArray;
+    }
+
+    public static double GetPressure(double currentPrice, double minPrice, double maxPrice)
+    {
+        double[] goldArr = GetGoldLineArray(minPrice, maxPrice);
+        for (int i = 0; i < goldArr.Length - 1; i++)
+        {
+            if (goldArr[i] < currentPrice && goldArr[i + 1] > currentPrice)
+            {
+                return goldArr[i + 1];
+            }
+        }
+        return 0;
+    }
+
+    public static double GetSupport(double currentPrice, double minPrice, double maxPrice)
+    {
+        double[] goldArr = GetGoldLineArray(minPrice, maxPrice);
+        for (int i = 0; i < goldArr.Length - 1; i++)
+        {
+            if (goldArr[i] < currentPrice && goldArr[i + 1] > currentPrice)
+            {
+                return goldArr[i];
+            }
+        }
+        return 0;
     }
 }

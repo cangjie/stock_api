@@ -57,6 +57,11 @@
         DataTable dt = new DataTable();
         dt.Columns.Add("代码");
         dt.Columns.Add("名称");
+        dt.Columns.Add("5日低价");
+        dt.Columns.Add("支撑");
+        dt.Columns.Add("现价");
+        dt.Columns.Add("压力");
+        dt.Columns.Add("5日高价");
         dt.Columns.Add("今开");
         dt.Columns.Add("跳空幅度");
         dt.Columns.Add("今日最高");
@@ -129,7 +134,19 @@
             double jumpRate = (double.Parse(drOri["open"].ToString()) - double.Parse(drOri["settlement"].ToString().Trim())) / double.Parse(drOri["settlement"].ToString().Trim());
 
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
-            stock.kArr = KLine.GetKLine("day", stock.gid, currentDate.AddDays(-30), DateTime.Parse(DateTime.Now.ToShortDateString()));
+            stock.kArr = KLine.GetKLine("day", stock.gid, currentDate.AddDays(-60), DateTime.Parse(DateTime.Now.ToShortDateString()));
+
+            double minPrice = stock.LowestPrice(currentDate, 5);
+            double maxPrice = stock.HighestPrice(currentDate, 5);
+            double pressure = Stock.GetPressure(stock.LastTrade, minPrice, maxPrice);
+            double support = Stock.GetSupport(stock.LastTrade, minPrice, maxPrice);
+
+            dr["5日低价"] = "<font color=\"gray\" >" + Math.Round(minPrice, 2).ToString() + "</font>";
+            dr["支撑"] = "<font color=\"blue\" >" +  Math.Round(support, 2) + "</font>";
+            dr["现价"] = Math.Round(stock.LastTrade,2);
+            dr["压力"] = "<font color=\"yellow\" >" + Math.Round(pressure, 2) + "</font>";
+            dr["5日高价"] ="<font color=\"orange\" >" + Math.Round(highestPrice, 2) + "</font>";
+
 
             double currentPrice = 0;
             if (DateTime.Parse(DateTime.Now.ToShortDateString()) == currentDate)
@@ -812,11 +829,15 @@
                         <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                         <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                         <asp:BoundColumn DataField="今开" HeaderText="今开"></asp:BoundColumn>
+                        <asp:BoundColumn DataField="5日低价" HeaderText="5日低价"></asp:BoundColumn>
+                        <asp:BoundColumn DataField="支撑" HeaderText="支撑" ></asp:BoundColumn>
+                        <asp:BoundColumn DataField="现价" HeaderText="现价"></asp:BoundColumn>
+                        <asp:BoundColumn DataField="压力" HeaderText="压力"></asp:BoundColumn>
+                        <asp:BoundColumn DataField="5日高价" HeaderText="5日高价"></asp:BoundColumn>
                         <asp:BoundColumn DataField="跳空幅度" HeaderText="跳空幅度" SortExpression="跳空幅度|A-Z"></asp:BoundColumn>
                         <asp:BoundColumn DataField="今日最高" HeaderText="今日最高" SortExpression="今日最高|A-Z"></asp:BoundColumn>
                         <asp:BoundColumn DataField="1日最高" HeaderText="1日最高" SortExpression="1日最高|A-Z"></asp:BoundColumn>
                         <asp:BoundColumn DataField="2日最高" HeaderText="2日最高" SortExpression="2日最高|A-Z"></asp:BoundColumn>
-                        <asp:BoundColumn DataField="2日收盘" HeaderText="2日收盘" SortExpression="2日收盘|A-Z"></asp:BoundColumn>
                         <asp:BoundColumn DataField="3日最高" HeaderText="3日最高" SortExpression="3日最高|A-Z"></asp:BoundColumn>
                         <asp:BoundColumn DataField="4日最高" HeaderText="4日最高" SortExpression="4日最高|A-Z"></asp:BoundColumn>
                         <asp:BoundColumn DataField="5日最高" HeaderText="5日最高" SortExpression="5日最高|A-Z"></asp:BoundColumn>
