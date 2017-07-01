@@ -65,6 +65,7 @@
         dt.Columns.Add("今开");
         dt.Columns.Add("跳空幅度");
         dt.Columns.Add("今日最高");
+        dt.Columns.Add("推荐度");
         dt.Columns.Add("1日最高");
         dt.Columns.Add("2日最高");
         dt.Columns.Add("2日收盘");
@@ -140,6 +141,8 @@
             double maxPrice = stock.HighestPrice(currentDate, 5);
             double pressure = Stock.GetPressure(stock.LastTrade, minPrice, maxPrice);
             double support = Stock.GetSupport(stock.LastTrade, minPrice, maxPrice);
+
+            dr["推荐度"] = Math.Round((maxPrice - stock.LastTrade) / (stock.LastTrade - minPrice), 2);
 
             dr["5日低价"] = "<font color=\"gray\" >" + Math.Round(minPrice, 2).ToString() + "</font>";
             dr["支撑"] = "<font color=\"blue\" >" +  Math.Round(support, 2) + "</font>";
@@ -834,6 +837,7 @@
                         <asp:BoundColumn DataField="现价" HeaderText="现价"></asp:BoundColumn>
                         <asp:BoundColumn DataField="压力" HeaderText="压力"></asp:BoundColumn>
                         <asp:BoundColumn DataField="5日高价" HeaderText="5日高价"></asp:BoundColumn>
+                        <asp:BoundColumn DataField="推荐度" HeaderText="推荐度"></asp:BoundColumn>
                         <asp:BoundColumn DataField="跳空幅度" HeaderText="跳空幅度" SortExpression="跳空幅度|A-Z"></asp:BoundColumn>
                         <asp:BoundColumn DataField="今日最高" HeaderText="今日最高" SortExpression="今日最高|A-Z"></asp:BoundColumn>
                         <asp:BoundColumn DataField="1日最高" HeaderText="1日最高" SortExpression="1日最高|A-Z"></asp:BoundColumn>
