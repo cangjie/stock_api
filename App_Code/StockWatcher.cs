@@ -243,10 +243,6 @@ public class StockWatcher
                             SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", s.gid, name, s.LastTrade, type);
                             SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", s.gid, name, s.LastTrade, type);
                             SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", s.gid, name, s.LastTrade, type);
-
-                            //SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", message.Trim());
-                            //SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", message.Trim());
-                            //SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", message.Trim());
                         }
                     }
 
