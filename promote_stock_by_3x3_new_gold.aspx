@@ -144,7 +144,9 @@
             double pressure = Stock.GetPressure(stock.LastTrade, minPrice, maxPrice);
             double support = Stock.GetSupport(stock.LastTrade, minPrice, maxPrice);
 
-            dr["推荐度"] = Math.Round((maxPrice - stock.LastTrade) / (stock.LastTrade - minPrice), 2);
+            double refPrice = (currentDate == DateTime.Parse(DateTime.Now.ToShortDateString())) ? stock.LastTrade : double.Parse(drOri["今开"].ToString().Trim()) * 1.01;
+
+            dr["推荐度"] = Math.Round((maxPrice - refPrice) / (refPrice - minPrice), 2);
 
             dr["5日低价"] = "<font color=\"gray\" >" + Math.Round(minPrice, 2).ToString() + "</font>";
             dr["支撑"] = "<font color=\"blue\" >" +  Math.Round(support, 2) + "</font>";
