@@ -776,6 +776,7 @@
         dtSort.Columns.Add("3日最高double", Type.GetType("System.Double"));
         dtSort.Columns.Add("4日最高double", Type.GetType("System.Double"));
         dtSort.Columns.Add("5日最高double", Type.GetType("System.Double"));
+        dtSort.Columns.Add("推荐度double", Type.GetType("System.Double"));
         for (int i = 0; i < dt.Rows.Count; i++)
         {
             DataRow drSort = dtSort.NewRow();
@@ -791,6 +792,7 @@
             drSort["3日最高double"] = GetPercentValue(drSort["3日最高"].ToString());//double.Parse(drSort["3日最高"].ToString().Replace("%", ""));
             drSort["4日最高double"] = GetPercentValue(drSort["4日最高"].ToString());//double.Parse(drSort["4日最高"].ToString().Replace("%", ""));
             drSort["5日最高double"] = GetPercentValue(drSort["5日最高"].ToString());//double.Parse(drSort["5日最高"].ToString().Replace("%", ""));
+            drSort["推荐度double"] = double.Parse(drSort["推荐度"].ToString());
             dtSort.Rows.Add(drSort);
         }
 
@@ -865,7 +867,7 @@
                         <asp:BoundColumn DataField="压力" HeaderText="压力"></asp:BoundColumn>
                         <asp:BoundColumn DataField="5日高价" HeaderText="5日高价"></asp:BoundColumn>
                         <asp:BoundColumn DataField="5日振幅" HeaderText="5日振幅" ></asp:BoundColumn>
-                        <asp:BoundColumn DataField="推荐度" HeaderText="推荐度"></asp:BoundColumn>
+                        <asp:BoundColumn DataField="推荐度" HeaderText="推荐度" SortExpression="推荐度|A-Z" ></asp:BoundColumn>
                         <asp:BoundColumn DataField="跳空幅度" HeaderText="跳空幅度" SortExpression="跳空幅度|A-Z"></asp:BoundColumn>
                         <asp:BoundColumn DataField="今日最高" HeaderText="今日最高" SortExpression="今日最高|A-Z"></asp:BoundColumn>
                         <asp:BoundColumn DataField="1日最高" HeaderText="1日最高" SortExpression="1日最高|A-Z"></asp:BoundColumn>
