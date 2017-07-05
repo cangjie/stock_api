@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Data;
+using System.Data.SqlClient;
 
 /// <summary>
 /// Summary description for KLine
@@ -19,6 +20,7 @@ public class KLine
     public string gid = "";
     public double deal = 0;
     public double volume = 0;
+    public double amount = 0;
     public double change = 0;
 
     public double increaseRateOpen = 0;
@@ -27,6 +29,11 @@ public class KLine
     public double increaseRateShake = 0;
     public double increaseRateSettle = 0;
 
+    public double rsv = 0;
+    public double k = 0;
+    public double d = 0;
+    public double j = 0;
+
     public KLine()
     {
         //
@@ -34,10 +41,7 @@ public class KLine
         //
     }
 
-    public int save()
-    {
-        return 0;
-    }
+    
 
     public DateTime endDateTime
     {
@@ -47,13 +51,62 @@ public class KLine
             switch (type.Trim())
             {
                 case "day":
-                    endTime = startDateTime;
+                    startDateTime = DateTime.Parse(startDateTime.ToShortDateString() + " 9:30");
+                    endTime = DateTime.Parse(startDateTime.ToShortDateString() + " 15:00");
+                    break;
+                case "15min":
+                    endTime = startDateTime.Add(new TimeSpan(0, 15, 0));
+                    break;
+                case "30min":
+                    endTime = startDateTime.Add(new TimeSpan(0, 30, 0));
+                    break;
+                case "1hr":
+                    endTime = startDateTime.Add(new TimeSpan(1, 0, 0));
                     break;
                 default:
+                    endTime = startDateTime;
                     break;
             }
             return endTime;
         }
+    }
+
+    public void Save()
+    {
+        DataTable dt = DBHelper.GetDataTable(" select * from " + gid.Trim() + "_k_line  where type = '" + type.Trim() 
+            + "'  and  start_date = '" + startDateTime.ToString() + "'  ");
+        if (dt.Rows.Count == 0)
+        {
+            DBHelper.InsertData(gid.Trim() + "_k_line", new string[,] {
+                { "gid", "varchar", gid.Trim()},
+                { "start_date", "datetime", startDateTime.ToString() },
+                { "type", "varchar", type.Trim()},
+                { "[open]", "float", startPrice.ToString()},
+                { "settle", "float", endPrice.ToString()},
+                { "highest", "float", highestPrice.ToString()},
+                { "lowest", "float", lowestPrice.ToString()},
+                { "volume", "int", volume.ToString()},
+                { "amount", "float", amount.ToString()},
+                { "ext_data", "varchar", ""}
+            });
+        }
+        else
+        {
+            DBHelper.UpdateData(gid.Trim() + "_k_line", new string[,] {
+                { "[open]", "float", startPrice.ToString()},
+                { "settle", "float", endPrice.ToString()},
+                { "highest", "float", highestPrice.ToString()},
+                { "lowest", "float", lowestPrice.ToString()},
+                { "volume", "int", volume.ToString()},
+                { "amount", "float", amount.ToString()},
+                { "ext_data", "varchar", ""}
+            }, new string[,] {
+                { "gid", "varchar", gid.Trim()},
+                { "start_date", "datetime", startDateTime.ToString() },
+                { "type", "varchar", type.Trim()}
+            }, Util.conStr);
+        }
+        dt.Dispose();
     }
 
     public bool IsPositive
@@ -176,6 +229,127 @@ public class KLine
         else
             return null;
     }
+
+    public static void ComputeAndUpdateKLine(string gid, string type, DateTime start, DateTime end)
+    {
+        KLine[] kArr = TimeLine.CreateKLineArray(gid, type, TimeLine.GetTimeLineItem(gid, start, end));
+        CreateKLineTable(gid);
+        foreach (KLine k in kArr)
+        {
+            k.Save();
+        }
+    }
+
+
+
+    public static void CreateKLineTable(string gid)
+    {
+        string sql = "if not exists(select * from dbo.sysobjects where id = object_id(N'[dbo].[" + gid + "_k_line]') and OBJECTPROPERTY(id, N'IsUserTable') = 1)   begin "
+            + "CREATE TABLE[dbo].[" + gid + "_k_line] ("
+            + " [gid] [varchar] (8) COLLATE Chinese_PRC_CI_AS NOT NULL , "
+            + " [start_date] [datetime] NOT NULL , "
+            + " [type][varchar](10) COLLATE Chinese_PRC_CI_AS NOT NULL, "
+
+            + " [open] [float] NOT NULL, "
+
+            + " [settle] [float] NOT NULL, "
+
+            + " [highest] [float] NOT NULL, "
+
+            + " [lowest] [float] NOT NULL, "
+
+            + " [volume] [int] NOT NULL, "
+
+            + " [amount] [float] NOT NULL, "
+
+            + " [ext_data] [varchar] (2000) COLLATE Chinese_PRC_CI_AS NOT NULL, "
+
+            + " [create_date] [datetime]     NOT NULL ) "
+            + "   "
+            + " ALTER TABLE [dbo].[" + gid + "_k_line] WITH NOCHECK ADD 	CONSTRAINT [PK_" + gid + "_k_line] PRIMARY KEY  CLUSTERED 	( [gid], [start_date],[type])  ON [PRIMARY]  "
+            + " ALTER TABLE [dbo].[" + gid + "_k_line] ADD CONSTRAINT [DF_" + gid + "_k_line_create_date] DEFAULT (getdate()) FOR [create_date] end ";
+        SqlConnection conn = new SqlConnection(Util.conStr);
+        SqlCommand cmd = new SqlCommand(sql, conn);
+        conn.Open();
+        cmd.ExecuteNonQuery();
+        conn.Close();
+        cmd.Dispose();
+        conn.Dispose();
+    }
+
+    public static double GetLowestPrice(KLine[] kArr)
+    {
+        double ret = 0;
+        foreach (KLine k in kArr)
+        {
+            if (ret == 0)
+            {
+                ret = k.lowestPrice;
+            }
+            else
+            {
+                ret = Math.Min(ret, k.lowestPrice);
+            }
+        }
+        return ret;
+    }
+
+    public static double GetHighestPrice(KLine[] kArr)
+    {
+        double ret = 0;
+        foreach (KLine k in kArr)
+        {
+            ret = Math.Max(ret, k.highestPrice);
+        }
+        return ret;
+    }
+
+    public static KLine[] GetSubKLine(KLine[] kArr, int startIndex, int num)
+    {
+        if (startIndex + num > kArr.Length)
+            return null;
+        KLine[] subArr = new KLine[num];
+        for (int i = 0; i < num; i++)
+        {
+            subArr[i] = kArr[startIndex + i];
+        }
+        return subArr;
+    }
+    
+
+    public static KLine[] ComputeRSV(KLine[] kArr)
+    {
+        int valueN = 9;
+        for (int i = valueN - 1; i < kArr.Length; i++)
+        {
+            KLine[] rsvArr = GetSubKLine(kArr, i - valueN + 1, valueN);
+            double lowPrice = GetLowestPrice(rsvArr);
+            double hiPrice = GetHighestPrice(rsvArr);
+            kArr[i].rsv = 100 * (kArr[i].endPrice - lowPrice) / (hiPrice - lowPrice);
+        }
+        return kArr;
+    }
+
+    public static  KLine[] ComputeKDJ(KLine[] kArr)
+    {
+        int valueM1 = 3;
+        int valueM2 = 3;
+        for (int i = 0; i < kArr.Length; i++)
+        {
+            if (kArr[i].rsv == 0)
+            {
+                kArr[i].k = 50;
+                kArr[i].d = 50;
+                continue;
+            }
+            kArr[i].k = (kArr[i].rsv + (valueM1 - 1) * kArr[i - 1].k) / valueM1;
+            kArr[i].d = (kArr[i].k + (valueM2 - 1) * kArr[i - 1].d) / valueM2;
+            kArr[i].j = 3 * kArr[i].k - 2 * kArr[i].d;
+        }
+        return kArr;
+    }
+
+    
 
     /*
     public static double GetHighestPrice(string gid, DateTime startDate, DateTime endDate)
