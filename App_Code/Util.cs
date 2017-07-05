@@ -234,10 +234,12 @@ public class Util
     public static bool IsTransacDay(DateTime date)
     {
         bool ret = true;
-        if ((date.DayOfWeek == DayOfWeek.Saturday) || (date.DayOfWeek == DayOfWeek.Saturday))
+        if ((date.DayOfWeek == DayOfWeek.Saturday) || (date.DayOfWeek == DayOfWeek.Sunday))
         {
             ret = false;
         }
+        if ((date.Hour < 9 || date.Hour >= 15 || (date.Hour == 9 && date.Minute < 30) || (date.Hour == 11 && date.Minute >= 30) || date.Hour == 12) && (date > DateTime.Parse(date.ToShortDateString())))
+            ret = false;
         return ret;
     }
 

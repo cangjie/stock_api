@@ -97,9 +97,9 @@ public class DBHelper
         string setClause = "";
         foreach (KeyValuePair<string, KeyValuePair<SqlDbType, object>> parameter in updateParameters)
         {
-            setClause = setClause + ", " + parameter.Key.Trim() + "  = @" + parameter.Key.Trim() + "  ";
-            cmd.Parameters.Add("@" + parameter.Key.Trim(), parameter.Value.Key);
-            cmd.Parameters["@" + parameter.Key.Trim()].Value = parameter.Value.Value;
+            setClause = setClause + ", " + parameter.Key.Trim() + "  = @" + parameter.Key.Trim().Replace("[", "").Replace("]", "") + "  ";
+            cmd.Parameters.Add("@" + parameter.Key.Trim().Replace("[", "").Replace("]", ""), parameter.Value.Key);
+            cmd.Parameters["@" + parameter.Key.Trim().Replace("[", "").Replace("]", "")].Value = parameter.Value.Value;
         }
         if (setClause.StartsWith(","))
             setClause = setClause.Remove(0, 1);
@@ -107,9 +107,9 @@ public class DBHelper
         string whereClause = "";
         foreach (KeyValuePair<string, KeyValuePair<SqlDbType, object>> parameter in keyParameters)
         {
-            whereClause = whereClause + "and " + parameter.Key.Trim() + "  = @" + parameter.Key.Trim() + "  ";
-            cmd.Parameters.Add("@" + parameter.Key.Trim(), parameter.Value.Key);
-            cmd.Parameters["@" + parameter.Key.Trim()].Value = parameter.Value.Value;
+            whereClause = whereClause + "and " + parameter.Key.Trim() + "  = @" + parameter.Key.Trim().Replace("[","").Replace("]","") + "  ";
+            cmd.Parameters.Add("@" + parameter.Key.Trim().Replace("[", "").Replace("]", ""), parameter.Value.Key);
+            cmd.Parameters["@" + parameter.Key.Trim().Replace("[", "").Replace("]", "")].Value = parameter.Value.Value;
         }
         if (whereClause.StartsWith("and"))
             whereClause = whereClause.Remove(0, 3);
