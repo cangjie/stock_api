@@ -29,6 +29,11 @@ public class KLine
     public double increaseRateShake = 0;
     public double increaseRateSettle = 0;
 
+    public double rsv = 0;
+    public double k = 0;
+    public double d = 0;
+    public double j = 0;
+
     public KLine()
     {
         //
@@ -271,6 +276,80 @@ public class KLine
         cmd.Dispose();
         conn.Dispose();
     }
+
+    public static double GetLowestPrice(KLine[] kArr)
+    {
+        double ret = 0;
+        foreach (KLine k in kArr)
+        {
+            if (ret == 0)
+            {
+                ret = k.lowestPrice;
+            }
+            else
+            {
+                ret = Math.Min(ret, k.lowestPrice);
+            }
+        }
+        return ret;
+    }
+
+    public static double GetHighestPrice(KLine[] kArr)
+    {
+        double ret = 0;
+        foreach (KLine k in kArr)
+        {
+            ret = Math.Max(ret, k.highestPrice);
+        }
+        return ret;
+    }
+
+    public static KLine[] GetSubKLine(KLine[] kArr, int startIndex, int num)
+    {
+        if (startIndex + num > kArr.Length)
+            return null;
+        KLine[] subArr = new KLine[num];
+        for (int i = 0; i < num; i++)
+        {
+            subArr[i] = kArr[startIndex + i];
+        }
+        return subArr;
+    }
+    
+
+    public static KLine[] ComputeRSV(KLine[] kArr)
+    {
+        int valueN = 9;
+        for (int i = valueN - 1; i < kArr.Length; i++)
+        {
+            KLine[] rsvArr = GetSubKLine(kArr, i - valueN + 1, valueN);
+            double lowPrice = GetLowestPrice(rsvArr);
+            double hiPrice = GetHighestPrice(rsvArr);
+            kArr[i].rsv = 100 * (kArr[i].endPrice - lowPrice) / (hiPrice - lowPrice);
+        }
+        return kArr;
+    }
+
+    public static  KLine[] ComputeKDJ(KLine[] kArr)
+    {
+        int valueM1 = 3;
+        int valueM2 = 3;
+        for (int i = 0; i < kArr.Length; i++)
+        {
+            if (kArr[i].rsv == 0)
+            {
+                kArr[i].k = 50;
+                kArr[i].d = 50;
+                continue;
+            }
+            kArr[i].k = (kArr[i].rsv + (valueM1 - 1) * kArr[i - 1].k) / valueM1;
+            kArr[i].d = (kArr[i].k + (valueM2 - 1) * kArr[i - 1].d) / valueM2;
+            kArr[i].j = 3 * kArr[i].k - 2 * kArr[i].d;
+        }
+        return kArr;
+    }
+
+    
 
     /*
     public static double GetHighestPrice(string gid, DateTime startDate, DateTime endDate)

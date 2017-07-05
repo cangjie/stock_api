@@ -8,6 +8,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
+        /*
         DataTable dt = DBHelper.GetDataTable(" select [name]  from dbo.sysobjects where OBJECTPROPERTY(id, N'IsUserTable') = 1 and name like '%timeline'");
         foreach (DataRow dr in dt.Rows)
         {
@@ -16,6 +17,13 @@
             KLine.ComputeAndUpdateKLine(dr["name"].ToString().Replace("_timeline", ""), "30min", DateTime.Parse("2017-6-16"), DateTime.Parse("2017-7-6"));
             KLine.ComputeAndUpdateKLine(dr["name"].ToString().Replace("_timeline", ""), "15min", DateTime.Parse("2017-6-16"), DateTime.Parse("2017-7-6"));
         }
+        */
+
+        Stock s = new Stock("sh600031");
+        //s.kLineHour = Stock.LoadLocalKLine(s.gid, "1hr");
+        s.kLineHour = KLine.ComputeKDJ(KLine.ComputeRSV(s.kLineHour));
+
+
 
         //KLine.ComputeAndUpdateKLine("sh600031", "day", DateTime.Parse("2017-6-30"), DateTime.Parse("2017-7-5"));
         //KLine.CreateKLineTable("sh600056");

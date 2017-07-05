@@ -17,6 +17,14 @@ public class Stock
 
     public double shakeRate = 0.02;
 
+    public KLine[] kLineDay;
+
+    public KLine[] kLineHour;
+
+    public KLine[] kLineHalfHour;
+
+    public KLine[] kLineQuaterHour;
+
     public Stock()
     {
         //
@@ -30,7 +38,14 @@ public class Stock
         DataTable dt = DBHelper.GetDataTable(" select top 1 * from " + gid.Trim() + "_timeline order by ticktime desc ");
         if (dt.Rows.Count > 0)
             drLastTimeline = dt.Rows[0];
+
+        kLineDay = LoadLocalKLine(gid, "day");
+        kLineHour = LoadLocalKLine(gid, "1hr");
+        kLineHalfHour = LoadLocalKLine(gid, "30min");
+        kLineQuaterHour = LoadLocalKLine(gid, "15min");
     }
+
+    
 
     public string Name
     {
@@ -381,4 +396,26 @@ public class Stock
         }
         return 0;
     }
+
+    public static KLine[] LoadLocalKLine(string gid, string type)
+    {
+        DataTable dt = DBHelper.GetDataTable(" select * from " + gid.Trim() + "_k_line where  type = '" + type + "' order by start_date ");
+        KLine[] kArr = new KLine[dt.Rows.Count];
+        for (int i = 0; i < dt.Rows.Count; i++)
+        {
+            kArr[i] = new KLine();
+            kArr[i].gid = gid.Trim();
+            kArr[i].startDateTime = DateTime.Parse(dt.Rows[i]["start_date"].ToString());
+            kArr[i].type = type.Trim();
+            kArr[i].startPrice = double.Parse(dt.Rows[i]["open"].ToString());
+            kArr[i].endPrice = double.Parse(dt.Rows[i]["settle"].ToString());
+            kArr[i].highestPrice = double.Parse(dt.Rows[i]["highest"].ToString());
+            kArr[i].lowestPrice = double.Parse(dt.Rows[i]["lowest"].ToString());
+            kArr[i].volume = int.Parse(dt.Rows[i]["volume"].ToString());
+            kArr[i].amount = double.Parse(dt.Rows[i]["amount"].ToString());
+        }
+        return kArr;
+    }
+
+    
 }
