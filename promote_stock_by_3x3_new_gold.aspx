@@ -139,18 +139,20 @@
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
             stock.kArr = KLine.GetKLine("day", stock.gid, currentDate.AddDays(-60), DateTime.Parse(DateTime.Now.ToShortDateString()));
 
-            double minPrice = stock.LowestPrice(currentDate, 5);
-            double maxPrice = stock.HighestPrice(currentDate, 5);
-            double pressure = Stock.GetPressure(stock.LastTrade, minPrice, maxPrice);
-            double support = Stock.GetSupport(stock.LastTrade, minPrice, maxPrice);
+double refPrice = (currentDate == DateTime.Parse(DateTime.Now.ToShortDateString())) ? stock.LastTrade : double.Parse(drOri["open"].ToString().Trim()) * 1.01;
 
-            double refPrice = (currentDate == DateTime.Parse(DateTime.Now.ToShortDateString())) ? stock.LastTrade : double.Parse(drOri["open"].ToString().Trim()) * 1.01;
 
+            double minPrice = stock.LowestPrice(currentDate, 9);
+            double maxPrice = stock.HighestPrice(currentDate, 9);
+            double pressure = Stock.GetPressure(refPrice , minPrice, maxPrice);
+            double support = Stock.GetSupport(refPrice , minPrice, maxPrice);
+
+            
             dr["推荐度"] = Math.Round((maxPrice - refPrice) / (refPrice - minPrice), 2);
 
             dr["5日低价"] = "<font color=\"gray\" >" + Math.Round(minPrice, 2).ToString() + "</font>";
             dr["支撑"] = "<font color=\"blue\" >" +  Math.Round(support, 2) + "</font>";
-            dr["现价"] = Math.Round(stock.LastTrade,2);
+            dr["现价"] = Math.Round(refPrice ,2);
             dr["压力"] = "<font color=\"yellow\" >" + Math.Round(pressure, 2) + "</font>";
             dr["5日高价"] ="<font color=\"orange\" >" + Math.Round(highestPrice, 2) + "</font>";
             dr["5日振幅"] = Math.Round((maxPrice - minPrice) * 100 / minPrice, 2).ToString() + "%";
