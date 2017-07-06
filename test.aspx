@@ -19,7 +19,7 @@
         foreach (DataRow dr in dt.Rows)
         {
             string gid = dr[0].ToString().Replace("_timeline", "").Trim();
-            /*
+           /* 
             cmd.CommandText = " drop table " + gid.Trim() + "_k_line ";
             
             try
@@ -31,6 +31,9 @@
 
             }
             */
+
+
+            
             KLine.CreateKLineTable(gid);
             for (DateTime i = DateTime.Parse("2017-6-16"); i <= DateTime.Parse("2017-7-6"); i = i.AddDays(1))
             {
@@ -57,11 +60,13 @@
                     k.Save();
                 }
             }
-        }
         /*
-        conn.Close();
-        cmd.Dispose();
-        conn.Dispose();*/
-    }
+            conn.Close();
+            cmd.Dispose();
+            conn.Dispose();*/
+        }
+        
+        
+    
 
 </script>

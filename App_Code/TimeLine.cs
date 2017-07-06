@@ -358,9 +358,9 @@ public class TimeLine
         {
             return new KLine[0];
         }
-        DataTable dtTimeLine = DBHelper.GetDataTable(" select * from sh600031_timeline where ticktime > '"
+        DataTable dtTimeLine = DBHelper.GetDataTable(" select * from " + gid + "_timeline where ticktime > '"
             + date.ToShortDateString() + "' and ticktime < '" + date.AddDays(1).ToShortDateString() + "' order by ticktime ");
-        DataTable dtNormal = DBHelper.GetDataTable(" select * from sh600031 where convert(datetime,[date]) = '" + date.ToShortDateString() + "' order by [time] ");
+        DataTable dtNormal = DBHelper.GetDataTable(" select * from " + gid + " where convert(datetime,[date]) = '" + date.ToShortDateString() + "' order by [time] ");
 
         DataRow[] drBeforeOpenArr = dtTimeLine.Select(" open = 0 ");
         foreach (DataRow drBeforeOpen in drBeforeOpenArr)
