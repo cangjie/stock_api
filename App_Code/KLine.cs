@@ -63,6 +63,9 @@ public class KLine
                 case "1hr":
                     endTime = startDateTime.Add(new TimeSpan(1, 0, 0));
                     break;
+                case "1min":
+                    endTime = startDateTime.AddMinutes(1);
+                    break;
                 default:
                     endTime = startDateTime;
                     break;
@@ -347,6 +350,26 @@ public class KLine
             kArr[i].j = 3 * kArr[i].k - 2 * kArr[i].d;
         }
         return kArr;
+    }
+
+    public static void SearchKDJAlert(KLine[] kArr)
+    {
+        int unEffectValue = 5;
+        for (int i = 0; i < kArr.Length; i++)
+        {
+            if (i > 0)
+            {
+                if (kArr[i].j >= kArr[i].k && kArr[i - 1].j <= kArr[i - 1].k && Math.Abs(kArr[i].j - 50) > unEffectValue && Math.Abs(kArr[i].k - 50) > unEffectValue)
+                {
+                    DBHelper.InsertData("kdj_alert", new string[,] {
+                        { "gid", "varchar", kArr[i].gid.Trim()},
+                        { "alert_time", "datetime", kArr[i].endDateTime.ToString()},
+                        { "type", "varchar", kArr[i].type},
+                        { "price", "float", kArr[i].endPrice.ToString()}
+                    });
+                }
+            }
+        }
     }
 
     

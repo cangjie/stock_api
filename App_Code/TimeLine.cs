@@ -296,6 +296,206 @@ public class TimeLine
         return timeLineRetArr;
     }
 
+    public static KLine[] AssembKLine(string type, KLine[] kArr)
+    {
+        int span = 15;
+        switch (type)
+        {
+            case "15min":
+                span = 15;
+                break;
+            case "30min":
+                span = 30;
+                break;
+            case "1hr":
+                span = 60;
+                break;
+            case "day":
+                span = 240;
+                break;
+            default:
+                break;
+        }
+        int kLineNum = (kArr.Length * span / span == kArr.Length) ? kArr.Length / span : 1 + kArr.Length / span;
+        KLine[] newKArr = new KLine[kLineNum];
+        for (int i = 0; i < kLineNum; i++)
+        {
+            newKArr[i] = new KLine();
+            newKArr[i].gid = kArr[0].gid;
+            newKArr[i].type = kArr[0].type;
+            newKArr[i].startDateTime = DateTime.MinValue;
+            newKArr[i].startPrice = 0;
+            newKArr[i].endPrice = 0;
+            newKArr[i].highestPrice = double.MinValue;
+            newKArr[i].lowestPrice = double.MaxValue;
+            newKArr[i].volume = 0;
+            newKArr[i].amount = 0;
+            for (int j = 0; j < span && (i * span + j) < kArr.Length; j++)
+            {
+                if (j == 0)
+                {
+                    newKArr[i].startDateTime = kArr[i * span + j].startDateTime;
+                    newKArr[i].startPrice = kArr[i * span + j].startPrice;
+                    
+                }
+                newKArr[i].highestPrice = Math.Max(newKArr[i].highestPrice, kArr[i * span + j].highestPrice);
+                newKArr[i].lowestPrice = Math.Min(newKArr[i].lowestPrice, kArr[i * span + j].lowestPrice);
+                newKArr[i].volume = newKArr[i].volume + kArr[i * span + j].volume;
+                newKArr[i].amount = newKArr[i].amount + kArr[i * span + j].amount;
+                if (j == span - 1 || i * span + j == kArr.Length - 1)
+                {
+                    newKArr[i].endPrice = kArr[i * span + j].endPrice;
+                }
+            }
+        }
+        return newKArr;
+    }
+
+
+    public static KLine[] Create1MinKLine(string gid, DateTime date)
+    {
+        if (!Util.IsTransacDay(DateTime.Parse(date.ToShortDateString())))
+        {
+            return new KLine[0];
+        }
+        DataTable dtTimeLine = DBHelper.GetDataTable(" select * from sh600031_timeline where ticktime > '"
+            + date.ToShortDateString() + "' and ticktime < '" + date.AddDays(1).ToShortDateString() + "' order by ticktime ");
+        DataTable dtNormal = DBHelper.GetDataTable(" select * from sh600031 where convert(datetime,[date]) = '" + date.ToShortDateString() + "' order by [time] ");
+
+        DataRow[] drBeforeOpenArr = dtTimeLine.Select(" open = 0 ");
+        foreach (DataRow drBeforeOpen in drBeforeOpenArr)
+        {
+            dtTimeLine.Rows.Remove(drBeforeOpen);
+        }
+        drBeforeOpenArr = dtNormal.Select(" todayStartPri = '0.000' ");
+        foreach (DataRow drBeforeOpen in drBeforeOpenArr)
+        {
+            dtNormal.Rows.Remove(drBeforeOpen);
+        }
+        KLine[] kLineArr = new KLine[4 * 60];
+        int j = 0;
+        for (DateTime i = DateTime.Parse(date.ToShortDateString() + " 9:30"); 
+            (i < DateTime.Parse(date.ToShortDateString() + " 15:00") && DateTime.Parse(i.ToShortDateString()) < DateTime.Parse(DateTime.Now.ToShortDateString()))
+            || (DateTime.Parse(i.ToShortDateString()) == DateTime.Parse(DateTime.Now.ToShortDateString()) && i < DateTime.Parse(date.ToShortDateString() + " 15:00") && i < DateTime.Now) ; 
+            i = i.AddMinutes(1))
+        {
+            if (i >= DateTime.Parse(i.ToShortDateString() + " 11:30") && i < DateTime.Parse(i.ToShortDateString() + " 13:00"))
+                continue;
+            kLineArr[j] = new KLine();
+            kLineArr[j].gid = gid;
+            kLineArr[j].type = "1min";
+            kLineArr[j].startDateTime = i;
+            DataRow[] drTimelineArr;
+            DataRow[] drNormalArr;
+            if (j == 0)
+            {
+                drTimelineArr = dtTimeLine.Select(" ticktime < '" + i.AddMinutes(1).ToString() + "'");
+                drNormalArr = dtNormal.Select(" time < '" + i.AddMinutes(1).Hour.ToString().PadLeft(2, '0') 
+                    + ":" + i.AddMinutes(1).Minute.ToString().PadLeft(2, '0') 
+                    + ":" + i.AddMinutes(1).Second.ToString().PadLeft(2, '0') + "' ");
+            }
+            else
+            {
+                if ((i.Hour == 11 && i.Minute == 29) || (i.Hour == 14 && i.Minute == 59))
+                {
+                    drTimelineArr = dtTimeLine.Select(" ticktime >= '" + i.ToString() + "' and  ticktime < '" + i.AddMinutes(1).ToString() + "'");
+                    drNormalArr = dtNormal.Select(" time >= '" + i.Hour.ToString().PadLeft(2, '0')
+                        + ":" + i.Minute.ToString().PadLeft(2, '0')
+                        + ":" + i.Second.ToString().PadLeft(2, '0') + "' and time <= '" + i.AddMinutes(1).Hour.ToString().PadLeft(2, '0')
+                        + ":" + i.AddMinutes(1).Minute.ToString().PadLeft(2, '0')
+                        + ":" + i.AddMinutes(1).Second.ToString().PadLeft(2, '0') + "' ");
+                }
+                else
+                {
+                    drTimelineArr = dtTimeLine.Select(" ticktime >= '" + i.ToString() + "' and  ticktime < '" + i.AddMinutes(1).ToString() + "'");
+                    drNormalArr = dtNormal.Select(" time >= '" + i.Hour.ToString().PadLeft(2, '0')
+                        + ":" + i.Minute.ToString().PadLeft(2, '0')
+                        + ":" + i.Second.ToString().PadLeft(2, '0') + "' and time < '" + i.AddMinutes(1).Hour.ToString().PadLeft(2, '0')
+                        + ":" + i.AddMinutes(1).Minute.ToString().PadLeft(2, '0')
+                        + ":" + i.AddMinutes(1).Second.ToString().PadLeft(2, '0') + "' ");
+                }
+            }
+            DataTable dtCurrentMin = new DataTable();
+            dtCurrentMin.Columns.Add("price", Type.GetType("System.Double"));
+            dtCurrentMin.Columns.Add("volume", Type.GetType("System.Int32"));
+            dtCurrentMin.Columns.Add("amount", Type.GetType("System.Double"));
+            dtCurrentMin.Columns.Add("ticktime", Type.GetType("System.DateTime"));
+            foreach (DataRow dr in drTimelineArr)
+            {
+                DataRow drCurrentMin = dtCurrentMin.NewRow();
+                drCurrentMin["price"] = double.Parse(dr["trade"].ToString());
+                drCurrentMin["volume"] = int.Parse(dr["volume"].ToString());
+                drCurrentMin["amount"] = double.Parse(dr["amount"].ToString());
+                drCurrentMin["ticktime"] = DateTime.Parse(dr["ticktime"].ToString());
+                dtCurrentMin.Rows.Add(drCurrentMin);
+            }
+
+            foreach (DataRow dr in drNormalArr)
+            {
+                DataRow drCurrentMin = dtCurrentMin.NewRow();
+                drCurrentMin["price"] = double.Parse(dr["nowPri"].ToString());
+                drCurrentMin["volume"] = int.Parse(dr["traNumber"].ToString());
+                drCurrentMin["amount"] = double.Parse(dr["traAmount"].ToString());
+                drCurrentMin["ticktime"] = DateTime.Parse(dr["date"].ToString() + " " + dr["time"].ToString());
+                dtCurrentMin.Rows.Add(drCurrentMin);
+            }
+
+            DataRow[] drCurrentMinArr = dtCurrentMin.Select("", " ticktime ");
+            if (drCurrentMinArr.Length > 0)
+            {
+                kLineArr[j].startPrice = double.Parse(drCurrentMinArr[0]["price"].ToString());
+                kLineArr[j].endPrice = double.Parse(drCurrentMinArr[drCurrentMinArr.Length - 1]["price"].ToString());
+                double maxPrice = 0;
+                double minPrice = double.MaxValue;
+                foreach (DataRow drMaxMin in drCurrentMinArr)
+                {
+                    maxPrice = Math.Max(maxPrice, double.Parse(drMaxMin["price"].ToString()));
+                    minPrice = Math.Min(minPrice, double.Parse(drMaxMin["price"].ToString()));
+                }
+                kLineArr[j].highestPrice = maxPrice;
+                kLineArr[j].lowestPrice = minPrice;
+                if (j == 0)
+                {
+                    kLineArr[j].amount = double.Parse(drCurrentMinArr[drCurrentMinArr.Length - 1]["amount"].ToString());
+                    kLineArr[j].volume = int.Parse(drCurrentMinArr[drCurrentMinArr.Length - 1]["volume"].ToString());
+                }
+                else
+                {
+                    kLineArr[j].amount = double.Parse(drCurrentMinArr[drCurrentMinArr.Length - 1]["amount"].ToString())
+                        - kLineArr[j - 1].amount;
+                    kLineArr[j].volume = int.Parse(drCurrentMinArr[drCurrentMinArr.Length - 1]["volume"].ToString())
+                        - kLineArr[j - 1].volume;
+                }
+            }
+            else
+            {
+                kLineArr[j].startPrice = kLineArr[j - 1].endPrice;
+                kLineArr[j].endPrice = kLineArr[j].startPrice;
+                kLineArr[j].highestPrice = kLineArr[j].startPrice;
+                kLineArr[j].lowestPrice = kLineArr[j].startPrice;
+                kLineArr[j].volume = 0;
+                kLineArr[j].amount = 0;
+            }
+            j++;
+            foreach (DataRow drDel in drTimelineArr)
+                dtTimeLine.Rows.Remove(drDel);
+            foreach (DataRow drDel in drNormalArr)
+                dtNormal.Rows.Remove(drDel); 
+        }
+        if (j < 240)
+        {
+            KLine[] kArr = new KLine[j];
+            for (int i = 0; i < kArr.Length; i++)
+            {
+                kArr[i] = kLineArr[i];
+            }
+            return kArr;
+        }
+        else
+            return kLineArr;
+    }
+
+
     public static KLine[] CreateKLineArray(string gid, string type, TimeLine[] timeLineArray)
     {
         DateTime startDateTime = timeLineArray[0].tickTime;
@@ -328,7 +528,10 @@ public class TimeLine
         for (int i = 0; i < timeLineArray.Length; i++)
         {
             if (!Util.IsTransacDay(timeLineArray[i].tickTime))
+            {
+                startDateTime = timeLineArray[i].tickTime;
                 continue;
+            }
             if (timeLineArray[i].tickTime < startDateTime.Add(ts) && timeLineArray[i].tickTime >= startDateTime)
             {
                 k.startDateTime = startDateTime;
