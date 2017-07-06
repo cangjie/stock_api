@@ -18,6 +18,10 @@ public class StockWatcher
 
     public static Thread thread = new Thread(ts) ;
 
+    public static ThreadStart tsKLineRefresher = new ThreadStart(RefreshKLine);
+
+    public static Thread tKLineRefresher = new Thread(tsKLineRefresher);
+
     public StockWatcher()
     {
         //
@@ -29,7 +33,7 @@ public class StockWatcher
     {
         for (; true;)
         {
-            if (Util.IsTransacDay(DateTime.Parse(DateTime.Now.ToShortDateString())) && DateTime.Now.Hour >= 9 && DateTime.Now.Hour <= 15)
+            if (Util.IsTransacTime(DateTime.Now))
             {
                 try
                 {
@@ -48,13 +52,32 @@ public class StockWatcher
         }
     }
 
+    public static void RefreshKLine()
+    {
+        for (; true;)
+        {
+            if (Util.IsTransacTime(DateTime.Now))
+            {
+                try
+                {
+                    Util.RefreshTodayKLine();
+                }
+                catch
+                {
+
+                }
+            }
+            Thread.Sleep(1000);
+        }
+    }
+
     public static void WatchStar()
     {
         try
         {
 
 
-            string content = Util.GetWebContent("http://stock.tuyaa.com/promote_stock_by_3x3_new.aspx");
+            string content = Util.GetWebContent("http://stock.tuyaa.com/promote_stock_by_3x3_new_gold.aspx");
             Regex reg = new Regex("alt=\"\\d\\d\\d\\d\\d\\d\"");
             MatchCollection mc = reg.Matches(content);
             foreach (Match m in mc)
@@ -122,8 +145,7 @@ public class StockWatcher
     public static void WatchEachStock()
     {
         
-        if ((DateTime.Now.Hour < 9 || DateTime.Now.Hour >= 15) 
-            && Util.IsTransacDay(DateTime.Parse(DateTime.Now.ToShortDateString())))
+        if (Util.IsTransacTime(DateTime.Now))
             return;
             
         DataTable dt = DBHelper.GetDataTable(" select [name]  from dbo.sysobjects where OBJECTPROPERTY(id, N'IsUserTable') = 1 and name like '%timeline'");

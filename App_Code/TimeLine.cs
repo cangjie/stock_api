@@ -495,7 +495,7 @@ public class TimeLine
             return kLineArr;
     }
 
-
+    /*
     public static KLine[] CreateKLineArray(string gid, string type, TimeLine[] timeLineArray)
     {
         DateTime startDateTime = timeLineArray[0].tickTime;
@@ -623,7 +623,7 @@ public class TimeLine
         }
         return kLineArrRet;
     }
-
+    */
     public static bool IsTimeLineItemArrayContinues(TimeLineItem[] timeLineItemArray)
     {
         return true;

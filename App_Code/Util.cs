@@ -238,9 +238,17 @@ public class Util
         {
             ret = false;
         }
-        if ((date.Hour < 9 || (date.Hour >= 15 && (date.Minute > 0 || date.Second > 0)) || (date.Hour == 9 && date.Minute < 30) || (date.Hour == 11 && date.Minute >= 30) || date.Hour == 12) && (date > DateTime.Parse(date.ToShortDateString())))
-            ret = false;
         return ret;
+    }
+
+    public static bool IsTransacTime(DateTime date)
+    {
+        DateTime dateRef = DateTime.Parse(date.ToShortDateString());
+        bool ret = false;
+        if ((date >= DateTime.Parse(dateRef.ToShortDateString() + " 9:30") && date <= DateTime.Parse(dateRef.ToShortDateString() + " 11:30"))
+            || (date >= DateTime.Parse(dateRef.ToShortDateString() + " 13:00") && date <= DateTime.Parse(dateRef.ToShortDateString() + " 15:00")))
+            ret = true;
+        return ret && IsTransacDay(dateRef);
     }
 
     public static double Compute_3_3_Price(KLine[] kArr, DateTime date)
@@ -347,5 +355,48 @@ public class Util
             return stock.kArr;
         else
             return new KLine[0];
+    }
+
+    public static void  RefreshTodayKLine()
+    {
+        if (!IsTransacDay(DateTime.Parse(DateTime.Now.ToShortDateString())) || !IsTransacTime(DateTime.Now))
+            return;
+        foreach (string gid in GetAllGids())
+        {
+            KLine[] kArr1Min = TimeLine.Create1MinKLine(gid, DateTime.Parse(DateTime.Now.ToShortDateString()));
+            KLine[] kArr = TimeLine.AssembKLine("day", kArr1Min);
+            foreach (KLine k in kArr)
+            {
+                k.Save();
+            }
+            kArr = TimeLine.AssembKLine("1hr", kArr1Min);
+            foreach (KLine k in kArr)
+            {
+                k.Save();
+            }
+            kArr = TimeLine.AssembKLine("30min", kArr1Min);
+            foreach (KLine k in kArr)
+            {
+                k.Save();
+            }
+            kArr = TimeLine.AssembKLine("15min", kArr1Min);
+            foreach (KLine k in kArr)
+            {
+                k.Save();
+            }
+
+        }
+    }
+
+    public static string[] GetAllGids()
+    {
+        DataTable dt = DBHelper.GetDataTable(" select [name]  from dbo.sysobjects where OBJECTPROPERTY(id, N'IsUserTable') = 1 and name like '%timeline'");
+        string[] gidArr = new string[dt.Rows.Count];
+        for (int i = 0; i < dt.Rows.Count; i++)
+        {
+            gidArr[i] = dt.Rows[i][0].ToString().Replace("_timeline", "");
+        }
+        dt.Dispose();
+        return gidArr;
     }
 }

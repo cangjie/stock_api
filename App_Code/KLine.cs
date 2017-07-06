@@ -232,7 +232,7 @@ public class KLine
         else
             return null;
     }
-
+/*
     public static void ComputeAndUpdateKLine(string gid, string type, DateTime start, DateTime end)
     {
         KLine[] kArr = TimeLine.CreateKLineArray(gid, type, TimeLine.GetTimeLineItem(gid, start, end));
@@ -242,7 +242,7 @@ public class KLine
             k.Save();
         }
     }
-
+*/
 
 
     public static void CreateKLineTable(string gid)
