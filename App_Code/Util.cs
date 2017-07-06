@@ -238,7 +238,7 @@ public class Util
         {
             ret = false;
         }
-        if ((date.Hour < 9 || date.Hour >= 15 || (date.Hour == 9 && date.Minute < 30) || (date.Hour == 11 && date.Minute >= 30) || date.Hour == 12) && (date > DateTime.Parse(date.ToShortDateString())))
+        if ((date.Hour < 9 || (date.Hour >= 15 && (date.Minute > 0 || date.Second > 0)) || (date.Hour == 9 && date.Minute < 30) || (date.Hour == 11 && date.Minute >= 30) || date.Hour == 12) && (date > DateTime.Parse(date.ToShortDateString())))
             ret = false;
         return ret;
     }

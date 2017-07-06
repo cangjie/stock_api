@@ -2,27 +2,50 @@
 <%@ Import Namespace="System.Threading" %>
 <%@ Import Namespace="System.Collections" %>
 <%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="System.Data.SqlClient" %>
 <script runat="server">
 
     public static Queue queue = new Queue();
 
     protected void Page_Load(object sender, EventArgs e)
     {
+        //TimeLine.AssembKLine("1hr",TimeLine.Create1MinKLine("sh600031", DateTime.Parse("2017-7-6")));
 
-        ThreadStart ts = new ThreadStart(RunData);
-        Thread t = new Thread(ts);
-        t.Start();
 
-        /*
+
         DataTable dt = DBHelper.GetDataTable(" select [name]  from dbo.sysobjects where OBJECTPROPERTY(id, N'IsUserTable') = 1 and name like '%timeline'");
+        
+
         foreach (DataRow dr in dt.Rows)
         {
-            KLine.ComputeAndUpdateKLine(dr["name"].ToString().Replace("_timeline", ""), "day", DateTime.Parse("2017-6-16"), DateTime.Parse("2017-7-6"));
-            KLine.ComputeAndUpdateKLine(dr["name"].ToString().Replace("_timeline", ""), "1hr", DateTime.Parse("2017-6-16"), DateTime.Parse("2017-7-6"));
-            KLine.ComputeAndUpdateKLine(dr["name"].ToString().Replace("_timeline", ""), "30min", DateTime.Parse("2017-6-16"), DateTime.Parse("2017-7-6"));
-            KLine.ComputeAndUpdateKLine(dr["name"].ToString().Replace("_timeline", ""), "15min", DateTime.Parse("2017-6-16"), DateTime.Parse("2017-7-6"));
+            string gid = dr[0].ToString().Replace("_timeline", "").Trim();
+            KLine.CreateKLineTable(gid);
+            for (DateTime i = DateTime.Parse("2017-6-16"); i <= DateTime.Parse("2017-7-6"); i = i.AddDays(1))
+            {
+                KLine[] kLine1Min = TimeLine.Create1MinKLine(gid, i);
+                KLine[] kArr = TimeLine.AssembKLine("day", kLine1Min);
+                foreach (KLine k in kArr)
+                {
+                    k.Save();
+                }
+                kArr = TimeLine.AssembKLine("1hr", kLine1Min);
+                foreach (KLine k in kArr)
+                {
+                    k.Save();
+                }
+                kArr = TimeLine.AssembKLine("30min", kLine1Min);
+                foreach (KLine k in kArr)
+                {
+                    k.Save();
+                }
+                kArr = TimeLine.AssembKLine("15min", kLine1Min);
+                foreach (KLine k in kArr)
+                {
+                    k.Save();
+                }
+            }
         }
-        */
+      
 
         /*
         Stock s = new Stock("sh600031");
