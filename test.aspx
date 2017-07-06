@@ -22,11 +22,11 @@
             {
                 cmd.ExecuteNonQuery();
             }
-            catch(Exception err)
+            catch (Exception err)
             {
 
             }
-            
+
             KLine.CreateKLineTable(gid);
             for (DateTime i = DateTime.Parse("2017-6-16"); i <= DateTime.Parse("2017-7-6"); i = i.AddDays(1))
             {
@@ -57,5 +57,6 @@
         conn.Close();
         cmd.Dispose();
         conn.Dispose();
-        
+    }
+
 </script>
