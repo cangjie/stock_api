@@ -8,10 +8,11 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
+		RunData();
 
-        ThreadStart ts = new ThreadStart(RunData);
-        Thread t = new Thread(ts);
-        t.Start();
+        //ThreadStart ts = new ThreadStart(RunData);
+        //Thread t = new Thread(ts);
+        //t.Start();
 
         /*
         DataTable dt = DBHelper.GetDataTable(" select [name]  from dbo.sysobjects where OBJECTPROPERTY(id, N'IsUserTable') = 1 and name like '%timeline'");
@@ -90,10 +91,28 @@
         DataTable dt = DBHelper.GetDataTable(" select [name]  from dbo.sysobjects where OBJECTPROPERTY(id, N'IsUserTable') = 1 and name like '%timeline'");
         foreach (DataRow dr in dt.Rows)
         {
+	try
+{
             KLine.ComputeAndUpdateKLine(dr["name"].ToString().Replace("_timeline", ""), "day", DateTime.Parse("2017-6-16"), DateTime.Parse("2017-7-6"));
-            KLine.ComputeAndUpdateKLine(dr["name"].ToString().Replace("_timeline", ""), "1hr", DateTime.Parse("2017-6-16"), DateTime.Parse("2017-7-6"));
-            KLine.ComputeAndUpdateKLine(dr["name"].ToString().Replace("_timeline", ""), "30min", DateTime.Parse("2017-6-16"), DateTime.Parse("2017-7-6"));
-            KLine.ComputeAndUpdateKLine(dr["name"].ToString().Replace("_timeline", ""), "15min", DateTime.Parse("2017-6-16"), DateTime.Parse("2017-7-6"));
+}
+catch{}
+try
+{ 
+           KLine.ComputeAndUpdateKLine(dr["name"].ToString().Replace("_timeline", ""), "1hr", DateTime.Parse("2017-6-16"), DateTime.Parse("2017-7-6"));
+}
+catch{}
+try
+{ 
+           KLine.ComputeAndUpdateKLine(dr["name"].ToString().Replace("_timeline", ""), "30min", DateTime.Parse("2017-6-16"), DateTime.Parse("2017-7-6"));
+}
+catch{}
+try
+{ 
+ 
+          KLine.ComputeAndUpdateKLine(dr["name"].ToString().Replace("_timeline", ""), "15min", DateTime.Parse("2017-6-16"), DateTime.Parse("2017-7-6"));
+}
+catch
+{}
         }
     }
 </script>
