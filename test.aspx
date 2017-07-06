@@ -16,6 +16,7 @@
         SqlConnection conn = new SqlConnection(Util.conStr);
         SqlCommand cmd = new SqlCommand();
         conn.Open();
+        cmd.Connection = conn;
         foreach (DataRow dr in dt.Rows)
         {
             string gid = dr[0].ToString().Replace("_timeline", "").Trim();
@@ -24,7 +25,7 @@
             {
                 cmd.ExecuteNonQuery();
             }
-            catch
+            catch(Exception err)
             {
 
             }
