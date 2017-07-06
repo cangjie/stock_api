@@ -12,11 +12,22 @@
 
 
         DataTable dt = DBHelper.GetDataTable(" select [name]  from dbo.sysobjects where OBJECTPROPERTY(id, N'IsUserTable') = 1 and name like '%timeline'");
-        
 
+        SqlConnection conn = new SqlConnection(Util.conStr);
+        SqlCommand cmd = new SqlCommand();
+        conn.Open();
         foreach (DataRow dr in dt.Rows)
         {
             string gid = dr[0].ToString().Replace("_timeline", "").Trim();
+            cmd.CommandText = " drop table " + gid.Trim() + "_k_line ";
+            try
+            {
+                cmd.ExecuteNonQuery();
+            }
+            catch
+            {
+
+            }
             KLine.CreateKLineTable(gid);
             for (DateTime i = DateTime.Parse("2017-6-16"); i <= DateTime.Parse("2017-7-6"); i = i.AddDays(1))
             {
@@ -43,7 +54,9 @@
                 }
             }
         }
-      
+        conn.Close();
+        cmd.Dispose();
+        conn.Dispose();
 
         /*
         Stock s = new Stock("sh600031");
@@ -111,28 +124,28 @@
         DataTable dt = DBHelper.GetDataTable(" select [name]  from dbo.sysobjects where OBJECTPROPERTY(id, N'IsUserTable') = 1 and name like '%timeline'");
         foreach (DataRow dr in dt.Rows)
         {
-	try
-{
-            KLine.ComputeAndUpdateKLine(dr["name"].ToString().Replace("_timeline", ""), "day", DateTime.Parse("2017-6-16"), DateTime.Parse("2017-7-6"));
-}
-catch{}
-try
-{ 
-           KLine.ComputeAndUpdateKLine(dr["name"].ToString().Replace("_timeline", ""), "1hr", DateTime.Parse("2017-6-16"), DateTime.Parse("2017-7-6"));
-}
-catch{}
-try
-{ 
-           KLine.ComputeAndUpdateKLine(dr["name"].ToString().Replace("_timeline", ""), "30min", DateTime.Parse("2017-6-16"), DateTime.Parse("2017-7-6"));
-}
-catch{}
-try
-{ 
- 
-          KLine.ComputeAndUpdateKLine(dr["name"].ToString().Replace("_timeline", ""), "15min", DateTime.Parse("2017-6-16"), DateTime.Parse("2017-7-6"));
-}
-catch
-{}
+            try
+            {
+                KLine.ComputeAndUpdateKLine(dr["name"].ToString().Replace("_timeline", ""), "day", DateTime.Parse("2017-6-16"), DateTime.Parse("2017-7-6"));
+            }
+            catch{}
+            try
+            {
+                KLine.ComputeAndUpdateKLine(dr["name"].ToString().Replace("_timeline", ""), "1hr", DateTime.Parse("2017-6-16"), DateTime.Parse("2017-7-6"));
+            }
+            catch{}
+            try
+            {
+                KLine.ComputeAndUpdateKLine(dr["name"].ToString().Replace("_timeline", ""), "30min", DateTime.Parse("2017-6-16"), DateTime.Parse("2017-7-6"));
+            }
+            catch{}
+            try
+            {
+
+                KLine.ComputeAndUpdateKLine(dr["name"].ToString().Replace("_timeline", ""), "15min", DateTime.Parse("2017-6-16"), DateTime.Parse("2017-7-6"));
+            }
+            catch
+            {}
         }
     }
 </script>

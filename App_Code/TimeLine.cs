@@ -322,7 +322,7 @@ public class TimeLine
         {
             newKArr[i] = new KLine();
             newKArr[i].gid = kArr[0].gid;
-            newKArr[i].type = kArr[0].type;
+            newKArr[i].type = type;
             newKArr[i].startDateTime = DateTime.MinValue;
             newKArr[i].startPrice = 0;
             newKArr[i].endPrice = 0;
