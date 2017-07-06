@@ -469,12 +469,21 @@ public class TimeLine
             }
             else
             {
-                kLineArr[j].startPrice = kLineArr[j - 1].endPrice;
-                kLineArr[j].endPrice = kLineArr[j].startPrice;
-                kLineArr[j].highestPrice = kLineArr[j].startPrice;
-                kLineArr[j].lowestPrice = kLineArr[j].startPrice;
-                kLineArr[j].volume = 0;
-                kLineArr[j].amount = 0;
+                if (j > 0)
+                {
+
+
+                    kLineArr[j].startPrice = kLineArr[j - 1].endPrice;
+                    kLineArr[j].endPrice = kLineArr[j].startPrice;
+                    kLineArr[j].highestPrice = kLineArr[j].startPrice;
+                    kLineArr[j].lowestPrice = kLineArr[j].startPrice;
+                    kLineArr[j].volume = 0;
+                    kLineArr[j].amount = 0;
+                }
+                else
+                {
+                    j--;
+                }
             }
             j++;
             foreach (DataRow drDel in drTimelineArr)
@@ -484,6 +493,8 @@ public class TimeLine
         }
         if (j < 240)
         {
+            if (j == 0)
+                return new KLine[0];
             KLine[] kArr = new KLine[j];
             for (int i = 0; i < kArr.Length; i++)
             {
