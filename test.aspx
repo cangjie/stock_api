@@ -10,11 +10,13 @@
     protected void Page_Load(object sender, EventArgs e)
     {
 
+
         Util.RefreshTodayKLine();
 
         return;
 
         Server.ScriptTimeout = int.MaxValue;
+
 
         DataTable dt = DBHelper.GetDataTable(" select [name]  from dbo.sysobjects where OBJECTPROPERTY(id, N'IsUserTable') = 1 and name like '%timeline'");
         
