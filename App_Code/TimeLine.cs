@@ -316,7 +316,7 @@ public class TimeLine
             default:
                 break;
         }
-        int kLineNum = (kArr.Length * span / span == kArr.Length) ? kArr.Length / span : 1 + kArr.Length / span;
+        int kLineNum = ((kArr.Length  / span) * span == kArr.Length) ?  ( kArr.Length / span) : (1 + kArr.Length / span);
         KLine[] newKArr = new KLine[kLineNum];
         for (int i = 0; i < kLineNum; i++)
         {
