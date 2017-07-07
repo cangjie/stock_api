@@ -102,7 +102,8 @@ public class KLine
                 { "lowest", "float", lowestPrice.ToString()},
                 { "volume", "int", volume.ToString()},
                 { "amount", "float", amount.ToString()},
-                { "ext_data", "varchar", ""}
+                { "ext_data", "varchar", ""},
+                { "create_date", "datetime", DateTime.Now.ToString()},
             }, new string[,] {
                 { "gid", "varchar", gid.Trim()},
                 { "start_date", "datetime", startDateTime.ToString() },
