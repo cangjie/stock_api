@@ -6,7 +6,7 @@
     {
         // Code that runs on application startup
         StockWatcher.thread.Start();
-        //StockWatcher.tKLineRefresher.Start();
+        StockWatcher.tKLineRefresher.Start();
 
 
     }
