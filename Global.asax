@@ -5,8 +5,8 @@
     void Application_Start(object sender, EventArgs e) 
     {
         // Code that runs on application startup
-        //StockWatcher.thread.Start();
-        //StockWatcher.tKLineRefresher.Start();
+        StockWatcher.thread.Start();
+        StockWatcher.tKLineRefresher.Start();
 
 
     }
