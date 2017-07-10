@@ -344,10 +344,10 @@ public class Stock
         int currentDateIndex = GetKLineIndexForADay(currentDate);
         if (currentDateIndex < 0)
             return 0;
-        double minPrice = 0;
+        double minPrice = double.MaxValue;
         for (int i = 0; i < days && currentDateIndex - i >= 0; i++)
         {
-            minPrice = Math.Max(minPrice, kArr[currentDateIndex - i].lowestPrice);
+            minPrice = Math.Min(minPrice, kArr[currentDateIndex - i].lowestPrice);
         }
         return minPrice;
     }
