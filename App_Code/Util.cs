@@ -330,24 +330,6 @@ public class Util
 
     public static KLine[] IsSuggest(DateTime day, string stockCode)
     {
-        /*
-        KLine[] kArr = KLine.GetKLine("day", stockCode, day.AddMonths(-3), day);
-        if (kArr.Length < 6)
-            return new KLine[0];
-        if (kArr[kArr.Length - 1].startDateTime != day)
-            return new KLine[0];
-        double price_3_3_yesterday = Util.Compute_3_3_Price(kArr, kArr[kArr.Length - 2].startDateTime);
-        double price_3_3_today = Util.Compute_3_3_Price(kArr, kArr[kArr.Length - 1].startDateTime);
-        if (kArr[kArr.Length - 2].endPrice < price_3_3_yesterday
-            && kArr[kArr.Length - 1].startPrice > kArr[kArr.Length - 2].endPrice
-            && kArr[kArr.Length - 1].startPrice > price_3_3_today
-            && kArr[kArr.Length - 2].endPrice != 0 && kArr[kArr.Length - 1].startPrice != 0
-            )
-        {
-            return kArr;
-        }
-        return new KLine[0];
-        */
         Stock stock = new Stock();
         stock.gid = stockCode;
         stock.kArr = KLine.GetKLine("day", stockCode, day.AddMonths(-3), day);
@@ -357,34 +339,20 @@ public class Util
             return new KLine[0];
     }
 
+
+
     public static void  RefreshTodayKLine()
     {
-        if (!IsTransacDay(DateTime.Parse(DateTime.Now.ToShortDateString())) || !IsTransacTime(DateTime.Now))
-            return;
         foreach (string gid in GetAllGids())
         {
-            KLine[] kArr1Min = TimeLine.Create1MinKLine(gid, DateTime.Parse(DateTime.Now.ToShortDateString()));
-            KLine[] kArr = TimeLine.AssembKLine("day", kArr1Min);
-            foreach (KLine k in kArr)
+            try
             {
-                k.Save();
+                KLine.RefreshKLine(gid, DateTime.Parse(DateTime.Now.ToShortDateString()));
             }
-            kArr = TimeLine.AssembKLine("1hr", kArr1Min);
-            foreach (KLine k in kArr)
+            catch
             {
-                k.Save();
-            }
-            kArr = TimeLine.AssembKLine("30min", kArr1Min);
-            foreach (KLine k in kArr)
-            {
-                k.Save();
-            }
-            kArr = TimeLine.AssembKLine("15min", kArr1Min);
-            foreach (KLine k in kArr)
-            {
-                k.Save();
-            }
 
+            }
         }
     }
 

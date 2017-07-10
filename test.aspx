@@ -9,75 +9,39 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-
-
         Util.RefreshTodayKLine();
-
-        return;
-
-        Server.ScriptTimeout = int.MaxValue;
-
-
-        DataTable dt = DBHelper.GetDataTable(" select [name]  from dbo.sysobjects where OBJECTPROPERTY(id, N'IsUserTable') = 1 and name like '%timeline'");
-        
-        SqlConnection conn = new SqlConnection(Util.conStr);
-        SqlCommand cmd = new SqlCommand();
-        conn.Open();
-        cmd.Connection = conn;
-        
-        foreach (DataRow dr in dt.Rows)
+        foreach (string gid in Util.GetAllGids())
         {
-            string gid = dr[0].ToString().Replace("_timeline", "").Trim();
-           
-            
-             cmd.CommandText = " drop table " + gid.Trim() + "_k_line ";
-
-             try
-             {
-                 cmd.ExecuteNonQuery();
-             }
-             catch (Exception err)
-             {
-
-             }
-             
-
-
-/*
-            KLine.CreateKLineTable(gid);
-            for (DateTime i = DateTime.Parse("2017-6-16"); i <= DateTime.Parse("2017-7-6"); i = i.AddDays(1))
+            try
             {
-                KLine[] kLine1Min = TimeLine.Create1MinKLine(gid, i);
-                KLine[] kArr = TimeLine.AssembKLine("day", kLine1Min);
-                foreach (KLine k in kArr)
-                {
-
-                    k.Save();
-                }
-                kArr = TimeLine.AssembKLine("1hr", kLine1Min);
-                foreach (KLine k in kArr)
-                {
-                    k.Save();
-                }
-                kArr = TimeLine.AssembKLine("30min", kLine1Min);
-                foreach (KLine k in kArr)
-                {
-                    k.Save();
-                }
-                kArr = TimeLine.AssembKLine("15min", kLine1Min);
-                foreach (KLine k in kArr)
-                {
-                    k.Save();
-                }
-
+                int todayIndex = 0;
+                KLine[] kArr = KLine.GetLocalKLine(gid, "day");
+                kArr = KLine.ComputeRSV(kArr);
+                kArr = KLine.ComputeKDJ(kArr);
+                todayIndex = KLine.GetStartIndexForDay(kArr, DateTime.Parse(DateTime.Now.ToShortDateString() + " 9:30"));
+                KLine.SearchKDJAlert(kArr, todayIndex);
+                kArr = KLine.GetLocalKLine(gid, "1hr");
+                kArr = KLine.ComputeRSV(kArr);
+                kArr = KLine.ComputeKDJ(kArr);
+                todayIndex = KLine.GetStartIndexForDay(kArr, DateTime.Parse(DateTime.Now.ToShortDateString() + " 9:30"));
+                KLine.SearchKDJAlert(kArr, todayIndex);
+                kArr = KLine.GetLocalKLine(gid, "30min");
+                kArr = KLine.ComputeRSV(kArr);
+                kArr = KLine.ComputeKDJ(kArr);
+                todayIndex = KLine.GetStartIndexForDay(kArr, DateTime.Parse(DateTime.Now.ToShortDateString() + " 9:30"));
+                KLine.SearchKDJAlert(kArr, todayIndex);
+                kArr = KLine.GetLocalKLine(gid, "15min");
+                kArr = KLine.ComputeRSV(kArr);
+                kArr = KLine.ComputeKDJ(kArr);
+                todayIndex = KLine.GetStartIndexForDay(kArr, DateTime.Parse(DateTime.Now.ToShortDateString() + " 9:30"));
+                KLine.SearchKDJAlert(kArr, todayIndex);
+            }
+            catch
+            {
 
             }
-        */    
-            
+
         }
-        conn.Close();
-        cmd.Dispose();
-        conn.Dispose();
 
     }
 

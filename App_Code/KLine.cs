@@ -182,8 +182,6 @@ public class KLine
             kLine.change = double.Parse(kLineData[9].ToString().Replace("%", ""));
             kLineArr[oArr.Length - 1 - i] = kLine;
         }
-        //if (endDate >= DateTime.Parse(DateTime.Now.ToShortDateString()) && Util.IsTransacDay(endDate) 
-        //    && kLineArr[kLineArr.Length - 1].startDateTime < endDate )
         if (endDate == DateTime.Parse(DateTime.Now.ToShortDateString()) && Util.IsTransacDay(endDate) 
             && kLineArr[kLineArr.Length - 1].startDateTime < endDate)
         {
@@ -233,18 +231,6 @@ public class KLine
         else
             return null;
     }
-/*
-    public static void ComputeAndUpdateKLine(string gid, string type, DateTime start, DateTime end)
-    {
-        KLine[] kArr = TimeLine.CreateKLineArray(gid, type, TimeLine.GetTimeLineItem(gid, start, end));
-        CreateKLineTable(gid);
-        foreach (KLine k in kArr)
-        {
-            k.Save();
-        }
-    }
-*/
-
 
     public static void CreateKLineTable(string gid)
     {
@@ -373,19 +359,100 @@ public class KLine
         }
     }
 
-    
-
-    /*
-    public static double GetHighestPrice(string gid, DateTime startDate, DateTime endDate)
+    public static void SearchKDJAlert(KLine[] kArr, int startIndex)
     {
-        KLine[] kArr = GetKLineDayFromSohu(gid, startDate, endDate);
-        double ret = 0;
+        int unEffectValue = 5;
+        for (int i = startIndex; i < kArr.Length; i++)
+        {
+            if (i > 0)
+            {
+                if (kArr[i].j >= kArr[i].k && kArr[i - 1].j <= kArr[i - 1].k && Math.Abs(kArr[i].j - 50) > unEffectValue && Math.Abs(kArr[i].k - 50) > unEffectValue)
+                {
+                    try
+                    {
+                        DBHelper.InsertData("kdj_alert", new string[,] {
+                        { "gid", "varchar", kArr[i].gid.Trim()},
+                        { "alert_time", "datetime", kArr[i].endDateTime.ToString()},
+                        { "type", "varchar", kArr[i].type},
+                        { "price", "float", kArr[i].endPrice.ToString()}
+                        });
+                    }
+                    catch
+                    {
+
+                    }
+                }
+            }
+        }
+    }
+
+    public static int GetStartIndexForDay(KLine[] kArr, DateTime currentDate)
+    {
+        int index = -1;
+        for (int i = kArr.Length - 1; i >= 0; i--)
+        {
+            if (kArr[i].startDateTime <= currentDate)
+            {
+                index = i;
+                break;
+            }
+        }
+        return index;
+    }
+
+    public static KLine[] GetLocalKLine(string gid, string type)
+    {
+        DataTable dt = DBHelper.GetDataTable(" select * from " + gid.Trim() + "_k_line where type = '" + type + "' order by start_date ");
+        KLine[] kArr = new KLine[dt.Rows.Count];
+        for (int i = 0; i < dt.Rows.Count; i++)
+        {
+            kArr[i] = new KLine();
+            kArr[i].gid = gid.Trim();
+            kArr[i].type = type.Trim();
+            kArr[i].startPrice = double.Parse(dt.Rows[i]["open"].ToString().Trim());
+            kArr[i].endPrice = double.Parse(dt.Rows[i]["settle"].ToString().Trim());
+            kArr[i].highestPrice = double.Parse(dt.Rows[i]["highest"].ToString().Trim());
+            kArr[i].lowestPrice = double.Parse(dt.Rows[i]["lowest"].ToString().Trim());
+            kArr[i].volume = int.Parse(dt.Rows[i]["volume"].ToString().Trim());
+            kArr[i].amount = double.Parse(dt.Rows[i]["amount"].ToString().Trim());
+            kArr[i].startDateTime = DateTime.Parse(dt.Rows[i]["start_date"].ToString().Trim());
+        }
+        return kArr;
+    }
+
+    public static void RefreshKLine(string gid, DateTime currentDate)
+    {
+        KLine.CreateKLineTable(gid);
+        KLine[] kArr1Min = TimeLine.Create1MinKLine(gid, DateTime.Parse(currentDate.ToShortDateString()));
+        KLine[] kArr = TimeLine.AssembKLine("day", kArr1Min);
         foreach (KLine k in kArr)
         {
-            ret = Math.Max(ret, k.highestPrice);
+            k.Save();
         }
-        return ret;
+        kArr = TimeLine.AssembKLine("1hr", kArr1Min);
+        foreach (KLine k in kArr)
+        {
+            k.Save();
+        }
+        kArr = TimeLine.AssembKLine("30min", kArr1Min);
+        foreach (KLine k in kArr)
+        {
+            k.Save();
+        }
+        kArr = TimeLine.AssembKLine("15min", kArr1Min);
+        foreach (KLine k in kArr)
+        {
+            k.Save();
+        }
     }
-    */
 
+    public static void SearchKDJAlert(string gid, string type, DateTime currentDate)
+    {
+        KLine[] kArr = GetLocalKLine(gid, type);
+        ComputeRSV(kArr);
+        ComputeKDJ(kArr);
+        int index = GetStartIndexForDay(kArr, DateTime.Parse(currentDate.ToShortDateString()));
+        SearchKDJAlert(kArr, index);
+
+    }
 }

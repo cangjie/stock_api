@@ -22,6 +22,10 @@ public class StockWatcher
 
     public static Thread tKLineRefresher = new Thread(tsKLineRefresher);
 
+    public static ThreadStart tsKDJ = new ThreadStart(WatchKDJ);
+
+    public static Thread tKDJ = new Thread(tsKDJ);
+
     public StockWatcher()
     {
         //
@@ -375,5 +379,30 @@ public class StockWatcher
         reqStream.Close();
         res.Close();
         req.Abort();
+    }
+
+    public static void WatchKDJ()
+    {
+        for (; true;)
+        {
+            foreach (string gid in Util.GetAllGids())
+            {
+                if (Util.IsTransacTime(DateTime.Now))
+                {
+                    try
+                    {
+                        KLine.SearchKDJAlert(gid, "day", DateTime.Now);
+                        KLine.SearchKDJAlert(gid, "1hr", DateTime.Now);
+                        KLine.SearchKDJAlert(gid, "30min", DateTime.Now);
+                        KLine.SearchKDJAlert(gid, "15min", DateTime.Now);
+                    }
+                    catch
+                    {
+
+                    }
+                }
+            }
+            Thread.Sleep(1000);
+        }
     }
 }
