@@ -81,7 +81,7 @@ public class StockWatcher
         {
 
 
-            string content = Util.GetWebContent("http://stock.tuyaa.com/promote_stock_by_3x3_new_gold.aspx");
+            string content = Util.GetWebContent("http://stock.tuyaa.com/bottom_break.aspx");
             Regex reg = new Regex("alt=\"\\d\\d\\d\\d\\d\\d\"");
             MatchCollection mc = reg.Matches(content);
             foreach (Match m in mc)
