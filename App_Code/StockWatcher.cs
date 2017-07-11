@@ -160,12 +160,36 @@ public class StockWatcher
             if (s.IsOver3X3(DateTime.Parse(DateTime.Now.ToShortDateString())))
             {
                 string stockName = s.Name;
-                string message = s.gid.Trim() + "[" + stockName.Trim() + "]已经突破3线，并且当日涨幅超过5%";
+                string message = s.gid.Trim() + "[" + stockName.Trim() + "]已经突破3线，并且当日涨幅超过2%";
                 if (AddAlert(DateTime.Now, s.gid, "over3line", s.Name.Trim(), message.Trim()))
                 {
+                    /*
                     SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", s.gid, stockName, s.LastTrade, "over3line");
                     SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", s.gid, stockName, s.LastTrade, "over3line");
                     SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", s.gid, stockName, s.LastTrade, "over3line");
+                    */
+
+                    try
+                    {
+                        double yesterdayPositiveRate = s.yesterdayPositiveRate(DateTime.Parse(DateTime.Now.ToShortDateString() + " 9:30"));
+                        DBHelper.InsertData("suggest_stock", new string[,]{
+                            { "suggest_date", "datetime", DateTime.Now.ToShortDateString() },
+                            { "gid", "varchar", s.gid},
+                            { "[name]", "varchar", s.Name},
+                            { "settlement", "float", s.kArr[s.kArr.Length-1].endPrice.ToString()},
+                            { "[open]", "float", s.kArr[s.kArr.Length-1].startPrice.ToString()},
+                            { "avg_3_3_yesterday", "float", s.GetAverageSettlePrice(s.kArr.Length - 2, 3, 3).ToString()},
+                            { "avg_3_3_today", "float", s.GetAverageSettlePrice(s.kArr.Length - 1, 3, 3).ToString()},
+                            { "double_cross_3_3", "int", (s.IsCross3X3Twice(DateTime.Parse(DateTime.Now.ToShortDateString()), 20)? "1" : "0")},
+                            { "last_day_over_flow", "float", yesterdayPositiveRate.ToString()},
+                            { "is_cross_3_3", "int", "1"}
+                        });
+                    }
+                    catch
+                    {
+
+                    }
+
 
                     //SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", message.Trim());
                     //SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", message.Trim());

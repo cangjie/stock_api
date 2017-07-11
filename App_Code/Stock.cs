@@ -104,10 +104,17 @@ public class Stock
 
     public int GetItemIndex(DateTime currentDate)
     {
+        if (currentDate.Hour == 0 && currentDate.Minute == 0)
+        {
+            currentDate = DateTime.Parse(currentDate.ToShortDateString() + " 9:30");
+        }
         int k = -1;
         for (int i = 0; i < kArr.Length; i++)
         {
-            if (kArr[i].startDateTime == currentDate)
+            DateTime startDateTime = kArr[i].startDateTime;
+            if (startDateTime.Hour == 0 && startDateTime.Minute == 0)
+                startDateTime = DateTime.Parse(startDateTime.ToShortDateString() + " 9:30");
+            if (startDateTime == currentDate)
             {
                 k = i;
                 break;
@@ -134,7 +141,7 @@ public class Stock
 
         }
         double avg3X3 = GetAverageSettlePrice(dateIndex, 3, 3);
-        if (settle > 0 && open < avg3X3 && end > avg3X3 && ((end - open) / open) >= 0.5 && ((end - settle) / settle) <= 0.9)
+        if (settle > 0 && open < avg3X3 && end > avg3X3 && ((end - open) / open) >= 0.02 )
         {
             ret = true;
         }
