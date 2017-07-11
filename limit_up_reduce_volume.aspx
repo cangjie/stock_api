@@ -31,6 +31,7 @@
         dt.Columns.Add("代码");
         dt.Columns.Add("名称");
         dt.Columns.Add("当日收盘");
+        dt.Columns.Add("缩量");
         dt.Columns.Add("1日最高");
         dt.Columns.Add("2日最高");
         dt.Columns.Add("3日最高");
@@ -45,6 +46,10 @@
             dr["名称"] = s.Name.Trim();
             dr["代码"] = "<a href=\"show_k_line_day.aspx?gid=" + dr["代码"].ToString() + "&name=" + dr["名称"].ToString().Trim() + "\" target=\"_blank\" >"
                 + dr["代码"].ToString() + "</a>";
+
+            double volumeToday = Stock.GetVolumeAndAmount(s.gid, DateTime.Parse(currentDate.ToShortDateString() + " 15:00"))[0];
+            double volumeYesterday = Stock.GetVolumeAndAmount(s.gid, DateTime.Parse(currentDate.AddDays(-1).ToShortDateString() + " 15:00"))[0];;
+            dr["缩量"] = Math.Round((volumeYesterday - volumeToday) * 100 / volumeYesterday, 2).ToString() + "%";
             int idx = s.GetItemIndex(DateTime.Parse(currentDate.ToShortDateString() + " 9:30"));
             if (idx >= 0)
             {
@@ -112,10 +117,17 @@
 
                         if (volumeLast - volume > 0 && volume / volumeLast < 0.66)
                         {
-                            DBHelper.InsertData("limit_up_volume_reduce", new string[,] {
+                            try
+                            {
+                                DBHelper.InsertData("limit_up_volume_reduce", new string[,] {
                                 { "gid", "varchar", gid},
                                 { "alert_date", "datetime", i.ToShortDateString()}
-                            });
+                                });
+                            }
+                            catch
+                            {
+
+                            }
                         }
 
                     }
