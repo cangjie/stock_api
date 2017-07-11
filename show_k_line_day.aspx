@@ -13,7 +13,12 @@
     {
         //jsonData = Util.GetWebContent("api/get_k_line.aspx?gid=" + Util.GetSafeRequestValue(Request, "gid", "sh600031"));
         gid = Util.GetSafeRequestValue(Request, "gid", "sh600031");
-        name = Util.GetSafeRequestValue(Request, "name", "三一重工");
+        name = Util.GetSafeRequestValue(Request, "name", "");
+        if (name.Trim().Equals(""))
+        {
+            Stock s = new Stock(gid);
+            name = s.Name.Trim();
+        }
     }
 </script>
 
@@ -24,9 +29,22 @@
     <script type="text/javascript" src="js/svg.js" ></script>
     <script type="text/javascript" src="js/stock.js" ></script>
     <script type="text/javascript" src="js/jquery.min.js" ></script>
+    <script type="text/javascript" >
+        function go() {
+            var gid = document.getElementById("gid").value.trim();
+            if (gid.charAt(0) == '6') {
+                gid = "sh" + gid;
+            }
+            else {
+                gid = "sz" + gid;
+            }
+            window.location.href = "show_k_line_day.aspx?gid=" + gid;
+        }
+    </script>
 </head>
 <body onresize="init()" onload="init()"  >
     <button id="btn_draw" onclick="ready_draw()" > 画 线 </button><%=gid %> <%=name %> <span id="price" >现价:</span> <span id="rate" >涨幅:</span> <span id="settle" >昨收:</span> <span id="open" >今开:</span> <span id="max" >最高:</span> <span id="min" >最低:</span>
+    <input type="text" id="gid" /><button  onclick="go()" >go!</button><br />
     <svg id="svg" version="1.1"   xmlns="http://www.w3.org/2000/svg"  onmousedown="mouse_down(evt)" onmouseup="mouse_up(evt)" onmousemove="mouse_move(evt)"  ></svg>
 </body>
 <script type="text/javascript" >

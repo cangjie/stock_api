@@ -97,6 +97,10 @@
         dt.Columns.Add("总计");
         foreach (DataRow drOri in dtOri.Rows)
         {
+            if (drOri["gid"].ToString().Trim().Equals("sz002758"))
+            {
+                string aa = "aa";
+            }
             DataRow dr = dt.NewRow();
             dr["代码"] = "<a href=\"show_k_line_day.aspx?gid=" + drOri["gid"].ToString().Trim() + "&name="
                 + Server.UrlEncode(drOri["name"].ToString().Trim()) + "\" target=\"_blank\" >"
@@ -154,8 +158,8 @@
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
             stock.kArr = KLine.GetLocalKLine(stock.gid, "day");
             double currentDayPrice = (currentDate == DateTime.Parse(DateTime.Now.ToShortDateString())) ? stock.LastTrade : double.Parse(drOri["open"].ToString().Trim()) * 1.01;
-            double minPrice = stock.LowestPrice(currentDate, 9);
-            double maxPrice = stock.HighestPrice(currentDate, 9);
+            double minPrice = stock.LowestPrice(DateTime.Now, 9);
+            double maxPrice = stock.HighestPrice(DateTime.Now, 9);
             double pressure = Stock.GetPressure(currentDayPrice , minPrice, maxPrice);
             double support = Stock.GetSupport(currentDayPrice , minPrice, maxPrice);
             dr["9日低价"] = Math.Round(minPrice, 2).ToString();
