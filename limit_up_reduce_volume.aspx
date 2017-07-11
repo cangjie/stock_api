@@ -30,8 +30,10 @@
         DataTable dt = new DataTable();
         dt.Columns.Add("代码");
         dt.Columns.Add("名称");
+
         dt.Columns.Add("当日收盘");
-        dt.Columns.Add("缩量");
+        dt.Columns.Add("前日涨幅");
+        dt.Columns.Add("当日缩量");
         dt.Columns.Add("1日最高");
         dt.Columns.Add("2日最高");
         dt.Columns.Add("3日最高");
@@ -49,10 +51,11 @@
 
             double volumeToday = Stock.GetVolumeAndAmount(s.gid, DateTime.Parse(currentDate.ToShortDateString() + " 15:00"))[0];
             double volumeYesterday = Stock.GetVolumeAndAmount(s.gid, DateTime.Parse(currentDate.AddDays(-1).ToShortDateString() + " 15:00"))[0];;
-            dr["缩量"] = Math.Round((volumeYesterday - volumeToday) * 100 / volumeYesterday, 2).ToString() + "%";
+            dr["当日缩量"] = Math.Round((volumeYesterday - volumeToday) * 100 / volumeYesterday, 2).ToString() + "%";
             int idx = s.GetItemIndex(DateTime.Parse(currentDate.ToShortDateString() + " 9:30"));
-            if (idx >= 0)
+            if (idx > 1)
             {
+                dr["前日涨幅"] = Math.Round(100 * (s.kArr[idx - 1].endPrice - s.kArr[idx - 2].endPrice) / s.kArr[idx - 2].endPrice, 2).ToString() + "%";
                 double settle = s.kArr[idx].endPrice;
                 dr["当日收盘"] = Math.Round(settle, 2).ToString();
                 for (int i = 0; i < 5; i++)
