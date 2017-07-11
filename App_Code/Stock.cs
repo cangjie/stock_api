@@ -417,5 +417,25 @@ public class Stock
         return kArr;
     }
 
+    public static double[] GetVolumeAndAmount(string gid, DateTime currentDate)
+    {
+        if (!Util.IsTransacTime(currentDate))
+            return new double[] { 0, 0};
+        DataTable dtTimeline = DBHelper.GetDataTable(" select top 1 * from  " + gid.Trim() + "_timeline where ticktime <= '" + currentDate.ToString() + "' order by ticktime desc ");
+        DataTable dtNormal = DBHelper.GetDataTable(" select top 1 * from  " + gid + " where convert(datetime, date + ' ' + time )  <= '" + currentDate.ToString() + "'  order by convert(datetime, date + ' ' + time ) desc   ");
+        double volmue = 0;
+        double amount = 0;
+        if (dtTimeline.Rows.Count > 0)
+        {
+            volmue = double.Parse(dtTimeline.Rows[0]["volume"].ToString());
+            amount = double.Parse(dtTimeline.Rows[0]["amount"].ToString());
+        }
+        if (dtNormal.Rows.Count > 0)
+        {
+            volmue = Math.Max(double.Parse(dtNormal.Rows[0]["traNumber"].ToString()), volmue);
+            amount = Math.Max(double.Parse(dtNormal.Rows[0]["traAmount"].ToString()), amount);
+        }
+        return new double[] { volmue, amount };
+    }
     
 }
