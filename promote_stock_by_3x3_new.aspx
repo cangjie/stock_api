@@ -31,7 +31,7 @@
     public DataTable GetData1()
     {
         DateTime currentDate = DateTime.Parse(calendar.SelectedDate.ToShortDateString());
-        DataTable dtOri = DBHelper.GetDataTable(" select * from suggest_stock where suggest_date = '" + currentDate.ToShortDateString()
+        DataTable dtOri = DBHelper.GetDataTable(" select * from view_suggest_stock where suggest_date = '" + currentDate.ToShortDateString()
                 + "'  order by  ((highest_5_day - [open]) / [open]) desc, ((highest_4_day - [open]) / [open]) desc, "
                 + " ((highest_3_day - [open]) / [open]) desc, ((highest_2_day - [open]) / [open]) desc , "
                 + " ((highest_1_day - [open]) / [open]) desc , ((highest_0_day - [open]) / [open]) desc , (([open] - settlement) / settlement) desc ");
