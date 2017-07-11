@@ -11,6 +11,9 @@
     {
         if (!IsPostBack)
         {
+            ThreadStart ts = new ThreadStart(RefreshData);
+            Thread t = new Thread(ts);
+            t.Start();
             calendar.SelectedDate = DateTime.Now;
             dg.DataSource = GetData();
             dg.DataBind();
@@ -85,6 +88,45 @@
         dg.DataSource = GetData();
         dg.DataBind();
     }
+
+    public static void RefreshData()
+    {
+        string[] gidArr = Util.GetAllGids();
+        DateTime i = DateTime.Parse(DateTime.Now.ToShortDateString());
+        if (!Util.IsTransacDay(i))
+            return;
+        foreach (string gid in gidArr)
+        {
+            Stock s = new Stock(gid);
+            s.kArr = KLine.GetLocalKLine(gid, "day");
+
+            if (Util.IsTransacDay(i))
+            {
+                int idx = s.GetItemIndex(DateTime.Parse(i.ToShortDateString() + " 9:30"));
+                if (idx > 1)
+                {
+                    if ((s.kArr[idx - 1].endPrice - s.kArr[idx - 2].endPrice) / s.kArr[idx - 1].endPrice > 0.07)
+                    {
+                        double volume = Stock.GetVolumeAndAmount(s.gid, DateTime.Parse(i.ToShortDateString() + " 14:30"))[0];
+                        double volumeLast = Stock.GetVolumeAndAmount(s.gid, DateTime.Parse(s.kArr[idx - 1].startDateTime.ToShortDateString() + " 14:30"))[0];
+
+                        if (volumeLast - volume > 0 && volume / volumeLast < 0.66)
+                        {
+                            DBHelper.InsertData("limit_up_volume_reduce", new string[,] {
+                                { "gid", "varchar", gid},
+                                { "alert_date", "datetime", i.ToShortDateString()}
+                            });
+                        }
+
+                    }
+
+                }
+            }
+
+        }
+
+    }
+
 </script>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
