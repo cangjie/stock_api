@@ -466,7 +466,7 @@
                 / double.Parse(dr["open"].ToString().Trim())) * 100, 2);
         if ( ( (jumpRate < 0.004 || (jumpRate > 0.01 && jumpRate < 0.07))
               && (rate > 1) && double.Parse(dr["last_day_over_flow"].ToString()) > 0)
-              || (jumpRate < 0 &&  double.Parse(dr["last_day_over_flow"].ToString()) > 0 && rate > 3) )
+              || (jumpRate < 0 &&  double.Parse(dr["last_day_over_flow"].ToString()) > 0 ) )
             return true;
         else
             return false;
