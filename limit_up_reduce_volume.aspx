@@ -103,6 +103,8 @@
         DateTime i = DateTime.Parse(DateTime.Now.ToShortDateString());
         if (!Util.IsTransacDay(i))
             return;
+        if (DateTime.Now.Hour < 14 || DateTime.Now.Minute < 30)
+            return;
         foreach (string gid in gidArr)
         {
             Stock s = new Stock(gid);
