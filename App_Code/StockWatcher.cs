@@ -156,7 +156,7 @@ public class StockWatcher
         foreach (DataRow dr in dt.Rows)
         {
             Stock s = new Stock(dr[0].ToString().Replace("_timeline", ""));
-            s.kArr = KLine.GetKLine("day", s.gid, DateTime.Now.AddDays(-50), DateTime.Now);
+            s.kArr = KLine.GetLocalKLine(s.gid, "day");
             if (s.IsOver3X3(DateTime.Parse(DateTime.Now.ToShortDateString())))
             {
                 string stockName = s.Name;

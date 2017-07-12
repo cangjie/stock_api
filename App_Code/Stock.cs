@@ -141,7 +141,7 @@ public class Stock
 
         }
         double avg3X3 = GetAverageSettlePrice(dateIndex, 3, 3);
-        if (settle > 0 && open < avg3X3 && end > avg3X3 && ((end - open) / open) >= 0.02 )
+        if (settle > 0 && open < avg3X3 && end > avg3X3  )
         {
             ret = true;
         }
