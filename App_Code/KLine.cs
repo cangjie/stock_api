@@ -455,4 +455,35 @@ public class KLine
         SearchKDJAlert(kArr, index);
 
     }
+
+    public static int GetBottomDeep(KLine[] kArr, int currentIndex)
+    {
+        int ret = 0;
+        for (int i = currentIndex; i > 0 && currentIndex < kArr.Length; i--)
+        {
+            if (kArr[i - 1].endPrice > kArr[i].endPrice)
+            {
+                ret++;
+                
+            }
+            else
+            {
+                break;
+            }
+        }
+
+        return ret;
+    }
+
+    public static double GetAverageSettlePrice(KLine[] kArr, int index, int itemsCount, int displacement)
+    {
+        if (index - displacement - itemsCount + 1 < 0)
+            return 0;
+        double sum = 0;
+        for (int i = 0; i < itemsCount; i++)
+        {
+            sum = sum + kArr[index - displacement - i].endPrice;
+        }
+        return sum / itemsCount;
+    }
 }

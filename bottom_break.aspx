@@ -97,10 +97,8 @@
         dt.Columns.Add("总计");
         foreach (DataRow drOri in dtOri.Rows)
         {
-            if (drOri["gid"].ToString().Trim().Equals("sz002758"))
-            {
-                string aa = "aa";
-            }
+            Stock stock = new Stock(drOri["gid"].ToString().Trim());
+            stock.kArr = KLine.GetLocalKLine(stock.gid, "day");
             DataRow dr = dt.NewRow();
             dr["代码"] = "<a href=\"show_k_line_day.aspx?gid=" + drOri["gid"].ToString().Trim() + "&name="
                 + Server.UrlEncode(drOri["name"].ToString().Trim()) + "\" target=\"_blank\" >"
@@ -110,6 +108,8 @@
             dr["信号"] = dr["信号"].ToString() + (IsOx(drOri) ? "<a title=\"20交易日内两次穿越3线\" >🐂</a>" : "");
             dr["信号"] = dr["信号"].ToString() + (IsStar(drOri) ? "<a alt=\"" + drOri["gid"].ToString().Trim().Remove(0, 2) + "\"  title=\"两日连涨，跳空和涨幅在特定范围内，昨日收阳，并且最高价和收盘价差在1%以内\" >🌟</a>" : "");
             dr["信号"] = dr["信号"].ToString() + (IsKdjAlert(drOri, dtKdj) ? "<a alt=\"" + drOri["gid"].ToString().Trim().Remove(0, 2) + "\"  title=\"KDJ买入\" >📈</a>" : "");
+            dr["信号"] = dr["信号"].ToString() + ((GetBottomDeep(stock.kArr, DateTime.Parse(currentDate.ToShortDateString() + " 9:30")) >= 5) ? "🚀" : "");
+
 
             if (dr["信号"].ToString().IndexOf("🌟") >= 0)
                 starTotal++;
@@ -155,8 +155,7 @@
             dr["今日最高"] = "<font color=\"" + (rateToday >=1? "red": (rateToday < 0? "green" : "black")) + "\" >" + rateToday.ToString() + "%</font>";
 
 
-            Stock stock = new Stock(drOri["gid"].ToString().Trim());
-            stock.kArr = KLine.GetLocalKLine(stock.gid, "day");
+
             double currentDayPrice = (currentDate == DateTime.Parse(DateTime.Now.ToShortDateString())) ? stock.LastTrade : double.Parse(drOri["open"].ToString().Trim()) * 1.01;
             double minPrice = stock.LowestPrice(DateTime.Now, 9);
             double maxPrice = stock.HighestPrice(DateTime.Now, 9);
@@ -444,6 +443,23 @@
         dt.Rows.Add(drOxStarKdj);
 
         return dt;
+    }
+
+    public int GetBottomDeep(KLine[] kArr, DateTime currentDate)
+    {
+        Stock s = new Stock();
+        s.kArr = kArr;
+        int index = s.GetItemIndex(DateTime.Parse(currentDate.ToShortDateString() + " 9:30"));
+        int deep = KLine.GetBottomDeep(kArr, index);
+        int ret = 0;
+        for (int i = 0; i < deep && index - i - 1 >= 0; i++)
+        {
+            if (s.GetAverageSettlePrice(index - i , 3, 3) < s.GetAverageSettlePrice(index -i - 1, 3, 3))
+            {
+                ret++;
+            }
+        }
+        return ret;
     }
 
 
