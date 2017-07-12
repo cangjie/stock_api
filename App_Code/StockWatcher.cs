@@ -149,7 +149,7 @@ public class StockWatcher
     public static void WatchEachStock()
     {
         
-        if (Util.IsTransacTime(DateTime.Now))
+        if (!Util.IsTransacTime(DateTime.Now))
             return;
             
         DataTable dt = DBHelper.GetDataTable(" select [name]  from dbo.sysobjects where OBJECTPROPERTY(id, N'IsUserTable') = 1 and name like '%timeline'");

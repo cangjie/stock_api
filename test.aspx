@@ -10,7 +10,7 @@
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        StockWatcher.WatchEachStock();
+        //StockWatcher.WatchEachStock();
         //double[] volumeAndAmount = Stock.GetVolumeAndAmount("sh600031", DateTime.Now);
         //Response.Write(volumeAndAmount[0].ToString() + "|" + volumeAndAmount[1].ToString());
         
