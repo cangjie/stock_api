@@ -461,7 +461,7 @@ public class KLine
         int ret = 0;
         for (int i = currentIndex; i > 0 && currentIndex < kArr.Length; i--)
         {
-            if (kArr[i - 1].endPrice > kArr[i].endPrice)
+            if (kArr[i - 1].endPrice >= kArr[i].endPrice)
             {
                 ret++;
                 
