@@ -112,7 +112,7 @@
             dr["信号"] = dr["信号"].ToString() + (IsOx(drOri) ? "<a title=\"20交易日内两次穿越3线\" >🐂</a>" : "");
             dr["信号"] = dr["信号"].ToString() + (IsStar(drOri) ? "<a alt=\"" + drOri["gid"].ToString().Trim().Remove(0, 2) + "\"  title=\"两日连涨，跳空和涨幅在特定范围内，昨日收阳，并且最高价和收盘价差在1%以内\" >🌟</a>" : "");
             dr["信号"] = dr["信号"].ToString() + (IsKdjAlert(drOri, dtKdj) ? "<a alt=\"" + drOri["gid"].ToString().Trim().Remove(0, 2) + "\"  title=\"KDJ买入\" >📈</a>" : "");
-            dr["信号"] = dr["信号"].ToString() + ((GetBottomDeep(stock.kArr, DateTime.Parse(currentDate.ToShortDateString() + " 9:30")) >= 2) ? "🚀" : "");
+            dr["信号"] = dr["信号"].ToString() + ((GetBottomDeep(stock.kArr, DateTime.Parse(currentDate.ToShortDateString() + " 9:30")) >= 5) ? "🚀" : "");
 
 
             if (dr["信号"].ToString().IndexOf("🌟") >= 0)
@@ -459,13 +459,13 @@
         {
             int currentIndex = index - j;
 
-            int deep = KLine.GetBottomDeep(kArr, currentIndex);
+            //int deep = KLine.GetBottomDeep(kArr, currentIndex);
             int ret = 0;
-            for (int i = 0; i < deep && currentIndex - i - 1 >= 0; i++)
+            for (int i = 0;  currentIndex - i - 1 >= 0; i++)
             {
                 double current3Line = s.GetAverageSettlePrice(currentIndex - i, 3, 3);
                 double previous3Line = s.GetAverageSettlePrice(currentIndex - i - 1, 3, 3);
-                if ( Math.Round(current3Line,2) <=  Math.Round(previous3Line,2))
+                if ( Math.Round(current3Line,2) <=  Math.Round(previous3Line,2) && kArr[currentIndex - i].endPrice <= current3Line && kArr[currentIndex - i -1].endPrice < previous3Line  )
                 {
                     ret++;
                 }
