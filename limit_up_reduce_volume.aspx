@@ -14,6 +14,7 @@
             ThreadStart ts = new ThreadStart(RefreshData);
             Thread t = new Thread(ts);
             t.Start();
+            //RefreshData();
             calendar.SelectedDate = DateTime.Now;
             dg.DataSource = GetData();
             dg.DataBind();

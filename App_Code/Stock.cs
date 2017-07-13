@@ -114,7 +114,8 @@ public class Stock
             DateTime startDateTime = kArr[i].startDateTime;
             if (startDateTime.Hour == 0 && startDateTime.Minute == 0)
                 startDateTime = DateTime.Parse(startDateTime.ToShortDateString() + " 9:30");
-            if (startDateTime == currentDate)
+            if (startDateTime == currentDate
+                || (kArr[i].type.Trim().Equals("day") && startDateTime.ToShortDateString().Equals(currentDate.ToShortDateString())))
             {
                 k = i;
                 break;

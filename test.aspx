@@ -10,47 +10,14 @@
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        //StockWatcher.WatchEachStock();
-        //double[] volumeAndAmount = Stock.GetVolumeAndAmount("sh600031", DateTime.Now);
-        //Response.Write(volumeAndAmount[0].ToString() + "|" + volumeAndAmount[1].ToString());
-        
-
-
-        /*
-        Util.RefreshTodayKLine();
-        foreach (string gid in Util.GetAllGids())
-        {
-            try
-            {
-                int todayIndex = 0;
-                KLine[] kArr = KLine.GetLocalKLine(gid, "day");
-                kArr = KLine.ComputeRSV(kArr);
-                kArr = KLine.ComputeKDJ(kArr);
-                todayIndex = KLine.GetStartIndexForDay(kArr, DateTime.Parse(DateTime.Now.ToShortDateString() + " 9:30"));
-                KLine.SearchKDJAlert(kArr, todayIndex);
-                kArr = KLine.GetLocalKLine(gid, "1hr");
-                kArr = KLine.ComputeRSV(kArr);
-                kArr = KLine.ComputeKDJ(kArr);
-                todayIndex = KLine.GetStartIndexForDay(kArr, DateTime.Parse(DateTime.Now.ToShortDateString() + " 9:30"));
-                KLine.SearchKDJAlert(kArr, todayIndex);
-                kArr = KLine.GetLocalKLine(gid, "30min");
-                kArr = KLine.ComputeRSV(kArr);
-                kArr = KLine.ComputeKDJ(kArr);
-                todayIndex = KLine.GetStartIndexForDay(kArr, DateTime.Parse(DateTime.Now.ToShortDateString() + " 9:30"));
-                KLine.SearchKDJAlert(kArr, todayIndex);
-                kArr = KLine.GetLocalKLine(gid, "15min");
-                kArr = KLine.ComputeRSV(kArr);
-                kArr = KLine.ComputeKDJ(kArr);
-                todayIndex = KLine.GetStartIndexForDay(kArr, DateTime.Parse(DateTime.Now.ToShortDateString() + " 9:30"));
-                KLine.SearchKDJAlert(kArr, todayIndex);
-            }
-            catch
-            {
-
-            }
-
-        }*/
-
+        StockWatcher.WatchEachStock();
+        Response.End();
+        DateTime i = DateTime.Parse("2017-7-13"); 
+        string gid = "sh600010";
+        Stock s = new Stock(gid);
+        s.kArr = KLine.GetLocalKLine(gid, "day");
+        int idx = s.GetItemIndex(DateTime.Parse(i.ToShortDateString() + " 9:30"));
+        Response.Write(idx);
     }
 
 
