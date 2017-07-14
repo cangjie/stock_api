@@ -445,7 +445,7 @@
 
 
         DataRow drRocket = dt.NewRow();
-        drRocket["名称"] = "🌟";
+        drRocket["名称"] = "🚀";
         drRocket["1日最高"] = Math.Round(100 * (double)rocketCount[0] / (double)rocketTotal, 2).ToString() + "%";
         drRocket["2日最高"] = Math.Round(100 * (double)rocketCount[1] / (double)rocketTotal, 2).ToString() + "%";
         drRocket["3日最高"] = Math.Round(100 * (double)rocketCount[2] / (double)rocketTotal, 2).ToString() + "%";
