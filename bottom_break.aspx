@@ -321,7 +321,7 @@
                     }
                     if (dr["信号"].ToString().IndexOf("🚀") >= 0)
                     {
-                        rocketCount[3]++;
+                        rocketCount[2]++;
                     }
                 }
             }
