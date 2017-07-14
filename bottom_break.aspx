@@ -427,7 +427,7 @@
                 }
                 if (dr["信号"].ToString().IndexOf("🚀") >= 0)
                 {
-                        rocketCount[5]++;
+                    rocketCount[5]++;
                 }
             }
             dt.Rows.Add(dr);
@@ -1090,10 +1090,17 @@
 
     public static double GetPercentValue(string str)
     {
-        if (str.Trim().Equals("-"))
+        if (str.Trim().Equals("-") || str.Trim().Equals(""))
             return 0;
         Match m = Regex.Match(str, @"-*\d+.*\d*%");
-        return double.Parse(m.Value.Replace(">", "").Replace("<", "").Replace("%", ""));
+        try
+        {
+            return double.Parse(m.Value.Replace(">", "").Replace("<", "").Replace("%", ""));
+        }
+        catch
+        {
+            return 0;
+        }
     }
 </script>
 
