@@ -1043,7 +1043,14 @@
             drSort["3日最高double"] = GetPercentValue(drSort["3日最高"].ToString());//double.Parse(drSort["3日最高"].ToString().Replace("%", ""));
             drSort["4日最高double"] = GetPercentValue(drSort["4日最高"].ToString());//double.Parse(drSort["4日最高"].ToString().Replace("%", ""));
             drSort["5日最高double"] = GetPercentValue(drSort["5日最高"].ToString());//double.Parse(drSort["5日最高"].ToString().Replace("%", ""));
-            drSort["重心double"] = double.Parse(drSort["重心"].ToString());
+            try
+            {
+                drSort["重心double"] = double.Parse(drSort["重心"].ToString());
+            }
+            catch
+            {
+                drSort["重心double"] = 50;
+            }
             dtSort.Rows.Add(drSort);
         }
 
@@ -1092,7 +1099,7 @@
     {
         if (str.Trim().Equals("-") || str.Trim().Equals(""))
             return 0;
-        Match m = Regex.Match(str, @"-*\d+.*\d*%*");
+        Match m = Regex.Match(str, @"-*\d+.*\d*%");
         try
         {
             return double.Parse(m.Value.Replace(">", "").Replace("<", "").Replace("%", ""));
