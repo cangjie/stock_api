@@ -72,6 +72,9 @@
         int[] oxStarKdjCount = new int[6] { 0, 0, 0, 0, 0, 0};
         int oxStarKdjTotal = 0;
 
+        int[] rocketCount = new int[6] { 0, 0, 0, 0, 0, 0 };
+        int rocketTotal = 0;
+
         int[] allCount = new int[6] { 0, 0, 0, 0, 0, 0};
 
         DataTable dt = new DataTable();
@@ -129,6 +132,11 @@
             if (dr["信号"].ToString().IndexOf("🌟") >= 0 && dr["信号"].ToString().IndexOf("📈") >= 0 && dr["信号"].ToString().IndexOf("🐂") >= 0)
             {
                 oxStarKdjTotal++;
+            }
+
+            if (dr["信号"].ToString().IndexOf("🚀") >= 0)
+            {
+                rocketTotal++;
             }
 
 
@@ -225,6 +233,11 @@
                     {
                         oxStarKdjCount[0]++;
                     }
+
+                    if (dr["信号"].ToString().IndexOf("🚀") >= 0)
+                    {
+                        rocketCount[0]++;
+                    }
                 }
 
 
@@ -264,6 +277,10 @@
                     {
                         oxStarKdjCount[1]++;
                     }
+                    if (dr["信号"].ToString().IndexOf("🚀") >= 0)
+                    {
+                        rocketCount[1]++;
+                    }
                 }
             }
 
@@ -302,6 +319,10 @@
                     {
                         oxStarKdjCount[2]++;
                     }
+                    if (dr["信号"].ToString().IndexOf("🚀") >= 0)
+                    {
+                        rocketCount[3]++;
+                    }
                 }
             }
 
@@ -338,6 +359,10 @@
                     if (dr["信号"].ToString().IndexOf("🌟") >= 0 && dr["信号"].ToString().IndexOf("📈") >= 0 && dr["信号"].ToString().IndexOf("🐂") >= 0)
                     {
                         oxStarKdjCount[3]++;
+                    }
+                    if (dr["信号"].ToString().IndexOf("🚀") >= 0)
+                    {
+                        rocketCount[3]++;
                     }
                 }
             }
@@ -376,6 +401,10 @@
                     {
                         oxStarKdjCount[4]++;
                     }
+                    if (dr["信号"].ToString().IndexOf("🚀") >= 0)
+                    {
+                        rocketCount[4]++;
+                    }
                 }
             }
 
@@ -396,6 +425,10 @@
                 {
                     oxStarKdjCount[5]++;
                 }
+                if (dr["信号"].ToString().IndexOf("🚀") >= 0)
+                {
+                        rocketCount[5]++;
+                }
             }
             dt.Rows.Add(dr);
         }
@@ -409,6 +442,19 @@
         drTotal["5日最高"] = Math.Round(100 * (double)allCount[4] / (double)dt.Rows.Count, 2).ToString() + "%";
         drTotal["总计"] = Math.Round(100 * (double)allCount[5] / (double)dt.Rows.Count, 2).ToString() + "%";
         dt.Rows.Add(drTotal);
+
+
+        DataRow drRocket = dt.NewRow();
+        drRocket["名称"] = "🌟";
+        drRocket["1日最高"] = Math.Round(100 * (double)rocketCount[0] / (double)rocketTotal, 2).ToString() + "%";
+        drRocket["2日最高"] = Math.Round(100 * (double)rocketCount[1] / (double)rocketTotal, 2).ToString() + "%";
+        drRocket["3日最高"] = Math.Round(100 * (double)rocketCount[2] / (double)rocketTotal, 2).ToString() + "%";
+        drRocket["4日最高"] = Math.Round(100 * (double)rocketCount[3] / (double)rocketTotal, 2).ToString() + "%";
+        drRocket["5日最高"] = Math.Round(100 * (double)rocketCount[4] / (double)rocketTotal, 2).ToString() + "%";
+        drRocket["总计"] = Math.Round(100 * (double)rocketCount[5] / (double)rocketTotal, 2).ToString() + "%";
+        dt.Rows.Add(drRocket);
+
+
         DataRow drStar = dt.NewRow();
         drStar["名称"] = "🌟";
         drStar["1日最高"] = Math.Round(100 * (double)starCount[0] / (double)starTotal, 2).ToString() + "%";
