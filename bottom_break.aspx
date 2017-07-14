@@ -1092,7 +1092,7 @@
     {
         if (str.Trim().Equals("-") || str.Trim().Equals(""))
             return 0;
-        Match m = Regex.Match(str, @"-*\d+.*\d*%");
+        Match m = Regex.Match(str, @"-*\d+.*\d*%*");
         try
         {
             return double.Parse(m.Value.Replace(">", "").Replace("<", "").Replace("%", ""));
