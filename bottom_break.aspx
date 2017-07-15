@@ -75,6 +75,12 @@
         int[] rocketCount = new int[6] { 0, 0, 0, 0, 0, 0 };
         int rocketTotal = 0;
 
+        int[] rocketPlusCount = new int[6] { 0, 0, 0, 0, 0, 0 };
+        int rocketPlusTotal = 0;
+
+        int[] rocketSubsCount = new int[6] { 0, 0, 0, 0, 0, 0 };
+        int rocketSubsTotal = 0;
+
         int[] allCount = new int[6] { 0, 0, 0, 0, 0, 0};
 
         DataTable dt = new DataTable();
@@ -100,10 +106,9 @@
         dt.Columns.Add("总计");
         foreach (DataRow drOri in dtOri.Rows)
         {
-            if (drOri["gid"].ToString().Trim().Equals("sz002575"))
-            {
-                string aa = "aa";
-            }
+            double jumpEmptyRate = Math.Round(((double.Parse(drOri["open"].ToString().Trim()) - double.Parse(drOri["settlement"].ToString().Trim()))
+                / double.Parse(drOri["settlement"].ToString().Trim())) * 100, 2);
+
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
             stock.kArr = KLine.GetLocalKLine(stock.gid, "day");
             int currentIndex = stock.GetItemIndex(DateTime.Parse(currentDate.ToShortDateString() + " 9:30"));
@@ -137,11 +142,18 @@
             if (dr["信号"].ToString().IndexOf("🚀") >= 0)
             {
                 rocketTotal++;
+                if (jumpEmptyRate > 0)
+                {
+                    rocketPlusTotal++;
+                }
+                else
+                {
+                    rocketSubsTotal++;
+                }
             }
 
 
-            double jumpEmptyRate = Math.Round(((double.Parse(drOri["open"].ToString().Trim()) - double.Parse(drOri["settlement"].ToString().Trim()))
-                / double.Parse(drOri["settlement"].ToString().Trim())) * 100, 2);
+
 
             if (jumpEmptyRate == -100)
             {
@@ -237,6 +249,14 @@
                     if (dr["信号"].ToString().IndexOf("🚀") >= 0)
                     {
                         rocketCount[0]++;
+                        if (jumpEmptyRate > 0)
+                        {
+                            rocketPlusCount[0]++;
+                        }
+                        else
+                        {
+                            rocketSubsCount[0]++;
+                        }
                     }
                 }
 
@@ -280,6 +300,14 @@
                     if (dr["信号"].ToString().IndexOf("🚀") >= 0)
                     {
                         rocketCount[1]++;
+                        if (jumpEmptyRate > 0)
+                        {
+                            rocketPlusCount[1]++;
+                        }
+                        else
+                        {
+                            rocketSubsCount[1]++;
+                        }
                     }
                 }
             }
@@ -322,6 +350,14 @@
                     if (dr["信号"].ToString().IndexOf("🚀") >= 0)
                     {
                         rocketCount[2]++;
+                        if (jumpEmptyRate > 0)
+                        {
+                            rocketPlusCount[2]++;
+                        }
+                        else
+                        {
+                            rocketSubsCount[2]++;
+                        }
                     }
                 }
             }
@@ -363,6 +399,14 @@
                     if (dr["信号"].ToString().IndexOf("🚀") >= 0)
                     {
                         rocketCount[3]++;
+                        if (jumpEmptyRate > 0)
+                        {
+                            rocketPlusCount[3]++;
+                        }
+                        else
+                        {
+                            rocketSubsCount[3]++;
+                        }
                     }
                 }
             }
@@ -404,6 +448,14 @@
                     if (dr["信号"].ToString().IndexOf("🚀") >= 0)
                     {
                         rocketCount[4]++;
+                        if (jumpEmptyRate > 0)
+                        {
+                            rocketPlusCount[4]++;
+                        }
+                        else
+                        {
+                            rocketSubsCount[4]++;
+                        }
                     }
                 }
             }
@@ -428,6 +480,14 @@
                 if (dr["信号"].ToString().IndexOf("🚀") >= 0)
                 {
                     rocketCount[5]++;
+                    if (jumpEmptyRate > 0)
+                        {
+                            rocketPlusCount[5]++;
+                        }
+                        else
+                        {
+                            rocketSubsCount[5]++;
+                        }
                 }
             }
             dt.Rows.Add(dr);
@@ -453,6 +513,26 @@
         drRocket["5日最高"] = Math.Round(100 * (double)rocketCount[4] / (double)rocketTotal, 2).ToString() + "%";
         drRocket["总计"] = Math.Round(100 * (double)rocketCount[5] / (double)rocketTotal, 2).ToString() + "%";
         dt.Rows.Add(drRocket);
+
+        DataRow drRocketPlus = dt.NewRow();
+        drRocketPlus["名称"] = "🚀+";
+        drRocketPlus["1日最高"] = Math.Round(100 * (double)rocketPlusCount[0] / (double)rocketPlusTotal, 2).ToString() + "%";
+        drRocketPlus["2日最高"] = Math.Round(100 * (double)rocketPlusCount[1] / (double)rocketPlusTotal, 2).ToString() + "%";
+        drRocketPlus["3日最高"] = Math.Round(100 * (double)rocketPlusCount[2] / (double)rocketPlusTotal, 2).ToString() + "%";
+        drRocketPlus["4日最高"] = Math.Round(100 * (double)rocketPlusCount[3] / (double)rocketPlusTotal, 2).ToString() + "%";
+        drRocketPlus["5日最高"] = Math.Round(100 * (double)rocketPlusCount[4] / (double)rocketPlusTotal, 2).ToString() + "%";
+        drRocketPlus["总计"] = Math.Round(100 * (double)rocketPlusCount[5] / (double)rocketPlusTotal, 2).ToString() + "%";
+        dt.Rows.Add(drRocketPlus);
+
+        DataRow drRocketSubs = dt.NewRow();
+        drRocketSubs["名称"] = "🚀-";
+        drRocketSubs["1日最高"] = Math.Round(100 * (double)rocketSubsCount[0] / (double)rocketSubsTotal, 2).ToString() + "%";
+        drRocketSubs["2日最高"] = Math.Round(100 * (double)rocketSubsCount[1] / (double)rocketSubsTotal, 2).ToString() + "%";
+        drRocketSubs["3日最高"] = Math.Round(100 * (double)rocketSubsCount[2] / (double)rocketSubsTotal, 2).ToString() + "%";
+        drRocketSubs["4日最高"] = Math.Round(100 * (double)rocketSubsCount[3] / (double)rocketSubsTotal, 2).ToString() + "%";
+        drRocketSubs["5日最高"] = Math.Round(100 * (double)rocketSubsCount[4] / (double)rocketSubsTotal, 2).ToString() + "%";
+        drRocketSubs["总计"] = Math.Round(100 * (double)rocketSubsCount[5] / (double)rocketSubsTotal, 2).ToString() + "%";
+        dt.Rows.Add(drRocketSubs);
 
 
         DataRow drStar = dt.NewRow();
@@ -581,7 +661,7 @@
 
 
 
-   
+
     public static double GetNextNDayHighest(string gid, DateTime currentDate, int n)
     {
         if (currentDate.AddDays(n) > DateTime.Parse(DateTime.Now.ToShortDateString()))
@@ -717,7 +797,7 @@
         dtSort.Columns.Add("4日最高double", Type.GetType("System.Double"));
         dtSort.Columns.Add("5日最高double", Type.GetType("System.Double"));
         dtSort.Columns.Add("重心double", Type.GetType("System.Double"));
-        for (int i = 0; i < dt.Rows.Count - 6; i++)
+        for (int i = 0; i < dt.Rows.Count - 8; i++)
         {
             DataRow drSort = dtSort.NewRow();
             foreach (DataColumn dc in dt.Columns)
@@ -759,9 +839,9 @@
             dtNew.Rows.Add(drNew);
         }
 
-        for (int i = 0; i < 6; i++)
+        for (int i = 0; i < 8; i++)
         {
-            DataRow dr = dt.Rows[dt.Rows.Count - 6 + i];
+            DataRow dr = dt.Rows[dt.Rows.Count - 8 + i];
             DataRow drNewTotal = dtNew.NewRow();
             foreach (DataColumn c in dt.Columns)
             {
@@ -771,7 +851,7 @@
         }
 
         //AddTotal(dtNew);
-        dg.DataSource = dtNew;
+    dg.DataSource = dtNew;
         dg.DataBind();
 
         for (int i = 0; i < dg.Columns.Count; i++)
