@@ -123,7 +123,8 @@
             dr["信号"] = dr["信号"].ToString() + (IsKdjAlert(drOri, dtKdj) ? "<a alt=\"" + drOri["gid"].ToString().Trim().Remove(0, 2) + "\"  title=\"KDJ买入\" >📈</a>" : "");
 
             dr["信号"] = dr["信号"].ToString() + (( currentIndex > 0 && GetBottomDeep(stock.kArr, DateTime.Parse(currentDate.ToShortDateString() + " 9:30")) >= 5
-                && (( stock.kArr[currentIndex].highestPrice - stock.kArr[currentIndex - 1].endPrice ) / stock.kArr[currentIndex-1].endPrice ) >= 0.02 ) ? "🚀" : "");
+                //&& (( stock.kArr[currentIndex].highestPrice - stock.kArr[currentIndex - 1].endPrice ) / stock.kArr[currentIndex-1].endPrice ) >= 0.0002 
+		) ? "🚀" : "");
 
 
             if (dr["信号"].ToString().IndexOf("🌟") >= 0)
