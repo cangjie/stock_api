@@ -48,8 +48,8 @@
             dr["代码"] = s.gid;
             dr["名称"] = "<a href=\"https://touzi.sina.com.cn/public/xray/details/" + s.gid.Trim() 
                 + "\" target=\"_blank\"  >" + s.Name.Trim() + "</a>";
-            dr["代码"] = "<a href=\"show_k_line_day.aspx?gid=" + dr["代码"].ToString() + "&name=" + dr["名称"].ToString().Trim() + "\" target=\"_blank\" >"
-                + dr["代码"].ToString() + "</a>";
+            dr["代码"] = "<a href=\"show_k_line_day.aspx?gid=" + s.gid + "&name=" + s.Name.Trim() + "\" target=\"_blank\" >"
+                + s.gid + "</a>";
 
             double volumeToday = Stock.GetVolumeAndAmount(s.gid, DateTime.Parse(currentDate.ToShortDateString() + " 15:00"))[0];
             double volumeYesterday = Stock.GetVolumeAndAmount(s.gid, DateTime.Parse(currentDate.AddDays(-1).ToShortDateString() + " 15:00"))[0];;
