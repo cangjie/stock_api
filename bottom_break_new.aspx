@@ -131,7 +131,7 @@
 
             dr["信号"] = dr["信号"].ToString() + (( currentIndex > 0 && GetBottomDeep(stock.kArr, DateTime.Parse(currentDate.ToShortDateString() + " 9:30")) >= 5 ) ? "🚀" : "");
 
-            dr["信号"] = dr["信号"].ToString() + ((currentIndex>=0 && (stock.kArr[currentIndex].startPrice >= stock.kArr[currentIndex].endPrice
+            dr["信号"] = dr["信号"].ToString() + ((currentIndex> 0 && (stock.kArr[currentIndex].startPrice >= stock.kArr[currentIndex].endPrice
                 || stock.kArr[currentIndex].highestPrice - stock.kArr[currentIndex].endPrice >= stock.kArr[currentIndex].endPrice - stock.kArr[currentIndex].startPrice)) ? "💩" : "");
 
             if (dr["信号"].ToString().IndexOf("🌟") >= 0)
