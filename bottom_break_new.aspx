@@ -106,6 +106,11 @@
         dt.Columns.Add("总计");
         foreach (DataRow drOri in dtOri.Rows)
         {
+            if (drOri["gid"].ToString().Equals("sh600298"))
+            {
+                string aa = "aa";
+            }
+
             double jumpEmptyRate = Math.Round(((double.Parse(drOri["open"].ToString().Trim()) - double.Parse(drOri["settlement"].ToString().Trim()))
                 / double.Parse(drOri["settlement"].ToString().Trim())) * 100, 2);
 
@@ -116,19 +121,20 @@
             dr["代码"] = "<a href=\"show_k_line_day.aspx?gid=" + drOri["gid"].ToString().Trim() + "&name="
                 + Server.UrlEncode(drOri["name"].ToString().Trim()) + "\" target=\"_blank\" >"
                 +  drOri["gid"].ToString().Trim().Remove(0, 2) + "</a>";
-            dr["名称"] = drOri["name"].ToString().Trim();
+
+            dr["名称"] = "<a href=\"https://touzi.sina.com.cn/public/xray/details/" + drOri["gid"].ToString().Trim() 
+                + "\" target=\"_blank\"  >" + drOri["name"].ToString().Trim() + "</a>";
             dr["今开"] = drOri["open"].ToString().Trim();
             dr["信号"] = dr["信号"].ToString() + (IsOx(drOri) ? "<a title=\"20交易日内两次穿越3线\" >🐂</a>" : "");
             dr["信号"] = dr["信号"].ToString() + (IsStar(drOri) ? "<a alt=\"" + drOri["gid"].ToString().Trim().Remove(0, 2) + "\"  title=\"两日连涨，跳空和涨幅在特定范围内，昨日收阳，并且最高价和收盘价差在1%以内\" >🌟</a>" : "");
             dr["信号"] = dr["信号"].ToString() + (IsKdjAlert(drOri, dtKdj) ? "<a alt=\"" + drOri["gid"].ToString().Trim().Remove(0, 2) + "\"  title=\"KDJ买入\" >📈</a>" : "");
 
             dr["信号"] = dr["信号"].ToString() + (( currentIndex > 0 && GetBottomDeep(stock.kArr, DateTime.Parse(currentDate.ToShortDateString() + " 9:30")) >= 5 ) ? "🚀" : "");
-try
-{
-            dr["信号"] = dr["信号"].ToString() + ((stock.kArr[currentIndex].startPrice >= stock.kArr[currentIndex].endPrice
-                || stock.kArr[currentIndex].highestPrice - stock.kArr[currentIndex].endPrice >= stock.kArr[currentIndex].endPrice - stock.kArr[currentIndex].startPrice) ? "💩" : "");
-} 
-catch{}
+
+
+            dr["信号"] = dr["信号"].ToString() + ((currentIndex> 0 && (stock.kArr[currentIndex].startPrice >= stock.kArr[currentIndex].endPrice
+                || stock.kArr[currentIndex].highestPrice - stock.kArr[currentIndex].endPrice >= stock.kArr[currentIndex].endPrice - stock.kArr[currentIndex].startPrice)) ? "💩" : "");
+
             if (dr["信号"].ToString().IndexOf("🌟") >= 0)
                 starTotal++;
             if (dr["信号"].ToString().IndexOf("📈") >= 0)
@@ -634,6 +640,8 @@ catch{}
         Stock s = new Stock(dr["gid"].ToString().Trim());
         s.kArr = KLine.GetLocalKLine(s.gid, "day");
         double yesterday3LinePrice = s.GetAverageSettlePrice(s.kArr.Length - 2, 3, 3);
+        if (s.kArr.Length - 2 < 0)
+            return false;
         if (s.kArr[s.kArr.Length - 2].endPrice < yesterday3LinePrice)
             yesterdayBelow3Line = true;
         if ( ( (jumpRate < 0.004 || (jumpRate > 0.01 && jumpRate < 0.07))

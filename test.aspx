@@ -9,15 +9,8 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-
-        StockWatcher.WatchEachStock();
-        Response.End();
-        DateTime i = DateTime.Parse("2017-7-13"); 
-        string gid = "sh600010";
-        Stock s = new Stock(gid);
-        s.kArr = KLine.GetLocalKLine(gid, "day");
-        int idx = s.GetItemIndex(DateTime.Parse(i.ToShortDateString() + " 9:30"));
-        Response.Write(idx);
+        //string tip = Stock.GetTip("sh600031");
+        
     }
 
 
