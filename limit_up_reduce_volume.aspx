@@ -122,7 +122,7 @@
                         double volume = Stock.GetVolumeAndAmount(s.gid, DateTime.Parse(i.ToShortDateString() + " 14:30"))[0];
                         double volumeLast = Stock.GetVolumeAndAmount(s.gid, DateTime.Parse(s.kArr[idx - 1].startDateTime.ToShortDateString() + " 14:30"))[0];
 
-                        if (volumeLast - volume > 0 && volume / volumeLast < 0.66)
+                        if (volumeLast - volume > 0 && volume / volumeLast < 0.5)
                         {
                             try
                             {

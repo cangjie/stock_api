@@ -9,7 +9,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        string tip = Stock.GetTip("sh600031");
+        //string tip = Stock.GetTip("sh600031");
         
     }
 
