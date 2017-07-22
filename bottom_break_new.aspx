@@ -106,6 +106,11 @@
         dt.Columns.Add("总计");
         foreach (DataRow drOri in dtOri.Rows)
         {
+            if (drOri["gid"].ToString().Equals("sh600298"))
+            {
+                string aa = "aa";
+            }
+
             double jumpEmptyRate = Math.Round(((double.Parse(drOri["open"].ToString().Trim()) - double.Parse(drOri["settlement"].ToString().Trim()))
                 / double.Parse(drOri["settlement"].ToString().Trim())) * 100, 2);
 
@@ -116,7 +121,9 @@
             dr["代码"] = "<a href=\"show_k_line_day.aspx?gid=" + drOri["gid"].ToString().Trim() + "&name="
                 + Server.UrlEncode(drOri["name"].ToString().Trim()) + "\" target=\"_blank\" >"
                 +  drOri["gid"].ToString().Trim().Remove(0, 2) + "</a>";
-            dr["名称"] = drOri["name"].ToString().Trim();
+
+            dr["名称"] = "<a href=\"https://touzi.sina.com.cn/public/xray/details/" + drOri["gid"].ToString().Trim() 
+                + "\" target=\"_blank\"  >" + drOri["name"].ToString().Trim() + "</a>";
             dr["今开"] = drOri["open"].ToString().Trim();
             dr["信号"] = dr["信号"].ToString() + (IsOx(drOri) ? "<a title=\"20交易日内两次穿越3线\" >🐂</a>" : "");
             dr["信号"] = dr["信号"].ToString() + (IsStar(drOri) ? "<a alt=\"" + drOri["gid"].ToString().Trim().Remove(0, 2) + "\"  title=\"两日连涨，跳空和涨幅在特定范围内，昨日收阳，并且最高价和收盘价差在1%以内\" >🌟</a>" : "");

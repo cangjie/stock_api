@@ -46,7 +46,8 @@
             Stock s = new Stock(drOri["gid"].ToString());
             s.kArr = KLine.GetLocalKLine(s.gid, "day");
             dr["代码"] = s.gid;
-            dr["名称"] = s.Name.Trim();
+            dr["名称"] = "<a href=\"https://touzi.sina.com.cn/public/xray/details/" + s.gid.Trim() 
+                + "\" target=\"_blank\"  >" + s.Name.Trim() + "</a>";
             dr["代码"] = "<a href=\"show_k_line_day.aspx?gid=" + dr["代码"].ToString() + "&name=" + dr["名称"].ToString().Trim() + "\" target=\"_blank\" >"
                 + dr["代码"].ToString() + "</a>";
 
