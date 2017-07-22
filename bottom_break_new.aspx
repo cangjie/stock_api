@@ -123,10 +123,12 @@
             dr["信号"] = dr["信号"].ToString() + (IsKdjAlert(drOri, dtKdj) ? "<a alt=\"" + drOri["gid"].ToString().Trim().Remove(0, 2) + "\"  title=\"KDJ买入\" >📈</a>" : "");
 
             dr["信号"] = dr["信号"].ToString() + (( currentIndex > 0 && GetBottomDeep(stock.kArr, DateTime.Parse(currentDate.ToShortDateString() + " 9:30")) >= 5 ) ? "🚀" : "");
-
+try
+{
             dr["信号"] = dr["信号"].ToString() + ((stock.kArr[currentIndex].startPrice >= stock.kArr[currentIndex].endPrice
                 || stock.kArr[currentIndex].highestPrice - stock.kArr[currentIndex].endPrice >= stock.kArr[currentIndex].endPrice - stock.kArr[currentIndex].startPrice) ? "💩" : "");
-
+} 
+catch{}
             if (dr["信号"].ToString().IndexOf("🌟") >= 0)
                 starTotal++;
             if (dr["信号"].ToString().IndexOf("📈") >= 0)
