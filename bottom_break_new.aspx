@@ -131,8 +131,8 @@
 
             dr["信号"] = dr["信号"].ToString() + (( currentIndex > 0 && GetBottomDeep(stock.kArr, DateTime.Parse(currentDate.ToShortDateString() + " 9:30")) >= 5 ) ? "🚀" : "");
 
-            dr["信号"] = dr["信号"].ToString() + ((stock.kArr[currentIndex].startPrice >= stock.kArr[currentIndex].endPrice
-                || stock.kArr[currentIndex].highestPrice - stock.kArr[currentIndex].endPrice >= stock.kArr[currentIndex].endPrice - stock.kArr[currentIndex].startPrice) ? "💩" : "");
+            dr["信号"] = dr["信号"].ToString() + ((currentIndex>=0 && (stock.kArr[currentIndex].startPrice >= stock.kArr[currentIndex].endPrice
+                || stock.kArr[currentIndex].highestPrice - stock.kArr[currentIndex].endPrice >= stock.kArr[currentIndex].endPrice - stock.kArr[currentIndex].startPrice)) ? "💩" : "");
 
             if (dr["信号"].ToString().IndexOf("🌟") >= 0)
                 starTotal++;
@@ -639,6 +639,8 @@
         Stock s = new Stock(dr["gid"].ToString().Trim());
         s.kArr = KLine.GetLocalKLine(s.gid, "day");
         double yesterday3LinePrice = s.GetAverageSettlePrice(s.kArr.Length - 2, 3, 3);
+        if (s.kArr.Length - 2 < 0)
+            return false;
         if (s.kArr[s.kArr.Length - 2].endPrice < yesterday3LinePrice)
             yesterdayBelow3Line = true;
         if ( ( (jumpRate < 0.004 || (jumpRate > 0.01 && jumpRate < 0.07))
