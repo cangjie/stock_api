@@ -9,8 +9,18 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        //string tip = Stock.GetTip("sh600031");
-        
+        string[] gidArr = Util.GetAllGids();
+        for (int i = 0; i < gidArr.Length; i++)
+        {
+            KLine[] kArr = KLine.GetLocalKLine(gidArr[i], "day");
+            
+            if (kArr.Length > 2)
+            {
+                KLine.ComputeMACD(kArr);
+                KLine.SearchMACDAlert(kArr, kArr.Length - 1);
+            }
+            
+        }
     }
 
 
