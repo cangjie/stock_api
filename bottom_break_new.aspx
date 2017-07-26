@@ -59,7 +59,7 @@
         }
 
         DataTable dtKdj = DBHelper.GetDataTable(" select * from kdj_alert where alert_time > '" + currentDate.ToShortDateString() + "' and alert_time < '" + currentDate.AddDays(1).ToShortDateString() + "'   ");
-
+        DataTable dtMacd = DBHelper.GetDataTable(" select * from macd_alert where alert_time > '" + currentDate.ToShortDateString() + "' and alert_time < '" + currentDate.AddDays(1).ToShortDateString() + "'   ");
 
         int[] starCount = new int[6] { 0, 0, 0, 0, 0, 0};
         int starTotal = 0;
@@ -87,17 +87,18 @@
         dt.Columns.Add("代码");
         dt.Columns.Add("名称");
         dt.Columns.Add("信号");
-        dt.Columns.Add("9日低价");
+        dt.Columns.Add("10日低价");
         dt.Columns.Add("支撑");
         dt.Columns.Add("现价");
         dt.Columns.Add("压力");
-        dt.Columns.Add("9日高价");
-        dt.Columns.Add("9日振幅");
+        dt.Columns.Add("10日高价");
+        dt.Columns.Add("10日振幅");
         dt.Columns.Add("今开");
         dt.Columns.Add("KDJ买入价");
+        dt.Columns.Add("MACD买入价");
         dt.Columns.Add("跳空幅度");
         dt.Columns.Add("今日最高");
-        dt.Columns.Add("重心");
+        //dt.Columns.Add("重心");
         dt.Columns.Add("1日最高");
         dt.Columns.Add("2日最高");
         dt.Columns.Add("3日最高");
@@ -106,11 +107,6 @@
         dt.Columns.Add("总计");
         foreach (DataRow drOri in dtOri.Rows)
         {
-            if (drOri["gid"].ToString().Equals("sh600298"))
-            {
-                string aa = "aa";
-            }
-
             double jumpEmptyRate = Math.Round(((double.Parse(drOri["open"].ToString().Trim()) - double.Parse(drOri["settlement"].ToString().Trim()))
                 / double.Parse(drOri["settlement"].ToString().Trim())) * 100, 2);
 
@@ -122,14 +118,15 @@
                 + Server.UrlEncode(drOri["name"].ToString().Trim()) + "\" target=\"_blank\" >"
                 +  drOri["gid"].ToString().Trim().Remove(0, 2) + "</a>";
 
-            dr["名称"] = "<a href=\"https://touzi.sina.com.cn/public/xray/details/" + drOri["gid"].ToString().Trim() 
+            dr["名称"] = "<a href=\"https://touzi.sina.com.cn/public/xray/details/" + drOri["gid"].ToString().Trim()
                 + "\" target=\"_blank\"  >" + drOri["name"].ToString().Trim() + "</a>";
             dr["今开"] = drOri["open"].ToString().Trim();
             dr["信号"] = dr["信号"].ToString() + (IsOx(drOri) ? "<a title=\"20交易日内两次穿越3线\" >🐂</a>" : "");
             dr["信号"] = dr["信号"].ToString() + (IsStar(drOri) ? "<a alt=\"" + drOri["gid"].ToString().Trim().Remove(0, 2) + "\"  title=\"两日连涨，跳空和涨幅在特定范围内，昨日收阳，并且最高价和收盘价差在1%以内\" >🌟</a>" : "");
             dr["信号"] = dr["信号"].ToString() + (IsKdjAlert(drOri, dtKdj) ? "<a alt=\"" + drOri["gid"].ToString().Trim().Remove(0, 2) + "\"  title=\"KDJ买入\" >📈</a>" : "");
-
+            dr["信号"] = dr["信号"].ToString() + (  (dr["信号"].ToString().IndexOf("📈") < 0 &&  IsMacdAlert(drOri, dtKdj)) ? "<a alt=\"" + drOri["gid"].ToString().Trim().Remove(0, 2) + "\"  title=\"MACD买入\" >📈</a>" : "");
             dr["信号"] = dr["信号"].ToString() + (( currentIndex > 0 && GetBottomDeep(stock.kArr, DateTime.Parse(currentDate.ToShortDateString() + " 9:30")) >= 5 ) ? "🚀" : "");
+
 
             dr["信号"] = dr["信号"].ToString() + ((currentIndex> 0 && (stock.kArr[currentIndex].startPrice >= stock.kArr[currentIndex].endPrice
                 || stock.kArr[currentIndex].highestPrice - stock.kArr[currentIndex].endPrice >= stock.kArr[currentIndex].endPrice - stock.kArr[currentIndex].startPrice)) ? "💩" : "");
@@ -192,26 +189,36 @@
 
 
             double currentDayPrice = (currentDate == DateTime.Parse(DateTime.Now.ToShortDateString())) ? stock.LastTrade : double.Parse(drOri["open"].ToString().Trim()) * 1.01;
-            double minPrice = stock.LowestPrice(DateTime.Now, 9);
-            double maxPrice = stock.HighestPrice(DateTime.Now, 9);
+            double minPrice = stock.LowestPrice(DateTime.Now, 10);
+            double maxPrice = stock.HighestPrice(DateTime.Now, 10);
             double pressure = Stock.GetPressure(currentDayPrice , minPrice, maxPrice);
             double support = Stock.GetSupport(currentDayPrice , minPrice, maxPrice);
-            dr["9日低价"] = Math.Round(minPrice, 2).ToString();
+            dr["10日低价"] = Math.Round(minPrice, 2).ToString();
             dr["支撑"] = Math.Round(support, 2).ToString();
             dr["现价"] = Math.Round(currentDayPrice, 2).ToString();
             dr["压力"] = Math.Round(pressure, 2).ToString();
-            dr["9日高价"] = Math.Round(maxPrice, 2).ToString();
-            dr["9日振幅"] = Math.Round((maxPrice - minPrice) * 100 / minPrice, 2).ToString() + "%";
+            dr["10日高价"] = Math.Round(maxPrice, 2).ToString();
+            dr["10日振幅"] = Math.Round((maxPrice - minPrice) * 100 / minPrice, 2).ToString() + "%";
             dr["今开"] = Math.Round(double.Parse(drOri["open"].ToString()), 2).ToString();
             double buyPrice = double.Parse(drOri["open"].ToString()) * 1.01;
+            double buyKdjPrice = 0;
+            double buyMacdPrice = 0;
             if (dr["信号"].ToString().IndexOf("📈") >= 0)
             {
                 DataRow[] kdjArr = dtKdj.Select(" gid = '" + drOri["gid"].ToString() + "'  ");
                 if (kdjArr.Length > 0)
-                    buyPrice = double.Parse(kdjArr[kdjArr.Length - 1]["price"].ToString());
+                    buyKdjPrice = double.Parse(kdjArr[kdjArr.Length - 1]["price"].ToString());
+                DataRow[] macdArr = dtMacd.Select(" gid = '" + drOri["gid"].ToString() + "'  ");
+                if (macdArr.Length > 0)
+                    buyMacdPrice = double.Parse(macdArr[macdArr.Length - 1]["price"].ToString());
             }
-            dr["kdj买入价"] = (buyPrice != (double.Parse(drOri["open"].ToString().Trim()) * 1.01 )) ? Math.Round(buyPrice, 2).ToString() : "-";
-            dr["重心"] = Math.Round( 100* (currentDayPrice - minPrice) / (maxPrice - minPrice),2);
+            dr["KDJ买入价"] = (buyKdjPrice!=0) ? Math.Round(buyKdjPrice, 2).ToString() : "-";
+            dr["MACD买入价"] = (buyMacdPrice != 0) ? Math.Round(buyMacdPrice, 2).ToString() : "-";
+
+            buyPrice = Math.Max(buyPrice, buyKdjPrice);
+            buyPrice = Math.Max(buyPrice, buyMacdPrice);
+
+            //dr["重心"] = Math.Round( 100* (currentDayPrice - minPrice) / (maxPrice - minPrice),2);
 
             double rate = 0;
             double rateMax = -100;
@@ -669,6 +676,16 @@
             return false;
     }
 
+    public bool IsMacdAlert(DataRow dr, DataTable dtMacd)
+    {
+        DataRow[] drKdjArr = dtMacd.Select(" gid = '" + dr["gid"].ToString().Trim() + "' and  (type = 'day'  ) ");
+        if (drKdjArr.Length > 0)
+            return true;
+        else
+            return false;
+    }
+
+
 
 
 
@@ -806,7 +823,7 @@
         dtSort.Columns.Add("3日最高double", Type.GetType("System.Double"));
         dtSort.Columns.Add("4日最高double", Type.GetType("System.Double"));
         dtSort.Columns.Add("5日最高double", Type.GetType("System.Double"));
-        dtSort.Columns.Add("重心double", Type.GetType("System.Double"));
+        //dtSort.Columns.Add("重心double", Type.GetType("System.Double"));
         for (int i = 0; i < dt.Rows.Count - 8; i++)
         {
             DataRow drSort = dtSort.NewRow();
@@ -822,14 +839,14 @@
             drSort["3日最高double"] = GetPercentValue(drSort["3日最高"].ToString());//double.Parse(drSort["3日最高"].ToString().Replace("%", ""));
             drSort["4日最高double"] = GetPercentValue(drSort["4日最高"].ToString());//double.Parse(drSort["4日最高"].ToString().Replace("%", ""));
             drSort["5日最高double"] = GetPercentValue(drSort["5日最高"].ToString());//double.Parse(drSort["5日最高"].ToString().Replace("%", ""));
-            try
-            {
-                drSort["重心double"] = double.Parse(drSort["重心"].ToString());
-            }
-            catch
-            {
-                drSort["重心double"] = 50;
-            }
+            //try
+            //{
+            //    drSort["重心double"] = double.Parse(drSort["重心"].ToString());
+            //}
+            //catch
+            //{
+            //    drSort["重心double"] = 50;
+            //}
             dtSort.Rows.Add(drSort);
         }
 
@@ -919,14 +936,13 @@
                         <asp:BoundColumn DataField="信号" HeaderText="信号"></asp:BoundColumn>
                         <asp:BoundColumn DataField="今开" HeaderText="今开"></asp:BoundColumn>
                         <asp:BoundColumn DataField="KDJ买入价" HeaderText="KDJ买入价" ></asp:BoundColumn>
-                        <asp:BoundColumn DataField="9日低价" HeaderText="9日低价"></asp:BoundColumn>
+                        <asp:BoundColumn DataField="MACD买入价" HeaderText="MACD买入价" ></asp:BoundColumn>
+                        <asp:BoundColumn DataField="10日低价" HeaderText="10日低价"></asp:BoundColumn>
                         <asp:BoundColumn DataField="支撑" HeaderText="支撑" ></asp:BoundColumn>
                         <asp:BoundColumn DataField="现价" HeaderText="现价"></asp:BoundColumn>
                         <asp:BoundColumn DataField="压力" HeaderText="压力"></asp:BoundColumn>
-                        <asp:BoundColumn DataField="9日高价" HeaderText="9日高价"></asp:BoundColumn>
-                        <asp:BoundColumn DataField="9日振幅" HeaderText="9日振幅" ></asp:BoundColumn>
-                        <asp:BoundColumn DataField="重心" HeaderText="重心" SortExpression="重心|A-Z" ></asp:BoundColumn>
-
+                        <asp:BoundColumn DataField="10日高价" HeaderText="10日高价"></asp:BoundColumn>
+                        <asp:BoundColumn DataField="10日振幅" HeaderText="10日振幅" ></asp:BoundColumn>
                         <asp:BoundColumn DataField="跳空幅度" HeaderText="跳空幅度" SortExpression="跳空幅度|A-Z"></asp:BoundColumn>
                         <asp:BoundColumn DataField="今日最高" HeaderText="今日最高" SortExpression="今日最高|A-Z"></asp:BoundColumn>
                         <asp:BoundColumn DataField="1日最高" HeaderText="1日最高" SortExpression="1日最高|A-Z"></asp:BoundColumn>

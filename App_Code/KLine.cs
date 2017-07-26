@@ -33,6 +33,9 @@ public class KLine
     public double k = 0;
     public double d = 0;
     public double j = 0;
+    public double dif = 0;
+    public double dea = 0;
+    public double macd = 0;
 
     public KLine()
     {
@@ -337,6 +340,65 @@ public class KLine
             kArr[i].j = 3 * kArr[i].k - 2 * kArr[i].d;
         }
         return kArr;
+    }
+
+    
+
+    public static double ema(double[] xArr, int currentIndex, int n)
+    {
+        if (currentIndex == 0)
+            return xArr[currentIndex];
+        else
+        {
+            return (xArr[currentIndex] * 2 + ema(xArr, currentIndex - 1, n) * (double)(n - 1)) / (double)(n + 1);
+        }
+    }
+    public static void ComputeMACD(KLine[] kArr)
+    {
+        int shortDays = 12;
+        int longDays = 26;
+        int midDays = 9;
+
+        double[] endPirceArr = new double[kArr.Length];
+        double[] difArr = new double[kArr.Length];
+
+        for (int i = 0; i < kArr.Length; i++)
+        {
+            endPirceArr[i] = kArr[i].endPrice;
+            difArr[i] = 0;
+        }
+
+        for (int i = 1; i < kArr.Length; i++)
+        {
+            kArr[i].dif = ema(endPirceArr, i, shortDays) - ema(endPirceArr, i, longDays);
+            difArr[i] = kArr[i].dif;
+            kArr[i].dea = ema(difArr, i, midDays);
+            kArr[i].macd = (kArr[i].dif - kArr[i].dea) * 2;
+        }
+    }
+
+    public static void SearchMACDAlert(KLine[] kArr, int startIndex)
+    {
+        for (int i = startIndex; i < kArr.Length; i++)
+        {
+            if (kArr[i - 1].macd < 0 && kArr[i].macd > 0)
+            {
+                try
+                {
+                    DBHelper.InsertData("macd_alert", new string[,] {
+                        { "gid", "varchar", kArr[i].gid.Trim()},
+                        { "alert_time", "datetime", kArr[i].endDateTime.ToString()},
+                        { "type", "varchar", kArr[i].type},
+                        { "price", "float", kArr[i].endPrice.ToString()}
+                    });
+                }
+                catch
+                {
+
+                }
+                
+            }
+        }
     }
 
     public static void SearchKDJAlert(KLine[] kArr)
