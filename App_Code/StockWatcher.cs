@@ -22,9 +22,10 @@ public class StockWatcher
 
     public static Thread tKLineRefresher = new Thread(tsKLineRefresher);
 
-    public static ThreadStart tsKDJ = new ThreadStart(WatchKDJ);
+    public static ThreadStart tsKDJMACD = new ThreadStart(WatchKDJMACD);
 
-    public static Thread tKDJ = new Thread(tsKDJ);
+    public static Thread tKDJMACD = new Thread(tsKDJMACD);
+
 
     public StockWatcher()
     {
@@ -405,7 +406,7 @@ public class StockWatcher
         req.Abort();
     }
 
-    public static void WatchKDJ()
+    public static void WatchKDJMACD()
     {
         for (; true;)
         {
@@ -415,10 +416,17 @@ public class StockWatcher
                 {
                     try
                     {
-                        KLine.SearchKDJAlert(gid, "day", DateTime.Now);
-                        KLine.SearchKDJAlert(gid, "1hr", DateTime.Now);
-                        KLine.SearchKDJAlert(gid, "30min", DateTime.Now);
-                        KLine.SearchKDJAlert(gid, "15min", DateTime.Now);
+                        KLine[] kArrDay = KLine.GetLocalKLine(gid, "day");
+                        KLine.SearchKDJAlert(kArrDay, kArrDay.Length - 1);
+                        KLine.SearchMACDAlert(kArrDay, kArrDay.Length - 1);
+
+
+                        //KLine.SearchKDJAlert(gid, "day", DateTime.Now);
+                        
+
+                        //KLine.SearchKDJAlert(gid, "1hr", DateTime.Now);
+                        //KLine.SearchKDJAlert(gid, "30min", DateTime.Now);
+                        //KLine.SearchKDJAlert(gid, "15min", DateTime.Now);
                     }
                     catch
                     {
