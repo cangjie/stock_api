@@ -310,7 +310,7 @@ public class KLine
     }
     
 
-    public static KLine[] ComputeRSV(KLine[] kArr)
+    public static void ComputeRSV(KLine[] kArr)
     {
         int valueN = 9;
         for (int i = valueN - 1; i < kArr.Length; i++)
@@ -320,10 +320,10 @@ public class KLine
             double hiPrice = GetHighestPrice(rsvArr);
             kArr[i].rsv = 100 * (kArr[i].endPrice - lowPrice) / (hiPrice - lowPrice);
         }
-        return kArr;
+       
     }
 
-    public static  KLine[] ComputeKDJ(KLine[] kArr)
+    public static  void ComputeKDJ(KLine[] kArr)
     {
         int valueM1 = 3;
         int valueM2 = 3;
@@ -339,7 +339,6 @@ public class KLine
             kArr[i].d = (kArr[i].k + (valueM2 - 1) * kArr[i - 1].d) / valueM2;
             kArr[i].j = 3 * kArr[i].k - 2 * kArr[i].d;
         }
-        return kArr;
     }
 
     

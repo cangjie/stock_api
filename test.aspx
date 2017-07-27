@@ -9,6 +9,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
+        /*
         string[] gidArr = Util.GetAllGids();
         for (int i = 0; i < gidArr.Length; i++)
         {
@@ -17,10 +18,10 @@
             if (kArr.Length > 2)
             {
                 KLine.ComputeMACD(kArr);
-                KLine.SearchMACDAlert(kArr, kArr.Length - 1);
+                KLine.SearchMACDAlert(kArr, 2);
             }
             
-        }
+        }*/
     }
 
 

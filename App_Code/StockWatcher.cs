@@ -417,7 +417,10 @@ public class StockWatcher
                     try
                     {
                         KLine[] kArrDay = KLine.GetLocalKLine(gid, "day");
+                        KLine.ComputeRSV(kArrDay);
+                        KLine.ComputeKDJ(kArrDay);
                         KLine.SearchKDJAlert(kArrDay, kArrDay.Length - 1);
+                        KLine.ComputeMACD(kArrDay);
                         KLine.SearchMACDAlert(kArrDay, kArrDay.Length - 1);
 
 
