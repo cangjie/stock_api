@@ -528,7 +528,7 @@
         drRocket["5日最高"] = Math.Round(100 * (double)rocketCount[4] / (double)rocketTotal, 2).ToString() + "%";
         drRocket["总计"] = Math.Round(100 * (double)rocketCount[5] / (double)rocketTotal, 2).ToString() + "%";
         dt.Rows.Add(drRocket);
-
+/*
         DataRow drRocketPlus = dt.NewRow();
         drRocketPlus["名称"] = "🚀+";
         drRocketPlus["1日最高"] = Math.Round(100 * (double)rocketPlusCount[0] / (double)rocketPlusTotal, 2).ToString() + "%";
@@ -548,7 +548,7 @@
         drRocketSubs["5日最高"] = Math.Round(100 * (double)rocketSubsCount[4] / (double)rocketSubsTotal, 2).ToString() + "%";
         drRocketSubs["总计"] = Math.Round(100 * (double)rocketSubsCount[5] / (double)rocketSubsTotal, 2).ToString() + "%";
         dt.Rows.Add(drRocketSubs);
-
+*/
 
         DataRow drStar = dt.NewRow();
         drStar["名称"] = "🌟";
@@ -867,9 +867,9 @@
             dtNew.Rows.Add(drNew);
         }
 
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < 6; i++)
         {
-            DataRow dr = dt.Rows[dt.Rows.Count - 8 + i];
+            DataRow dr = dt.Rows[dt.Rows.Count - 6 + i];
             DataRow drNewTotal = dtNew.NewRow();
             foreach (DataColumn c in dt.Columns)
             {
