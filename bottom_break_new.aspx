@@ -58,8 +58,8 @@
                 + " ((highest_1_day - [open]) / [open]) desc , ((highest_0_day - [open]) / [open]) desc , (([open] - settlement) / settlement) desc ");
         }
 
-        DataTable dtKdj = DBHelper.GetDataTable(" select * from kdj_alert where alert_time > '" + currentDate.ToShortDateString() + "' and alert_time < '" + currentDate.AddDays(1).ToShortDateString() + "'   ");
-        DataTable dtMacd = DBHelper.GetDataTable(" select * from macd_alert where alert_time > '" + currentDate.ToShortDateString() + "' and alert_time < '" + currentDate.AddDays(1).ToShortDateString() + "'   ");
+        DataTable dtKdj = DBHelper.GetDataTable(" select * from kdj_alert where alert_time >= '" + currentDate.ToShortDateString() + "' and alert_time < '" + currentDate.AddDays(1).ToShortDateString() + "'   ");
+        DataTable dtMacd = DBHelper.GetDataTable(" select * from macd_alert where alert_time >='" + currentDate.ToShortDateString() + "' and alert_time < '" + currentDate.AddDays(1).ToShortDateString() + "'   ");
 
         int[] starCount = new int[6] { 0, 0, 0, 0, 0, 0};
         int starTotal = 0;
@@ -122,8 +122,8 @@
                 + "\" target=\"_blank\"  >" + drOri["name"].ToString().Trim() + "</a>";
             dr["今开"] = drOri["open"].ToString().Trim();
             dr["信号"] = dr["信号"].ToString() + (IsOx(drOri) ? "<a title=\"20交易日内两次穿越3线\" >🐂</a>" : "");
-            dr["信号"] = dr["信号"].ToString() + (IsStar(drOri) ? "<a alt=\"" + drOri["gid"].ToString().Trim().Remove(0, 2) + "\"  title=\"两日连涨，跳空和涨幅在特定范围内，昨日收阳，并且最高价和收盘价差在1%以内\" >🌟</a>" : "");
-            dr["信号"] = dr["信号"].ToString() + ((IsKdjAlert(drOri, dtKdj)  &&  IsMacdAlert(drOri, dtKdj) )? "<a alt=\"" + drOri["gid"].ToString().Trim().Remove(0, 2) + "\"  title=\"KDJ MACD双买入信号\" >📈</a>" : "");
+            dr["信号"] = dr["信号"].ToString() + (IsStar(drOri, stock) ? "<a alt=\"" + drOri["gid"].ToString().Trim().Remove(0, 2) + "\"  title=\"两日连涨，跳空和涨幅在特定范围内，昨日收阳，并且最高价和收盘价差在1%以内\" >🌟</a>" : "");
+            dr["信号"] = dr["信号"].ToString() + ((IsKdjAlert(drOri, dtKdj)  &&  IsMacdAlert(drOri, dtMacd) )? "<a alt=\"" + drOri["gid"].ToString().Trim().Remove(0, 2) + "\"  title=\"KDJ MACD双买入信号\" >📈</a>" : "");
             //dr["信号"] = dr["信号"].ToString() + (  (dr["信号"].ToString().IndexOf("📈") < 0 &&  IsMacdAlert(drOri, dtKdj)) ? "<a alt=\"" + drOri["gid"].ToString().Trim().Remove(0, 2) + "\"  title=\"MACD买入\" >📈</a>" : "");
             dr["信号"] = dr["信号"].ToString() + (( currentIndex > 0 && GetBottomDeep(stock.kArr, DateTime.Parse(currentDate.ToShortDateString() + " 9:30")) >= 5 ) ? "🚀" : "");
 
@@ -175,7 +175,7 @@
 
             if (drOri["highest_0_day"].ToString().Equals("0"))
             {
-                highestPrice = GetNextNDayHighest(drOri["gid"].ToString().Trim(), currentDate, 0);
+                highestPrice = GetNextNDayHighest(stock, currentDate, 0);
             }
             else
             {
@@ -226,7 +226,7 @@
 
             if (drOri["highest_1_day"].ToString().Equals("0"))
             {
-                highestPrice = GetNextNDayHighest(drOri["gid"].ToString().Trim(), currentDate, 1);
+                highestPrice = GetNextNDayHighest(stock, currentDate, 1);
             }
             else
             {
@@ -280,7 +280,7 @@
 
             if (drOri["highest_2_day"].ToString().Equals("0"))
             {
-                highestPrice = GetNextNDayHighest(drOri["gid"].ToString().Trim(), currentDate, 2);
+                highestPrice = GetNextNDayHighest(stock, currentDate, 2);
             }
             else
             {
@@ -329,7 +329,7 @@
 
             if (drOri["highest_3_day"].ToString().Equals("0"))
             {
-                highestPrice = GetNextNDayHighest(drOri["gid"].ToString().Trim(), currentDate, 3);
+                highestPrice = GetNextNDayHighest(stock, currentDate, 3);
             }
             else
             {
@@ -379,7 +379,7 @@
 
             if (drOri["highest_4_day"].ToString().Equals("0"))
             {
-                highestPrice = GetNextNDayHighest(drOri["gid"].ToString().Trim(), currentDate, 4);
+                highestPrice = GetNextNDayHighest(stock, currentDate, 4);
             }
             else
             {
@@ -428,7 +428,7 @@
 
             if (drOri["highest_5_day"].ToString().Equals("0"))
             {
-                highestPrice = GetNextNDayHighest(drOri["gid"].ToString().Trim(), currentDate, 5);
+                highestPrice = GetNextNDayHighest(stock, currentDate, 5);
             }
             else
             {
@@ -626,7 +626,7 @@
 
 
 
-    public bool IsStar(DataRow dr)
+    public bool IsStar(DataRow dr, Stock stock)
     {
         DateTime currentDate = DateTime.Parse(calendar.SelectedDate.ToShortDateString());
         double  jumpRate = (double.Parse(dr["open"].ToString()) - double.Parse(dr["settlement"].ToString().Trim()))
@@ -634,7 +634,7 @@
         double highestPrice = 0;
         if (dr["highest_0_day"].ToString().Equals("0"))
         {
-            highestPrice = GetNextNDayHighest(dr["gid"].ToString().Trim(), currentDate, 0);
+            highestPrice = GetNextNDayHighest(stock, currentDate, 0);
         }
         else
         {
@@ -689,11 +689,12 @@
 
 
 
-    public static double GetNextNDayHighest(string gid, DateTime currentDate, int n)
+    public static double GetNextNDayHighest(Stock stock, DateTime currentDate, int n)
     {
+        string gid = stock.gid;
         if (currentDate.AddDays(n) > DateTime.Parse(DateTime.Now.ToShortDateString()))
             return 0;
-        KLine[] kArr = KLine.GetKLineDayFromSohu(gid, currentDate.AddDays(-20), DateTime.Parse(DateTime.Now.ToShortDateString()));
+        KLine[] kArr = stock.kArr;
         double ret = 0;
         int k = -1;
         for (int i = 0; i < kArr.Length; i++)
