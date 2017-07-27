@@ -643,8 +643,8 @@
         double rate = Math.Round(((highestPrice - double.Parse(dr["open"].ToString().Trim()))
                 / double.Parse(dr["open"].ToString().Trim())) * 100, 2);
         bool yesterdayBelow3Line = false;
-        Stock s = new Stock(dr["gid"].ToString().Trim());
-        s.kArr = KLine.GetLocalKLine(s.gid, "day");
+        Stock s = stock;
+        //s.kArr = KLine.GetLocalKLine(s.gid, "day");
         double yesterday3LinePrice = s.GetAverageSettlePrice(s.kArr.Length - 2, 3, 3);
         if (s.kArr.Length - 2 < 0)
             return false;
