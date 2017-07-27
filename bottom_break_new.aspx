@@ -710,7 +710,7 @@
         int k = -1;
         for (int i = 0; i < kArr.Length; i++)
         {
-            if (kArr[i].startDateTime == currentDate)
+            if (DateTime.Parse(kArr[i].startDateTime.ToShortDateString()) == DateTime.Parse(currentDate.ToShortDateString()))
             {
                 k = i;
             }
