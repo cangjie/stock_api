@@ -123,8 +123,8 @@
             dr["今开"] = drOri["open"].ToString().Trim();
             dr["信号"] = dr["信号"].ToString() + (IsOx(drOri) ? "<a title=\"20交易日内两次穿越3线\" >🐂</a>" : "");
             dr["信号"] = dr["信号"].ToString() + (IsStar(drOri) ? "<a alt=\"" + drOri["gid"].ToString().Trim().Remove(0, 2) + "\"  title=\"两日连涨，跳空和涨幅在特定范围内，昨日收阳，并且最高价和收盘价差在1%以内\" >🌟</a>" : "");
-            dr["信号"] = dr["信号"].ToString() + (IsKdjAlert(drOri, dtKdj) ? "<a alt=\"" + drOri["gid"].ToString().Trim().Remove(0, 2) + "\"  title=\"KDJ买入\" >📈</a>" : "");
-            dr["信号"] = dr["信号"].ToString() + (  (dr["信号"].ToString().IndexOf("📈") < 0 &&  IsMacdAlert(drOri, dtKdj)) ? "<a alt=\"" + drOri["gid"].ToString().Trim().Remove(0, 2) + "\"  title=\"MACD买入\" >📈</a>" : "");
+            dr["信号"] = dr["信号"].ToString() + ((IsKdjAlert(drOri, dtKdj)  &&  IsMacdAlert(drOri, dtKdj) )? "<a alt=\"" + drOri["gid"].ToString().Trim().Remove(0, 2) + "\"  title=\"KDJ MACD双买入信号\" >📈</a>" : "");
+            //dr["信号"] = dr["信号"].ToString() + (  (dr["信号"].ToString().IndexOf("📈") < 0 &&  IsMacdAlert(drOri, dtKdj)) ? "<a alt=\"" + drOri["gid"].ToString().Trim().Remove(0, 2) + "\"  title=\"MACD买入\" >📈</a>" : "");
             dr["信号"] = dr["信号"].ToString() + (( currentIndex > 0 && GetBottomDeep(stock.kArr, DateTime.Parse(currentDate.ToShortDateString() + " 9:30")) >= 5 ) ? "🚀" : "");
 
 
