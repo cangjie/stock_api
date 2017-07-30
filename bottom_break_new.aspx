@@ -112,11 +112,10 @@
         dt.Columns.Add("总计");
         foreach (DataRow drOri in dtOri.Rows)
         {
+            
             double jumpEmptyRate = Math.Round(((double.Parse(drOri["open"].ToString().Trim()) - double.Parse(drOri["settlement"].ToString().Trim()))
                 / double.Parse(drOri["settlement"].ToString().Trim())) * 100, 2);
-
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
-            stock.kArr = KLine.GetLocalKLine(stock.gid, "day");
             int currentIndex = stock.GetItemIndex(DateTime.Parse(currentDate.ToShortDateString() + " 9:30"));
             DataRow dr = dt.NewRow();
             dr["代码"] = "<a href=\"show_k_line_day.aspx?gid=" + drOri["gid"].ToString().Trim() + "&name="
