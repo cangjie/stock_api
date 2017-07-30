@@ -12,12 +12,6 @@
         if (!IsPostBack)
         {
             calendar.SelectedDate = DateTime.Now;
-            /*
-            DataTable dt = GetData1();
-            AddTotal(dt);
-            dg.DataSource = dt;
-            dg.DataBind();
-            */
             dg.DataSource = GetDataFull();
             dg.DataBind();
         }
@@ -88,6 +82,8 @@
 
         int[] allCount = new int[6] { 0, 0, 0, 0, 0, 0};
 
+        int shitTotal = 0;
+
         DataTable dt = new DataTable();
         dt.Columns.Add("代码");
         dt.Columns.Add("名称");
@@ -112,7 +108,7 @@
         dt.Columns.Add("总计");
         foreach (DataRow drOri in dtOri.Rows)
         {
-            
+
             double jumpEmptyRate = Math.Round(((double.Parse(drOri["open"].ToString().Trim()) - double.Parse(drOri["settlement"].ToString().Trim()))
                 / double.Parse(drOri["settlement"].ToString().Trim())) * 100, 2);
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
@@ -156,6 +152,10 @@
                     starKdjRocketTotal++;
                 if (dr["信号"].ToString().IndexOf("🚀") >= 0 && dr["信号"].ToString().IndexOf("📈") >= 0)
                     kdjRocketTotal++;
+            }
+            else
+            {
+                shitTotal++;
             }
 
 
@@ -600,6 +600,11 @@
         drStarKdjRocket["总计"] = Math.Round(100 * (double)starKdjRocketCount[5] / (double)starKdjRocketTotal, 2).ToString() + "%";
         dt.Rows.Add(drStarKdjRocket);
 
+        DataRow drShit = dt.NewRow();
+        drShit["名称"] = "💩";
+        drShit["信号"] = shitTotal.ToString() + "/" + dt.Rows.Count.ToString();
+        drShit["今开"] = (100 * (double)shitTotal / (double)dt.Rows.Count).ToString() + "%";
+        dt.Rows.Add(drShit);
         return dt;
     }
 
