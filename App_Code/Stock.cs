@@ -41,9 +41,10 @@ public class Stock
             drLastTimeline = dt.Rows[0];
 
         kLineDay = LoadLocalKLine(gid, "day");
-        kLineHour = LoadLocalKLine(gid, "1hr");
-        kLineHalfHour = LoadLocalKLine(gid, "30min");
-        kLineQuaterHour = LoadLocalKLine(gid, "15min");
+        kArr = kLineDay;
+        //kLineHour = LoadLocalKLine(gid, "1hr");
+        //kLineHalfHour = LoadLocalKLine(gid, "30min");
+        //kLineQuaterHour = LoadLocalKLine(gid, "15min");
     }
 
     
