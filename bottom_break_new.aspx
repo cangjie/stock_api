@@ -603,7 +603,7 @@
         DataRow drShit = dt.NewRow();
         drShit["名称"] = "💩";
         drShit["信号"] = shitTotal.ToString() + "/" + dt.Rows.Count.ToString();
-        drShit["今开"] = (100 * (double)shitTotal / (double)dt.Rows.Count).ToString() + "%";
+        drShit["今开"] = (Math.Round(100 * (double)shitTotal / (double)dt.Rows.Count, 2)).ToString() + "%";
         dt.Rows.Add(drShit);
         return dt;
     }
