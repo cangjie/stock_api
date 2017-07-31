@@ -836,7 +836,7 @@
         dtSort.Columns.Add("4日最高double", Type.GetType("System.Double"));
         dtSort.Columns.Add("5日最高double", Type.GetType("System.Double"));
         //dtSort.Columns.Add("重心double", Type.GetType("System.Double"));
-        for (int i = 0; i < dt.Rows.Count - 8; i++)
+        for (int i = 0; i < dt.Rows.Count - 9; i++)
         {
             DataRow drSort = dtSort.NewRow();
             foreach (DataColumn dc in dt.Columns)
@@ -878,9 +878,9 @@
             dtNew.Rows.Add(drNew);
         }
 
-        for (int i = 0; i < 6; i++)
+        for (int i = 0; i < 9; i++)
         {
-            DataRow dr = dt.Rows[dt.Rows.Count - 6 + i];
+            DataRow dr = dt.Rows[dt.Rows.Count - 9 + i];
             DataRow drNewTotal = dtNew.NewRow();
             foreach (DataColumn c in dt.Columns)
             {
