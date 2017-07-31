@@ -29,28 +29,24 @@
     public DataTable GetDataFull()
     {
         DateTime currentDate = DateTime.Parse(calendar.SelectedDate.ToShortDateString());
+        
+        if (currentDate == DateTime.Parse(DateTime.Now.ToShortDateString()))
+        {
+            ThreadStart ts = new ThreadStart(Util.RefreshSuggestStockForToday);
+            ////Util.RefreshSuggestStockForToday();
+            Thread t = new Thread(ts);
+            t.Start();
+        }
+        else
+        {
+            Util.RefreshSuggestStock(currentDate);
+        }
         DataTable dtOri = DBHelper.GetDataTable(" select * from suggest_stock where suggest_date = '" + currentDate.ToShortDateString()
                 + "'  order by  ((highest_5_day - [open]) / [open]) desc, ((highest_4_day - [open]) / [open]) desc, "
                 + " ((highest_3_day - [open]) / [open]) desc, ((highest_2_day - [open]) / [open]) desc , "
                 + " ((highest_1_day - [open]) / [open]) desc , ((highest_0_day - [open]) / [open]) desc , (([open] - settlement) / settlement) desc ");
-        if (dtOri.Rows.Count == 0)
-        {
-            if (currentDate == DateTime.Parse(DateTime.Now.ToShortDateString()))
-            {
-                ThreadStart ts = new ThreadStart(Util.RefreshSuggestStockForToday);
-                ////Util.RefreshSuggestStockForToday();
-                Thread t = new Thread(ts);
-                t.Start();
-            }
-            else
-            {
-                Util.RefreshSuggestStock(currentDate);
-            }
-            dtOri = DBHelper.GetDataTable(" select * from suggest_stock where suggest_date = '" + currentDate.ToShortDateString()
-                + "'  order by  ((highest_5_day - [open]) / [open]) desc, ((highest_4_day - [open]) / [open]) desc, "
-                + " ((highest_3_day - [open]) / [open]) desc, ((highest_2_day - [open]) / [open]) desc , "
-                + " ((highest_1_day - [open]) / [open]) desc , ((highest_0_day - [open]) / [open]) desc , (([open] - settlement) / settlement) desc ");
-        }
+       
+            
 
         DataTable dtKdj = DBHelper.GetDataTable(" select * from kdj_alert where alert_time >= '" + currentDate.ToShortDateString() + "' and alert_time < '" + currentDate.AddDays(1).ToShortDateString() + "'   ");
         DataTable dtMacd = DBHelper.GetDataTable(" select * from macd_alert where alert_time >='" + currentDate.ToShortDateString() + "' and alert_time < '" + currentDate.AddDays(1).ToShortDateString() + "'   ");
