@@ -330,9 +330,12 @@ public class Util
 
     public static KLine[] IsSuggest(DateTime day, string stockCode)
     {
+        Stock stock = new Stock(stockCode);
+        /*
         Stock stock = new Stock();
         stock.gid = stockCode;
         stock.kArr = KLine.GetKLine("day", stockCode, day.AddMonths(-3), day);
+        */
         if (stock.IsCross3X3(day))
             return stock.kArr;
         else
