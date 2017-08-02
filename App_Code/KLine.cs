@@ -312,7 +312,7 @@ public class KLine
 
     public static void ComputeRSV(KLine[] kArr)
     {
-        int valueN = 9;
+        int valueN = 8;
         for (int i = valueN - 1; i < kArr.Length; i++)
         {
             KLine[] rsvArr = GetSubKLine(kArr, i - valueN + 1, valueN);
@@ -357,6 +357,8 @@ public class KLine
         int shortDays = 12;
         int longDays = 26;
         int midDays = 9;
+
+
 
         double[] endPirceArr = new double[kArr.Length];
         double[] difArr = new double[kArr.Length];
