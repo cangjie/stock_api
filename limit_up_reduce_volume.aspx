@@ -117,12 +117,12 @@
                 int idx = s.GetItemIndex(DateTime.Parse(i.ToShortDateString() + " 9:30"));
                 if (idx > 1)
                 {
-                    if ((s.kArr[idx - 1].endPrice - s.kArr[idx - 2].endPrice) / s.kArr[idx - 1].endPrice > 0.07)
+                    if ((s.kArr[idx - 1].endPrice - s.kArr[idx - 2].endPrice) / s.kArr[idx - 1].endPrice >= 0.05)
                     {
                         double volume = Stock.GetVolumeAndAmount(s.gid, DateTime.Parse(i.ToShortDateString() + " 14:30"))[0];
                         double volumeLast = Stock.GetVolumeAndAmount(s.gid, DateTime.Parse(s.kArr[idx - 1].startDateTime.ToShortDateString() + " 14:30"))[0];
 
-                        if (volumeLast - volume > 0 && volume / volumeLast <= 0.6)
+                        if (volumeLast - volume > 0 && volume / volumeLast < 0.67)
                         {
                             try
                             {
