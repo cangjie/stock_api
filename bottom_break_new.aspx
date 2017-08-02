@@ -128,8 +128,9 @@
                 || stock.kArr[currentIndex].highestPrice - stock.kArr[currentIndex].endPrice >= stock.kArr[currentIndex].endPrice - stock.kArr[currentIndex].startPrice)) ? "💩" : "");
 
 
-
-            if (dr["信号"].ToString().IndexOf("🌟") >= 0)
+            if (dr["信号"].ToString().IndexOf("💩") < 0)
+            {
+                if (dr["信号"].ToString().IndexOf("🌟") >= 0)
                     starTotal++;
                 if (dr["信号"].ToString().IndexOf("📈") >= 0)
                     kdjTotal++;
@@ -147,10 +148,6 @@
                     starKdjRocketTotal++;
                 if (dr["信号"].ToString().IndexOf("🚀") >= 0 && dr["信号"].ToString().IndexOf("📈") >= 0)
                     kdjRocketTotal++;
-
-            if (dr["信号"].ToString().IndexOf("💩") < 0)
-            {
-                
             }
             else
             {
