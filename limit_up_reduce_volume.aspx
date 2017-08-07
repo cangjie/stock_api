@@ -36,6 +36,7 @@
         dt.Columns.Add("当日涨幅");
         dt.Columns.Add("当日缩量");
         dt.Columns.Add("拉升天数");
+        dt.Columns.Add("拉升幅度");
         dt.Columns.Add("1日放量");
         dt.Columns.Add("1日最高");
         dt.Columns.Add("2日最高");
@@ -65,8 +66,11 @@
 
             dr["当日涨幅"] = Math.Round(((s.kArr[currentIndex].endPrice - s.kArr[currentIndex - 1].endPrice) * 100 / s.kArr[currentIndex - 1].endPrice), 2).ToString() + "%";
             dr["当日缩量"] = Math.Round((volumeYesterday - volumeToday) * 100 / volumeYesterday, 2).ToString() + "%";
-            dr["拉升天数"] = GetRaiseUpDays(s, currentIndex);
-            int idx = s.GetItemIndex(DateTime.Parse(currentDate.ToShortDateString() + " 9:30"));
+            int raiseUpDays = GetRaiseUpDays(s, currentIndex);
+            dr["拉升天数"] = raiseUpDays.ToString();
+            dr["拉升幅度"] = Math.Round(GetRaiseUpRate(s, currentIndex, raiseUpDays) * 100, 2).ToString() + "%";
+            int idx = currentIndex;
+
             if (idx > 1)
             {
                 dr["前日涨幅"] = Math.Round(100 * (s.kArr[idx - 1].endPrice - s.kArr[idx - 2].endPrice) / s.kArr[idx - 2].endPrice, 2).ToString() + "%";
@@ -227,6 +231,18 @@
         return currentIndex - i;
     }
 
+    public double GetRaiseUpRate(Stock stock, int currentIndex, int raiseUpDays)
+    {
+        double lowestPrice = double.MaxValue;
+        for (int i = currentIndex - 1; i >= currentIndex - raiseUpDays; i--)
+        {
+            lowestPrice = Math.Min(lowestPrice, stock.kArr[i].startPrice);
+            lowestPrice = Math.Min(lowestPrice, stock.kArr[i].endPrice);
+        }
+        return (stock.kArr[currentIndex - 1].highestPrice - lowestPrice) / lowestPrice;
+
+    }
+
 </script>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -255,6 +271,7 @@
                 <asp:BoundColumn DataField="当日涨幅" HeaderText="当日涨幅" SortExpression="当日涨幅|asc"></asp:BoundColumn>
                 <asp:BoundColumn DataField="当日缩量" HeaderText="当日缩量" SortExpression="当日缩量|asc"></asp:BoundColumn>
                 <asp:BoundColumn DataField="拉升天数" HeaderText="拉升天数" SortExpression="拉升天数|desc"></asp:BoundColumn>
+                <asp:BoundColumn DataField="拉升幅度" HeaderText="拉升幅度" SortExpression="拉升幅度|desc"></asp:BoundColumn>
                 <asp:BoundColumn DataField="1日最高" HeaderText="1日最高"></asp:BoundColumn>
                 <asp:BoundColumn DataField="2日最高" HeaderText="2日最高"></asp:BoundColumn>
                 <asp:BoundColumn DataField="3日最高" HeaderText="3日最高"></asp:BoundColumn>
