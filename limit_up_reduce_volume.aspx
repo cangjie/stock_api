@@ -31,10 +31,11 @@
         DataTable dt = new DataTable();
         dt.Columns.Add("代码");
         dt.Columns.Add("名称");
-
-        dt.Columns.Add("当日收盘");
         dt.Columns.Add("前日涨幅");
+        dt.Columns.Add("当日收盘");
+        dt.Columns.Add("当日涨幅");
         dt.Columns.Add("当日缩量");
+        dt.Columns.Add("1日放量");
         dt.Columns.Add("1日最高");
         dt.Columns.Add("2日最高");
         dt.Columns.Add("3日最高");
@@ -52,7 +53,16 @@
                 + s.gid + "</a>";
 
             double volumeToday = Stock.GetVolumeAndAmount(s.gid, DateTime.Parse(currentDate.ToShortDateString() + " 15:00"))[0];
-            double volumeYesterday = Stock.GetVolumeAndAmount(s.gid, DateTime.Parse(currentDate.AddDays(-1).ToShortDateString() + " 15:00"))[0];;
+            double volumeYesterday = Stock.GetVolumeAndAmount(s.gid, DateTime.Parse(currentDate.AddDays(-1).ToShortDateString() + " 15:00"))[0];
+
+
+
+            int currentIndex = s.GetKLineIndexForADay(DateTime.Parse(currentDate.ToShortDateString() + " 9:30"));
+
+
+
+
+            dr["当日涨幅"] = Math.Round(((s.kArr[currentIndex].endPrice - s.kArr[currentIndex - 1].endPrice) * 100 / s.kArr[currentIndex - 1].endPrice), 2).ToString() + "%";
             dr["当日缩量"] = Math.Round((volumeYesterday - volumeToday) * 100 / volumeYesterday, 2).ToString() + "%";
             int idx = s.GetItemIndex(DateTime.Parse(currentDate.ToShortDateString() + " 9:30"));
             if (idx > 1)
@@ -60,6 +70,14 @@
                 dr["前日涨幅"] = Math.Round(100 * (s.kArr[idx - 1].endPrice - s.kArr[idx - 2].endPrice) / s.kArr[idx - 2].endPrice, 2).ToString() + "%";
                 double settle = s.kArr[idx].endPrice;
                 dr["当日收盘"] = Math.Round(settle, 2).ToString();
+
+                double volumeTomorrow = 0;
+
+                if (currentIndex < s.kArr.Length - 1)
+                {
+                    volumeTomorrow = Stock.GetVolumeAndAmount(s.gid, s.kArr[currentIndex + 1].endDateTime)[0];
+                }
+                dr["1日放量"] = (volumeTomorrow == 0)? "-" : Math.Round((volumeTomorrow - volumeToday)*100/volumeToday, 2).ToString() + "%";
                 for (int i = 0; i < 5; i++)
                 {
                     if (idx + i + 1 < s.kArr.Length)
@@ -153,6 +171,40 @@
 
     }
 
+    protected void dg_SortCommand(object source, DataGridSortCommandEventArgs e)
+    {
+        string sortCommand = e.SortExpression;
+        string colmunName = sortCommand.Split('|')[0].Trim();
+        string command = sortCommand.Split('|')[1].Trim();
+        DataTable dt = GetData();
+        DataTable dtNew = dt.Clone();
+        dt.Columns.Add(colmunName + "double");
+        for (int i = 0; i < dt.Rows.Count; i++)
+        {
+            dt.Rows[i][colmunName + "double"] = double.Parse(dt.Rows[i][colmunName].ToString().Replace("%",""));
+        }
+        DataRow[] drArr = dt.Select("", colmunName + "double " + command);
+        for (int i = 0; i < drArr.Length; i++)
+        {
+            DataRow drNew = dtNew.NewRow();
+            for (int j = 0; j < dtNew.Columns.Count; j++)
+            {
+                drNew[j] = drArr[i][j];
+            }
+            dtNew.Rows.Add(drNew);
+        }
+        dg.DataSource = dtNew;
+
+        for (int i = 0; i < dg.Columns.Count; i++)
+        {
+            if (dg.Columns[i].SortExpression.StartsWith(colmunName))
+            {
+                dg.Columns[i].SortExpression = colmunName.Trim() + "|" + (command.Trim().Equals("asc")? "desc":"asc");
+            }
+        }
+
+        dg.DataBind();
+    }
 </script>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -171,8 +223,20 @@
             <TitleStyle BackColor="#333399" BorderStyle="Solid" Font-Bold="True" Font-Size="12pt" ForeColor="White" Height="12pt" />
             <TodayDayStyle BackColor="#999999" ForeColor="White" />
         </asp:Calendar>
-        <asp:DataGrid ID="dg" runat="server" Width="100%" BackColor="White" BorderColor="#999999" BorderStyle="None" BorderWidth="1px" CellPadding="3" GridLines="Vertical" >
+        <asp:DataGrid ID="dg" runat="server" Width="100%" BackColor="White" BorderColor="#999999" BorderStyle="None" BorderWidth="1px" CellPadding="3" GridLines="Vertical" AutoGenerateColumns="False" OnSortCommand="dg_SortCommand" AllowSorting="True" >
             <AlternatingItemStyle BackColor="#DCDCDC" />
+            <Columns>
+                <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
+                <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
+                <asp:BoundColumn DataField="当日收盘" HeaderText="当日收盘"></asp:BoundColumn>
+                <asp:BoundColumn DataField="前日涨幅" HeaderText="前日涨幅" SortExpression="前日涨幅|asc"></asp:BoundColumn>
+                <asp:BoundColumn DataField="当日缩量" HeaderText="当日缩量" SortExpression="当日缩量|asc"></asp:BoundColumn>
+                <asp:BoundColumn DataField="1日最高" HeaderText="1日最高"></asp:BoundColumn>
+                <asp:BoundColumn DataField="2日最高" HeaderText="2日最高"></asp:BoundColumn>
+                <asp:BoundColumn DataField="3日最高" HeaderText="3日最高"></asp:BoundColumn>
+                <asp:BoundColumn DataField="4日最高" HeaderText="4日最高"></asp:BoundColumn>
+                <asp:BoundColumn DataField="5日最高" HeaderText="5日最高"></asp:BoundColumn>
+            </Columns>
             <FooterStyle BackColor="#CCCCCC" ForeColor="Black" />
             <HeaderStyle BackColor="#000084" Font-Bold="True" ForeColor="White" />
             <ItemStyle BackColor="#EEEEEE" ForeColor="Black" />
