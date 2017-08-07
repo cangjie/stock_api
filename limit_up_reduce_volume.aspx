@@ -181,7 +181,7 @@
         string command = sortCommand.Split('|')[1].Trim();
         DataTable dt = GetData();
         DataTable dtNew = dt.Clone();
-        dt.Columns.Add(colmunName + "double");
+        dt.Columns.Add(colmunName + "double", Type.GetType("System.Double"));
         for (int i = 0; i < dt.Rows.Count; i++)
         {
             dt.Rows[i][colmunName + "double"] = double.Parse(dt.Rows[i][colmunName].ToString().Replace("%",""));
