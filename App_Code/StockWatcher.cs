@@ -131,7 +131,9 @@ public class StockWatcher
                 keyword3 = price.ToString();
                 break;
             default:
-                first = type.Replace("top", "压力位").Replace("bottom", "支撑位").Replace("wave", "波段").Replace("low", "低位").Replace("high", "高位").Trim().Replace("over3line", "突破三线").Replace("volumeincrease", "放量");
+                type = type.Replace("top", "压力位").Replace("bottom", "支撑位").Replace("wave", "波段").Replace("low", "低位").Replace("high", "高位").Trim().Replace("over3line", "突破三线").Replace("volumeincrease", "放量");
+                type = type.Replace("volumedecrease", "缩量调整");
+                first = type;
                 keyword1 = "[" + gid.Trim() + "]" + name.Trim();
                 keyword2 = price.ToString();
                 keyword3 = DateTime.Now.ToString();
