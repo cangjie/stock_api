@@ -35,6 +35,7 @@
         dt.Columns.Add("当日收盘");
         dt.Columns.Add("当日涨幅");
         dt.Columns.Add("当日缩量");
+        dt.Columns.Add("拉升天数");
         dt.Columns.Add("1日放量");
         dt.Columns.Add("1日最高");
         dt.Columns.Add("2日最高");
@@ -64,20 +65,22 @@
 
             dr["当日涨幅"] = Math.Round(((s.kArr[currentIndex].endPrice - s.kArr[currentIndex - 1].endPrice) * 100 / s.kArr[currentIndex - 1].endPrice), 2).ToString() + "%";
             dr["当日缩量"] = Math.Round((volumeYesterday - volumeToday) * 100 / volumeYesterday, 2).ToString() + "%";
+            dr["拉升天数"] = GetRaiseUpDays(s, currentIndex);
             int idx = s.GetItemIndex(DateTime.Parse(currentDate.ToShortDateString() + " 9:30"));
             if (idx > 1)
             {
                 dr["前日涨幅"] = Math.Round(100 * (s.kArr[idx - 1].endPrice - s.kArr[idx - 2].endPrice) / s.kArr[idx - 2].endPrice, 2).ToString() + "%";
                 double settle = s.kArr[idx].endPrice;
                 dr["当日收盘"] = Math.Round(settle, 2).ToString();
+                /*
+                                double volumeTomorrow = 0;
 
-                double volumeTomorrow = 0;
-
-                if (currentIndex < s.kArr.Length - 1)
-                {
-                    volumeTomorrow = Stock.GetVolumeAndAmount(s.gid, s.kArr[currentIndex + 1].endDateTime)[0];
-                }
-                dr["1日放量"] = (volumeTomorrow == 0)? "-" : Math.Round((volumeTomorrow - volumeToday)*100/volumeToday, 2).ToString() + "%";
+                                if (currentIndex < s.kArr.Length - 1)
+                                {
+                                    volumeTomorrow = Stock.GetVolumeAndAmount(s.gid, s.kArr[currentIndex + 1].endDateTime)[0];
+                                }
+                                dr["1日放量"] = (volumeTomorrow == 0)? "-" : Math.Round((volumeTomorrow - volumeToday)*100/volumeToday, 2).ToString() + "%";
+                  */
                 for (int i = 0; i < 5; i++)
                 {
                     if (idx + i + 1 < s.kArr.Length)
@@ -205,6 +208,25 @@
 
         dg.DataBind();
     }
+
+    public int GetRaiseUpDays(Stock stock, int currentIndex)
+    {
+        int i = currentIndex-1;
+        for (; i > 0; i--)
+        {
+            double bottomOfKLine = Math.Min(stock.kArr[i].startPrice, stock.kArr[i].endPrice);
+            if (bottomOfKLine < stock.GetAverageSettlePrice(i, 3, 3))
+            {
+                break;
+            }
+            else
+            {
+
+            }
+        }
+        return currentIndex - i;
+    }
+
 </script>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -230,7 +252,9 @@
                 <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                 <asp:BoundColumn DataField="当日收盘" HeaderText="当日收盘"></asp:BoundColumn>
                 <asp:BoundColumn DataField="前日涨幅" HeaderText="前日涨幅" SortExpression="前日涨幅|asc"></asp:BoundColumn>
+                <asp:BoundColumn DataField="当日涨幅" HeaderText="当日涨幅" SortExpression="当日涨幅|asc"></asp:BoundColumn>
                 <asp:BoundColumn DataField="当日缩量" HeaderText="当日缩量" SortExpression="当日缩量|asc"></asp:BoundColumn>
+                <asp:BoundColumn DataField="拉升天数" HeaderText="拉升天数" SortExpression="拉升天数|desc"></asp:BoundColumn>
                 <asp:BoundColumn DataField="1日最高" HeaderText="1日最高"></asp:BoundColumn>
                 <asp:BoundColumn DataField="2日最高" HeaderText="2日最高"></asp:BoundColumn>
                 <asp:BoundColumn DataField="3日最高" HeaderText="3日最高"></asp:BoundColumn>
