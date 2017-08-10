@@ -266,13 +266,13 @@
             <Columns>
                 <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                 <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
-                <asp:BoundColumn DataField="当日收盘" HeaderText="当日收盘"></asp:BoundColumn>
-                <asp:BoundColumn DataField="前日涨幅" HeaderText="前日涨幅" SortExpression="前日涨幅|asc"></asp:BoundColumn>
-                <asp:BoundColumn DataField="当日涨幅" HeaderText="当日涨幅" SortExpression="当日涨幅|asc"></asp:BoundColumn>
-                <asp:BoundColumn DataField="当日缩量" HeaderText="当日缩量" SortExpression="当日缩量|asc"></asp:BoundColumn>
                 <asp:BoundColumn DataField="拉升天数" HeaderText="拉升天数" SortExpression="拉升天数|desc"></asp:BoundColumn>
                 <asp:BoundColumn DataField="拉升幅度" HeaderText="拉升幅度" SortExpression="拉升幅度|desc"></asp:BoundColumn>
-                <asp:BoundColumn DataField="1日最高" HeaderText="1日最高"></asp:BoundColumn>
+                <asp:BoundColumn DataField="前日涨幅" HeaderText="前日涨幅" SortExpression="前日涨幅|asc"></asp:BoundColumn>
+                <asp:BoundColumn DataField="当日缩量" HeaderText="当日缩量" SortExpression="当日缩量|asc"></asp:BoundColumn>
+                <asp:BoundColumn DataField="当日涨幅" HeaderText="当日涨幅" SortExpression="当日涨幅|asc"></asp:BoundColumn>
+                <asp:BoundColumn DataField="当日收盘" HeaderText="当日收盘"></asp:BoundColumn>
+                <asp:BoundColumn DataField="1日最高" HeaderText="1日最高" SortExpression="1日最高|desc"></asp:BoundColumn>
                 <asp:BoundColumn DataField="2日最高" HeaderText="2日最高"></asp:BoundColumn>
                 <asp:BoundColumn DataField="3日最高" HeaderText="3日最高"></asp:BoundColumn>
                 <asp:BoundColumn DataField="4日最高" HeaderText="4日最高"></asp:BoundColumn>
