@@ -188,7 +188,7 @@
         dt.Columns.Add(colmunName + "double", Type.GetType("System.Double"));
         for (int i = 0; i < dt.Rows.Count; i++)
         {
-            dt.Rows[i][colmunName + "double"] = double.Parse(dt.Rows[i][colmunName].ToString().Replace("%",""));
+            dt.Rows[i][colmunName + "double"] = GetPercentValue(dt.Rows[i][colmunName].ToString().Trim());
         }
         DataRow[] drArr = dt.Select("", colmunName + "double " + command);
         for (int i = 0; i < drArr.Length; i++)
@@ -241,6 +241,21 @@
         }
         return (stock.kArr[currentIndex - 1].highestPrice - lowestPrice) / lowestPrice;
 
+    }
+
+    public static double GetPercentValue(string str)
+    {
+        if (str.Trim().Equals("-") || str.Trim().Equals(""))
+            return 0;
+        Match m = Regex.Match(str, @"-*\d+.*\d*%");
+        try
+        {
+            return double.Parse(m.Value.Replace(">", "").Replace("<", "").Replace("%", ""));
+        }
+        catch
+        {
+            return 0;
+        }
     }
 
 </script>
