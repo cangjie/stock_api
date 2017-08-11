@@ -301,7 +301,7 @@ public class Util
                             { "last_day_over_flow", "float", stockObj.yesterdayPositiveRate(day).ToString()}
                         });
                     }
-                    catch(Exception e)
+                    catch
                     {
                         
                     }
@@ -369,5 +369,15 @@ public class Util
         }
         dt.Dispose();
         return gidArr;
+    }
+
+    public static DateTime GetDay(DateTime dateTime)
+    {
+        return DateTime.Parse(dateTime.ToShortDateString());
+    }
+
+    public static DateTime GetTime(DateTime dateTime)
+    {
+        return DateTime.Parse(dateTime.ToShortTimeString());
     }
 }

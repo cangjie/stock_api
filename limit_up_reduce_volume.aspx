@@ -47,7 +47,8 @@
         {
             DataRow dr = dt.NewRow();
             Stock s = new Stock(drOri["gid"].ToString());
-            s.kArr = KLine.GetLocalKLine(s.gid, "day");
+            s.LoadKLineDay();
+            //s.kArr = KLine.GetLocalKLine(s.gid, "day");
             dr["代码"] = s.gid;
             dr["名称"] = "<a href=\"https://touzi.sina.com.cn/public/xray/details/" + s.gid.Trim()
                 + "\" target=\"_blank\"  >" + s.Name.Trim() + "</a>";

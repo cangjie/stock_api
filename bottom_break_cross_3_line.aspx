@@ -1,0 +1,164 @@
+﻿<%@ Page Language="C#" %>
+<%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="System.Data.SqlClient" %>
+<%@ Import Namespace="System.Threading" %>
+<%@ Import Namespace="System.Text" %>
+<!DOCTYPE html>
+
+<script runat="server">
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (!IsPostBack)
+        {
+            calendar.SelectedDate = Util.GetDay(DateTime.Now);
+            dg.DataSource = GetHtmlData(GetData().Select(""));
+            dg.DataBind();
+        }
+    }
+
+    public DataTable GetData()
+    {
+        DataTable dt = new DataTable();
+        dt.Columns.Add("代码", Type.GetType("System.String"));
+        dt.Columns.Add("名称", Type.GetType("System.String"));
+        dt.Columns.Add("信号", Type.GetType("System.String"));
+        dt.Columns.Add("今开", Type.GetType("System.Double"));
+        dt.Columns.Add("3线价", Type.GetType("System.Double"));
+        dt.Columns.Add("买入价", Type.GetType("System.Double"));
+        dt.Columns.Add("收盘价", Type.GetType("System.Double"));
+        dt.Columns.Add("放量", Type.GetType("System.Double"));
+        dt.Columns.Add("3线势", Type.GetType("System.Int32"));
+        dt.Columns.Add("K线势", Type.GetType("System.Int32"));
+        dt.Columns.Add("1日", Type.GetType("System.Double"));
+        dt.Columns.Add("2日", Type.GetType("System.Double"));
+        dt.Columns.Add("3日", Type.GetType("System.Double"));
+        dt.Columns.Add("4日", Type.GetType("System.Double"));
+        dt.Columns.Add("5日", Type.GetType("System.Double"));
+        dt.Columns.Add("总计", Type.GetType("System.Double"));
+
+        DataTable dtOri = DBHelper.GetDataTable(" select * from dbo.bottom_break_cross_3_line where suggest_date = '"
+            + calendar.SelectedDate.ToShortDateString() + "' and going_down_3_line_days >= 5 and under_3_line_days >= 5 order by  going_down_3_line_days desc, under_3_line_days desc ");
+        foreach (DataRow drOri in dtOri.Rows)
+        {
+            Stock stock = new Stock(drOri["gid"].ToString().Trim());
+            stock.LoadKLineDay();
+            int currentIndex = stock.GetItemIndex(calendar.SelectedDate);
+            if (currentIndex < 6)
+                continue;
+            double startPrice = stock.kLineDay[currentIndex].startPrice;
+            double today3LinePrice = stock.GetAverageSettlePrice(currentIndex, 3, 3);
+            double buyPrice = Math.Max(startPrice, today3LinePrice);
+            double currentPrice
+                = stock.kLineDay[currentIndex].startDateTime.ToShortDateString().Equals(DateTime.Now.ToShortDateString()) ?
+                stock.LastTrade: stock.kLineDay[currentIndex].endPrice ;
+            double lastDayVolume = Stock.GetVolumeAndAmount(stock.gid,
+                DateTime.Parse(stock.kLineDay[currentIndex - 1].startDateTime.ToShortDateString() + " " + DateTime.Now.ToShortTimeString()))[0];
+            double currentVolume = Stock.GetVolumeAndAmount(stock.gid,
+                DateTime.Parse(stock.kLineDay[currentIndex].startDateTime.ToShortDateString() + " " + DateTime.Now.ToShortTimeString()))[0];
+
+            DataRow dr = dt.NewRow();
+            dr["代码"] = stock.gid.Trim();
+            dr["名称"] = drOri["name"].ToString().Trim();
+            dr["信号"] = "";
+            dr["今开"] = startPrice;
+            dr["3线价"] = today3LinePrice;
+            dr["买入价"] = buyPrice;
+            dr["收盘价"] = currentPrice;
+            dr["放量"] = (currentVolume - lastDayVolume) / lastDayVolume;
+            dr["3线势"] = int.Parse(drOri["going_down_3_line_days"].ToString());
+            dr["K线势"] = int.Parse(drOri["under_3_line_days"].ToString());
+            double maxIncreaseRate = 0;
+            for (int i = 1; i <= 5 && i + currentIndex < stock.kLineDay.Length ; i++)
+            {
+                maxIncreaseRate = Math.Max(maxIncreaseRate, (stock.kLineDay[i + currentIndex].highestPrice - buyPrice) / buyPrice);
+                dr[i.ToString() + "日"] = (stock.kLineDay[i + currentIndex].highestPrice - buyPrice) / buyPrice;
+            }
+            dr["总计"] = maxIncreaseRate;
+            dt.Rows.Add(dr);
+        }
+
+        return dt;
+    }
+
+    public DataTable GetHtmlData(DataRow[] drOriArr)
+    {
+        if (drOriArr.Length == 0)
+            return null;
+        DataTable dt = new DataTable();
+        foreach (DataColumn c in drOriArr[0].Table.Columns)
+        {
+            dt.Columns.Add(c.Caption.Trim(), Type.GetType("System.String"));
+        }
+        foreach (DataRow drOri in drOriArr)
+        {
+            DataRow dr = dt.NewRow();
+            dr["代码"] = "<a href=\"show_k_line_day.aspx?gid=" + drOri["代码"].ToString().Trim() + "&name="
+                + Server.UrlEncode(drOri["名称"].ToString().Trim()) + "\" target=\"_blank\" >"
+                +  drOri["代码"].ToString().Trim().Remove(0, 2) + "</a>";
+            dr["名称"] = "<a href=\"https://touzi.sina.com.cn/public/xray/details/" + drOri["代码"].ToString().Trim()
+                + "\" target=\"_blank\"  >" + drOri["名称"].ToString().Trim() + "</a>";
+            dr["信号"] = drOri["信号"].ToString();
+            dr["今开"] = Math.Round(((double)drOri["今开"]), 2).ToString();
+            dr["3线价"] = Math.Round(((double)drOri["3线价"]), 2).ToString();
+            dr["买入价"] = Math.Round(((double)drOri["买入价"]), 2).ToString();
+            dr["收盘价"] = Math.Round(((double)drOri["收盘价"]), 2).ToString();
+            dr["放量"] = Math.Round(((double)drOri["放量"]) * 100, 2).ToString() + "%";
+            dr["3线势"] = drOri["3线势"].ToString().Trim();
+            dr["K线势"] = drOri["K线势"].ToString().Trim();
+            for (int i = 1; i <= 5; i++)
+            {
+                if (drOri[i.ToString() + "日"].GetType().Name.Trim().Equals("DBNull"))
+                    break;
+                double rate = (double)drOri[i.ToString() + "日"];
+                dr[i.ToString() + "日"] = "<font color=\"" + ((rate >= 0.01) ? "red" : "green") + "\" >"
+                    + Math.Round((rate * 100), 2).ToString() + "%</font>";
+            }
+            double rateTotal = (double)drOri["总计"];
+            dr["总计"] = "<font color=\"" + ((rateTotal >= 0.01) ? "red" : "green") + "\" >"
+                    + Math.Round((rateTotal * 100), 2).ToString() + "%</font>";
+            dt.Rows.Add(dr);
+
+        }
+        return dt;
+    }
+
+    protected void calendar_SelectionChanged(object sender, EventArgs e)
+    {
+        dg.DataSource = GetHtmlData(GetData().Select(""));
+        dg.DataBind();
+    }
+</script>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title></title>
+</head>
+<body>
+    <form id="form1" runat="server">
+    <table width="100%" >
+        <tr>
+            <td><asp:Calendar runat="server" id="calendar" Width="100%" OnSelectionChanged="calendar_SelectionChanged" BackColor="White" BorderColor="Black" BorderStyle="Solid" CellSpacing="1" Font-Names="Verdana" Font-Size="9pt" ForeColor="Black" Height="250px" NextPrevFormat="ShortMonth" >
+                    <DayHeaderStyle Font-Bold="True" Font-Size="8pt" ForeColor="#333333" Height="8pt" />
+                    <DayStyle BackColor="#CCCCCC" />
+                    <NextPrevStyle Font-Bold="True" Font-Size="8pt" ForeColor="White" />
+                    <OtherMonthDayStyle ForeColor="#999999" />
+                    <SelectedDayStyle BackColor="#333399" ForeColor="White" />
+                    <TitleStyle BackColor="#333399" BorderStyle="Solid" Font-Bold="True" Font-Size="12pt" ForeColor="White" Height="12pt" />
+                    <TodayDayStyle BackColor="#999999" ForeColor="White" />
+                    </asp:Calendar></td>
+        </tr>
+        <tr>
+            <td><asp:DataGrid ID="dg" runat="server" BackColor="White" BorderColor="#999999" BorderStyle="None" BorderWidth="1px" CellPadding="3" GridLines="Vertical" Width="100%" >
+                <AlternatingItemStyle BackColor="#DCDCDC" />
+                <FooterStyle BackColor="#CCCCCC" ForeColor="Black" />
+                <HeaderStyle BackColor="#000084" Font-Bold="True" ForeColor="White" />
+                <ItemStyle BackColor="#EEEEEE" ForeColor="Black" />
+                <PagerStyle BackColor="#999999" ForeColor="Black" HorizontalAlign="Center" Mode="NumericPages" />
+                <SelectedItemStyle BackColor="#008A8C" Font-Bold="True" ForeColor="White" />
+                </asp:DataGrid></td>
+        </tr>
+    </table>
+    </form>
+</body>
+</html>

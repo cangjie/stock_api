@@ -42,7 +42,7 @@ public class StockWatcher
             {
                 try
                 {
-                    WatchStar();
+                    //WatchStar();
                     Watch();
                     WatchEachStock();
                     WatchWave();
@@ -76,6 +76,7 @@ public class StockWatcher
         }
     }
 
+/*
     public static void WatchStar()
     {
         try
@@ -110,6 +111,8 @@ public class StockWatcher
 
         }
     }
+*/
+
 
     public static void SendAlertMessage(string openId, string gid, string name, double price, string type)
     {
@@ -213,7 +216,7 @@ public class StockWatcher
 
                 }
             }
-
+            ///////////////////////////
 
         }
     }
@@ -378,7 +381,7 @@ public class StockWatcher
             if (i > 0)
                 ret = true;
         }
-        catch(Exception e)
+        catch
         {
 
         }
@@ -442,4 +445,8 @@ public class StockWatcher
             Thread.Sleep(1000);
         }
     }
+
+
+
+
 }
