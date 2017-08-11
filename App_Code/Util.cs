@@ -280,6 +280,8 @@ public class Util
         {
             foreach (KeyValuePair<string, string> stock in stockListArr)
             {
+try
+{
                 KLine[] kArr = IsSuggest(day, stock.Key.Trim());
                 if (kArr.Length > 5)
                 {
@@ -323,6 +325,11 @@ public class Util
                     dt.Rows.Add(dr);
                     */
                 }
+}
+catch
+{
+
+}
             }
         }
 
