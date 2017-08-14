@@ -61,6 +61,7 @@
             double pressure = stock.GetMaPressure(currentIndex);
             double upSpacePercent = (pressure - currentPrice) / currentPrice;
             double volumeIncrease = (currentVolume - lastDayVolume) / lastDayVolume;
+            double supportPrice = stock.GetMaSupport(currentIndex);
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = drOri["name"].ToString().Trim();
@@ -75,6 +76,7 @@
             dr["K线势"] = int.Parse(drOri["under_3_line_days"].ToString());
             dr["均线压力"] = pressure;
             dr["上涨空间"] = upSpacePercent;
+            dr["均线支撑"] = supportPrice;
             double maxIncreaseRate = 0;
             for (int i = 1; i <= 5 && i + currentIndex < stock.kLineDay.Length ; i++)
             {
@@ -115,6 +117,7 @@
             dr["K线势"] = drOri["K线势"].ToString().Trim();
             dr["均线压力"] = Math.Round((double)drOri["均线压力"], 2).ToString();
             dr["上涨空间"] = Math.Round(100 * (double)drOri["上涨空间"], 2).ToString() + "%";
+            dr["均线支撑"] = Math.Round((double)drOri["均线支撑"], 2).ToString();
             for (int i = 1; i <= 5; i++)
             {
                 if (drOri[i.ToString() + "日"].GetType().Name.Trim().Equals("DBNull"))

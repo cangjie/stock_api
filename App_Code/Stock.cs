@@ -246,7 +246,35 @@ public class Stock
                 minIndex = i;
             }
         }
-        return maArr[minIndex];
+        return maArr[minIndex] > kArr[index].endPrice ? maArr[minIndex] : 0;
+    }
+
+    public double GetMaSupport(int index)
+    {
+        double[] maArr = new double[4];
+        double[] maSupportArr = new double[4];
+        double currentPrice = kArr[index].endPrice;
+
+        maArr[0] = GetAverageSettlePrice(index, 5, 0);
+        maArr[1] = GetAverageSettlePrice(index, 10, 0);
+        maArr[2] = GetAverageSettlePrice(index, 20, 0);
+        maArr[3] = GetAverageSettlePrice(index, 60, 0);
+        for (int i = 0; i < maArr.Length; i++)
+        {
+            maSupportArr[i] = currentPrice - maArr[i]   > 0 ? currentPrice - maArr[i]   : double.MaxValue;
+        }
+
+        int minIndex = 0;
+        double minValue = double.MaxValue;
+        for (int i = 0; i < maSupportArr.Length; i++)
+        {
+            if (maSupportArr[i] <= minValue)
+            {
+                minValue = maSupportArr[i];
+                minIndex = i;
+            }
+        }
+        return maArr[minIndex] < kArr[index].endPrice ? maArr[minIndex]: 0;
     }
 
     ////////////////////////////////////////////////////////////////////////
