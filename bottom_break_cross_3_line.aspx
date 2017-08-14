@@ -129,6 +129,7 @@
             dt.Rows.Add(dr);
 
         }
+        AddTotal(dt);
         return dt;
     }
 
