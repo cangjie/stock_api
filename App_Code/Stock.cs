@@ -231,7 +231,7 @@ public class Stock
             {
                 if (i == quotaArr.Length - 1)
                 {
-                    pressure = quotaArr[i + 1].Value * 1.5;
+                    pressure = quotaArr[i].Value * 1.5;
                 }
                 else
                 {
