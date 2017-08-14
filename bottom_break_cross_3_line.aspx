@@ -66,7 +66,8 @@
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = drOri["name"].ToString().Trim();
-            dr["信号"] = currentPrice <= today3LinePrice ? "💩": "";
+            dr["信号"] = (pressure == 0 || startPrice <= pressure) ? "⚠️" : "";
+            dr["信号"] = dr["信号"].ToString() + (currentPrice <= today3LinePrice ? "💩": "");
             dr["信号"] = dr["信号"].ToString().Trim() + ((Math.Abs(upSpacePercent) >= 0.03   && volumeIncrease > 0.33) ? "📈" : "");
             dr["今开"] = startPrice;
             dr["3线价"] = today3LinePrice;
