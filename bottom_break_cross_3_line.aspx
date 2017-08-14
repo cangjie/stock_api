@@ -59,10 +59,13 @@
             double currentVolume = Stock.GetVolumeAndAmount(stock.gid,
                 DateTime.Parse(stock.kLineDay[currentIndex].startDateTime.ToShortDateString() + " " + DateTime.Now.ToShortTimeString()))[0];
             double pressure = stock.GetMaPressure(currentIndex);
+            double upSpacePercent = (pressure - currentPrice) / currentPrice;
+            double volumeIncrease = (currentVolume - lastDayVolume) / lastDayVolume
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = drOri["name"].ToString().Trim();
             dr["信号"] = currentPrice <= today3LinePrice ? "💩": "";
+            dr["信号"] = dr["信号"].ToString().Trim() + ((Math.Abs(upSpacePercent) >= 0.03 && volumeIncrease > 0.33) ? "📈" : "");
             dr["今开"] = startPrice;
             dr["3线价"] = today3LinePrice;
             dr["买入价"] = buyPrice;
@@ -71,7 +74,7 @@
             dr["3线势"] = int.Parse(drOri["going_down_3_line_days"].ToString());
             dr["K线势"] = int.Parse(drOri["under_3_line_days"].ToString());
             dr["均线压力"] = pressure;
-            dr["上涨空间"] = (pressure - currentPrice) / currentPrice;
+            dr["上涨空间"] = upSpacePercent;
             double maxIncreaseRate = 0;
             for (int i = 1; i <= 5 && i + currentIndex < stock.kLineDay.Length ; i++)
             {
