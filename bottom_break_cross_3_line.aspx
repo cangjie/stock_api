@@ -60,7 +60,7 @@
                 DateTime.Parse(stock.kLineDay[currentIndex].startDateTime.ToShortDateString() + " " + DateTime.Now.ToShortTimeString()))[0];
             double pressure = stock.GetMaPressure(currentIndex);
             double upSpacePercent = (pressure - currentPrice) / currentPrice;
-            double volumeIncrease = (currentVolume - lastDayVolume) / lastDayVolume
+            double volumeIncrease = (currentVolume - lastDayVolume) / lastDayVolume;
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = drOri["name"].ToString().Trim();
