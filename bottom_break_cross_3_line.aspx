@@ -27,6 +27,8 @@
         dt.Columns.Add("3线价", Type.GetType("System.Double"));
         dt.Columns.Add("买入价", Type.GetType("System.Double"));
         dt.Columns.Add("收盘价", Type.GetType("System.Double"));
+        dt.Columns.Add("均线压力", Type.GetType("System.Double"));
+        dt.Columns.Add("上涨空间", Type.GetType("System.Double"));
         dt.Columns.Add("放量", Type.GetType("System.Double"));
         dt.Columns.Add("3线势", Type.GetType("System.Int32"));
         dt.Columns.Add("K线势", Type.GetType("System.Int32"));
@@ -56,7 +58,7 @@
                 DateTime.Parse(stock.kLineDay[currentIndex - 1].startDateTime.ToShortDateString() + " " + DateTime.Now.ToShortTimeString()))[0];
             double currentVolume = Stock.GetVolumeAndAmount(stock.gid,
                 DateTime.Parse(stock.kLineDay[currentIndex].startDateTime.ToShortDateString() + " " + DateTime.Now.ToShortTimeString()))[0];
-
+            double pressure = stock.GetMaPressure(currentIndex);
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = drOri["name"].ToString().Trim();
@@ -68,6 +70,8 @@
             dr["放量"] = (currentVolume - lastDayVolume) / lastDayVolume;
             dr["3线势"] = int.Parse(drOri["going_down_3_line_days"].ToString());
             dr["K线势"] = int.Parse(drOri["under_3_line_days"].ToString());
+            dr["均线压力"] = pressure;
+            dr["上涨空间"] = (pressure - currentPrice) / currentPrice;
             double maxIncreaseRate = 0;
             for (int i = 1; i <= 5 && i + currentIndex < stock.kLineDay.Length ; i++)
             {
@@ -106,6 +110,8 @@
             dr["放量"] = Math.Round(((double)drOri["放量"]) * 100, 2).ToString() + "%";
             dr["3线势"] = drOri["3线势"].ToString().Trim();
             dr["K线势"] = drOri["K线势"].ToString().Trim();
+            dr["均线压力"] = Math.Round((double)drOri["均线压力"], 2).ToString();
+            dr["上涨空间"] = Math.Round(100 * (double)drOri["上涨空间"], 2).ToString() + "%";
             for (int i = 1; i <= 5; i++)
             {
                 if (drOri[i.ToString() + "日"].GetType().Name.Trim().Equals("DBNull"))
@@ -133,7 +139,7 @@
     {
         DataTable dt = GetData();
         DataRow[] drArr = dt.Select("", e.SortExpression.Replace("|", "  "));
-        
+
         dg.DataSource = GetHtmlData(drArr);
         dg.DataBind();
 
@@ -179,6 +185,8 @@
                     <asp:BoundColumn DataField="买入价" HeaderText="买入价"></asp:BoundColumn>
                     <asp:BoundColumn DataField="收盘价" HeaderText="收盘价"></asp:BoundColumn>
                     <asp:BoundColumn DataField="放量" HeaderText="放量" SortExpression="放量|desc"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="均线压力" HeaderText="均线压力"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="上涨空间" HeaderText="上涨空间" SortExpression="上涨空间|desc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线势" HeaderText="3线势"></asp:BoundColumn>
                     <asp:BoundColumn DataField="K线势" HeaderText="K线势"></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日"></asp:BoundColumn>

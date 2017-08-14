@@ -221,6 +221,34 @@ public class Stock
         }
     }
 
+    public double GetMaPressure(int index)
+    {
+        double[] maArr = new double[4];
+        double[] maPressureArr = new double[4];
+        double currentPrice = kArr[index].endPrice;
+
+        maArr[0] = GetAverageSettlePrice(index, 5, 0);
+        maArr[1] = GetAverageSettlePrice(index, 10, 0);
+        maArr[2] = GetAverageSettlePrice(index, 20, 0);
+        maArr[3] = GetAverageSettlePrice(index, 60, 0);
+        for (int i = 0; i < maArr.Length; i++)
+        {
+            maPressureArr[i] = maArr[i] - currentPrice >=0 ? maArr[i] - currentPrice : double.MaxValue;
+        }
+
+        int minIndex = 0;
+        double minValue = double.MaxValue;
+        for (int i = 0; i < maPressureArr.Length; i++)
+        {
+            if (maPressureArr[i] <= minValue)
+            {
+                minValue = maPressureArr[i];
+                minIndex = i;
+            }
+        }
+        return maArr[minIndex];
+    }
+
     ////////////////////////////////////////////////////////////////////////
     //old members//
     ////////////////////////////////////////////////////////////////////////
