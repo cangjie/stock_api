@@ -132,6 +132,55 @@
         return dt;
     }
 
+    public void AddTotal(DataTable dt)
+    {
+        double totalCount = dt.Rows.Count;
+        double shitCount = 0;
+        double increaseLogoCount = 0;
+        double[] increaseLogoRedCountArr = new double[6];
+
+        foreach (DataRow dr in dt.Rows)
+        {
+            if (dr["信号"].ToString().IndexOf("💩") >= 0)
+            {
+                shitCount++;
+            }
+            else
+            {
+                if (dr["信号"].ToString().IndexOf("📈") >= 0)
+                {
+                    increaseLogoCount++;
+                    for (int i = 1; i <= 5; i++)
+                    {
+                        if (dr[i.ToString() + "日"].ToString().IndexOf("red") >= 0)
+                        {
+                            increaseLogoRedCountArr[i - 1]++;
+                        }
+                    }
+                    if (dr["总计"].ToString().IndexOf("red") >= 0)
+                    {
+                        increaseLogoRedCountArr[5]++;
+                    }
+                }
+            }
+        }
+
+        DataRow drIncreaseLogo = dt.NewRow();
+        drIncreaseLogo["代码"] = "📈";
+        for (int i = 1; i <= 5; i++)
+        {
+            drIncreaseLogo[i.ToString() + "日"] = Math.Round(increaseLogoRedCountArr[i - 1] * 100 / increaseLogoCount, 2).ToString() + "%";
+        }
+        drIncreaseLogo["总计"] = Math.Round(increaseLogoRedCountArr[5] * 100 / increaseLogoCount, 2).ToString() + "%";
+        dt.Rows.Add(drIncreaseLogo);
+
+        DataRow drShit = dt.NewRow();
+        drShit["代码"] = "💩";
+        drShit["名称"] = shitCount.ToString() + "/" + totalCount.ToString();
+        drShit["信号"] = Math.Round(100 * shitCount / totalCount, 2).ToString() + "%";
+        dt.Rows.Add(drShit);
+    }
+
     protected void calendar_SelectionChanged(object sender, EventArgs e)
     {
         dg.DataSource = GetHtmlData(GetData().Select(""));
