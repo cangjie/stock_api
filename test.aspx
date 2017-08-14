@@ -9,12 +9,20 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
+        Stock stock = new Stock("sz002698");
+        stock.LoadKLineDay();
+        KeyValuePair<string, double>[] quotaArr = stock.GetSortedQuota(stock.kLineDay.Length - 1);
+        foreach (KeyValuePair<string, double> kvp in quotaArr)
+        {
+            string aa = "aa";
+        }
 
+        /*
         for (DateTime i = DateTime.Parse("2017-8-11"); i >= DateTime.Parse("2017-6-26"); i = i.AddDays(-1))
         {
             Stock.SearchBottomBreak3Line(i);
         }
-
+        */
         /*
         string[] gidArr = Util.GetAllGids();
         for (int i = 0; i < gidArr.Length; i++)

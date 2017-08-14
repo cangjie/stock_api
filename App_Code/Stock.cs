@@ -223,6 +223,25 @@ public class Stock
 
     public double GetMaPressure(int index)
     {
+        double pressure = 0;
+        KeyValuePair<string, double>[] quotaArr = GetSortedQuota(index);
+        for (int i = quotaArr.Length - 1; i >= 0; i--)
+        {
+            if (quotaArr[i].Key.Trim().Equals("end_price"))
+            {
+                if (i == quotaArr.Length - 1)
+                {
+                    pressure = quotaArr[i + 1].Value * 1.5;
+                }
+                else
+                {
+                    pressure = quotaArr[i + 1].Value;
+                }
+                break;
+            }
+        }
+        return pressure;
+        /*
         double[] maArr = new double[4];
         double[] maPressureArr = new double[4];
         double currentPrice = kArr[index].endPrice;
@@ -247,10 +266,29 @@ public class Stock
             }
         }
         return maArr[minIndex] > kArr[index].endPrice ? maArr[minIndex] : 0;
+        */
     }
 
     public double GetMaSupport(int index)
     {
+        KeyValuePair<string, double>[] quotaArr = GetSortedQuota(index);
+        double support = 0;
+        for (int i = 0; i < quotaArr.Length; i++)
+        {
+            if (quotaArr[i].Key.Trim().Equals("end_price"))
+            {
+                if (i == 0)
+                {
+                    support = 0;
+                }
+                else
+                {
+                    support = quotaArr[i - 1].Value;
+                }
+            }
+        }
+        return support;
+        /*
         double[] maArr = new double[4];
         double[] maSupportArr = new double[4];
         double currentPrice = kArr[index].endPrice;
@@ -275,8 +313,39 @@ public class Stock
             }
         }
         return maArr[minIndex] < kArr[index].endPrice ? maArr[minIndex]: 0;
+        */
     }
 
+    public KeyValuePair<string, double>[] GetSortedQuota(int index)
+    {
+        KeyValuePair<string, double>[] quotaArr = new KeyValuePair<string, double>[4];
+        quotaArr[0] = new KeyValuePair<string, double>("end_price", kArr[index].endPrice);
+        quotaArr[2] = new KeyValuePair<string, double>("ma5", GetAverageSettlePrice(index, 5, 0));
+        quotaArr[3] = new KeyValuePair<string, double>("ma10", GetAverageSettlePrice(index, 10, 0));
+        quotaArr[4] = new KeyValuePair<string, double>("ma20", GetAverageSettlePrice(index, 20, 0));
+
+        string tempKey = "";
+        double tempValue = 0;
+
+        bool exchanged = true;
+        for (; exchanged;)
+        {
+            exchanged = false;
+            for (int i = 0; i < quotaArr.Length - 1 ; i++)
+            {
+                if (quotaArr[i].Value > quotaArr[i + 1].Value)
+                {
+                    tempKey = quotaArr[i].Key.Trim();
+                    tempValue = quotaArr[i].Value;
+                    quotaArr[i] = quotaArr[i + 1];
+                    quotaArr[i + 1] = new KeyValuePair<string, double>(tempKey, tempValue);
+                    exchanged = true;
+                }
+            }
+        }
+        return quotaArr;
+    }
+    
     ////////////////////////////////////////////////////////////////////////
     //old members//
     ////////////////////////////////////////////////////////////////////////
