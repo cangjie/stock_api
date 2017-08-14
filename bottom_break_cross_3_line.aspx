@@ -28,6 +28,7 @@
         dt.Columns.Add("买入价", Type.GetType("System.Double"));
         dt.Columns.Add("收盘价", Type.GetType("System.Double"));
         dt.Columns.Add("均线压力", Type.GetType("System.Double"));
+        dt.Columns.Add("均线支撑", Type.GetType("System.Double"));
         dt.Columns.Add("上涨空间", Type.GetType("System.Double"));
         dt.Columns.Add("放量", Type.GetType("System.Double"));
         dt.Columns.Add("3线势", Type.GetType("System.Int32"));
