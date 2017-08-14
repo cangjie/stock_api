@@ -138,7 +138,9 @@
         double totalCount = dt.Rows.Count;
         double shitCount = 0;
         double increaseLogoCount = 0;
+        double withoutShitTotal = 0;
         double[] increaseLogoRedCountArr = new double[6];
+        double[] withoutShitRedCountArr = new double[6];
 
         foreach (DataRow dr in dt.Rows)
         {
@@ -163,8 +165,29 @@
                         increaseLogoRedCountArr[5]++;
                     }
                 }
+                withoutShitTotal++;
+                for (int i = 1; i <= 5; i++)
+                {
+                    if (dr[i.ToString() + "日"].ToString().IndexOf("red") >= 0)
+                    {
+                        withoutShitRedCountArr[i - 1]++;
+                    }
+                }
+                if (dr["总计"].ToString().IndexOf("red") >= 0)
+                {
+                    withoutShitRedCountArr[5]++;
+                }
             }
         }
+
+        DataRow drTotal = dt.NewRow();
+        drTotal["代码"] = "总计";
+        for (int i = 1; i <= 5; i++)
+        {
+            drTotal[i.ToString() + "日"] = Math.Round(withoutShitRedCountArr[i - 1]*100/withoutShitTotal, 2).ToString() + "%";
+        }
+        drTotal["总计"] = Math.Round(withoutShitRedCountArr[5] * 100 / withoutShitTotal, 2).ToString() + "%";
+        dt.Rows.Add(drTotal);
 
         DataRow drIncreaseLogo = dt.NewRow();
         drIncreaseLogo["代码"] = "📈";
