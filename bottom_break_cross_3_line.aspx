@@ -266,6 +266,7 @@
                     <asp:BoundColumn DataField="放量" HeaderText="放量" SortExpression="放量|desc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="均线压力" HeaderText="均线压力"></asp:BoundColumn>
                     <asp:BoundColumn DataField="上涨空间" HeaderText="上涨空间" SortExpression="上涨空间|desc"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="均线支撑" HeaderText="均线支撑"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线势" HeaderText="3线势"></asp:BoundColumn>
                     <asp:BoundColumn DataField="K线势" HeaderText="K线势"></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日"></asp:BoundColumn>
