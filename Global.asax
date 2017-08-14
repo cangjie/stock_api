@@ -8,7 +8,7 @@
         StockWatcher.thread.Start();
         StockWatcher.tKLineRefresher.Start();
         StockWatcher.tKDJMACD.Start();
-        
+        StockWatcher.tSearchBottomBreak3Line.Start();
 
 
     }

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Web;
 using System.Data;
 using System.Data.SqlClient;
-using System.Collections.Generic;
 
 /// <summary>
 /// Summary description for DBHelper

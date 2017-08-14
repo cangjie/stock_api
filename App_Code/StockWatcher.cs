@@ -26,6 +26,10 @@ public class StockWatcher
 
     public static Thread tKDJMACD = new Thread(tsKDJMACD);
 
+    public static ThreadStart tsSearchBottomBreak3Line = new ThreadStart(WatchBottomBreak3Line);
+
+    public static Thread tSearchBottomBreak3Line = new Thread(tsSearchBottomBreak3Line);
+
 
     public StockWatcher()
     {
@@ -446,7 +450,26 @@ public class StockWatcher
         }
     }
 
+    public static void WatchBottomBreak3Line()
+    {
+        for (; true;)
+        {
+            try
+            {
+                DateTime currentDate = DateTime.Parse(DateTime.Now.ToShortDateString());
+                if (Util.IsTransacDay(currentDate))
+                {
+                    Stock.SearchBottomBreak3Line(currentDate);
 
+                }
+            }
+            catch
+            {
+
+            }
+            Thread.Sleep(100);
+        }
+    }
 
 
 }
