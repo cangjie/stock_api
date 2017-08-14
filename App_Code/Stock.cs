@@ -320,9 +320,9 @@ public class Stock
     {
         KeyValuePair<string, double>[] quotaArr = new KeyValuePair<string, double>[4];
         quotaArr[0] = new KeyValuePair<string, double>("end_price", kArr[index].endPrice);
-        quotaArr[2] = new KeyValuePair<string, double>("ma5", GetAverageSettlePrice(index, 5, 0));
-        quotaArr[3] = new KeyValuePair<string, double>("ma10", GetAverageSettlePrice(index, 10, 0));
-        quotaArr[4] = new KeyValuePair<string, double>("ma20", GetAverageSettlePrice(index, 20, 0));
+        quotaArr[1] = new KeyValuePair<string, double>("ma5", GetAverageSettlePrice(index, 5, 0));
+        quotaArr[2] = new KeyValuePair<string, double>("ma10", GetAverageSettlePrice(index, 10, 0));
+        quotaArr[3] = new KeyValuePair<string, double>("ma20", GetAverageSettlePrice(index, 20, 0));
 
         string tempKey = "";
         double tempValue = 0;
