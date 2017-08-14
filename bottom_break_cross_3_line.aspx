@@ -60,7 +60,7 @@
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = drOri["name"].ToString().Trim();
-            dr["信号"] = "";
+            dr["信号"] = currentPrice <= today3LinePrice ? "💩": "";
             dr["今开"] = startPrice;
             dr["3线价"] = today3LinePrice;
             dr["买入价"] = buyPrice;
@@ -128,6 +128,25 @@
         dg.DataSource = GetHtmlData(GetData().Select(""));
         dg.DataBind();
     }
+
+    protected void dg_SortCommand(object source, DataGridSortCommandEventArgs e)
+    {
+        DataTable dt = GetData();
+        DataRow[] drArr = dt.Select("", e.SortExpression.Replace("|", "  "));
+        
+        dg.DataSource = GetHtmlData(drArr);
+        dg.DataBind();
+
+        string columnName = e.SortExpression.Split('|')[0].Trim();
+
+        for (int i = 0; i < dg.Columns.Count; i++)
+        {
+            if (dg.Columns[i].SortExpression.StartsWith(columnName))
+            {
+                dg.Columns[i].SortExpression = columnName.Trim() + "|" + (e.SortExpression.EndsWith("asc")? "desc":"asc");
+            }
+        }
+    }
 </script>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -149,8 +168,26 @@
                     </asp:Calendar></td>
         </tr>
         <tr>
-            <td><asp:DataGrid ID="dg" runat="server" BackColor="White" BorderColor="#999999" BorderStyle="None" BorderWidth="1px" CellPadding="3" GridLines="Vertical" Width="100%" >
+            <td><asp:DataGrid ID="dg" runat="server" BackColor="White" BorderColor="#999999" BorderStyle="None" BorderWidth="1px" CellPadding="3" GridLines="Vertical" Width="100%" AutoGenerateColumns="False" OnSortCommand="dg_SortCommand" AllowSorting="True" >
                 <AlternatingItemStyle BackColor="#DCDCDC" />
+                <Columns>
+                    <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="信号" HeaderText="信号"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="今开" HeaderText="今开"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="3线价" HeaderText="3线价"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="买入价" HeaderText="买入价"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="收盘价" HeaderText="收盘价"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="放量" HeaderText="放量" SortExpression="放量|desc"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="3线势" HeaderText="3线势"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="K线势" HeaderText="K线势"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="1日" HeaderText="1日"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="2日" HeaderText="2日"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="3日" HeaderText="3日"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="4日" HeaderText="4日"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="5日" HeaderText="5日"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="总计" HeaderText="总计"></asp:BoundColumn>
+                </Columns>
                 <FooterStyle BackColor="#CCCCCC" ForeColor="Black" />
                 <HeaderStyle BackColor="#000084" Font-Bold="True" ForeColor="White" />
                 <ItemStyle BackColor="#EEEEEE" ForeColor="Black" />
