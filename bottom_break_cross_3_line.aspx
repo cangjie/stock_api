@@ -68,7 +68,8 @@
             dr["名称"] = drOri["name"].ToString().Trim();
             dr["信号"] =  "";
             dr["信号"] = dr["信号"].ToString() + (currentPrice <= today3LinePrice ? "💩": "");
-            dr["信号"] = dr["信号"].ToString().Trim() + ((Math.Abs(upSpacePercent) >= 0.03   && volumeIncrease > 0.33) ? "📈" : "");
+            dr["信号"] = dr["信号"].ToString().Trim() + ((Math.Abs(upSpacePercent) >= 0.03   && volumeIncrease > 0.33 && supportPrice > 0) ? "📈" : "");
+            dr["信号"] = dr["信号"].ToString().Trim() + ((currentPrice > today3LinePrice && (currentPrice - buyPrice) / buyPrice <= 0.015) ? "🛍️" : "");
             dr["今开"] = startPrice;
             dr["3线价"] = today3LinePrice;
             dr["买入价"] = buyPrice;
