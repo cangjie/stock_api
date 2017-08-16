@@ -48,6 +48,7 @@
         {
             DataRow dr = dt.NewRow();
             Stock s = new Stock(drOri["gid"].ToString());
+            
             s.LoadKLineDay();
             int currentIndex = s.GetItemIndex(currentDate);
             dr["代码"] = s.gid;
@@ -261,11 +262,15 @@
 
     public bool RelateTo3Line(Stock stock, int currentIndex, int daysCount)
     {
+
         bool ret = false;
         for (int i = 0; i < daysCount; i++)
         {
             double current3LinePrice = stock.GetAverageSettlePrice(currentIndex - i - 1, 3, 3);
-            if (stock.kLineDay[currentIndex - i - 1].startPrice < current3LinePrice && stock.kLineDay[currentIndex - i - 1].endPrice > current3LinePrice)
+            if ((stock.kLineDay[currentIndex - i - 1].startPrice < current3LinePrice 
+                && stock.kLineDay[currentIndex - i - 1].endPrice > current3LinePrice)
+                || (stock.kLineDay[currentIndex - i - 1].startPrice > current3LinePrice 
+                && stock.kLineDay[currentIndex - i - 1].startPrice < stock.kLineDay[currentIndex - i - 1].endPrice) )
             {
                 ret = true;
             }
