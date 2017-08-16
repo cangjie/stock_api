@@ -31,6 +31,7 @@
         DataTable dt = new DataTable();
         dt.Columns.Add("代码");
         dt.Columns.Add("名称");
+        dt.Columns.Add("信号");
         dt.Columns.Add("前日涨幅");
         dt.Columns.Add("当日收盘");
         dt.Columns.Add("当日涨幅");
@@ -48,7 +49,7 @@
             DataRow dr = dt.NewRow();
             Stock s = new Stock(drOri["gid"].ToString());
             s.LoadKLineDay();
-            //s.kArr = KLine.GetLocalKLine(s.gid, "day");
+            int currentIndex = s.GetItemIndex(currentDate);
             dr["代码"] = s.gid;
             dr["名称"] = "<a href=\"https://touzi.sina.com.cn/public/xray/details/" + s.gid.Trim()
                 + "\" target=\"_blank\"  >" + s.Name.Trim() + "</a>";
@@ -58,9 +59,8 @@
             double volumeToday = Stock.GetVolumeAndAmount(s.gid, DateTime.Parse(currentDate.ToShortDateString() + " 15:00"))[0];
             double volumeYesterday = Stock.GetVolumeAndAmount(s.gid, DateTime.Parse(currentDate.AddDays(-1).ToShortDateString() + " 15:00"))[0];
 
+            dr["信号"] = RelateTo3Line(s, currentIndex, 1) ? "<a title=\"前两个交易日内突破3线\" >📈</a>" : "";
 
-
-            int currentIndex = s.GetKLineIndexForADay(DateTime.Parse(currentDate.ToShortDateString() + " 9:30"));
 
 
 
@@ -259,6 +259,24 @@
         }
     }
 
+    public bool RelateTo3Line(Stock stock, int currentIndex, int daysCount)
+    {
+        bool ret = false;
+        for (int i = 0; i < daysCount; i++)
+        {
+            double current3LinePrice = stock.GetAverageSettlePrice(currentIndex - i - 1, 3, 3);
+            if (stock.kLineDay[currentIndex - i - 1].startPrice < current3LinePrice && stock.kLineDay[currentIndex - i - 1].endPrice > current3LinePrice)
+            {
+                ret = true;
+            }
+            if (ret)
+            {
+                break;
+            }
+        }
+        return ret;
+    }
+
 </script>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -282,6 +300,7 @@
             <Columns>
                 <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                 <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
+                <asp:BoundColumn DataField="信号" HeaderText="信号"></asp:BoundColumn>
                 <asp:BoundColumn DataField="拉升天数" HeaderText="拉升天数" SortExpression="拉升天数|desc"></asp:BoundColumn>
                 <asp:BoundColumn DataField="拉升幅度" HeaderText="拉升幅度" SortExpression="拉升幅度|desc"></asp:BoundColumn>
                 <asp:BoundColumn DataField="前日涨幅" HeaderText="前日涨幅" SortExpression="前日涨幅|asc"></asp:BoundColumn>
