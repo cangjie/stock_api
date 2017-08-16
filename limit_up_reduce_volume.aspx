@@ -48,7 +48,7 @@
         {
             DataRow dr = dt.NewRow();
             Stock s = new Stock(drOri["gid"].ToString());
-            
+
             s.LoadKLineDay();
             int currentIndex = s.GetItemIndex(currentDate);
             dr["代码"] = s.gid;
@@ -266,17 +266,26 @@
         bool ret = false;
         for (int i = 0; i < daysCount; i++)
         {
-            double current3LinePrice = stock.GetAverageSettlePrice(currentIndex - i - 1, 3, 3);
-            if ((stock.kLineDay[currentIndex - i - 1].startPrice < current3LinePrice 
-                && stock.kLineDay[currentIndex - i - 1].endPrice > current3LinePrice)
-                || (stock.kLineDay[currentIndex - i - 1].startPrice > current3LinePrice 
-                && stock.kLineDay[currentIndex - i - 1].startPrice < stock.kLineDay[currentIndex - i - 1].endPrice) )
+            try
             {
-                ret = true;
+                double current3LinePrice = stock.GetAverageSettlePrice(currentIndex - i - 1, 3, 3);
+                double yesterday3LinePrice = stock.GetAverageSettlePrice(currentIndex - i - 2, 3, 3);
+                if ((stock.kLineDay[currentIndex - i - 1].startPrice < current3LinePrice
+                    && stock.kLineDay[currentIndex - i - 1].endPrice > current3LinePrice)
+                    || (stock.kLineDay[currentIndex - i - 1].startPrice > current3LinePrice
+                    && stock.kLineDay[currentIndex - i - 1].startPrice < stock.kLineDay[currentIndex - i - 1].endPrice
+                    && stock.kLineDay[currentIndex - i - 2].endPrice < yesterday3LinePrice))
+                {
+                    ret = true;
+                }
+                if (ret)
+                {
+                    break;
+                }
             }
-            if (ret)
+            catch
             {
-                break;
+
             }
         }
         return ret;
