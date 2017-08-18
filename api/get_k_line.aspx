@@ -31,8 +31,11 @@
             {
                 foreach (KLine kLine in kArr)
                 {
-                    kLineArr.Add(kLine);
-                    break;
+                    if (kLine.startDateTime.ToShortDateString().Equals(i.ToShortDateString()))
+                    {
+                        kLineArr.Add(kLine);
+                        break;
+                    }
                 }
             }
 
