@@ -15,10 +15,10 @@
         //jsonData = Util.GetWebContent("api/get_k_line.aspx?gid=" + Util.GetSafeRequestValue(Request, "gid", "sh600031"));
         gid = Util.GetSafeRequestValue(Request, "gid", "sh600031");
         name = Util.GetSafeRequestValue(Request, "name", "");
+        Stock s = new Stock(gid);
+        s.LoadKLineDay();
         if (name.Trim().Equals(""))
         {
-            Stock s = new Stock(gid);
-            s.LoadKLineDay();
             name = s.Name.Trim();
             avg3LinePrice = Math.Round(s.GetAverageSettlePrice(s.kLineDay.Length - 1, 3, 3), 2);
         }
