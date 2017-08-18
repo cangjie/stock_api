@@ -17,10 +17,11 @@
         name = Util.GetSafeRequestValue(Request, "name", "");
         Stock s = new Stock(gid);
         s.LoadKLineDay();
+        avg3LinePrice = Math.Round(s.GetAverageSettlePrice(s.kLineDay.Length - 1, 3, 3), 2);
         if (name.Trim().Equals(""))
         {
             name = s.Name.Trim();
-            avg3LinePrice = Math.Round(s.GetAverageSettlePrice(s.kLineDay.Length - 1, 3, 3), 2);
+            
         }
     }
 </script>
