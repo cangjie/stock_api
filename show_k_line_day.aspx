@@ -8,6 +8,7 @@
 
     public string gid = "sh600031";
     public string name = "";
+    public double avg3LinePrice = 0;
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -17,7 +18,9 @@
         if (name.Trim().Equals(""))
         {
             Stock s = new Stock(gid);
+            s.LoadKLineDay();
             name = s.Name.Trim();
+            avg3LinePrice = Math.Round(s.GetAverageSettlePrice(s.kLineDay.Length - 1, 3, 3), 2);
         }
     }
 </script>
@@ -43,7 +46,7 @@
     </script>
 </head>
 <body onresize="init()" onload="init()"  >
-    <button id="btn_draw" onclick="ready_draw()" > 画 线 </button><%=gid %> <%=name %> <span id="price" >现价:</span> <span id="rate" >涨幅:</span> <span id="settle" >昨收:</span> <span id="open" >今开:</span> <span id="max" >最高:</span> <span id="min" >最低:</span>
+    <button id="btn_draw" onclick="ready_draw()" > 画 线 </button><%=gid %> <%=name %> <span id="price" >现价:</span> <span id="rate" >涨幅:</span> <span id="settle" >昨收:</span> <span id="open" >今开:</span> <span id="max" >最高:</span> <span id="min" >最低:</span> <span id="avg3" >3线：<%=avg3LinePrice.ToString() %></span>
     <input type="text" id="gid" /><button  onclick="go()" >go!</button><br />
     <svg id="svg" version="1.1"   xmlns="http://www.w3.org/2000/svg"  onmousedown="mouse_down(evt)" onmouseup="mouse_up(evt)" onmousemove="mouse_move(evt)"  ></svg>
 </body>
