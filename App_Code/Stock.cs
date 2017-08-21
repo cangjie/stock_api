@@ -209,6 +209,12 @@ public class Stock
             kArr[i].type = type.Trim();
             kArr[i].startPrice = double.Parse(dt.Rows[i]["open"].ToString());
             kArr[i].endPrice = double.Parse(dt.Rows[i]["settle"].ToString());
+            if (type.Trim().Equals("day") 
+                && kArr[i].startDateTime.ToShortDateString().Equals(DateTime.Now.ToShortDateString()))
+            {
+                Stock stock = new Stock(gid.Trim());
+                kArr[i].endPrice = stock.LastTrade;
+            }
             kArr[i].highestPrice = double.Parse(dt.Rows[i]["highest"].ToString());
             kArr[i].lowestPrice = double.Parse(dt.Rows[i]["lowest"].ToString());
             kArr[i].volume = int.Parse(dt.Rows[i]["volume"].ToString());
