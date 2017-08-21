@@ -45,6 +45,12 @@
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
+
+            if (stock.gid.Equals("sz000898"))
+            {
+                string aa = "aa";
+            }
+
             stock.LoadKLineDay();
             int currentIndex = stock.GetItemIndex(calendar.SelectedDate);
             if (currentIndex < 6)
