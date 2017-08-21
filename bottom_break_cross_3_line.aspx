@@ -61,7 +61,7 @@
                 stock.LastTrade: stock.kLineDay[currentIndex].endPrice ;
             KeyValuePair<string, double>[] quotaArr = stock.GetSortedQuota(currentIndex);
             bool haveEnoughUpSpace = false;
-            for (int i = 0; i < quotaArr.Length; i++)
+            for (int i = 0; i < quotaArr.Length - 1; i++)
             {
                 if (quotaArr[i].Value > today3LinePrice && quotaArr[i].Value * 1.03 < quotaArr[i + 1].Value
                     && quotaArr[i].Value < stock.kLineDay[currentIndex].highestPrice
