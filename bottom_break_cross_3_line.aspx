@@ -46,6 +46,10 @@
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
             stock.LoadKLineDay();
+            if (stock.gid.Trim().Equals("sz000898"))
+            {
+                string aa = "aa";
+            }
             int currentIndex = stock.GetItemIndex(calendar.SelectedDate);
             if (currentIndex < 6)
                 continue;

@@ -358,12 +358,12 @@ public class Stock
 
     public KeyValuePair<string, double>[] GetSortedQuota(int index)
     {
-        KeyValuePair<string, double>[] quotaArr = new KeyValuePair<string, double>[4];
+        KeyValuePair<string, double>[] quotaArr = new KeyValuePair<string, double>[5];
         quotaArr[0] = new KeyValuePair<string, double>("end_price", kArr[index].endPrice);
-        quotaArr[1] = new KeyValuePair<string, double>("ma5", GetAverageSettlePrice(index, 5, 0));
-        quotaArr[2] = new KeyValuePair<string, double>("ma10", GetAverageSettlePrice(index, 10, 0));
-        quotaArr[3] = new KeyValuePair<string, double>("ma20", GetAverageSettlePrice(index, 20, 0));
-
+        quotaArr[1] = new KeyValuePair<string, double>("ma5", GetAverageSettlePrice(index, 6, 0));
+        quotaArr[2] = new KeyValuePair<string, double>("ma10", GetAverageSettlePrice(index, 12, 0));
+        quotaArr[3] = new KeyValuePair<string, double>("ma20", GetAverageSettlePrice(index, 24, 0));
+        quotaArr[4] = new KeyValuePair<string, double>("ma20", GetAverageSettlePrice(index, 72, 0));
         string tempKey = "";
         double tempValue = 0;
 
