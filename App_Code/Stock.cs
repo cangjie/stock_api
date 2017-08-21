@@ -121,34 +121,27 @@ public class Stock
             double ret = 0;
             DataTable dtTimeline = DBHelper.GetDataTable(" select top 1 * from  " + gid.Trim() + "_timeline where ticktime <= '" + currentDate.ToString() + "' order by ticktime desc ");
             DataTable dtNormal = DBHelper.GetDataTable(" select top 1 * from  " + gid + " where convert(datetime, date + ' ' + time )  <= '" + currentDate.ToString() + "'  order by convert(datetime, date + ' ' + time ) desc   ");
-            double volmue = 0;
-            double amount = 0;
+       
             DateTime timeLineTick = DateTime.Parse(DateTime.Now.ToShortDateString());
             DateTime normalTick = DateTime.Parse(DateTime.Now.ToShortDateString());
             if (dtTimeline.Rows.Count > 0)
             {
-                //volmue = double.Parse(dtTimeline.Rows[0]["volume"].ToString());
-                //amount = double.Parse(dtTimeline.Rows[0]["amount"].ToString());
                 timeLineTick = DateTime.Parse(dtTimeline.Rows[0]["ticktime"].ToString());
 
             }
             if (dtNormal.Rows.Count > 0)
             {
-                //volmue = Math.Max(double.Parse(dtNormal.Rows[0]["traNumber"].ToString()), volmue);
-                //amount = Math.Max(double.Parse(dtNormal.Rows[0]["traAmount"].ToString()), amount);
                 normalTick = DateTime.Parse(dtNormal.Rows[0]["date"].ToString() + " " + dtNormal.Rows[0]["time"].ToString());
             }
             if (normalTick > timeLineTick)
             {
                 ret = double.Parse(dtNormal.Rows[0]["nowPri"].ToString());
-                //volmue = Math.Max(double.Parse(dtNormal.Rows[0]["traNumber"].ToString()), volmue);
-                //amount = Math.Max(double.Parse(dtNormal.Rows[0]["traAmount"].ToString()), amount);
             }
             else
             {
                 if (dtTimeline.Rows.Count > 0)
                 {
-                    ret = double.Parse(dtNormal.Rows[0]["trade"].ToString());
+                    ret = double.Parse(dtTimeline.Rows[0]["trade"].ToString());
                 }
             }
             return ret;
