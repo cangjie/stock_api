@@ -46,10 +46,6 @@
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
             stock.LoadKLineDay();
-            if (stock.gid.Trim().Equals("sz300606"))
-            {
-                string aa = "aa";
-            }
             int currentIndex = stock.GetItemIndex(calendar.SelectedDate);
             if (currentIndex < 6)
                 continue;
@@ -60,18 +56,34 @@
                 = stock.kLineDay[currentIndex].startDateTime.ToShortDateString().Equals(DateTime.Now.ToShortDateString()) ?
                 stock.LastTrade: stock.kLineDay[currentIndex].endPrice ;
             KeyValuePair<string, double>[] quotaArr = stock.GetSortedQuota(currentIndex);
-            bool haveEnoughUpSpace = false;
-            for (int i = 0; i < quotaArr.Length - 1; i++)
+            //bool jumpEmpty3Line = startPrice > today3LinePrice;
+            double newBuyPrice = 0;
+            bool after3Line = false;
+            bool afterLowest = false;
+            for (int i = 0; i < quotaArr.Length ; i++)
             {
-                if (quotaArr[i].Value > today3LinePrice && quotaArr[i].Value * 1.03 < quotaArr[i + 1].Value
-                    && quotaArr[i].Value < stock.kLineDay[currentIndex].highestPrice
-                    && quotaArr[i].Value > stock.kLineDay[currentIndex].lowestPrice)
+                if (quotaArr[i].Key.Trim().Equals("3_line_price"))
+                    after3Line = true;
+                if (quotaArr[i].Key.Trim().Equals("lowest_price"))
+                    afterLowest = true;
+
+                if (i < quotaArr.Length - 1)
                 {
-                    haveEnoughUpSpace = true;
-                    buyPrice = quotaArr[i].Value*1.005;
+                    if (after3Line && afterLowest &&   quotaArr[i].Value * 1.03 < quotaArr[i + 1].Value)
+                    {
+                        newBuyPrice = quotaArr[i].Value;
+                        break;
+                    }
+                }
+                else
+                {
+                    if (quotaArr[i].Value < stock.kLineDay[currentIndex].highestPrice)
+                        newBuyPrice = quotaArr[i].Value;
                 }
             }
 
+            if (newBuyPrice > stock.kLineDay[currentIndex].highestPrice)
+                newBuyPrice = 0;
 
             double lastDayVolume = Stock.GetVolumeAndAmount(stock.gid,
                 DateTime.Parse(stock.kLineDay[currentIndex - 1].startDateTime.ToShortDateString() + " " + DateTime.Now.ToShortTimeString()))[0];
@@ -80,13 +92,15 @@
             double pressure = stock.GetMaPressure(currentIndex);
             double upSpacePercent = (pressure - currentPrice) / currentPrice;
             double volumeIncrease = (currentVolume - lastDayVolume) / lastDayVolume;
-            double supportPrice = stock.GetMaSupport(currentIndex);
+
+
+            double supportPrice = stock.GetMaSupport(currentIndex, (newBuyPrice==0?buyPrice:newBuyPrice));
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = drOri["name"].ToString().Trim();
             dr["信号"] =  "";
             dr["信号"] = dr["信号"].ToString() + (currentPrice <= today3LinePrice ? "💩": "");
-            dr["信号"] = dr["信号"].ToString().Trim() + ((haveEnoughUpSpace  && volumeIncrease > 0.33 && supportPrice > 0) ? "<a title=\"下有均线支撑，上均线压力在3%之外，放量超1/3。\" >📈</a>" : "");
+            dr["信号"] = dr["信号"].ToString().Trim() + ((newBuyPrice != 0  && volumeIncrease > 0.33 && supportPrice > 0) ? "<a title=\"下有均线支撑，上均线压力在3%之外，放量超1/3。\" >📈</a>" : "");
             dr["信号"] = dr["信号"].ToString().Trim() + ((currentPrice > today3LinePrice && (currentPrice - buyPrice) / buyPrice <= 0.015 && dr["信号"].ToString().IndexOf("📈")>=0) ? "<a title=\"当前价格高于3线，但是在提示买入价的正负1%之内。\" >🛍️</a>" : "");
             if (currentIndex > 0 && (stock.kLineDay[currentIndex - 1].endPrice - stock.kLineDay[currentIndex - 1].startPrice)/stock.kLineDay[currentIndex-1].startPrice > 0.01 )
             {
@@ -94,6 +108,7 @@
             }
             dr["今开"] = startPrice;
             dr["3线价"] = today3LinePrice;
+            buyPrice = ((newBuyPrice != 0) ? newBuyPrice : buyPrice);
             dr["买入价"] = buyPrice;
             dr["收盘价"] = currentPrice;
             dr["放量"] = (currentVolume - lastDayVolume) / lastDayVolume;

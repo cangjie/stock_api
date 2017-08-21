@@ -309,6 +309,21 @@ public class Stock
         */
     }
 
+    public double GetMaSupport(int index, double price)
+    {
+        KeyValuePair<string, double>[] quotaArr = GetSortedQuota(index);
+        double support = 0;
+        for (int i = 0; i < quotaArr.Length; i++)
+        {
+            if (quotaArr[i].Value < price)
+            {
+                support = quotaArr[i].Value;
+                break;
+            }
+        }
+        return support;
+    }
+
     public double GetMaSupport(int index)
     {
         KeyValuePair<string, double>[] quotaArr = GetSortedQuota(index);
@@ -359,11 +374,11 @@ public class Stock
     public KeyValuePair<string, double>[] GetSortedQuota(int index)
     {
         KeyValuePair<string, double>[] quotaArr = new KeyValuePair<string, double>[5];
-        quotaArr[0] = new KeyValuePair<string, double>("end_price", kArr[index].endPrice);
-        quotaArr[1] = new KeyValuePair<string, double>("ma5", GetAverageSettlePrice(index, 6, 0));
-        quotaArr[2] = new KeyValuePair<string, double>("ma10", GetAverageSettlePrice(index, 12, 0));
-        quotaArr[3] = new KeyValuePair<string, double>("ma20", GetAverageSettlePrice(index, 24, 0));
-        quotaArr[4] = new KeyValuePair<string, double>("ma20", GetAverageSettlePrice(index, 72, 0));
+        quotaArr[0] = new KeyValuePair<string, double>("lowest_price", kArr[index].lowestPrice);
+        quotaArr[1] = new KeyValuePair<string, double>("3_line_price", GetAverageSettlePrice(index, 3, 3));
+        quotaArr[2] = new KeyValuePair<string, double>("ma6", GetAverageSettlePrice(index, 6, 0));
+        quotaArr[3] = new KeyValuePair<string, double>("ma12", GetAverageSettlePrice(index, 12, 0));
+        quotaArr[4] = new KeyValuePair<string, double>("ma24", GetAverageSettlePrice(index, 24, 0));
         string tempKey = "";
         double tempValue = 0;
 
