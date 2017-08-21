@@ -261,6 +261,21 @@ public class Stock
         }
     }
 
+    public double GetMaPressure(int index, double price)
+    {
+        KeyValuePair<string, double>[] quotaArr = GetSortedQuota(index);
+        double pressure = 0;
+        for (int i = 0; i < quotaArr.Length; i++)
+        {
+            if (quotaArr[i].Value > price)
+            {
+                pressure = quotaArr[i].Value;
+                break;
+            }
+        }
+        return pressure;
+    }
+
     public double GetMaPressure(int index)
     {
         double pressure = 0;

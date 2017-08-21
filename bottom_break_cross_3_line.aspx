@@ -95,7 +95,7 @@
                 DateTime.Parse(stock.kLineDay[currentIndex - 1].startDateTime.ToShortDateString() + " " + DateTime.Now.ToShortTimeString()))[0];
             double currentVolume = Stock.GetVolumeAndAmount(stock.gid,
                 DateTime.Parse(stock.kLineDay[currentIndex].startDateTime.ToShortDateString() + " " + DateTime.Now.ToShortTimeString()))[0];
-            double pressure = stock.GetMaPressure(currentIndex);
+            double pressure = stock.GetMaPressure(currentIndex, (newBuyPrice==0?buyPrice:newBuyPrice));
             double upSpacePercent = (pressure - currentPrice) / currentPrice;
             double volumeIncrease = (currentVolume - lastDayVolume) / lastDayVolume;
 
