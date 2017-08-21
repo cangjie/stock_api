@@ -46,7 +46,7 @@
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
             stock.LoadKLineDay();
-            if (stock.gid.Trim().Equals("sz000898"))
+            if (stock.gid.Trim().Equals("sz300606"))
             {
                 string aa = "aa";
             }
@@ -59,6 +59,20 @@
             double currentPrice
                 = stock.kLineDay[currentIndex].startDateTime.ToShortDateString().Equals(DateTime.Now.ToShortDateString()) ?
                 stock.LastTrade: stock.kLineDay[currentIndex].endPrice ;
+            KeyValuePair<string, double>[] quotaArr = stock.GetSortedQuota(currentIndex);
+            bool haveEnoughUpSpace = false;
+            for (int i = 0; i < quotaArr.Length; i++)
+            {
+                if (quotaArr[i].Value > today3LinePrice && quotaArr[i].Value * 1.03 < quotaArr[i + 1].Value
+                    && quotaArr[i].Value < stock.kLineDay[currentIndex].highestPrice
+                    && quotaArr[i].Value > stock.kLineDay[currentIndex].lowestPrice)
+                {
+                    haveEnoughUpSpace = true;
+                    buyPrice = quotaArr[i].Value*1.005;
+                }
+            }
+
+
             double lastDayVolume = Stock.GetVolumeAndAmount(stock.gid,
                 DateTime.Parse(stock.kLineDay[currentIndex - 1].startDateTime.ToShortDateString() + " " + DateTime.Now.ToShortTimeString()))[0];
             double currentVolume = Stock.GetVolumeAndAmount(stock.gid,
@@ -72,7 +86,7 @@
             dr["名称"] = drOri["name"].ToString().Trim();
             dr["信号"] =  "";
             dr["信号"] = dr["信号"].ToString() + (currentPrice <= today3LinePrice ? "💩": "");
-            dr["信号"] = dr["信号"].ToString().Trim() + ((Math.Abs(upSpacePercent) >= 0.03   && volumeIncrease > 0.33 && supportPrice > 0) ? "<a title=\"下有均线支撑，上均线压力在3%之外，放量超1/3。\" >📈</a>" : "");
+            dr["信号"] = dr["信号"].ToString().Trim() + ((haveEnoughUpSpace  && volumeIncrease > 0.33 && supportPrice > 0) ? "<a title=\"下有均线支撑，上均线压力在3%之外，放量超1/3。\" >📈</a>" : "");
             dr["信号"] = dr["信号"].ToString().Trim() + ((currentPrice > today3LinePrice && (currentPrice - buyPrice) / buyPrice <= 0.015 && dr["信号"].ToString().IndexOf("📈")>=0) ? "<a title=\"当前价格高于3线，但是在提示买入价的正负1%之内。\" >🛍️</a>" : "");
             if (currentIndex > 0 && (stock.kLineDay[currentIndex - 1].endPrice - stock.kLineDay[currentIndex - 1].startPrice)/stock.kLineDay[currentIndex-1].startPrice > 0.01 )
             {
