@@ -31,7 +31,9 @@
 
         foreach (DataRow drOri in dtOri.Rows)
         {
-            allGids = allGids + "," + drOri["gid"].ToString().Trim();
+            Stock stock = new Stock(drOri["gid"].ToString().Trim());
+            if (stock.Name.Trim().ToLower().IndexOf("st") < 0 )
+                allGids = allGids + "," + drOri["gid"].ToString().Trim();
         }
         if (!allGids.Trim().Equals(""))
             allGids = allGids.Remove(allGids.Length - 1, 0);
@@ -55,7 +57,8 @@
         {
             DataRow dr = dt.NewRow();
             Stock s = new Stock(drOri["gid"].ToString());
-
+            if (s.Name.Trim().ToLower().IndexOf("st") >= 0)
+                continue;
             s.LoadKLineDay();
             int currentIndex = s.GetItemIndex(currentDate);
             dr["代码"] = s.gid;
