@@ -53,12 +53,7 @@
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
-
-            if (stock.gid.Equals("sz000898"))
-            {
-                string aa = "aa";
-            }
-
+            
             stock.LoadKLineDay();
             int currentIndex = stock.GetItemIndex(calendar.SelectedDate);
             if (currentIndex < 6)
@@ -98,11 +93,24 @@
 
             if (newBuyPrice > stock.kLineDay[currentIndex].highestPrice)
                 newBuyPrice = 0;
-
-            double lastDayVolume = Stock.GetVolumeAndAmount(stock.gid,
-                DateTime.Parse(stock.kLineDay[currentIndex - 1].startDateTime.ToShortDateString() + " " + DateTime.Now.ToShortTimeString()))[0];
-            double currentVolume = Stock.GetVolumeAndAmount(stock.gid,
-                DateTime.Parse(stock.kLineDay[currentIndex].startDateTime.ToShortDateString() + " " + DateTime.Now.ToShortTimeString()))[0];
+            if (stock.gid.Trim().Equals("sz000898"))
+            {
+                string aa = "aa";
+            }
+            DateTime currentDate = DateTime.Parse(stock.kLineDay[currentIndex].startDateTime.ToShortDateString());
+            DateTime lastDate = DateTime.Parse(stock.kLineDay[currentIndex - 1].startDateTime.ToShortDateString());
+            if (currentDate.ToShortDateString().Equals(DateTime.Now.ToShortDateString()))
+            {
+                currentDate = DateTime.Now;
+                lastDate = DateTime.Parse(lastDate.ToShortDateString() + " " + DateTime.Now.ToShortTimeString());
+            }
+            else
+            {
+                currentDate = DateTime.Parse(currentDate.ToShortDateString() + " 16:00");
+                lastDate = DateTime.Parse(lastDate.ToShortDateString() + " 16:00");
+            }
+            double lastDayVolume = Stock.GetVolumeAndAmount(stock.gid, lastDate)[0];
+            double currentVolume = Stock.GetVolumeAndAmount(stock.gid, currentDate)[0];
             double pressure = stock.GetMaPressure(currentIndex, (newBuyPrice==0?buyPrice:newBuyPrice));
             double upSpacePercent = (pressure - currentPrice) / currentPrice;
             double volumeIncrease = (currentVolume - lastDayVolume) / lastDayVolume;
