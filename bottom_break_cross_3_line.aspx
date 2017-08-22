@@ -7,6 +7,8 @@
 
 <script runat="server">
 
+    public string allGids = "";
+
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack)
@@ -50,10 +52,11 @@
 
         DataTable dtOri = DBHelper.GetDataTable(" select * from dbo.bottom_break_cross_3_line where suggest_date = '"
             + calendar.SelectedDate.ToShortDateString() + "' and going_down_3_line_days >= 5 and under_3_line_days >= 5 order by  going_down_3_line_days desc, under_3_line_days desc ");
+
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
-            
+            allGids = allGids + "," + stock.gid.Trim();
             stock.LoadKLineDay();
             int currentIndex = stock.GetItemIndex(calendar.SelectedDate);
             if (currentIndex < 6)
@@ -161,11 +164,15 @@
         {
             dt.Columns.Add(c.Caption.Trim(), Type.GetType("System.String"));
         }
+        if (!allGids.Trim().Equals(""))
+        {
+            allGids = allGids.Remove(allGids.Length - 1, 1);
+        }
         foreach (DataRow drOri in drOriArr)
         {
             DataRow dr = dt.NewRow();
             dr["代码"] = "<a href=\"show_k_line_day.aspx?gid=" + drOri["代码"].ToString().Trim() + "&name="
-                + Server.UrlEncode(drOri["名称"].ToString().Trim()) + "\" target=\"_blank\" >"
+                + Server.UrlEncode(drOri["名称"].ToString().Trim()) + "&gids=" + allGids.Trim() + "\" target=\"_blank\" >"
                 +  drOri["代码"].ToString().Trim().Remove(0, 2) + "</a>";
             dr["名称"] = "<a href=\"https://touzi.sina.com.cn/public/xray/details/" + drOri["代码"].ToString().Trim()
                 + "\" target=\"_blank\"  >" + drOri["名称"].ToString().Trim() + "</a>";

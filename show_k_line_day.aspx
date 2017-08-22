@@ -9,19 +9,37 @@
     public string gid = "sh600031";
     public string name = "";
     public double avg3LinePrice = 0;
-
+    public string[] gidArr = new string[] { };
+    public string previousGid = "";
+    public string nextGid = "";
     protected void Page_Load(object sender, EventArgs e)
     {
         //jsonData = Util.GetWebContent("api/get_k_line.aspx?gid=" + Util.GetSafeRequestValue(Request, "gid", "sh600031"));
         gid = Util.GetSafeRequestValue(Request, "gid", "sh600031");
         name = Util.GetSafeRequestValue(Request, "name", "");
+        gidArr = Util.GetSafeRequestValue(Request, "gids", "").Split(',');
         Stock s = new Stock(gid);
         s.LoadKLineDay();
         avg3LinePrice = Math.Round(s.GetAverageSettlePrice(s.kLineDay.Length - 1, 3, 3), 2);
         if (name.Trim().Equals(""))
         {
             name = s.Name.Trim();
-            
+
+        }
+
+        for (int i = 0; i < gidArr.Length; i++)
+        {
+            if (gidArr[i].Trim().Equals(gid))
+            {
+                if (i > 0)
+                {
+                    previousGid = gidArr[i - 1].Trim();
+                }
+                if (i < gidArr.Length - 1)
+                {
+                    nextGid = gidArr[i + 1].Trim();
+                }
+            }
         }
     }
 </script>
@@ -48,6 +66,19 @@
 </head>
 <body onresize="init()" onload="init()"  >
     <button id="btn_draw" onclick="ready_draw()" > 画 线 </button><%=gid %> <%=name %> <span id="price" >现价:</span> <span id="rate" >涨幅:</span> <span id="settle" >昨收:</span> <span id="open" >今开:</span> <span id="max" >最高:</span> <span id="min" >最低:</span> <span id="avg3" >3线：<%=avg3LinePrice.ToString() %></span>
+    <%if (!previousGid.Trim().Equals(""))
+                    {
+            %>
+     <span > <a href="show_k_line_day.aspx?gid=<%=previousGid.Trim() %>&gids=<%=Util.GetSafeRequestValue(Request, "gids", "") %>" >上一支</a> </span>
+    <%
+        }
+        if (!nextGid.Trim().Equals(""))
+        {
+            %>
+    <span > <a href="show_k_line_day.aspx?gid=<%=nextGid.Trim() %>&gids=<%=Util.GetSafeRequestValue(Request, "gids", "") %>" >下一支</a> </span>
+                <%
+        }
+        %>
     <input type="text" id="gid" /><button  onclick="go()" >go!</button><br />
     <svg id="svg" version="1.1"   xmlns="http://www.w3.org/2000/svg"  onmousedown="mouse_down(evt)" onmouseup="mouse_up(evt)" onmousemove="mouse_move(evt)"  ></svg>
 </body>

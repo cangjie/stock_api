@@ -27,7 +27,14 @@
         DataTable dtOri = DBHelper.GetDataTable(" select * from  limit_up_volume_reduce where alert_date >= '"
             + currentDate.ToShortDateString() + "'  and alert_date < '" + currentDate.AddDays(1).ToShortDateString() + "' ");
 
+        string allGids = "";
 
+        foreach (DataRow drOri in dtOri.Rows)
+        {
+            allGids = allGids + "," + drOri["gid"].ToString().Trim();
+        }
+        if (!allGids.Trim().Equals(""))
+            allGids = allGids.Remove(allGids.Length - 1, 0);
         DataTable dt = new DataTable();
         dt.Columns.Add("代码");
         dt.Columns.Add("名称");
@@ -54,7 +61,7 @@
             dr["代码"] = s.gid;
             dr["名称"] = "<a href=\"https://touzi.sina.com.cn/public/xray/details/" + s.gid.Trim()
                 + "\" target=\"_blank\"  >" + s.Name.Trim() + "</a>";
-            dr["代码"] = "<a href=\"show_k_line_day.aspx?gid=" + s.gid + "&name=" + s.Name.Trim() + "\" target=\"_blank\" >"
+            dr["代码"] = "<a href=\"show_k_line_day.aspx?gid=" + s.gid + "&name=" + s.Name.Trim() + "&gids=" + allGids.Trim() + "\" target=\"_blank\" >"
                 + s.gid + "</a>";
 
             double volumeToday = Stock.GetVolumeAndAmount(s.gid, DateTime.Parse(currentDate.ToShortDateString() + " 15:00"))[0];
