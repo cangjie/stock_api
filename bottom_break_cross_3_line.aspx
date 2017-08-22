@@ -22,7 +22,7 @@
     public bool ValidKLine(KLine k)
     {
         bool ret = false;
-        if (k.startPrice < k.endPrice && k.highestPrice - k.endPrice < (k.endPrice - k.startPrice) / 3)
+        if (k.startPrice < k.endPrice && k.highestPrice - k.endPrice < (k.endPrice - k.startPrice) / 2)
             ret = true;
         return ret;
     }
@@ -96,7 +96,7 @@
 
             if (newBuyPrice > stock.kLineDay[currentIndex].highestPrice)
                 newBuyPrice = 0;
-            if (stock.gid.Trim().Equals("sz000898"))
+            if (stock.gid.Trim().Equals("sh601958"))
             {
                 string aa = "aa";
             }
