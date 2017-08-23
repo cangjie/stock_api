@@ -166,7 +166,7 @@
         }
         foreach (DataRow drOri in drOriArr)
         {
-            allGids = allGids + "," + drOri["gid"].ToString();
+            allGids = allGids + "," + drOri["代码"].ToString();
         }
         if (!allGids.Trim().Equals(""))
         {
