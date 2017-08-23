@@ -56,7 +56,7 @@
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
-            allGids = allGids + "," + stock.gid.Trim();
+            //allGids = allGids + "," + stock.gid.Trim();
             stock.LoadKLineDay();
             int currentIndex = stock.GetItemIndex(calendar.SelectedDate);
             if (currentIndex < 6)
@@ -164,9 +164,13 @@
         {
             dt.Columns.Add(c.Caption.Trim(), Type.GetType("System.String"));
         }
+        foreach (DataRow drOri in drOriArr)
+        {
+            allGids = allGids + "," + drOri["gid"].ToString();
+        }
         if (!allGids.Trim().Equals(""))
         {
-            allGids = allGids.Remove(allGids.Length - 1, 1);
+            allGids = allGids.Remove(0, 1);
         }
         foreach (DataRow drOri in drOriArr)
         {

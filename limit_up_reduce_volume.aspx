@@ -36,7 +36,7 @@
                 allGids = allGids + "," + drOri["gid"].ToString().Trim();
         }
         if (!allGids.Trim().Equals(""))
-            allGids = allGids.Remove(allGids.Length - 1, 0);
+            allGids = allGids.Remove(0, 1);
         DataTable dt = new DataTable();
         dt.Columns.Add("代码");
         dt.Columns.Add("名称");
