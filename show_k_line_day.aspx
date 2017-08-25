@@ -12,6 +12,10 @@
     public string[] gidArr = new string[] { };
     public string previousGid = "";
     public string nextGid = "";
+
+    public double yesterdayVolume = 0;
+    public double todayVolume = 0;
+
     protected void Page_Load(object sender, EventArgs e)
     {
         //jsonData = Util.GetWebContent("api/get_k_line.aspx?gid=" + Util.GetSafeRequestValue(Request, "gid", "sh600031"));
@@ -20,6 +24,18 @@
         gidArr = Util.GetSafeRequestValue(Request, "gids", "").Split(',');
         Stock s = new Stock(gid);
         s.LoadKLineDay();
+        if (s.kLineDay[s.kLineDay.Length - 1].startDateTime.ToShortDateString().Equals(DateTime.Now.ToShortDateString()))
+        {
+            todayVolume = Stock.GetVolumeAndAmount(s.gid, DateTime.Now)[0];
+            yesterdayVolume = Stock.GetVolumeAndAmount(s.gid, DateTime.Parse(s.kLineDay[s.kLineDay.Length - 2].startDateTime.ToShortDateString() + " " + DateTime.Now.ToShortTimeString()))[0];
+        }
+        else
+        {
+            todayVolume = Stock.GetVolumeAndAmount(s.gid, s.kLineDay[s.kLineDay.Length - 1].endDateTime)[0];
+            yesterdayVolume = Stock.GetVolumeAndAmount(s.gid, s.kLineDay[s.kLineDay.Length - 2].endDateTime)[0];
+
+        }
+
         avg3LinePrice = Math.Round(s.GetAverageSettlePrice(s.kLineDay.Length - 1, 3, 3), 2);
         if (name.Trim().Equals(""))
         {
@@ -65,7 +81,7 @@
     </script>
 </head>
 <body onresize="init()" onload="init()"  >
-    <button id="btn_draw" onclick="ready_draw()" > 画 线 </button><%=gid %> <%=name %> <span id="price" >现价:</span> <span id="rate" >涨幅:</span> <span id="settle" >昨收:</span> <span id="open" >今开:</span> <span id="max" >最高:</span> <span id="min" >最低:</span> <span id="avg3" >3线：<%=avg3LinePrice.ToString() %></span>
+    <button id="btn_draw" onclick="ready_draw()" > 画 线 </button><%=gid %> <%=name %> <span id="price" >现价:</span> <span id="rate" >涨幅:</span> <span id="settle" >昨收:</span> <span id="open" >今开:</span> <span id="max" >最高:</span> <span id="min" >最低:</span> <span>放量：<%=(100 * (todayVolume - yesterdayVolume)/yesterdayVolume).ToString() + "%" %></span> <span id="avg3" >3线：<%=avg3LinePrice.ToString() %></span>
     <%if (!previousGid.Trim().Equals(""))
                     {
             %>
