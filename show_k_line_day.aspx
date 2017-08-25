@@ -81,7 +81,7 @@
     </script>
 </head>
 <body onresize="init()" onload="init()"  >
-    <button id="btn_draw" onclick="ready_draw()" > 画 线 </button><%=gid %> <%=name %> <span id="price" >现价:</span> <span id="rate" >涨幅:</span> <span id="settle" >昨收:</span> <span id="open" >今开:</span> <span id="max" >最高:</span> <span id="min" >最低:</span> <span>放量：<%=(100 * (todayVolume - yesterdayVolume)/yesterdayVolume).ToString() + "%" %></span> <span id="avg3" >3线：<%=avg3LinePrice.ToString() %></span>
+    <button id="btn_draw" onclick="ready_draw()" > 画 线 </button><%=gid %> <%=name %> <span id="price" >现价:</span> <span id="rate" >涨幅:</span> <span id="settle" >昨收:</span> <span id="open" >今开:</span> <span id="max" >最高:</span> <span id="min" >最低:</span> <span>放量：<%=Math.Round(100 * (todayVolume - yesterdayVolume)/yesterdayVolume, 2).ToString() + "%" %></span> <span id="avg3" >3线：<%=avg3LinePrice.ToString() %></span>
     <%if (!previousGid.Trim().Equals(""))
                     {
             %>
