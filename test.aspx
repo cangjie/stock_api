@@ -9,9 +9,10 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        Stock stock = new Stock("sz300606");
-        stock.LoadKLineDay();
-        Response.Write("LastTrade:" + stock.LastTrade.ToString() + "<br/>end_price:" + stock.kLineDay[stock.kLineDay.Length - 1].endPrice);
+        //Stock stock = new Stock("sz300606");
+        //stock.LoadKLineDay();
+        //Response.Write("LastTrade:" + stock.LastTrade.ToString() + "<br/>end_price:" + stock.kLineDay[stock.kLineDay.Length - 1].endPrice);
+        
     }
 
 
