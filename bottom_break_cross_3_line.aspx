@@ -123,7 +123,7 @@
             dr["信号"] = dr["信号"].ToString() + (currentPrice <= today3LinePrice ? "💩": "");
             dr["信号"] = dr["信号"].ToString().Trim() + (( ValidKLine(stock.kLineDay[currentIndex]) && newBuyPrice != 0  && volumeIncrease > 0.33 && supportPrice > 0) ? "<a title=\"下有均线支撑，上均线压力在3%之外，放量超1/3。\" >📈</a>" : "");
             dr["信号"] = dr["信号"].ToString().Trim() + ((currentPrice > today3LinePrice && (currentPrice - buyPrice) / buyPrice <= 0.015 && dr["信号"].ToString().IndexOf("📈")>=0) ? "<a title=\"当前价格高于3线，但是在提示买入价的正负1%之内。\" >🛍️</a>" : "");
-            if (currentIndex > 0 
+            if (currentIndex > 0
                 && ((newBuyPrice==0?buyPrice:newBuyPrice) - stock.kLineDay[currentIndex - 1].endPrice)/stock.kLineDay[currentIndex-1].endPrice >= 0.03 )
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"买入价上涨超3%\" >🔥</a>";
@@ -212,8 +212,10 @@
         double shitCount = 0;
         double increaseLogoCount = 0;
         double withoutShitTotal = 0;
+        double fireCount = 0;
         double[] increaseLogoRedCountArr = new double[6];
         double[] withoutShitRedCountArr = new double[6];
+        double[] fireCountArr = new double[6];
 
         foreach (DataRow dr in dt.Rows)
         {
@@ -236,6 +238,21 @@
                     if (dr["总计"].ToString().IndexOf("red") >= 0)
                     {
                         increaseLogoRedCountArr[5]++;
+                    }
+                }
+                if (dr["信号"].ToString().Trim().IndexOf("🔥") >= 0)
+                {
+                    fireCount++;
+                    for (int i = 1; i <= 5; i++)
+                    {
+                        if (dr[i.ToString() + "日"].ToString().IndexOf("red") >= 0)
+                        {
+                            fireCountArr[i - 1]++;
+                        }
+                    }
+                    if (dr["总计"].ToString().IndexOf("red") >= 0)
+                    {
+                        fireCountArr[5]++;
                     }
                 }
                 withoutShitTotal++;
@@ -270,6 +287,15 @@
         }
         drIncreaseLogo["总计"] = Math.Round(increaseLogoRedCountArr[5] * 100 / increaseLogoCount, 2).ToString() + "%";
         dt.Rows.Add(drIncreaseLogo);
+
+        DataRow drFireLogo = dt.NewRow();
+        drFireLogo["代码"] = "🔥";
+        for (int i = 1; i <= 5; i++)
+        {
+            drFireLogo[i.ToString() + "日"] = Math.Round(fireCountArr[i - 1] * 100 / fireCount, 2).ToString() + "%";
+        }
+        drFireLogo["总计"] = Math.Round(fireCountArr[5] * 100 / fireCount, 2).ToString() + "%";
+        dt.Rows.Add(drFireLogo);
 
         DataRow drShit = dt.NewRow();
         drShit["代码"] = "💩";
