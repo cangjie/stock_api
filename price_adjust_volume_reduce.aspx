@@ -102,7 +102,9 @@
         dt.Columns.Add("4日");
         dt.Columns.Add("5日");
 
-        DataTable dtOri = DBHelper.GetDataTable(" select * from price_increase_volume_increase where alarm_date > '" + currentDate.AddDays(-20).ToShortDateString() + "' order by  alarm_date desc ") ;
+        DataTable dtOri = DBHelper.GetDataTable(" select * from price_increase_volume_increase where alarm_date > '" 
+            + currentDate.AddDays(-20).ToShortDateString() 
+            + "' and alarm_date < '" + currentDate.ToShortDateString() + "'  order by  alarm_date desc ") ;
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock s = new Stock(drOri["gid"].ToString().Trim());
