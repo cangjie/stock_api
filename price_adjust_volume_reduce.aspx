@@ -118,6 +118,7 @@
                 && IsCrossStar(s, currentIndex)
                 && NotBelowStartPrice(s, startIndex, currentIndex, double.Parse(drOri["open_price"].ToString()))
                 && volumeReduce < 0.67
+                && s.kLineDay[currentIndex].endPrice > s.kLineDay[startIndex].endPrice
                 )
             {
                 DataRow dr = dt.NewRow();
