@@ -155,7 +155,7 @@
     {
         bool ret = false;
         if (index > 0
-            && Math.Abs(s.kLineDay[index].endPrice - s.kLineDay[index].startPrice) / s.kLineDay[index - 1].endPrice <= 0.005)
+            && Math.Abs(s.kLineDay[index].endPrice - s.kLineDay[index].startPrice) / s.kLineDay[index - 1].endPrice <= 0.0025)
         {
             ret = true;
         }
