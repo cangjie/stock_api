@@ -90,6 +90,7 @@
         DataTable dt = new DataTable();
         dt.Columns.Add("代码");
         dt.Columns.Add("名称");
+        dt.Columns.Add("信号");
         dt.Columns.Add("底价");
         dt.Columns.Add("收盘");
         dt.Columns.Add("涨幅");
@@ -102,8 +103,8 @@
         dt.Columns.Add("4日");
         dt.Columns.Add("5日");
 
-        DataTable dtOri = DBHelper.GetDataTable(" select * from price_increase_volume_increase where alarm_date > '" 
-            + currentDate.AddDays(-12).ToShortDateString() 
+        DataTable dtOri = DBHelper.GetDataTable(" select * from price_increase_volume_increase where alarm_date > '"
+            + currentDate.AddDays(-12).ToShortDateString()
             + "' and alarm_date < '" + currentDate.ToShortDateString() + "'  order by  alarm_date desc ") ;
         foreach (DataRow drOri in dtOri.Rows)
         {
@@ -118,12 +119,23 @@
                 && IsCrossStar(s, currentIndex)
                 && NotBelowStartPrice(s, startIndex, currentIndex, double.Parse(drOri["open_price"].ToString()))
                 && volumeReduce < 0.67
-                && s.kLineDay[currentIndex].endPrice > s.kLineDay[startIndex].endPrice
+                && s.kLineDay[currentIndex].endPrice > s.kLineDay[startIndex].startPrice
                 )
             {
                 DataRow dr = dt.NewRow();
                 dr["代码"] = s.gid.Trim();
                 dr["名称"] = s.Name.Trim();
+                //bool up = false;
+
+                if (s.kLineDay[currentIndex].endPrice 
+                    > (s.kLineDay[startIndex].endPrice - s.kLineDay[startIndex].startPrice ) * 0.67 + s.kLineDay[startIndex].startPrice  )
+                {
+                    dr["信号"] = "📈";
+                }
+                else
+                {
+                    dr["信号"] = "";
+                }
                 dr["底价"] = s.kLineDay[startIndex].startPrice;
                 dr["收盘"] = s.kLineDay[startIndex].endPrice;
                 dr["涨幅"]
@@ -233,6 +245,7 @@
                 <Columns>
                     <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="信号" HeaderText="信号"></asp:BoundColumn>
                     <asp:BoundColumn DataField="底价" HeaderText="底价"></asp:BoundColumn>
                     <asp:BoundColumn DataField="收盘" HeaderText="收盘"></asp:BoundColumn>
                     <asp:BoundColumn DataField="涨幅" HeaderText="涨幅"></asp:BoundColumn>
