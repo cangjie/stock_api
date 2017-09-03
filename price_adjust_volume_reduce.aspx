@@ -123,7 +123,7 @@
                 )
             {
                 DataRow dr = dt.NewRow();
-                dr["代码"] = s.gid.Trim();
+                dr["代码"] = "<a href=\"show_K_line_day.aspx?gid=" + s.gid.Trim() + "\" target=\"_blank\" >" + s.gid.Trim();
                 dr["名称"] = s.Name.Trim();
                 //bool up = false;
 
