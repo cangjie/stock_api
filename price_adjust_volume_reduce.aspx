@@ -147,8 +147,9 @@
                 {
                     if (currentIndex + i + 1 < s.kLineDay.Length)
                     {
+                        double upPercent = (s.kLineDay[currentIndex + i + 1].highestPrice - s.kLineDay[currentIndex].endPrice) / s.kLineDay[currentIndex].endPrice;
                         dr[(i + 1).ToString() + "日"]
-                            = Math.Round(100 * (s.kLineDay[currentIndex + i + 1].highestPrice - s.kLineDay[currentIndex].endPrice) / s.kLineDay[currentIndex].endPrice, 2).ToString() + "%";
+                            = "<font color=\"" + ((upPercent > 0.01)?"red":"green")  + "\" >" + Math.Round(100 * upPercent, 2).ToString() + "%</font>";
                     }
                     else
                     {
