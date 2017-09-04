@@ -346,11 +346,12 @@ public class Util
 
     public static void  RefreshTodayKLine()
     {
-        foreach (string gid in GetAllGids())
+        string[] gidArr = GetAllGids();
+        for (int i = 0; i < gidArr.Length; i++)
         {
             try
             {
-                KLine.RefreshKLine(gid, DateTime.Parse(DateTime.Now.ToShortDateString()));
+                KLine.RefreshKLine(gidArr[i], DateTime.Parse(DateTime.Now.ToShortDateString()));
             }
             catch
             {
