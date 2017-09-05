@@ -12,7 +12,7 @@
         //Stock stock = new Stock("sz300606");
         //stock.LoadKLineDay();
         //Response.Write("LastTrade:" + stock.LastTrade.ToString() + "<br/>end_price:" + stock.kLineDay[stock.kLineDay.Length - 1].endPrice);
-        Util.RefreshTodayKLine();
+        Util.RefreshTodayKLineMultiThread();
         //KLine.RefreshKLine("sz002726", DateTime.Parse(DateTime.Now.ToShortDateString()));
     }
 

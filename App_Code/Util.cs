@@ -7,6 +7,7 @@ using System.IO;
 using System.Web.Script.Serialization;
 using System.Collections;
 using System.Data;
+using System.Threading;
 
 /// <summary>
 /// Summary description for Util
@@ -357,6 +358,41 @@ public class Util
             {
 
             }
+        }
+    }
+
+
+
+    public static Queue gidQueue = new Queue();
+
+    public static void RefreshTodayKLineMultiThread()
+    {
+        if (gidQueue.Count == 0)
+        {
+            string[] gidArr = Util.GetAllGids();
+            foreach (string gid in gidArr)
+            {
+                gidQueue.Enqueue(gid);
+            }
+        }
+        for (; gidQueue.Count > 0;)
+        {
+            ThreadStart tsKLine = new ThreadStart(RefreshTodayKLineFromQueue);
+            Thread t = new Thread(tsKLine);
+            t.Start();
+        }
+    }
+
+    public static void RefreshTodayKLineFromQueue()
+    {
+        try
+        {
+            string gid = gidQueue.Dequeue().ToString();
+            KLine.RefreshKLine(gid, DateTime.Parse(DateTime.Now.ToShortDateString()));
+        }
+        catch
+        {
+
         }
     }
 
