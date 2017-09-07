@@ -6,10 +6,11 @@
     {
         // Code that runs on application startup
         //StockWatcher.thread.Start();
-        StockWatcher.tKLineRefresher.Start();
+        //StockWatcher.tKLineRefresher.Start();
         //StockWatcher.tKDJMACD.Start();
         //StockWatcher.tSearchBottomBreak3Line.Start();
 
+        StockWatcher.tWatchEachStock.Start();
 
     }
     

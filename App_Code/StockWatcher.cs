@@ -16,11 +16,46 @@ public class StockWatcher
 
     public static Thread tKLineRefresher = new Thread(tsKLineRefresher);
 
+    public static ThreadStart tsWatchEachStock = new ThreadStart(WatchEachStock);
+
+    public static Thread tWatchEachStock = new Thread(tsWatchEachStock);
+
     public StockWatcher()
     {
       
     }
 
+    public static void WatchEachStock()
+    {
+        for (; true;)
+        {
+            try
+            {
+                if (Util.IsTransacDay(DateTime.Parse(DateTime.Now.ToShortDateString())) && DateTime.Now.Hour >= 9 && DateTime.Now.Hour <= 15)
+                {
+                    string[] gidArr = Util.GetAllGids();
+                    for (int i = 0; i < gidArr.Length; i++)
+                    {
+                        KLine.RefreshKLine(gidArr[i], DateTime.Parse(DateTime.Now.ToShortDateString()));
+                        Stock stock = new Stock(gidArr[i].Trim());
+                        stock.LoadKLineDay();
+
+                    }
+                }
+            }
+            catch
+            {
+
+            }
+            Thread.Sleep(60000);
+        }
+    }
+
+
+
+    /// <old methods>
+    /// ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// </summary>
     public static void RefreshKLine()
     {
         for (; true;)
@@ -39,9 +74,6 @@ public class StockWatcher
             Thread.Sleep(1000);
         }
     }
-
-
-
 
     public static void SendAlertMessage(string openId, string gid, string name, double price, string type)
     {
@@ -81,7 +113,6 @@ public class StockWatcher
         
     }
    
-
     public static DataTable GetTimeLineTradeAndVolumeTable(string gid, DateTime date)
     {
         DataTable dt = DBHelper.GetDataTable("exec sp_snap '" + date.ToShortDateString() + "' , '" + gid  + "'  ");
