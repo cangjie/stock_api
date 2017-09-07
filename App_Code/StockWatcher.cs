@@ -12,53 +12,13 @@ using System.Text.RegularExpressions;
 /// </summary>
 public class StockWatcher
 {
-    
-
-    public static ThreadStart ts = new ThreadStart(StartWatch);
-
-    public static Thread thread = new Thread(ts) ;
-
     public static ThreadStart tsKLineRefresher = new ThreadStart(RefreshKLine);
 
     public static Thread tKLineRefresher = new Thread(tsKLineRefresher);
 
-    public static ThreadStart tsKDJMACD = new ThreadStart(WatchKDJMACD);
-
-    public static Thread tKDJMACD = new Thread(tsKDJMACD);
-
-    public static ThreadStart tsSearchBottomBreak3Line = new ThreadStart(WatchBottomBreak3Line);
-
-    public static Thread tSearchBottomBreak3Line = new Thread(tsSearchBottomBreak3Line);
-
-
     public StockWatcher()
     {
-        //
-        // TODO: Add constructor logic here
-        //
-    }
-
-    public static void StartWatch()
-    {
-        for (; true;)
-        {
-            if (Util.IsTransacTime(DateTime.Now))
-            {
-                try
-                {
-                    //WatchStar();
-                    Watch();
-                    WatchEachStock();
-                    WatchWave();
-                    
-                }
-                catch
-                {
-
-                }
-            }
-            Thread.Sleep(1000);
-        }
+      
     }
 
     public static void RefreshKLine()
@@ -80,42 +40,7 @@ public class StockWatcher
         }
     }
 
-/*
-    public static void WatchStar()
-    {
-        try
-        {
 
-
-            string content = Util.GetWebContent("http://stock.tuyaa.com/bottom_break.aspx");
-            Regex reg = new Regex("alt=\"\\d\\d\\d\\d\\d\\d\"");
-            MatchCollection mc = reg.Matches(content);
-            foreach (Match m in mc)
-            {
-                string gid = m.Value.Trim().Replace("alt=\"", "").Replace("\"", "");
-                if (gid.StartsWith("600"))
-                    gid = "sh" + gid;
-                else
-                    gid = "sz" + gid;
-                Stock s = new Stock(gid);
-                string name = s.Name.Trim();
-                string message = "[" + gid + "]" + name + " was marked star just now.";
-                if (AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()), gid, "star", name, message))
-                {
-                    SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", gid, name, s.LastTrade, "star");
-                    SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", gid, name, s.LastTrade, "star");
-                    //SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", message.Trim());
-                    //SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", message.Trim());
-                    //SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", message.Trim());
-                }
-            }
-        }
-        catch
-        {
-
-        }
-    }
-*/
 
 
     public static void SendAlertMessage(string openId, string gid, string name, double price, string type)
@@ -155,170 +80,7 @@ public class StockWatcher
         Util.GetWebContent("http://weixin.luqinwenda.com/api/send_template_message.aspx", "POST", json, "application/raw");
         
     }
-
-    public static void WatchEachStock()
-    {
-        
-        if (!Util.IsTransacTime(DateTime.Now))
-            return;
-            
-        DataTable dt = DBHelper.GetDataTable(" select [name]  from dbo.sysobjects where OBJECTPROPERTY(id, N'IsUserTable') = 1 and name like '%timeline'");
-        foreach (DataRow dr in dt.Rows)
-        {
-            Stock s = new Stock(dr[0].ToString().Replace("_timeline", ""));
-            s.kArr = KLine.GetLocalKLine(s.gid, "day");
-            if (s.IsOver3X3(DateTime.Parse(DateTime.Now.ToShortDateString())))
-            {
-                string stockName = s.Name;
-                string message = s.gid.Trim() + "[" + stockName.Trim() + "]已经突破3线，并且当日涨幅超过2%";
-                if (AddAlert(DateTime.Now, s.gid, "over3line", s.Name.Trim(), message.Trim()))
-                {
-                    /*
-                    SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", s.gid, stockName, s.LastTrade, "over3line");
-                    SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", s.gid, stockName, s.LastTrade, "over3line");
-                    SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", s.gid, stockName, s.LastTrade, "over3line");
-                    */
-
-                    try
-                    {
-                        double yesterdayPositiveRate = s.yesterdayPositiveRate(DateTime.Parse(DateTime.Now.ToShortDateString() + " 9:30"));
-                        DBHelper.InsertData("suggest_stock", new string[,]{
-                            { "suggest_date", "datetime", DateTime.Now.ToShortDateString() },
-                            { "gid", "varchar", s.gid},
-                            { "[name]", "varchar", s.Name},
-                            { "settlement", "float", s.kArr[s.kArr.Length-1].endPrice.ToString()},
-                            { "[open]", "float", s.kArr[s.kArr.Length-1].startPrice.ToString()},
-                            { "avg_3_3_yesterday", "float", s.GetAverageSettlePrice(s.kArr.Length - 2, 3, 3).ToString()},
-                            { "avg_3_3_today", "float", s.GetAverageSettlePrice(s.kArr.Length - 1, 3, 3).ToString()},
-                            { "double_cross_3_3", "int", (s.IsCross3X3Twice(DateTime.Parse(DateTime.Now.ToShortDateString()), 20)? "1" : "0")},
-                            { "last_day_over_flow", "float", yesterdayPositiveRate.ToString()},
-                            { "is_cross_3_3", "int", "1"}
-                        });
-                    }
-                    catch
-                    {
-
-                    }
-
-
-                    //SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", message.Trim());
-                    //SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", message.Trim());
-                    //SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", message.Trim());
-                }
-            }
-
-            DateTime volumeTime = GetVolumeIncrease(s.gid, DateTime.Parse(DateTime.Now.ToShortDateString()), true);
-            if (volumeTime > DateTime.Parse("2011-1-1"))
-            {
-                string stockName = s.Name;
-                string message = s.gid.Trim() + "[" + stockName.Trim() + "]放量";
-                if (AddAlert(volumeTime, s.gid, "volumeincrease", s.Name.Trim(), message.Trim()))
-                {
-                    //SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", s.gid, stockName, s.LastTrade, "volumeincrease");
-                    //SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", s.gid, stockName, s.LastTrade, "volumeincrease");
-                    SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", s.gid, stockName, s.LastTrade, "volumeincrease");
-
-                }
-            }
-            ///////////////////////////
-
-        }
-    }
-
-    public static void WatchWave()
-    {
-        DataTable dt = DBHelper.GetDataTable(" select gid from stock_wave_attention ");
-        foreach (DataRow dr in dt.Rows)
-        {
-            Stock s = new Stock(dr[0].ToString());
-            if (s.IsAtBuyPoint)
-            {
-                string name = s.Name;
-                string message = s.gid + "[" + name + "]" + " 低价：" + s.drLastTimeline["trade"].ToString();
-                if (AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()), s.gid, "wave_low", name, message))
-                {
-                    SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", s.gid, name, s.LastTrade, "wave_low");
-                    SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", s.gid, name, s.LastTrade, "wave_low");
-                    //SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", message.Trim());
-                    //SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", message.Trim());
-                    //SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", message.Trim());
-                }
-            }
-            if (s.IsAtSellPoint)
-            {
-                string name = s.Name;
-                string message = s.gid + "[" + name + "]" + " 高价：" + s.drLastTimeline["trade"].ToString();
-                if (AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()), s.gid, "wave_high", name, message))
-                {
-                    SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", s.gid, name, s.LastTrade, "wave_high");
-                    SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", s.gid, name, s.LastTrade, "wave_high");
-                    //SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", message.Trim());
-                    //SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", message.Trim());
-                    //SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", message.Trim());
-                }
-            }
-        }
-    }
-
-    public static void Watch()
-    {
-        try
-        {
-
-
-            DataTable dt = DBHelper.GetDataTable(" select * from stock_alert ");
-            foreach (DataRow dr in dt.Rows)
-            {
-                try
-                {
-                    Stock s = new Stock(dr["gid"].ToString().Trim().StartsWith("6") ? "sh" + dr["gid"].ToString().Trim() : "sz" + dr["gid"].ToString().Trim());
-                    string message = "";
-                    string type = "";
-                    if (Math.Round(s.LastTrade, 2) == Math.Round(double.Parse(dr["top_f3"].ToString()), 2))
-                    {
-                        type = "top_f3";
-                        message = s.gid + dr["name"].ToString() + " 现价：" + Math.Round(s.LastTrade, 2).ToString() + " 已经达到压力F3";
-                        //SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", message);
-                    }
-                    if (Math.Round(s.LastTrade, 2) == Math.Round(double.Parse(dr["top_f5"].ToString()), 2))
-                    {
-                        type = "top_f5";
-                        message = s.gid + dr["name"].ToString() + " 现价：" + Math.Round(s.LastTrade, 2).ToString() + " 已经达到压力F5";
-                    }
-                    if (Math.Round(s.LastTrade, 2) == Math.Round(double.Parse(dr["bottom_f3"].ToString()), 2))
-                    {
-                        type = "bottom_f3";
-                        message = s.gid + dr["name"].ToString() + " 现价：" + Math.Round(s.LastTrade, 2).ToString() + " 已经达到支撑F3";
-                    }
-                    if (Math.Round(s.LastTrade, 2) == Math.Round(double.Parse(dr["bottom_f5"].ToString()), 2))
-                    {
-                        type = "bottom_f5";
-                        message = s.gid + dr["name"].ToString() + " 现价：" + Math.Round(s.LastTrade, 2).ToString() + " 已经达到支撑F5";
-                    }
-                    if (!message.Trim().Equals(""))
-                    {
-                        if (AddAlert(DateTime.Now, s.gid, type, dr["name"].ToString().Trim(), message))
-                        {
-                            string name = s.Name.Trim();
-                            SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", s.gid, name, s.LastTrade, type);
-                            SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", s.gid, name, s.LastTrade, type);
-                            SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", s.gid, name, s.LastTrade, type);
-                        }
-                    }
-
-                }
-                catch
-                {
-
-                }
-
-            }
-        }
-        catch
-        {
-
-        } 
-    }
+   
 
     public static DataTable GetTimeLineTradeAndVolumeTable(string gid, DateTime date)
     {
@@ -449,27 +211,5 @@ public class StockWatcher
             Thread.Sleep(1000);
         }
     }
-
-    public static void WatchBottomBreak3Line()
-    {
-        for (; true;)
-        {
-            try
-            {
-                DateTime currentDate = DateTime.Parse(DateTime.Now.ToShortDateString());
-                if (Util.IsTransacDay(currentDate))
-                {
-                    Stock.SearchBottomBreak3Line(currentDate);
-
-                }
-            }
-            catch
-            {
-
-            }
-            Thread.Sleep(100);
-        }
-    }
-
-
+ 
 }

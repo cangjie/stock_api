@@ -5,10 +5,10 @@
     void Application_Start(object sender, EventArgs e) 
     {
         // Code that runs on application startup
-        StockWatcher.thread.Start();
+        //StockWatcher.thread.Start();
         StockWatcher.tKLineRefresher.Start();
-        StockWatcher.tKDJMACD.Start();
-        StockWatcher.tSearchBottomBreak3Line.Start();
+        //StockWatcher.tKDJMACD.Start();
+        //StockWatcher.tSearchBottomBreak3Line.Start();
 
 
     }
