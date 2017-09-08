@@ -39,6 +39,14 @@ public class StockWatcher
                         KLine.RefreshKLine(gidArr[i], DateTime.Parse(DateTime.Now.ToShortDateString()));
                         Stock stock = new Stock(gidArr[i].Trim());
                         stock.LoadKLineDay();
+                        try
+                        {
+                            SearchBottomBreak3Line(stock, DateTime.Parse(DateTime.Now.ToShortDateString()));
+                        }
+                        catch
+                        {
+
+                        }
 
                     }
                 }
@@ -242,5 +250,37 @@ public class StockWatcher
             Thread.Sleep(1000);
         }
     }
- 
+
+    public static void SearchBottomBreak3Line(Stock stock, DateTime currentDate)
+    {
+        if (!Util.IsTransacDay(currentDate))
+            return;
+        int currentIndex = stock.GetItemIndex(currentDate);
+        if (currentIndex < 6)
+            return;
+        if (stock.IsCross3Line(currentIndex, "day"))
+        {
+            int goingDown3LineCount = stock.GoingDows3LineCount(currentIndex);
+            int under3LineCount = stock.Under3LineKLines(currentIndex);
+            try
+            {
+                DBHelper.InsertData("bottom_break_cross_3_line", new string[,] {
+                    { "gid", "varchar", stock.gid},
+                    { "suggest_date", "datetime", currentDate.ToShortDateString()},
+                    { "name", "varchar", stock.Name.Trim()},
+                    { "settlement", "float", stock.kLineDay[currentIndex-1].endPrice.ToString()},
+                    { "[open]", "float", stock.kLineDay[currentIndex].startPrice.ToString()},
+                    { "avg_3_3_yesterday", "float", stock.GetAverageSettlePrice(currentIndex-1, 3, 3).ToString()},
+                    { "avg_3_3_today", "float", stock.GetAverageSettlePrice(currentIndex, 3, 3).ToString()},
+                    { "under_3_line_days", "int", under3LineCount.ToString()},
+                    { "going_down_3_line_days", "int", goingDown3LineCount.ToString()} });
+            }
+            catch
+            {
+
+            }
+        }
+    }
+
+
 }
