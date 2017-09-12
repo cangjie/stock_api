@@ -126,6 +126,19 @@ public class KLine
                 return false;
         }
     }
+
+    public bool IsCrossStar
+    {
+        get
+        {
+            if (Math.Abs(startPrice - endPrice) / startPrice < 0.015)
+            {
+                return true;
+            }
+            return false;
+        }
+    }
+
     public static KLine[] GetKLine(string type, string gid, DateTime startDateTime, DateTime endDateTime)
     {
         KLine[] kLineArr = new KLine[0];

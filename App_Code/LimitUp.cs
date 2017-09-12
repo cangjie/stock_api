@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-
+using System.Data;
 /// <summary>
 /// Summary description for LimitUp
 /// </summary>
@@ -51,5 +51,34 @@ public class LimitUp
         {
             return 0;
         }
+    }
+
+    public static DataTable GetLimitUpListBeforeADay(DateTime date)
+    {
+        DataTable dtOri = DBHelper.GetDataTable(" select * from limit_up where alert_date < '" + date.ToShortDateString()
+            + "'  and alert_date > '" + date.AddDays(-15).ToShortDateString() + "'  order by alert_date desc ");
+        DataTable dt = new DataTable();
+        dt.Columns.Add("alert_date", Type.GetType("System.DateTime"));
+        dt.Columns.Add("gid", Type.GetType("System.String"));
+        for (int i = 0; i < dtOri.Rows.Count; i++)
+        {
+            Stock s = new Stock(dtOri.Rows[i]["gid"].ToString().Trim());
+            s.LoadKLineDay();
+            int currentIndex = s.GetItemIndex(DateTime.Parse(date.ToShortDateString()));
+            int alertIndex = s.GetItemIndex(DateTime.Parse(dtOri.Rows[i]["alert_date"].ToString()));
+            if (currentIndex - alertIndex <= LimitUp.inDateDays)
+            {
+                DataRow[] drArr = dt.Select(" gid = '" + s.gid + "' ");
+                if (drArr.Length == 0)
+                {
+                    DataRow dr = dt.NewRow();
+                    dr["alert_date"] = dtOri.Rows[i]["alert_date"];
+                    dr["gid"] = dtOri.Rows[i]["gid"];
+                    dt.Rows.Add(dr);
+                }
+            }
+        }
+        dtOri.Dispose();
+        return dt;
     }
 }
