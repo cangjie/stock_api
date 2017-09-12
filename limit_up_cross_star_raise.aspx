@@ -13,7 +13,7 @@
     {
         if (!IsPostBack)
         {
-            dg.DataSource = GetData();
+            dg.DataSource = AddTotal(GetData());
             dg.DataBind();
         }
     }
@@ -96,6 +96,7 @@
                         double raisePercent = Math.Round(100 * (stock.kLineDay[j + upLimitIndex].highestPrice - stock.kLineDay[j + upLimitIndex - 1].endPrice) / stock.kLineDay[j + upLimitIndex - 1].endPrice, 2);
 
                         dr[j.ToString() + "日涨幅"] =  "<font color=\"" + ((raisePercent>=1)? "red":"green")  + "\" >" +  raisePercent.ToString() + "%</font>";
+                        //dr[j.ToString() + "日涨幅"] = raisePercent.ToString();
 
                     }
                 }
@@ -121,11 +122,92 @@
         return dt;
     }
 
+    public DataTable AddTotal(DataTable dt)
+    {
+        int crossCount = 0;
+        int starCrossCount = 0;
+        int crossRaiseCount = 0;
+        int starCrossRaiseCount = 0;
+
+        for (int i = 0; i < dt.Rows.Count; i++)
+        {
+            int firstCrossIndex = 0;
+            double firstCrossPrice = 0;
+            for (int j = 1; j < 8; j++)
+            {
+                try
+                {
+                    if (dt.Rows[i][j.ToString() + "日"].ToString().IndexOf("✝️") >= 0)
+                    {
+                        firstCrossPrice = double.Parse(dt.Rows[i][(j + 1).ToString() + "日价"].ToString());
+                        firstCrossIndex = j;
+                        break;
+                    }
+                }
+                catch
+                {
+
+                }
+            }
+
+            if (firstCrossIndex > 0)
+            {
+                try
+                {
+                    double.Parse(dt.Rows[i][(firstCrossIndex + 1).ToString() + "日价"].ToString());
+                }
+                catch
+                {
+                    continue;
+                }
+                crossCount++;
+                if (dt.Rows[i]["信号"].ToString().IndexOf("🌟") >= 0)
+                {
+                    starCrossCount++;
+                }
+                for (int j = firstCrossIndex + 1; j <= 8; j++)
+                {
+                    try
+                    {
+                        if (dt.Rows[i][j.ToString() + "日涨幅"].ToString().IndexOf("red") >= 0)
+                        {
+                            crossRaiseCount++;
+                            if (dt.Rows[i]["信号"].ToString().IndexOf("🌟") >= 0)
+                            {
+                                starCrossRaiseCount++;
+                            }
+                            break;
+                        }
+                    }
+                    catch
+                    {
+
+                    }
+                }
+            }
+
+
+        }
+        DataRow drCross = dt.NewRow();
+        drCross[0] = "✝️";
+        drCross[1] = crossRaiseCount.ToString() + "/" + crossCount.ToString();
+        drCross[2] = Math.Round((double)crossRaiseCount * 100 / (double)crossCount, 2).ToString() + "%";
+
+        dt.Rows.Add(drCross);
+        DataRow drStarCross = dt.NewRow();
+        drStarCross[0] = "🌟✝️";
+        drStarCross[1] = starCrossRaiseCount.ToString() + "/" + starCrossCount.ToString();
+        drStarCross[2] = Math.Round((double)starCrossRaiseCount * 100 / (double)starCrossCount, 2).ToString() + "%";
+
+        dt.Rows.Add(drStarCross);
+        return dt;
+    }
+
 
     protected void calendar_SelectionChanged(object sender, EventArgs e)
     {
         currentDate = DateTime.Parse(calendar.SelectedDate.ToShortDateString());
-        dg.DataSource = GetData();
+        dg.DataSource = AddTotal(GetData());
         dg.DataBind();
     }
 
