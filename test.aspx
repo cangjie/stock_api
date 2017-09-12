@@ -9,11 +9,20 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        //Stock stock = new Stock("sz300606");
-        //stock.LoadKLineDay();
-        //Response.Write("LastTrade:" + stock.LastTrade.ToString() + "<br/>end_price:" + stock.kLineDay[stock.kLineDay.Length - 1].endPrice);
-        Util.RefreshTodayKLineMultiThread();
-        //KLine.RefreshKLine("sz002726", DateTime.Parse(DateTime.Now.ToShortDateString()));
+        string[] gidArr = Util.GetAllGids();
+        for (int i = 0; i < gidArr.Length; i++)
+        {
+            Stock s = new Stock(gidArr[i]);
+            s.LoadKLineDay();
+            for (int j = 1; j < s.kLineDay.Length - 1; j++)
+            {
+                if (s.IsLimitUp(j))
+                {
+                    LimitUp.SaveLimitUp(s.gid.Trim(), DateTime.Parse(s.kLineDay[j].startDateTime.ToShortDateString()), s.kLineDay[j - 1].endPrice,
+                        s.kLineDay[j].startPrice, s.kLineDay[j].endPrice);
+                }
+            }
+        }
     }
 
 

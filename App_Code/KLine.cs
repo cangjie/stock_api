@@ -549,4 +549,6 @@ public class KLine
         }
         return sum / itemsCount;
     }
+
+   
 }

@@ -39,6 +39,7 @@ public class StockWatcher
                         KLine.RefreshKLine(gidArr[i], DateTime.Parse(DateTime.Now.ToShortDateString()));
                         Stock stock = new Stock(gidArr[i].Trim());
                         stock.LoadKLineDay();
+                        int currentIndex = stock.GetItemIndex(DateTime.Parse(DateTime.Now.ToShortDateString()));
                         try
                         {
                             SearchBottomBreak3Line(stock, DateTime.Parse(DateTime.Now.ToShortDateString()));
@@ -46,6 +47,11 @@ public class StockWatcher
                         catch
                         {
 
+                        }
+                        if (stock.IsLimitUp(currentIndex))
+                        {
+                            LimitUp.SaveLimitUp(stock.gid.Trim(), DateTime.Parse(stock.kLineDay[currentIndex].startDateTime.ToShortDateString()),
+                                stock.kLineDay[currentIndex - 1].endPrice, stock.kLineDay[currentIndex].startPrice, stock.kLineDay[currentIndex].endPrice);
                         }
 
                     }

@@ -415,6 +415,18 @@ public class Stock
         }
         return quotaArr;
     }
+
+    public bool IsLimitUp(int index)
+    {
+        if (index > 1)
+        {
+            if ((kLineDay[index].endPrice - kLineDay[index - 1].endPrice )/ kLineDay[index - 1].endPrice > 0.095)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
     
     ////////////////////////////////////////////////////////////////////////
     //old members//
