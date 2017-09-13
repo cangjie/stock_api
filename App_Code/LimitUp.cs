@@ -24,14 +24,25 @@ public class LimitUp
             DBHelper.UpdateData("limit_up",
                 new string[,] { { "in_date", "int", "0" } },
                 new string[,] { { "gid", "varchar", gid.Trim() }}, Util.conStr);
-            return DBHelper.InsertData("limit_up", new string[,] {
-                {"gid", "varchar", gid.Trim() },
-                {"alert_date", "datetime", date.ToShortDateString() },
-                {"last_settle_price", "float", lastSettlePrice.ToString() },
-                {"open_price", "float", openPrice.ToString()},
-                {"limit_price", "float", limitPrice.ToString() },
-                {"volume", "float", volume.ToString() }
-            });
+            int i = DBHelper.UpdateData("limit_up",
+                new string[,] { { "in_date", "int", "1" } },
+                new string[,] { { "gid", "varchar", gid.Trim() }, { "alert_date", "datetime", date.ToShortDateString() } }, 
+                Util.conStr);
+            if (i == 0)
+            {
+                return DBHelper.InsertData("limit_up", new string[,] {
+                    {"gid", "varchar", gid.Trim() },
+                    {"alert_date", "datetime", date.ToShortDateString() },
+                    {"last_settle_price", "float", lastSettlePrice.ToString() },
+                    {"open_price", "float", openPrice.ToString()},
+                    {"limit_price", "float", limitPrice.ToString() },
+                    {"volume", "float", volume.ToString() }
+                });
+            }
+            else
+            {
+                return i;
+            }
         }
         catch(Exception e)
         {

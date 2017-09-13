@@ -48,14 +48,14 @@ public class StockWatcher
                         {
 
                         }
-                        /*
-                        if (stock.IsLimitUp(currentIndex))
+                        
+                        if (DateTime.Now.Hour == 15 && stock.IsLimitUp(currentIndex))
                         {
                             LimitUp.SaveLimitUp(stock.gid.Trim(), DateTime.Parse(stock.kLineDay[currentIndex].startDateTime.ToShortDateString()),
                                 stock.kLineDay[currentIndex - 1].endPrice, stock.kLineDay[currentIndex].startPrice, stock.kLineDay[currentIndex].endPrice, 
                                 stock.kLineDay[currentIndex].volume);
                         }
-                        */
+                        
                     }
                 }
             }
