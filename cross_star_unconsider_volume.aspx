@@ -120,12 +120,14 @@
         return dtNew;
     }
 
-       public void AddTotal(DataTable dt)
+    public void AddTotal(DataTable dt)
     {
         int totalCount = 0;
         int[] totalRaiseCount = new int[6] {0, 0, 0, 0, 0, 0 };
         int starCount = 0;
         int[] starRaiseCount = new int[6] {0, 0, 0, 0, 0, 0 };
+        int crossStarCount = 0;
+        int[] crossStarRaiseCount = new int[6] { 0, 0, 0, 0, 0, 0 };
         foreach (DataRow dr in dt.Rows)
         {
             if (dr["信号"].ToString().IndexOf("💩") < 0)
@@ -134,6 +136,10 @@
                 if (dr["信号"].ToString().IndexOf("🌟") >= 0)
                 {
                     starCount++;
+                    if (dr["信号"].ToString().IndexOf("✝️") >= 0)
+                    {
+                        crossStarCount++;
+                    }
                 }
             }
             for (int i = 1; i <= 5; i++)
@@ -149,6 +155,10 @@
                             if (dr["信号"].ToString().IndexOf("🌟") >= 0)
                             {
                                 starRaiseCount[i - 1]++;
+                                if (dr["信号"].ToString().IndexOf("✝️") >= 0)
+                                {
+                                    crossStarRaiseCount[i - 1]++;
+                                }
                             }
                         }
                     }
@@ -163,6 +173,10 @@
                     if (dr["信号"].ToString().IndexOf("🌟") >= 0)
                     {
                         starRaiseCount[5]++;
+                        if (dr["信号"].ToString().IndexOf("✝️") >= 0)
+                        {
+                            crossStarRaiseCount[5]++;
+                        }
                     }
                 }
             }
@@ -175,16 +189,22 @@
         drStar["信号"] = "🌟";
         drStar["调整天数"] = starCount.ToString();
 
+        DataRow drCrossStar = dt.NewRow();
+        drCrossStar["信号"] = "🌟✝️";
+        drCrossStar["调整天数"] = crossStarCount.ToString();
+
         for (int i = 1; i <= 5; i++)
         {
             drTotal[i.ToString() + "日"] = (double)totalRaiseCount[i - 1] / (double)totalCount;
             drStar[i.ToString() + "日"] = (double)starRaiseCount[i - 1] / (double)starCount;
+            drCrossStar[i.ToString() + "日"] = (double)crossStarRaiseCount[i - 1] / (double)crossStarCount;
         }
         drTotal["总计"] = (double)totalRaiseCount[5] / (double)totalCount;
         drStar["总计"] = (double)starRaiseCount[5] / (double)starCount;
+        drCrossStar["总计"] = (double)crossStarRaiseCount[5] / (double)crossStarCount;
         dt.Rows.Add(drTotal);
         dt.Rows.Add(drStar);
-
+        dt.Rows.Add(drCrossStar);
     }
 
     public void RenderHtml(DataTable dt)
@@ -209,7 +229,7 @@
                     dt.Rows[i][j.ToString() + "日"] = "<font color=\"" + color + "\" >" + Math.Round(percent * 100, 2).ToString() + "%" + "</font>";
                 }
 
-                
+
             }
             if (!dt.Rows[i]["总计"].ToString().Trim().Equals("-"))
             {
