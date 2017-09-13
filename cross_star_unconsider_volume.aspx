@@ -75,6 +75,8 @@
                 dr["缩量"] = currentVolume / limitUpVolume;
                 if (currentVolume / limitUpVolume <= 0.5)
                     dr["信号"] = "🌟";
+                if ((settlePrice - openPrice) / openPrice <= 0.01)
+                    dr["信号"] = dr["信号"].ToString() + "✝️";
                 dr["涨停开"] = stock.kLineDay[alertIndex].startPrice.ToString();
                 dr["涨停收"] = stock.kLineDay[alertIndex].endPrice.ToString();
                 dr["现价"] = stock.kLineDay[currentIndex].endPrice.ToString();
