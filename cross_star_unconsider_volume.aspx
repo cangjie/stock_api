@@ -63,7 +63,8 @@
             double limitUpPrice = stock.kLineDay[alertIndex].endPrice;
             double openPrice = stock.kLineDay[currentIndex].startPrice;
             double settlePrice = stock.kLineDay[currentIndex].endPrice;
-            if (currentIndex - alertIndex <= LimitUp.inDateDays && limitUpPrice <= openPrice && openPrice <= settlePrice)
+            if (currentIndex - alertIndex <= LimitUp.inDateDays && limitUpPrice <= openPrice && openPrice <= settlePrice 
+                && (settlePrice - stock.kLineDay[currentIndex-1].endPrice) /  stock.kLineDay[currentIndex-1].endPrice <= 0.09 )
             {
                 DataRow dr = dt.NewRow();
                 dr["代码"] = stock.gid.Trim();
