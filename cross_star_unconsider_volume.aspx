@@ -209,7 +209,7 @@
 
     public void RenderHtml(DataTable dt)
     {
-        for (int i = 0; i < dt.Rows.Count - 2; i++)
+        for (int i = 0; i < dt.Rows.Count - 3; i++)
         {
             dt.Rows[i]["代码"] = "<a href=\"show_k_line_day.aspx?gid=" + dt.Rows[i]["代码"].ToString() + "\" target=\"_blank\" >"
                 + dt.Rows[i]["代码"].ToString().Trim() + "</a>";
