@@ -158,7 +158,7 @@
     {
         for (int i = 0; i < dt.Rows.Count - 2; i++)
         {
-            dt.Rows[i]["代码"] = "<a href=\"show_k_line_day.aspx?gid=\"" + dt.Rows[i]["代码"].ToString() + "\" target=\"_blank\" >"
+            dt.Rows[i]["代码"] = "<a href=\"show_k_line_day.aspx?gid=" + dt.Rows[i]["代码"].ToString() + "\" target=\"_blank\" >"
                 + dt.Rows[i]["代码"].ToString().Trim() + "</a>";
             dt.Rows[i]["缩量"] = Math.Round(double.Parse(dt.Rows[i]["缩量"].ToString()) * 100, 2).ToString() + "%";
             dt.Rows[i]["涨停开"] = Math.Round(double.Parse(dt.Rows[i]["涨停开"].ToString()), 2).ToString();
