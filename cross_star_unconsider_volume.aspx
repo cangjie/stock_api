@@ -73,7 +73,7 @@
                 double currentVolume = stock.kLineDay[currentIndex].volume;
                 double limitUpVolume = LimitUp.GetEffectMaxLimitUpVolumeBeforeACertainDate(stock, currentDate);
                 dr["缩量"] = currentVolume / limitUpVolume;
-                if (currentVolume / limitUpVolume <= 0.5 && currentIndex - alertIndex <= 3)
+                if (currentVolume / limitUpVolume <= 0.5 && currentIndex - alertIndex <= 4)
                     dr["信号"] = "🌟";
                 if ((settlePrice - openPrice) / openPrice <= 0.01)
                     dr["信号"] = dr["信号"].ToString() + "✝️";
