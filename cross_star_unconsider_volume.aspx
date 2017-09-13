@@ -3,6 +3,7 @@
 <%@ Import Namespace="System.Data.SqlClient" %>
 <%@ Import Namespace="System.Threading" %>
 <%@ Import Namespace="System.Text" %>
+
 <!DOCTYPE html>
 
 <script runat="server">
@@ -20,6 +21,22 @@
 
     public DataTable GetData()
     {
+        DataTable dtTmp = DBHelper.GetDataTable(" select * from limit_up where alert_date < '" + currentDate.ToShortDateString()
+            + "'  and alert_date > '" + currentDate.AddDays(-15).ToShortDateString() + "'  order by alert_date desc ");
+        DataTable dtOri = dtTmp.Clone();
+        foreach (DataRow drTmp in dtTmp.Rows)
+        {
+            if (dtOri.Select(" gid = '" + drTmp["gid"].ToString() + "' ").Length == 0)
+            {
+                DataRow drOri = dtOri.NewRow();
+                foreach (DataColumn dcOri in dtOri.Columns)
+                {
+                    drOri[dcOri] = drTmp[dcOri.Caption.Trim()];
+                }
+                dtOri.Rows.Add(drOri);
+            }
+        }
+
         DataTable dt = new DataTable();
         dt.Columns.Add("代码");
         dt.Columns.Add("名称");
@@ -35,35 +52,30 @@
         dt.Columns.Add("4日");
         dt.Columns.Add("5日");
         dt.Columns.Add("总计");
-        DataTable dtOri = DBHelper.GetDataTable(" select * from cross_star_list where alert_date = '" + currentDate.ToShortDateString() + "' order by limit_up_date desc " );
         for (int i = 0; i < dtOri.Rows.Count; i++)
         {
-            if (dt.Select(" 代码 = '" + dtOri.Rows[i]["gid"].ToString().Trim() + "' ").Length == 0)
+            Stock stock = new Stock(dtOri.Rows[i]["gid"].ToString());
+            stock.LoadKLineDay();
+            int alertIndex = stock.GetItemIndex(DateTime.Parse(dtOri.Rows[i]["alert_date"].ToString()));
+            int currentIndex = stock.GetItemIndex(currentDate);
+            if (alertIndex < 0 || currentIndex <= 0)
+                continue;
+            double limitUpPrice = stock.kLineDay[alertIndex].endPrice;
+            double openPrice = stock.kLineDay[currentIndex].startPrice;
+            double settlePrice = stock.kLineDay[currentIndex].endPrice;
+            if (currentIndex - alertIndex <= LimitUp.inDateDays && limitUpPrice <= openPrice && openPrice <= settlePrice)
             {
                 DataRow dr = dt.NewRow();
-                Stock stock = new Stock(dtOri.Rows[i]["gid"].ToString().Trim());
-                stock.LoadKLineDay();
                 dr["代码"] = stock.gid.Trim();
                 dr["名称"] = stock.Name.Trim();
                 dr["信号"] = "";
-                int currentIndex = stock.GetItemIndex(currentDate);
-                int limitUpIndex = stock.GetItemIndex(DateTime.Parse(dtOri.Rows[i]["limit_up_date"].ToString()));
-                dr["调整天数"] = (currentIndex - limitUpIndex).ToString();
+                dr["调整天数"] = currentIndex - alertIndex;
                 double currentVolume = stock.kLineDay[currentIndex].volume;
                 double limitUpVolume = LimitUp.GetEffectMaxLimitUpVolumeBeforeACertainDate(stock, currentDate);
                 dr["缩量"] = currentVolume / limitUpVolume;
-                dr["涨停开"] = stock.kLineDay[limitUpIndex].startPrice.ToString();
-                dr["涨停收"] = stock.kLineDay[limitUpIndex].endPrice.ToString();
+                dr["涨停开"] = stock.kLineDay[alertIndex].startPrice.ToString();
+                dr["涨停收"] = stock.kLineDay[alertIndex].endPrice.ToString();
                 dr["现价"] = stock.kLineDay[currentIndex].endPrice.ToString();
-                if (stock.kLineDay[currentIndex].endPrice >= stock.kLineDay[limitUpIndex].endPrice && stock.kLineDay[currentIndex].startPrice >= stock.kLineDay[limitUpIndex].endPrice)
-                {
-                    dr["信号"] = "🌟";
-                }
-                if ((stock.kLineDay[limitUpIndex].endPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[limitUpIndex].endPrice > 0.03)
-                {
-                    dr["信号"] = "💩";
-                }
-
                 double maxRaiseRate = 0;
                 for (int j = 1; j <= 5; j++)
                 {
@@ -82,12 +94,29 @@
                 dt.Rows.Add(dr);
             }
         }
+        dt = SortDataByDays(dt);
         AddTotal(dt);
         RenderHtml(dt);
         return dt;
     }
 
-    public void AddTotal(DataTable dt)
+    public DataTable SortDataByDays(DataTable dt)
+    {
+        DataTable dtNew = dt.Clone();
+        DataRow[] drArr = dt.Select("", " 调整天数 ");
+        foreach (DataRow dr in drArr)
+        {
+            DataRow drNew = dtNew.NewRow();
+            foreach (DataColumn dc in dt.Columns)
+            {
+                drNew[dc.Caption] = dr[dc];
+            }
+            dtNew.Rows.Add(drNew);
+        }
+        return dtNew;
+    }
+
+       public void AddTotal(DataTable dt)
     {
         int totalCount = 0;
         int[] totalRaiseCount = new int[6] {0, 0, 0, 0, 0, 0 };
@@ -222,9 +251,9 @@
 <body>
     <form id="form1" runat="server">
     <div>
-    <table width="100%" >
-        <tr>
-            <td><asp:Calendar runat="server" id="calendar" Width="100%" OnSelectionChanged="calendar_SelectionChanged" BackColor="White" BorderColor="Black" BorderStyle="Solid" CellSpacing="1" Font-Names="Verdana" Font-Size="9pt" ForeColor="Black" Height="250px" NextPrevFormat="ShortMonth" >
+        <table width="100%" >
+            <tr>
+                <td><asp:Calendar runat="server" id="calendar" Width="100%" OnSelectionChanged="calendar_SelectionChanged" BackColor="White" BorderColor="Black" BorderStyle="Solid" CellSpacing="1" Font-Names="Verdana" Font-Size="9pt" ForeColor="Black" Height="250px" NextPrevFormat="ShortMonth" >
                     <DayHeaderStyle Font-Bold="True" Font-Size="8pt" ForeColor="#333333" Height="8pt" />
                     <DayStyle BackColor="#CCCCCC" />
                     <NextPrevStyle Font-Bold="True" Font-Size="8pt" ForeColor="White" />
@@ -233,18 +262,18 @@
                     <TitleStyle BackColor="#333399" BorderStyle="Solid" Font-Bold="True" Font-Size="12pt" ForeColor="White" Height="12pt" />
                     <TodayDayStyle BackColor="#999999" ForeColor="White" />
                     </asp:Calendar></td>
-        </tr>
-        <tr>
-            <td><asp:DataGrid runat="server" ID="dg" BackColor="White" BorderColor="#999999" BorderStyle="None" BorderWidth="1px" CellPadding="3" GridLines="Vertical" Width="100%" >
-                <AlternatingItemStyle BackColor="#DCDCDC" />
-                <FooterStyle BackColor="#CCCCCC" ForeColor="Black" />
-                <HeaderStyle BackColor="#000084" Font-Bold="True" ForeColor="White" />
-                <ItemStyle BackColor="#EEEEEE" ForeColor="Black" />
-                <PagerStyle BackColor="#999999" ForeColor="Black" HorizontalAlign="Center" Mode="NumericPages" />
-                <SelectedItemStyle BackColor="#008A8C" Font-Bold="True" ForeColor="White" />
-                </asp:DataGrid></td>
-        </tr>
-    </table>
+            </tr>
+            <tr>
+                <td><asp:DataGrid ID="dg" runat="server" BackColor="White" BorderColor="#999999" BorderStyle="None" BorderWidth="1px" CellPadding="3" GridLines="Vertical" Width="100%" >
+                    <AlternatingItemStyle BackColor="#DCDCDC" />
+                    <FooterStyle BackColor="#CCCCCC" ForeColor="Black" />
+                    <HeaderStyle BackColor="#000084" Font-Bold="True" ForeColor="White" />
+                    <ItemStyle BackColor="#EEEEEE" ForeColor="Black" />
+                    <PagerStyle BackColor="#999999" ForeColor="Black" HorizontalAlign="Center" Mode="NumericPages" />
+                    <SelectedItemStyle BackColor="#008A8C" Font-Bold="True" ForeColor="White" />
+                    </asp:DataGrid></td>
+            </tr>
+        </table>
     </div>
     </form>
 </body>

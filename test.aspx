@@ -4,9 +4,6 @@
 <%@ Import Namespace="System.Data" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
 <script runat="server">
-
-    //public static Queue queue = new Queue();
-
     protected void Page_Load(object sender, EventArgs e)
     {
         DataTable dt = DBHelper.GetDataTable(" select * from limit_up  ");
@@ -16,11 +13,7 @@
             stock.LoadKLineDay();
             LimitUp.SearchCrossStar(stock, DateTime.Parse(dr["alert_date"].ToString()));
         }
-
-
         return;
-
-
         string[] gidArr = Util.GetAllGids();
         for (int i = 0; i < gidArr.Length; i++)
         {
@@ -39,6 +32,4 @@
             }
         }
     }
-
-
 </script>
