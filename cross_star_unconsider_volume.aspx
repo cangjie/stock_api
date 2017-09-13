@@ -73,7 +73,7 @@
                 double currentVolume = stock.kLineDay[currentIndex].volume;
                 double limitUpVolume = LimitUp.GetEffectMaxLimitUpVolumeBeforeACertainDate(stock, currentDate);
                 dr["缩量"] = currentVolume / limitUpVolume;
-                if (currentVolume / limitUpVolume <= 0.5)
+                if (currentVolume / limitUpVolume <= 0.5 && currentIndex - alertIndex <= 3)
                     dr["信号"] = "🌟";
                 if ((settlePrice - openPrice) / openPrice <= 0.01)
                     dr["信号"] = dr["信号"].ToString() + "✝️";
@@ -250,6 +250,9 @@
             if (!dt.Rows[dt.Rows.Count - 2][i.ToString() + "日"].ToString().Equals("-"))
                 dt.Rows[dt.Rows.Count - 2][i.ToString() + "日"]
                     = Math.Round(double.Parse(dt.Rows[dt.Rows.Count - 2][i.ToString() + "日"].ToString()) * 100, 2).ToString() + "%";
+            if (!dt.Rows[dt.Rows.Count - 3][i.ToString() + "日"].ToString().Equals("-"))
+                dt.Rows[dt.Rows.Count - 3][i.ToString() + "日"]
+                    = Math.Round(double.Parse(dt.Rows[dt.Rows.Count - 3][i.ToString() + "日"].ToString()) * 100, 2).ToString() + "%";
         }
         if (!dt.Rows[dt.Rows.Count - 1]["总计"].ToString().Trim().Equals("-"))
             dt.Rows[dt.Rows.Count - 1]["总计"]
@@ -257,6 +260,9 @@
         if (!dt.Rows[dt.Rows.Count - 2]["总计"].ToString().Trim().Equals("-"))
             dt.Rows[dt.Rows.Count - 2]["总计"]
                 = Math.Round(double.Parse(dt.Rows[dt.Rows.Count - 2]["总计"].ToString()) * 100, 2).ToString() + "%";
+        if (!dt.Rows[dt.Rows.Count - 3]["总计"].ToString().Trim().Equals("-"))
+            dt.Rows[dt.Rows.Count - 3]["总计"]
+                = Math.Round(double.Parse(dt.Rows[dt.Rows.Count - 3]["总计"].ToString()) * 100, 2).ToString() + "%";
     }
 
 
