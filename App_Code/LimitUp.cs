@@ -17,7 +17,7 @@ public class LimitUp
         //
     }
 
-    public static int SaveLimitUp(string gid, DateTime date, double lastSettlePrice, double openPrice, double limitPrice)
+    public static int SaveLimitUp(string gid, DateTime date, double lastSettlePrice, double openPrice, double limitPrice, double volume)
     {
         try
         {
@@ -29,7 +29,8 @@ public class LimitUp
                 {"alert_date", "datetime", date.ToShortDateString() },
                 {"last_settle_price", "float", lastSettlePrice.ToString() },
                 {"open_price", "float", openPrice.ToString()},
-                {"limit_price", "float", limitPrice.ToString() }
+                {"limit_price", "float", limitPrice.ToString() },
+                {"volume", "float", volume.ToString() }
             });
         }
         catch(Exception e)
