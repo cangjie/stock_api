@@ -63,7 +63,7 @@
             double limitUpPrice = stock.kLineDay[alertIndex].endPrice;
             double openPrice = stock.kLineDay[currentIndex].startPrice;
             double settlePrice = stock.kLineDay[currentIndex].endPrice;
-            if (currentIndex - alertIndex <= LimitUp.inDateDays && limitUpPrice <= openPrice && openPrice <= settlePrice 
+            if (currentIndex - alertIndex <= LimitUp.inDateDays && limitUpPrice <= openPrice && openPrice <= settlePrice
                 && (settlePrice - stock.kLineDay[currentIndex-1].endPrice) /  stock.kLineDay[currentIndex-1].endPrice <= 0.09 )
             {
                 DataRow dr = dt.NewRow();
@@ -129,6 +129,8 @@
         int[] starRaiseCount = new int[6] {0, 0, 0, 0, 0, 0 };
         int crossStarCount = 0;
         int[] crossStarRaiseCount = new int[6] { 0, 0, 0, 0, 0, 0 };
+        int crossCount = 0;
+        int[] crossRaiseCount = new int[6] { 0, 0, 0, 0, 0, 0 };
         foreach (DataRow dr in dt.Rows)
         {
             if (dr["信号"].ToString().IndexOf("💩") < 0)
@@ -140,6 +142,13 @@
                     if (dr["信号"].ToString().IndexOf("✝️") >= 0)
                     {
                         crossStarCount++;
+                    }
+                }
+                else
+                {
+                    if (dr["信号"].ToString().IndexOf("✝️") >= 0)
+                    {
+                        crossCount++;
                     }
                 }
             }
@@ -161,6 +170,13 @@
                                     crossStarRaiseCount[i - 1]++;
                                 }
                             }
+                            else
+                            {
+                                if (dr["信号"].ToString().IndexOf("✝️") >= 0)
+                                {
+                                    crossRaiseCount[i - 1]++;
+                                }
+                            }
                         }
                     }
                 }
@@ -179,6 +195,13 @@
                             crossStarRaiseCount[5]++;
                         }
                     }
+                    else
+                    {
+                        if (dr["信号"].ToString().IndexOf("✝️") >= 0)
+                        {
+                            crossRaiseCount[5]++;
+                        }
+                    }
                 }
             }
         }
@@ -194,23 +217,30 @@
         drCrossStar["信号"] = "🌟✝️";
         drCrossStar["调整天数"] = crossStarCount.ToString();
 
+        DataRow drCross = dt.NewRow();
+        drCross["信号"] = "✝️";
+        drCross["调整天数"] = crossCount.ToString();
+
         for (int i = 1; i <= 5; i++)
         {
             drTotal[i.ToString() + "日"] = (double)totalRaiseCount[i - 1] / (double)totalCount;
             drStar[i.ToString() + "日"] = (double)starRaiseCount[i - 1] / (double)starCount;
             drCrossStar[i.ToString() + "日"] = (double)crossStarRaiseCount[i - 1] / (double)crossStarCount;
+            drCross[i.ToString() + "日"] = (double)crossRaiseCount[i - 1] / (double)crossCount;
         }
         drTotal["总计"] = (double)totalRaiseCount[5] / (double)totalCount;
         drStar["总计"] = (double)starRaiseCount[5] / (double)starCount;
         drCrossStar["总计"] = (double)crossStarRaiseCount[5] / (double)crossStarCount;
+        drCross["总计"] = (double)crossRaiseCount[5] / (double)crossCount;
         dt.Rows.Add(drTotal);
         dt.Rows.Add(drStar);
+        dt.Rows.Add(drCross);
         dt.Rows.Add(drCrossStar);
     }
 
     public void RenderHtml(DataTable dt)
     {
-        for (int i = 0; i < dt.Rows.Count - 3; i++)
+        for (int i = 0; i < dt.Rows.Count - 4; i++)
         {
             dt.Rows[i]["代码"] = "<a href=\"show_k_line_day.aspx?gid=" + dt.Rows[i]["代码"].ToString() + "\" target=\"_blank\" >"
                 + dt.Rows[i]["代码"].ToString().Trim() + "</a>";
@@ -254,6 +284,9 @@
             if (!dt.Rows[dt.Rows.Count - 3][i.ToString() + "日"].ToString().Equals("-"))
                 dt.Rows[dt.Rows.Count - 3][i.ToString() + "日"]
                     = Math.Round(double.Parse(dt.Rows[dt.Rows.Count - 3][i.ToString() + "日"].ToString()) * 100, 2).ToString() + "%";
+            if (!dt.Rows[dt.Rows.Count - 4][i.ToString() + "日"].ToString().Equals("-"))
+                dt.Rows[dt.Rows.Count - 4][i.ToString() + "日"]
+                    = Math.Round(double.Parse(dt.Rows[dt.Rows.Count - 4][i.ToString() + "日"].ToString()) * 100, 2).ToString() + "%";
         }
         if (!dt.Rows[dt.Rows.Count - 1]["总计"].ToString().Trim().Equals("-"))
             dt.Rows[dt.Rows.Count - 1]["总计"]
@@ -264,6 +297,9 @@
         if (!dt.Rows[dt.Rows.Count - 3]["总计"].ToString().Trim().Equals("-"))
             dt.Rows[dt.Rows.Count - 3]["总计"]
                 = Math.Round(double.Parse(dt.Rows[dt.Rows.Count - 3]["总计"].ToString()) * 100, 2).ToString() + "%";
+        if (!dt.Rows[dt.Rows.Count - 4]["总计"].ToString().Trim().Equals("-"))
+            dt.Rows[dt.Rows.Count - 4]["总计"]
+                = Math.Round(double.Parse(dt.Rows[dt.Rows.Count - 4]["总计"].ToString()) * 100, 2).ToString() + "%";
     }
 
 
