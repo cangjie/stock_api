@@ -63,7 +63,7 @@ public class StockWatcher
             {
 
             }
-            Thread.Sleep(60000);
+            Thread.Sleep(10000);
         }
     }
 

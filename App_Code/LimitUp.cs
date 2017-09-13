@@ -93,4 +93,68 @@ public class LimitUp
         dtOri.Dispose();
         return dt;
     }
+
+    public static void SearchCrossStar(Stock stock, DateTime limitUpDate)
+    {
+        
+        if (DateTime.Parse(limitUpDate.AddDays(1).ToShortDateString()) == DateTime.Parse(DateTime.Now.ToShortDateString()))
+        {
+            if (DateTime.Now <= DateTime.Parse(DateTime.Now.ToShortDateString() + " 14:40"))
+            {
+                return;
+            }
+        }
+        int kLineLength = stock.kLineDay.Length - 1;
+        if (stock.kLineDay[kLineLength].endDateTime.AddMinutes(-20) < DateTime.Now 
+            && stock.kLineDay[kLineLength].endDateTime.ToShortDateString().Equals(DateTime.Now.ToShortDateString()))
+        {
+            kLineLength++;
+        }
+
+        int limitUpIndex = stock.GetItemIndex(limitUpDate);
+        
+        for (int i = limitUpIndex + 1; i < kLineLength && i <= limitUpIndex + inDateDays; i++)
+        {
+            double startPrice = stock.kLineDay[i].startPrice;
+            double endPrice = stock.kLineDay[i].endPrice;
+            double volume = stock.kLineDay[i].volume;
+            double maxVolume = GetEffectMaxLimitUpVolumeBeforeACertainDate(stock, DateTime.Parse(stock.kLineDay[i].startDateTime.ToShortDateString()));
+            if (Math.Abs(endPrice - startPrice) / startPrice < 0.015  && volume / maxVolume < 0.5)
+            {
+                try
+                {
+                    DBHelper.InsertData("cross_star_list", new string[,] {
+                        {"alert_date", "datetime",  stock.kLineDay[i].startDateTime.ToShortDateString()},
+                        {"gid", "varchar", stock.gid },
+                        {"limit_up_date", "datetime", limitUpDate.ToShortDateString() },
+                        {"open_price", "float", startPrice.ToString() },
+                        {"settle_price", "float", endPrice.ToString() },
+                        {"highest_price", "float", stock.kLineDay[i].highestPrice.ToString() },
+                        {"lowest_price", "float", stock.kLineDay[i].lowestPrice.ToString() },
+                        {"volume", "float", volume.ToString() }
+                    });
+                }
+                catch(Exception e)
+                {
+                    Console.WriteLine(e.ToString());
+                }
+            }
+        }
+    }
+
+    public static double GetEffectMaxLimitUpVolumeBeforeACertainDate(Stock stock, DateTime date)
+    {
+        double maxVolume = 0;
+        DataTable dt = DBHelper.GetDataTable(" select * from limit_up where  gid = '" + stock.gid + "'  and alert_date > '" + date.AddMonths(-1) + "' ");
+        int certainIndex = stock.GetItemIndex(date);
+        for (int i = 0; i < dt.Rows.Count; i++)
+        {
+            int currentIndex = stock.GetItemIndex(DateTime.Parse(dt.Rows[i]["alert_date"].ToString()));
+            if (certainIndex - currentIndex <= inDateDays)
+            {
+                maxVolume = Math.Max(maxVolume, double.Parse(dt.Rows[i]["volume"].ToString()));
+            }
+        }
+        return maxVolume;
+    }
 }
