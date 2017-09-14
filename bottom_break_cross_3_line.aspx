@@ -17,15 +17,17 @@
     {
         try
         {
-            if (t.ThreadState != ThreadState.Running)
+            if (t.ThreadState != ThreadState.Running && t.ThreadState != ThreadState.WaitSleepJoin)
             {
                 t.Abort();
+                ts = new ThreadStart(PageWatcher);
+                t = new Thread(ts);
                 t.Start();
             }
         }
-        catch
+        catch(Exception err)
         {
-
+            Console.WriteLine(err.ToString());
         }
 
         if (!IsPostBack)
