@@ -43,11 +43,15 @@
                 DataRow dr = dt.NewRow();
                 Stock stock = new Stock(dtOri.Rows[i]["gid"].ToString().Trim());
                 stock.LoadKLineDay();
+
                 dr["代码"] = stock.gid.Trim();
                 dr["名称"] = stock.Name.Trim();
                 dr["信号"] = "";
                 int currentIndex = stock.GetItemIndex(currentDate);
                 int limitUpIndex = stock.GetItemIndex(DateTime.Parse(dtOri.Rows[i]["limit_up_date"].ToString()));
+                if (currentIndex <= 0
+                    || (stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice > 0.095)
+                    continue;
                 dr["调整天数"] = (currentIndex - limitUpIndex).ToString();
                 double currentVolume = stock.kLineDay[currentIndex].volume;
                 double limitUpVolume = LimitUp.GetEffectMaxLimitUpVolumeBeforeACertainDate(stock, currentDate);
@@ -176,7 +180,7 @@
                     dt.Rows[i][j.ToString() + "日"] = "<font color=\"" + color + "\" >" + Math.Round(percent * 100, 2).ToString() + "%" + "</font>";
                 }
 
-                
+
             }
             if (!dt.Rows[i]["总计"].ToString().Trim().Equals("-"))
             {
