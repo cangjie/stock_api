@@ -19,7 +19,7 @@
         }
     }
 
-    public bool ValidKLine(KLine k)
+    public static bool ValidKLine(KLine k)
     {
         bool ret = false;
         if (k.startPrice < k.endPrice && k.highestPrice - k.endPrice < (k.endPrice - k.startPrice) / 2)
