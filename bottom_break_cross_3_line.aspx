@@ -27,7 +27,12 @@
         return ret;
     }
 
-    public DataTable GetData()
+    public  DataTable GetData()
+    {
+        return GetData(calendar.SelectedDate);
+    }
+
+    public static DataTable GetData(DateTime date)
     {
         DataTable dt = new DataTable();
         dt.Columns.Add("代码", Type.GetType("System.String"));
@@ -51,14 +56,14 @@
         dt.Columns.Add("总计", Type.GetType("System.Double"));
 
         DataTable dtOri = DBHelper.GetDataTable(" select * from dbo.bottom_break_cross_3_line where suggest_date = '"
-            + calendar.SelectedDate.ToShortDateString() + "' and ( going_down_3_line_days >= 4 and under_3_line_days >= 4 and (going_down_3_line_days >= 5 or  under_3_line_days >= 5  )  ) order by  going_down_3_line_days desc, under_3_line_days desc ");
+            + date.ToShortDateString() + "' and ( going_down_3_line_days >= 4 and under_3_line_days >= 4 and (going_down_3_line_days >= 5 or  under_3_line_days >= 5  )  ) order by  going_down_3_line_days desc, under_3_line_days desc ");
 
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
             //allGids = allGids + "," + stock.gid.Trim();
             stock.LoadKLineDay();
-            int currentIndex = stock.GetItemIndex(calendar.SelectedDate);
+            int currentIndex = stock.GetItemIndex(date);
             if (currentIndex < 6)
                 continue;
             double startPrice = stock.kLineDay[currentIndex].startPrice;
