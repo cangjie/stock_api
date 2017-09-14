@@ -3,6 +3,7 @@
 <%@ Import Namespace="System.Data.SqlClient" %>
 <%@ Import Namespace="System.Threading" %>
 <%@ Import Namespace="System.Text" %>
+<%@ Import Namespace="System.Collections.Generic" %>
 <!DOCTYPE html>
 
 <script runat="server">
@@ -19,11 +20,23 @@
         {
             Stock s = new Stock(gidArr[i].Trim());
             s.LoadKLineDay();
-            for (int j = 1; j < s.kLineDay.Length; j++)
+
+            for (int j = s.kLineDay.Length - 1; j >= 1; j--)
             {
+                //KeyValuePair<string, double>[] qArr = s.GetSortedQuota(j);
+                double ma6 = s.GetAverageSettlePrice(j, 6, 0);
+                double ma12 = s.GetAverageSettlePrice(j, 12, 0);
+                double ma24 = s.GetAverageSettlePrice(j, 24, 0);
+                double line3 = s.GetAverageSettlePrice(j, 3, 3);
+                double minLine = Math.Min(ma6, ma12);
+                minLine = Math.Min(minLine, ma24);
+                minLine = Math.Min(minLine, line3);
+
                 double lastLowerPrice = Math.Min(s.kLineDay[j - 1].startPrice, s.kLineDay[j - 1].endPrice);
+                double higherPrice = Math.Max(s.kLineDay[j].startPrice, s.kLineDay[j].endPrice);
                 if (s.kLineDay[j].startPrice < lastLowerPrice && s.kLineDay[j].endPrice < lastLowerPrice && s.kLineDay[j].volume < s.kLineDay[j - 1].volume
-                    && Math.Abs(s.kLineDay[j].startPrice - s.kLineDay[j].endPrice) / s.kLineDay[j].endPrice <= 0.005)
+                    && Math.Abs(s.kLineDay[j].startPrice - s.kLineDay[j].endPrice) / s.kLineDay[j].endPrice <= 0.005
+                    && higherPrice < minLine && minLine > 0 )
                 {
                     try
                     {
