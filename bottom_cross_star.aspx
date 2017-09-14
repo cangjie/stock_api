@@ -32,11 +32,16 @@
                 minLine = Math.Min(minLine, ma24);
                 minLine = Math.Min(minLine, line3);
 
+
                 double lastLowerPrice = Math.Min(s.kLineDay[j - 1].startPrice, s.kLineDay[j - 1].endPrice);
                 double higherPrice = Math.Max(s.kLineDay[j].startPrice, s.kLineDay[j].endPrice);
+                double lowerPrice = Math.Min(s.kLineDay[j].startPrice, s.kLineDay[j].endPrice);
+                double shaddowUpper = s.kLineDay[j].highestPrice - higherPrice;
+                double shaddowDown = lowerPrice - s.kLineDay[j].lowestPrice;
+                double entity = Math.Abs(s.kLineDay[j].startPrice - s.kLineDay[j].endPrice);
                 if (s.kLineDay[j].startPrice < lastLowerPrice && s.kLineDay[j].endPrice < lastLowerPrice && s.kLineDay[j].volume < s.kLineDay[j - 1].volume
                     && Math.Abs(s.kLineDay[j].startPrice - s.kLineDay[j].endPrice) / s.kLineDay[j].endPrice <= 0.005
-                    && higherPrice < minLine && minLine > 0 )
+                    && higherPrice < minLine && minLine > 0 && shaddowUpper >= entity && entity > shaddowDown && shaddowUpper > shaddowDown * 1.5 )
                 {
                     try
                     {
