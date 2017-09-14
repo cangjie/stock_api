@@ -9,8 +9,25 @@
 
     public string allGids = "";
 
+    public static ThreadStart ts = new ThreadStart(PageWatcher);
+
+    public static Thread t = new Thread(ts);
+
     protected void Page_Load(object sender, EventArgs e)
     {
+        try
+        {
+            if (t.ThreadState != ThreadState.Running)
+            {
+                t.Abort();
+                t.Start();
+            }
+        }
+        catch
+        {
+
+        }
+
         if (!IsPostBack)
         {
             calendar.SelectedDate = Util.GetDay(DateTime.Now);
@@ -30,6 +47,33 @@
     public  DataTable GetData()
     {
         return GetData(calendar.SelectedDate);
+    }
+
+    public static void PageWatcher()
+    {
+        for (; true;)
+        {
+            if (Util.IsTransacDay(DateTime.Parse(DateTime.Now.ToShortDateString())) && Util.IsTransacTime(DateTime.Now))
+            {
+                DataTable dt = GetData(DateTime.Parse(DateTime.Now.ToShortDateString()));
+                foreach (DataRow dr in dt.Rows)
+                {
+                    string signal = dr["信号"].ToString().Trim();
+                    if (signal.IndexOf("💩") < 0 && signal.IndexOf("📈") >= 0 && (signal.IndexOf("🔥") >= 0 || signal.IndexOf("🛍️") >= 0))
+                    {
+                        string gid = dr["代码"].ToString().Trim();
+                        Stock s = new Stock(gid);
+                        if (StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()), gid, "bottom_break_cross_3_line",
+                            s.Name.Trim(), "底部突破，买入价：" + Math.Round(double.Parse(dr["买入价"].ToString()), 2).ToString()))
+                        {
+                            StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", s.gid.Trim(), s.Name.Trim(),
+                                Math.Round(double.Parse(dr["买入价"].ToString()), 2), "3_line");
+                        }
+                    }
+                }
+            }
+            Thread.Sleep(60000);
+        }
     }
 
     public static DataTable GetData(DateTime date)
@@ -383,6 +427,9 @@
                 <PagerStyle BackColor="#999999" ForeColor="Black" HorizontalAlign="Center" Mode="NumericPages" />
                 <SelectedItemStyle BackColor="#008A8C" Font-Bold="True" ForeColor="White" />
                 </asp:DataGrid></td>
+        </tr>
+        <tr>
+            <td><%=t.ThreadState.ToString() %></td>
         </tr>
     </table>
     </form>
