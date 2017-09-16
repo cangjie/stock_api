@@ -147,9 +147,13 @@
         }
 
         drNewTotal["信号"] = "";
+        drNewTotal["涨停前收"] = totalCount.ToString();
         drNewStar["信号"] = "🌟";
+        drNewStar["涨停前收"] = starCount.ToString();
         drNewTarget["信号"] = "🎯";
+        drNewTarget["涨停前收"] = targetCount.ToString();
         drNewStarTarget["信号"] = "🌟🎯";
+        drNewStarTarget["涨停前收"] = starTargetCount.ToString(); 
         for (int i = 1; i <= 6; i++)
         {
             if (totalCount>0)
