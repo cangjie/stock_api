@@ -96,7 +96,7 @@
         foreach (DataRow dr in drArr)
         {
             totalCount++;
-            if (dr["信号"].ToString().IndexOf("🎯") >= 0)
+            if (dr["信号"].ToString().IndexOf("🎯") >= 0  && dr["信号"].ToString().IndexOf("🌟") < 0)
             {
                 targetCount++;
             }
@@ -123,7 +123,7 @@
                 if (value > 0.01)
                 {
                     totalRaiseCount[i - 1]++;
-                    if (dr["信号"].ToString().IndexOf("🎯") >= 0)
+                    if (dr["信号"].ToString().IndexOf("🎯") >= 0 && dr["信号"].ToString().IndexOf("🌟") < 0)
                     {
                         targetRaiseCount[i-1]++;
                     }
