@@ -138,6 +138,22 @@ public class KLine
             return false;
         }
     }
+    
+    public double EntityHighPrice
+    {
+        get
+        {
+            return Math.Max(startPrice, endPrice);
+        }
+    }
+
+    public double EntityLowPrice
+    {
+        get
+        {
+            return Math.Min(startPrice, endPrice);
+        }
+    }
 
     public static KLine[] GetKLine(string type, string gid, DateTime startDateTime, DateTime endDateTime)
     {
