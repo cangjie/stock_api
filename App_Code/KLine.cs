@@ -131,7 +131,7 @@ public class KLine
     {
         get
         {
-            if (Math.Abs(startPrice - endPrice) / startPrice < 0.015)
+            if (Math.Abs(startPrice - endPrice) / startPrice < 0.01)
             {
                 return true;
             }

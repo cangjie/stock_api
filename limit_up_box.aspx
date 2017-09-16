@@ -302,7 +302,7 @@
                 default:
                     break;
             }
-            if (currentPrice < qArr[qArr.Length - 1].Value)
+            if (currentPrice < qArr[qArr.Length - 1].Value || !stock.kLineDay[currentIndex].IsCrossStar)
                 signal = false;
             DataRow dr = dt.NewRow();
             dr["代码"] = drOri["gid"].ToString();
