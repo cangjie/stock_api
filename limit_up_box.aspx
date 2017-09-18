@@ -153,7 +153,7 @@
         drNewTarget["信号"] = "🎯";
         drNewTarget["涨停前收"] = targetCount.ToString();
         drNewStarTarget["信号"] = "🌟🎯";
-        drNewStarTarget["涨停前收"] = starTargetCount.ToString(); 
+        drNewStarTarget["涨停前收"] = starTargetCount.ToString();
         for (int i = 1; i <= 6; i++)
         {
             if (totalCount>0)
@@ -333,6 +333,11 @@
                 {
                     dr[i.ToString() + "日"] = (stock.kLineDay[currentIndex + i].highestPrice - currentPrice) / currentPrice;
                     maxPercent = Math.Max(maxPercent, (stock.kLineDay[currentIndex + i].highestPrice - currentPrice) / currentPrice);
+                    if ((stock.kLineDay[currentIndex + i].highestPrice - stock.kLineDay[currentIndex + i - 1].endPrice) / stock.kLineDay[currentIndex + i - 1].endPrice >= 0.03 
+                        && i < 5 &&  dr["信号"].ToString().IndexOf("🔥") < 0)
+                    {
+                        dr["信号"] = dr["信号"].ToString().Trim() + "🔥";
+                    }
                 }
                 else
                 {
