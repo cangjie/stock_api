@@ -155,9 +155,13 @@
                 }
                 if (buyDay > 0 && i > buyDay && i < 6)
                 {
-                    value = double.Parse(dr[i.ToString() + "日"].ToString());
-                    if (value - valueFire >= 0.01)
-                        fireRaise = true;
+                    if (!dr[i.ToString() + "日"].ToString().Trim().Equals("-"))
+                    {
+                        value = double.Parse(dr[i.ToString() + "日"].ToString());
+                        if (value - valueFire >= 0.01)
+                            fireRaise = true;
+                    }
+                    
                 }
             }
             if (fireRaise)
