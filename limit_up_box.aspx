@@ -9,8 +9,26 @@
 
     public DateTime currentDate = Util.GetDay(DateTime.Now);
 
+    public static ThreadStart ts = new ThreadStart(PageWatcher);
+
+    public static Thread t = new Thread(ts);
+
     protected void Page_Load(object sender, EventArgs e)
     {
+        try
+        {
+            if (t.ThreadState != ThreadState.Running && t.ThreadState != ThreadState.WaitSleepJoin)
+            {
+                t.Abort();
+                ts = new ThreadStart(PageWatcher);
+                t = new Thread(ts);
+                t.Start();
+            }
+        }
+        catch(Exception err)
+        {
+            Console.WriteLine(err.ToString());
+        }
         if (!IsPostBack)
         {
             DataTable dt = AddTotal(GetData());
@@ -161,7 +179,7 @@
                         if (value - valueFire >= 0.01)
                             fireRaise = true;
                     }
-                    
+
                 }
             }
             if (fireRaise)
@@ -372,8 +390,8 @@
                     dr[i.ToString() + "日"] = (stock.kLineDay[currentIndex + i].highestPrice - currentPrice) / currentPrice;
                     maxPercent = Math.Max(maxPercent, (stock.kLineDay[currentIndex + i].highestPrice - currentPrice) / currentPrice);
                     if ((stock.kLineDay[currentIndex + i].highestPrice - stock.kLineDay[currentIndex + i - 1].endPrice) / stock.kLineDay[currentIndex + i - 1].endPrice >= 0.03
-                        && i < 5 && currentIndex + i < stock.kLineDay.Length 
-			            && dr["信号"].ToString().IndexOf("🔥") < 0 && stock.kLineDay[currentIndex].IsCrossStar )
+                        && i < 5 && currentIndex + i < stock.kLineDay.Length
+                        && dr["信号"].ToString().IndexOf("🔥") < 0 && stock.kLineDay[currentIndex].IsCrossStar )
                     {
                         if (currentIndex + i < stock.kLineDay.Length - 1)
                             dr["信号"] = dr["信号"].ToString().Trim() + "🔥";
@@ -392,6 +410,44 @@
             dt.Rows.Add(dr);
         }
         return dt;
+    }
+
+    public static void PageWatcher()
+    {
+        for (; true;)
+        {
+            DateTime currentDate = Util.GetDay(DateTime.Now);
+            for (int i = 1; i <= 4; i++)
+            {
+                currentDate = currentDate.AddDays(-1);
+                if (Util.IsTransacDay(currentDate))
+                {
+                    if (!Util.IsTransacTime(DateTime.Now))
+                    {
+                        DataTable dt = GetData(currentDate);
+                        foreach (DataRow dr in dt.Rows)
+                        {
+                            if (dr["信号"].ToString().IndexOf("🔺") >= 0)
+                            {
+                                if (StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()), dr["代码"].ToString().Trim(), 
+                                    "limit_up_box", dr["名称"].ToString().Trim(), 
+                                    "缩量调整后上涨，买入价：" + Math.Round(double.Parse(dr["买入价"].ToString()), 2).ToString()))
+                                {
+                                    StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(),
+                                        dr["名称"].ToString().Trim(), Math.Round(double.Parse(dr["买入价"].ToString()), 2), "volumedecrease");
+                                }
+                            }
+                            
+                        }
+                    }
+                }
+                else
+                {
+                    i--;
+                }
+            }
+            Thread.Sleep(60000);
+        }
     }
 
 </script>
@@ -426,6 +482,9 @@
                     <PagerStyle BackColor="#999999" ForeColor="Black" HorizontalAlign="Center" Mode="NumericPages" />
                     <SelectedItemStyle BackColor="#008A8C" Font-Bold="True" ForeColor="White" />
                     </asp:DataGrid></td>
+            </tr>
+            <tr>
+                <td><%=t.ThreadState.ToString() %></td>
             </tr>
         </table>
     </div>
