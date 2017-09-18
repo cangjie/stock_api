@@ -31,7 +31,7 @@
 
     public void RenderHTML(DataTable dt)
     {
-        int totalCountNum = 4;
+        int totalCountNum = 5;
         for (int i = 0; i < dt.Rows.Count - totalCountNum; i++)
         {
             dt.Rows[i]["代码"] = "<a href=\"show_k_line_day.aspx?gid=" + dt.Rows[i]["代码"].ToString().Trim() + "\" target=\"_blank\" >" + dt.Rows[i]["代码"].ToString().Trim() + "</a>";
@@ -40,6 +40,7 @@
             dt.Rows[i]["缩量"] = Math.Round(double.Parse(dt.Rows[i]["缩量"].ToString())*100, 2).ToString()+"%";
             dt.Rows[i]["最低价"] = Math.Round(double.Parse(dt.Rows[i]["最低价"].ToString()), 2);
             dt.Rows[i]["现价"] = Math.Round(double.Parse(dt.Rows[i]["现价"].ToString()), 2);
+            dt.Rows[i]["买入价"] = Math.Round(double.Parse(dt.Rows[i]["买入价"].ToString()), 2);
             for (int j = 1; j <= 6; j++)
             {
                 double value = -1;
@@ -93,6 +94,10 @@
         int starTargetCount = 0;
         int[] starTargetRaiseCount = new int[6] { 0,0,0,0,0,0};
 
+        DataRow drFire = dtNew.NewRow();
+        int fireCount = 0;
+        int fireRaiseCount = 0;
+
         foreach (DataRow dr in drArr)
         {
             totalCount++;
@@ -107,6 +112,18 @@
             if (dr["信号"].ToString().IndexOf("🌟") >= 0 && dr["信号"].ToString().IndexOf("🎯")>=0)
             {
                 starTargetCount++;
+            }
+            int buyDay = 0;
+            double buyPrice = 0;
+            bool fireRaise = false;
+            double valueFire = 0;
+            double currentPrice = double.Parse(dr["现价"].ToString().Trim());
+            if (dr["信号"].ToString().IndexOf("🔥") >= 0)
+            {
+                fireCount++;
+                buyDay = int.Parse(dr["买入日"].ToString().Trim());
+                buyPrice = double.Parse(dr["买入价"].ToString().Trim());
+                valueFire = (buyPrice - currentPrice) / currentPrice;
             }
             for (int i = 1; i <= 6; i++)
             {
@@ -136,8 +153,15 @@
                         starTargetRaiseCount[i-1]++;
                     }
                 }
+                if (buyDay > 0 && i > buyDay && i < 6)
+                {
+                    value = double.Parse(dr[i.ToString() + "日"].ToString());
+                    if (value - valueFire >= 0.01)
+                        fireRaise = true;
+                }
             }
-
+            if (fireRaise)
+                fireRaiseCount++;
             DataRow drNew = dtNew.NewRow();
             foreach (DataColumn dcNew in dtNew.Columns)
             {
@@ -154,6 +178,11 @@
         drNewTarget["涨停前收"] = targetCount.ToString();
         drNewStarTarget["信号"] = "🌟🎯";
         drNewStarTarget["涨停前收"] = starTargetCount.ToString();
+
+        drFire["信号"] = "🔥";
+        drFire["涨停前收"] = fireRaiseCount.ToString() + "/" + fireCount.ToString();
+        drFire["涨停收"] = Math.Round((double)fireRaiseCount * 100 / (double)fireCount, 2).ToString() + "%";
+
         for (int i = 1; i <= 6; i++)
         {
             if (totalCount>0)
@@ -169,6 +198,7 @@
         dtNew.Rows.Add(drNewStar);
         dtNew.Rows.Add(drNewTarget);
         dtNew.Rows.Add(drNewStarTarget);
+        dtNew.Rows.Add(drFire);
         dt.Dispose();
         return dtNew;
     }
@@ -188,6 +218,8 @@
         dt.Columns.Add("下跌天数");
         dt.Columns.Add("最低价");
         dt.Columns.Add("现价");
+        dt.Columns.Add("买入价");
+        dt.Columns.Add("买入日");
         for (int i = 1; i <= 5; i++)
         {
             dt.Columns.Add(i.ToString() + "日");
@@ -326,6 +358,8 @@
             dr["下跌天数"] = continuesFallingDownPriceDays;
             dr["最低价"] = boxLowestPrice;
             dr["现价"] = currentPrice;
+            dr["买入价"] = currentPrice;
+            dr["买入日"] = 0;
             double maxPercent = -1;
             for (int i = 1; i <= 5 ; i++)
             {
@@ -333,10 +367,12 @@
                 {
                     dr[i.ToString() + "日"] = (stock.kLineDay[currentIndex + i].highestPrice - currentPrice) / currentPrice;
                     maxPercent = Math.Max(maxPercent, (stock.kLineDay[currentIndex + i].highestPrice - currentPrice) / currentPrice);
-                    if ((stock.kLineDay[currentIndex + i].highestPrice - stock.kLineDay[currentIndex + i - 1].endPrice) / stock.kLineDay[currentIndex + i - 1].endPrice >= 0.03 
+                    if ((stock.kLineDay[currentIndex + i].highestPrice - stock.kLineDay[currentIndex + i - 1].endPrice) / stock.kLineDay[currentIndex + i - 1].endPrice >= 0.03
                         && i < 5 && dr["信号"].ToString().IndexOf("🔥") < 0)
                     {
                         dr["信号"] = dr["信号"].ToString().Trim() + "🔥";
+                        dr["买入价"] = stock.kLineDay[currentIndex + i - 1].endPrice * 1.03;
+                        dr["买入日"] = i;
                     }
                 }
                 else
