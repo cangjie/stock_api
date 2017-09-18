@@ -312,7 +312,7 @@
             dr["代码"] = drOri["gid"].ToString();
             dr["名称"] = stock.Name.Trim();
             dr["信号"] = "";
-            if (boxLowestPrice >= limitUpSettlePrice)
+            if (boxLowestPrice >= limitUpSettlePrice && stock.kLineDay[currentIndex].volume / limitUpVolume <= 0.3)
             {
                 dr["信号"] = "🌟";
             }
