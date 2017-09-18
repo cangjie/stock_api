@@ -373,7 +373,7 @@
                     maxPercent = Math.Max(maxPercent, (stock.kLineDay[currentIndex + i].highestPrice - currentPrice) / currentPrice);
                     if ((stock.kLineDay[currentIndex + i].highestPrice - stock.kLineDay[currentIndex + i - 1].endPrice) / stock.kLineDay[currentIndex + i - 1].endPrice >= 0.03
                         && i < 5 && currentIndex + i < stock.kLineDay.Length 
-			&& dr["信号"].ToString().IndexOf("🔥") < 0 && stock.kLineDay[currentIndex].IsCrossStar )
+			            && dr["信号"].ToString().IndexOf("🔥") < 0 && stock.kLineDay[currentIndex].IsCrossStar )
                     {
                         if (currentIndex + i < stock.kLineDay.Length - 1)
                             dr["信号"] = dr["信号"].ToString().Trim() + "🔥";
