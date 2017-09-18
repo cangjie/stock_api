@@ -118,7 +118,7 @@
             bool fireRaise = false;
             double valueFire = 0;
             double currentPrice = double.Parse(dr["现价"].ToString().Trim());
-            if (dr["信号"].ToString().IndexOf("🔥") >= 0)
+            if (dr["信号"].ToString().IndexOf("🔥") >= 0 && dr["信号"].ToString().IndexOf("🎯")>=0 )
             {
                 fireCount++;
                 buyDay = int.Parse(dr["买入日"].ToString().Trim());
