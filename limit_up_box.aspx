@@ -11,8 +11,6 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        //AlertWatcher();
-        //return;
         if (!IsPostBack)
         {
             DataTable dt = AddTotal(GetData());
@@ -120,7 +118,7 @@
             bool fireRaise = false;
             double valueFire = 0;
             double currentPrice = double.Parse(dr["现价"].ToString().Trim());
-            if (dr["信号"].ToString().IndexOf("🔥") >= 0 && dr["信号"].ToString().IndexOf("🎯")>=0 )
+            if (dr["信号"].ToString().IndexOf("🔥") >= 0 )
             {
                 fireCount++;
                 buyDay = int.Parse(dr["买入日"].ToString().Trim());
@@ -163,7 +161,7 @@
                         if (value - valueFire >= 0.01)
                             fireRaise = true;
                     }
-
+                    
                 }
             }
             if (fireRaise)
@@ -208,8 +206,6 @@
         dt.Dispose();
         return dtNew;
     }
-
-
 
     public static DataTable GetData(DateTime date)
     {
@@ -371,11 +367,13 @@
             double maxPercent = -1;
             for (int i = 1; i <= 5 ; i++)
             {
-                if (i + currentIndex < stock.kLineDay.Length && i < 5)
+                if (i + currentIndex < stock.kLineDay.Length)
                 {
                     dr[i.ToString() + "日"] = (stock.kLineDay[currentIndex + i].highestPrice - currentPrice) / currentPrice;
                     maxPercent = Math.Max(maxPercent, (stock.kLineDay[currentIndex + i].highestPrice - currentPrice) / currentPrice);
-                    if (Fired(stock, currentIndex, i)  && i < 5 && dr["信号"].ToString().IndexOf("🔥") < 0 )
+                    if ((stock.kLineDay[currentIndex + i].highestPrice - stock.kLineDay[currentIndex + i - 1].endPrice) / stock.kLineDay[currentIndex + i - 1].endPrice >= 0.03
+                        && i < 5 && currentIndex + i < stock.kLineDay.Length - 1
+			&& dr["信号"].ToString().IndexOf("🔥") < 0 && stock.kLineDay[currentIndex].IsCrossStar )
                     {
                         dr["信号"] = dr["信号"].ToString().Trim() + "🔥";
                         dr["买入价"] = stock.kLineDay[currentIndex + i - 1].endPrice * 1.03;
@@ -391,49 +389,6 @@
             dt.Rows.Add(dr);
         }
         return dt;
-    }
-
-    public static void AlertWatcher()
-    {
-        for(; true;)
-        {
-            DateTime currentDate = Util.GetDay(DateTime.Now).AddDays(-1);
-            for (int i = 1; i <= 4; i++)
-            {
-                if (Util.IsTransacDay(currentDate))
-                {
-                    DataTable dt = GetData(currentDate);
-                    foreach (DataRow dr in dt.Rows)
-                    {
-                        Stock s = new Stock(dr["代码"].ToString());
-                        s.LoadKLineDay();
-                        int currentIndex = s.GetItemIndex(currentDate);
-                       
-                        if (Fired(s, currentIndex, i))
-                        {
-                            StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", s.gid.Trim(), s.Name.Trim(),
-                                Math.Round(double.Parse(dr["买入价"].ToString()), 2), "volumedecrease");
-                        }
-                        
-                    }
-                }
-                else
-                {
-                    i--;
-                }
-                currentDate = currentDate.AddDays(-1);
-            }
-            Thread.Sleep(1000);
-        }
-    }
-
-    public static bool Fired(Stock stock, int currentIndex, int i)
-    {
-        if ((stock.kLineDay[currentIndex + i].highestPrice - stock.kLineDay[currentIndex + i - 1].endPrice) / stock.kLineDay[currentIndex + i - 1].endPrice >= 0.03
-            && stock.kLineDay[currentIndex].IsCrossStar)
-            return true;
-        else
-            return false;
     }
 
 </script>
