@@ -375,7 +375,10 @@
                         && i < 5 && currentIndex + i < stock.kLineDay.Length 
 			&& dr["信号"].ToString().IndexOf("🔥") < 0 && stock.kLineDay[currentIndex].IsCrossStar )
                     {
-                        dr["信号"] = dr["信号"].ToString().Trim() + "🔥";
+                        if (currentIndex + i < stock.kLineDay.Length - 1)
+                            dr["信号"] = dr["信号"].ToString().Trim() + "🔥";
+                        else
+                            dr["信号"] = dr["信号"].ToString().Trim() + "🔺";
                         dr["买入价"] = stock.kLineDay[currentIndex + i - 1].endPrice * 1.03;
                         dr["买入日"] = i;
                     }
