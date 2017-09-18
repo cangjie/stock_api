@@ -170,9 +170,9 @@
                                 if (ret == 1)
                                 {
                                     string stockName = (new Stock(gid)).Name;
-                                    StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", gid, stockName, Math.Round(s.LastTrade, 2), "volumedecrease");
-                                    StockWatcher.SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", gid, stockName, Math.Round(s.LastTrade, 2), "volumedecrease");
-                                    StockWatcher.SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", gid, stockName, Math.Round(s.LastTrade, 2), "volumedecrease");
+                                    //StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", gid, stockName, Math.Round(s.LastTrade, 2), "volumedecrease");
+                                    //StockWatcher.SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", gid, stockName, Math.Round(s.LastTrade, 2), "volumedecrease");
+                                    //StockWatcher.SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", gid, stockName, Math.Round(s.LastTrade, 2), "volumedecrease");
                                 }
                             }
                             catch

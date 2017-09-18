@@ -70,6 +70,8 @@
                         {
                             StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", s.gid.Trim(), s.Name.Trim(),
                                 Math.Round(double.Parse(dr["买入价"].ToString()), 2), "3_line");
+                            StockWatcher.SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", s.gid.Trim(), s.Name.Trim(),
+                                Math.Round(double.Parse(dr["买入价"].ToString()), 2), "3_line");
                         }
                     }
                 }
