@@ -66,19 +66,19 @@
                         string gid = dr["代码"].ToString().Trim();
                         Stock s = new Stock(gid);
 
-                        string message = dr["信号"].ToString().Trim() + " 放量：" + Math.Round(100 * double.Parse(dr["放量"].ToString().Trim()), 2).ToString() + "%";
+                        string message = (dr["信号"].ToString().Trim().IndexOf("📈")>=0?"📈":"")
+                            + (dr["信号"].ToString().Trim().IndexOf("🔥")>=0?"🔥":"") + (dr["信号"].ToString().Trim().IndexOf("🛍️")>=0?"🛍️":"")
+                            + " 放量：" + Math.Round(100 * double.Parse(dr["放量"].ToString().Trim()), 2).ToString() + "%";
                         double price = Math.Round(double.Parse(dr["买入价"].ToString()), 2);
 
-                        if (!StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()), 
-                            gid, 
+                        if (StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()),
+                            gid,
                             "bottom_break_cross_3_line",
-                            s.Name.Trim(), 
+                            s.Name.Trim(),
                             "买入价：" + price.ToString() + " " + message.Trim()))
                         {
-                            
                             StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", s.gid.Trim(), s.Name + " " + message, price, "3_line");
-                            //StockWatcher.SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", s.gid.Trim(), name.Trim(),
-                            //    Math.Round(double.Parse(dr["买入价"].ToString()), 2), "3_line");
+                            StockWatcher.SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", s.gid.Trim(), s.Name + " " + message, price, "3_line");
                         }
                     }
                 }
