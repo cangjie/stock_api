@@ -422,7 +422,7 @@
                 currentDate = currentDate.AddDays(-1);
                 if (Util.IsTransacDay(currentDate))
                 {
-                    if (!Util.IsTransacTime(DateTime.Now))
+                    if (Util.IsTransacTime(DateTime.Now))
                     {
                         DataTable dt = GetData(currentDate);
                         foreach (DataRow dr in dt.Rows)
