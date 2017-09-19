@@ -429,7 +429,7 @@
                         {
                             if (dr["信号"].ToString().IndexOf("🔺") >= 0)
                             {
-                                if (!StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()), dr["代码"].ToString().Trim(), 
+                                if (StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()), dr["代码"].ToString().Trim(), 
                                     "limit_up_box", dr["名称"].ToString().Trim(), 
                                     "缩量调整后上涨，买入价：" + Math.Round(double.Parse(dr["买入价"].ToString()), 2).ToString()))
                                 {
