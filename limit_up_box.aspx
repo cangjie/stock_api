@@ -434,7 +434,8 @@
                                     "缩量调整后上涨，买入价：" + Math.Round(double.Parse(dr["买入价"].ToString()), 2).ToString()))
                                 {
                                     StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(),
-                                        dr["名称"].ToString().Trim(), Math.Round(double.Parse(dr["买入价"].ToString()), 2), "volumedecrease");
+                                        dr["名称"].ToString().Trim()+" "+currentDate.ToShortDateString() + "十字星缩量" + dr["缩量"].ToString().Trim()+" 已调整"+dr["调整天数"].ToString().Trim()+"日",
+                                        Math.Round(double.Parse(dr["买入价"].ToString()), 2), "volumedecrease");
                                 }
                             }
                             
