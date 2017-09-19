@@ -68,7 +68,8 @@
                         if (StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()), gid, "bottom_break_cross_3_line",
                             s.Name.Trim(), "底部突破，买入价：" + Math.Round(double.Parse(dr["买入价"].ToString()), 2).ToString()))
                         {
-                            StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", s.gid.Trim(), s.Name.Trim(),
+                            string name = s.Name.Trim() + " 放量：" + Math.Round(100*double.Parse(dr["放量"].ToString().Trim()), 2).ToString() + "%";
+                            StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", s.gid.Trim(), name.Trim(),
                                 Math.Round(double.Parse(dr["买入价"].ToString()), 2), "3_line");
                             StockWatcher.SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", s.gid.Trim(), s.Name.Trim(),
                                 Math.Round(double.Parse(dr["买入价"].ToString()), 2), "3_line");
