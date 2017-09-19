@@ -431,11 +431,14 @@
                             {
                                 string message = dr["信号"].ToString().Trim() + " " + currentDate.ToShortDateString() + "十字星缩量" + Math.Round(100 * double.Parse(dr["缩量"].ToString().Trim()), 2).ToString() + "% 已调整" + dr["调整天数"].ToString().Trim() + "日";
                                 double price = Math.Round(double.Parse(dr["买入价"].ToString()), 2);
-                                if (StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()), dr["代码"].ToString().Trim(),
-                                    "limit_up_box", dr["名称"].ToString().Trim(),
+
+                                if (StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()), 
+                                    dr["代码"].ToString().Trim(),
+                                    "limit_up_box", 
+                                    dr["名称"].ToString().Trim(),
                                     "买入价：" + price.ToString() + " " + message.Trim()))
                                 {
-                                    StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(), message, price, "volumedecrease");
+                                    StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(), dr["名称"].ToString() + " " + message, price, "volumedecrease");
                                 }
                             }
 
