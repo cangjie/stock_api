@@ -174,15 +174,15 @@
             {
                 if (currentIndex + j < stock.kLineDay.Length)
                 {
-                    maxPrice = Math.Max(stock.kLineDay[j + currentIndex].endPrice, maxPrice);
-                    dr[j.ToString() + "日"] = (maxPrice - stock.kLineDay[currentIndex].endPrice) * 100 / stock.kLineDay[currentIndex].endPrice;
+                    maxPrice = Math.Max(stock.kLineDay[j + currentIndex].highestPrice, maxPrice);
+                    dr[j.ToString() + "日"] = (stock.kLineDay[j + currentIndex].highestPrice - buyPrice) * 100 / buyPrice;
                 }
                 else
                 {
                     dr[j.ToString() + "日"] = "-";
                 }
             }
-            dr["总计"] = maxPrice == 0 ? "-" : (100 * (maxPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice).ToString();
+            dr["总计"] = maxPrice == 0 ? "-" : (100 * (maxPrice - buyPrice) / buyPrice).ToString();
             dt.Rows.Add(dr);
         }
         DataRow[] drArrLast = dt.Select(" 日期 = '" + currentDate.ToShortDateString() + "' and 代码 = '" + maxVolumeGid + "' ");
