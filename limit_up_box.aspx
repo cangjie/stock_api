@@ -13,6 +13,8 @@
 
     public static Thread t = new Thread(ts);
 
+    public static long threadCount = 0;
+
     protected void Page_Load(object sender, EventArgs e)
     {
         try
@@ -452,6 +454,7 @@
                 }
             }
             Thread.Sleep(60000);
+            threadCount++;
         }
     }
 
@@ -489,7 +492,7 @@
                     </asp:DataGrid></td>
             </tr>
             <tr>
-                <td><%=t.ThreadState.ToString() %></td>
+                <td><%=t.ThreadState.ToString() %>|<%=threadCount.ToString() %></td>
             </tr>
         </table>
     </div>
