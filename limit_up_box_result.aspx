@@ -6,11 +6,19 @@
 
 <script runat="server">
 
+    public string filter = "";
+
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack)
         {
+
+            filter = Util.GetSafeRequestValue(Request, "filter", "1");
             DataTable dt = GetData();
+            if (filter.Trim().Equals("1"))
+            {
+                FiltData(dt, filter);
+            }
             AddTotal(dt);
             RenderHtml(dt);
             dg.DataSource = dt;
@@ -64,7 +72,7 @@
         }
     }
 
-    public static void AddTotal(DataTable dt)
+    public  void AddTotal(DataTable dt)
     {
         DataRow drTotal = dt.NewRow();
         int[] totalCountArr = new int[6] { 0, 0, 0, 0, 0, 0 };
@@ -136,6 +144,23 @@
         }
         drTotal["总计"] = Math.Round(100 * double.Parse(drTotal["总计"].ToString()) / (double)totalCountArr[5]).ToString() + "%";
         dt.Rows.Add(drTotal);
+    }
+
+    public void FiltData(DataTable dt, string filter)
+    {
+        if (filter.Trim().Equals("1"))
+        {
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                double volumePercent = double.Parse(dt.Rows[i]["缩量"].ToString());
+                if (volumePercent < 50 || volumePercent > 100)
+                {
+                    dt.Rows.RemoveAt(i);
+                    i--;
+                }
+            }
+            
+        }
     }
 
     public static DataTable GetData()
