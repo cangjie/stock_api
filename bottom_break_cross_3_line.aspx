@@ -48,7 +48,27 @@
 
     public  DataTable GetData()
     {
-        return GetData(calendar.SelectedDate);
+        DataTable dt = GetData(calendar.SelectedDate);
+        if (Util.GetSafeRequestValue(Request, "filter", "1").Trim().Equals("1"))
+        {
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                try
+                {
+                    double volumePercent = double.Parse(dt.Rows[i]["放量"].ToString().Trim());
+                    if (volumePercent < 1)
+                    {
+                        dt.Rows.RemoveAt(i);
+                        i--;
+                    }
+                }
+                catch
+                {
+
+                }
+            }
+        }
+        return dt;
     }
 
     public static void PageWatcher()
