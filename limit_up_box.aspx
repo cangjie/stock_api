@@ -395,7 +395,8 @@
                         && i < 5 && currentIndex + i < stock.kLineDay.Length
                         && dr["信号"].ToString().IndexOf("🔥") < 0 && stock.kLineDay[currentIndex].IsCrossStar )
                     {
-                        if (currentIndex + i < stock.kLineDay.Length - 1)
+                        if ((currentIndex + i < stock.kLineDay.Length - 1) 
+                            || (currentIndex + i == stock.kLineDay.Length - 1 && Util.GetDay(stock.kLineDay[currentIndex + i].startDateTime) < Util.GetDay(DateTime.Now)))
                             dr["信号"] = dr["信号"].ToString().Trim() + "🔥";
                         else
                             dr["信号"] = dr["信号"].ToString().Trim() + "🔺";
