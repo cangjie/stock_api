@@ -393,8 +393,8 @@
             {
                 if (i + currentIndex < stock.kLineDay.Length)
                 {
-                    dr[i.ToString() + "日"] = (stock.kLineDay[currentIndex + i].highestPrice - currentPrice) / currentPrice;
-                    maxPercent = Math.Max(maxPercent, (stock.kLineDay[currentIndex + i].highestPrice - currentPrice) / currentPrice);
+                    dr[i.ToString() + "日"] = (stock.kLineDay[currentIndex + i].highestPrice - buyPrice) / buyPrice;
+                    maxPercent = Math.Max(maxPercent, (stock.kLineDay[currentIndex + i].highestPrice - buyPrice) / buyPrice);
                     if ((stock.kLineDay[currentIndex + i].highestPrice - stock.kLineDay[currentIndex + i - 1].endPrice) / stock.kLineDay[currentIndex + i - 1].endPrice >= 0.03
                         && i < 5 && currentIndex + i < stock.kLineDay.Length
                         && dr["信号"].ToString().IndexOf("🔥") < 0 && stock.kLineDay[currentIndex].IsCrossStar )
@@ -404,8 +404,8 @@
                             dr["信号"] = dr["信号"].ToString().Trim() + "🔥";
                         else
                             dr["信号"] = dr["信号"].ToString().Trim() + "🔺";
-                        dr["买入价"] = stock.kLineDay[currentIndex + i - 1].endPrice * 1.03;
-                        dr["买入日"] = i;
+                        //dr["买入价"] = stock.kLineDay[currentIndex + i - 1].endPrice * 1.03;
+                        //dr["买入日"] = i;
                     }
                 }
                 else

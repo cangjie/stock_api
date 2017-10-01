@@ -447,6 +447,8 @@ public class Util
                 price = Math.Max(currentPrice, priceArr[i]);
             }
         }
+        if (price == 0)
+            price = currentPrice;
         return price;
     }
 }
