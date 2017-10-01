@@ -387,12 +387,13 @@
             dr["最低价"] = boxLowestPrice;
             dr["现价"] = currentPrice;
             double f5Price = Math.Round(Util.GetRaiseGoldLine(stock.kLineDay[limitUpIndex].lowestPrice, stock.kLineDay[limitUpIndex].highestPrice)[4], 2);
-            double buyPrice = f5Price;
-            if (stock.kLineDay[currentIndex].lowestPrice > f5Price)
+            double f3Price = Math.Round(Util.GetRaiseGoldLine(stock.kLineDay[limitUpIndex].lowestPrice, stock.kLineDay[limitUpIndex].highestPrice)[2], 2);
+            double buyPrice = f5Price*1.005;
+            if (stock.kLineDay[currentIndex].lowestPrice >= buyPrice)
                 buyPrice = stock.kLineDay[currentIndex].endPrice;
             dr["买入价"] = buyPrice;
             dr["F5"] = f5Price;
-            if (stock.kLineDay[currentIndex].endPrice < f5Price)
+            if (stock.kLineDay[currentIndex].endPrice < f3Price)
                 dr["信号"] = dr["信号"].ToString() + "💩";
             if (stock.kLineDay[currentIndex].endPrice > f5Price
                 && Math.Abs(stock.kLineDay[currentIndex].lowestPrice - f5Price) / f5Price <= 0.005
