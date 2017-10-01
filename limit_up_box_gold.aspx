@@ -51,7 +51,7 @@
 
     public void RenderHTML(DataTable dt)
     {
-        int totalCountNum = 5;
+        int totalCountNum = 6;
         for (int i = 0; i < dt.Rows.Count - totalCountNum; i++)
         {
             dt.Rows[i]["代码"] = "<a href=\"show_k_line_day.aspx?gid=" + dt.Rows[i]["代码"].ToString().Trim() + "\" target=\"_blank\" >" + dt.Rows[i]["代码"].ToString().Trim() + "</a>";
@@ -118,6 +118,11 @@
         int fireCount = 0;
         int fireRaiseCount = 0;
 
+        DataRow drBag = dtNew.NewRow();
+        int bagCount = 0;
+        int[] bagRaiseCount = new int[6] { 0, 0, 0, 0, 0, 0 };
+
+
         foreach (DataRow dr in drArr)
         {
             totalCount++;
@@ -132,6 +137,10 @@
             if (dr["信号"].ToString().IndexOf("🌟") >= 0 && dr["信号"].ToString().IndexOf("🎯")>=0)
             {
                 starTargetCount++;
+            }
+            if (dr["信号"].ToString().IndexOf("🛍️") >= 0)
+            {
+                bagCount++;
             }
             int buyDay = 0;
             double buyPrice = 0;
@@ -172,6 +181,10 @@
                     {
                         starTargetRaiseCount[i-1]++;
                     }
+                    if (dr["信号"].ToString().IndexOf("🛍️") >= 0)
+                    {
+                        bagRaiseCount[i - 1]++;
+                    }
                 }
                 if (buyDay > 0 && i > buyDay && i < 6)
                 {
@@ -207,6 +220,11 @@
         drFire["涨停前收"] = fireRaiseCount.ToString() + "/" + fireCount.ToString();
         drFire["涨停收"] = Math.Round((double)fireRaiseCount * 100 / (double)fireCount, 2).ToString() + "%";
 
+        drBag["信号"] = "🛍️";
+        drBag["涨停前收"] = bagCount.ToString();
+
+
+
         for (int i = 1; i <= 6; i++)
         {
             if (totalCount>0)
@@ -217,12 +235,17 @@
                 drNewTarget[((i == 6) ? "总计" : i.ToString() + "日")] = Math.Round(100*(double)targetRaiseCount[i-1] / (double)targetCount, 2).ToString() + "%";
             if (starTargetCount>0)
                 drNewStarTarget[((i == 6) ? "总计" : i.ToString() + "日")] = Math.Round(100*(double)starTargetRaiseCount[i-1] / (double)starTargetCount, 2).ToString() + "%";
+            if (bagCount > 0)
+            {
+                drBag[((i == 6) ? "总计" : i.ToString() + "日")] = Math.Round(100 * (double)bagRaiseCount[i - 1] / (double)bagCount, 2).ToString() + "%";
+            }
         }
         dtNew.Rows.Add(drNewTotal);
         dtNew.Rows.Add(drNewStar);
         dtNew.Rows.Add(drNewTarget);
         dtNew.Rows.Add(drNewStarTarget);
         dtNew.Rows.Add(drFire);
+        dtNew.Rows.Add(drBag);
         dt.Dispose();
         return dtNew;
     }
@@ -403,15 +426,14 @@
                     buyPrice = f5Price * 1.005;
                 }
             }
-            
-            
+
+
             dr["买入价"] = buyPrice;
             dr["支撑"] = support;
             if (stock.kLineDay[currentIndex].endPrice < f3Price)
                 dr["信号"] = dr["信号"].ToString() + "💩";
-            if (stock.kLineDay[currentIndex].endPrice > f5Price
-                && Math.Abs(stock.kLineDay[currentIndex].lowestPrice - f5Price) / f5Price <= 0.005
-                && stock.kLineDay[currentIndex].endPrice > stock.kLineDay[currentIndex].lowestPrice)
+
+            if (dr["支撑"].ToString().Trim().StartsWith("F") && stock.kLineDay[currentIndex].volume / limitUpVolume < 1)
             {
                 dr["信号"] = dr["信号"].ToString() + "🛍️";
             }
