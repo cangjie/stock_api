@@ -350,6 +350,7 @@
             {
                 continue;
             }
+            /*
             bool signal = false;
             KeyValuePair<string, double>[] qArr = stock.GetSortedQuota(currentIndex);
 
@@ -386,7 +387,7 @@
                 default:
                     break;
             }
-
+            */
 
             if (!stock.kLineDay[currentIndex].IsCrossStar || stock.kLineDay[currentIndex].HaveMast)
                 signal = false;
@@ -398,16 +399,19 @@
             {
                 dr["信号"] = "🌟";
             }
+            /*
             if (signal)
-                dr["信号"] = dr["信号"] + "🎯";
-
+                dr["信号"] = dr["信号"].ToString() + "🎯";
+                */
             dr["涨停前收"] = beforeLimitUpSettlePrice;
             dr["涨停收"] = limitUpSettlePrice;
             dr["调整天数"] = currentIndex - limitUpIndex;
             if (currentIndex - limitUpIndex >= 2)
             {
-                if (stock.kLineDay[currentIndex-1].HaveMast
-                    && )
+                if (stock.kLineDay[currentIndex - 1].HaveMast && stock.kLineDay[currentIndex].HaveTail)
+                {
+                    dr["信号"] = dr["信号"].ToString() + "🎯";
+                }
             }
             dr["缩量"] = stock.kLineDay[currentIndex].volume / limitUpVolume;
             dr["缩量天数"] = continuesReduceVolumeDays;
