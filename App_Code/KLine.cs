@@ -160,8 +160,8 @@ public class KLine
         get
         {
             bool value = false;
-            if (highestPrice - Math.Max(startPrice, endPrice) > 2 * (Math.Min(startPrice, endPrice) - lowestPrice) &&
-                highestPrice - Math.Max(startPrice, endPrice) > 2 * Math.Abs(startPrice - endPrice))
+            if (highestPrice - Math.Max(startPrice, endPrice) > 1.5 * (Math.Min(startPrice, endPrice) - lowestPrice) &&
+                highestPrice - Math.Max(startPrice, endPrice) > 1.5 * Math.Abs(startPrice - endPrice))
                 value = true;
             return value;
         }
@@ -172,8 +172,8 @@ public class KLine
         get
         {
             bool value = false;
-            if (lowestPrice - Math.Min(startPrice, endPrice) > 2 * (highestPrice - Math.Max(startPrice, endPrice)) &&
-                lowestPrice - Math.Min(startPrice, endPrice) > 2 * Math.Abs(startPrice - endPrice))
+            if (Math.Min(startPrice, endPrice) - lowestPrice > 1.5 * (highestPrice - Math.Max(startPrice, endPrice)) &&
+                Math.Min(startPrice, endPrice) - lowestPrice > 1.5 * Math.Abs(startPrice - endPrice))
                 value = true;
             return value;
         }
