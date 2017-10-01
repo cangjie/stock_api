@@ -483,7 +483,6 @@
     {
         for (; true;)
         {
-            continue;
             DateTime currentDate = Util.GetDay(DateTime.Now);
             for (int i = 1; i <= 4; i++)
             {
@@ -496,9 +495,9 @@
                         foreach (DataRow dr in dt.Rows)
                         {
                             KLine.RefreshKLine(dr["代码"].ToString().Trim(), DateTime.Parse(DateTime.Now.ToShortDateString()));
-                            if (dr["信号"].ToString().IndexOf("🔺") >= 0)
+                            if (dr["信号"].ToString().IndexOf("🛍️") >= 0)
                             {
-                                string message = dr["信号"].ToString().Trim() + " " + currentDate.ToShortDateString() + "十字星缩量" + Math.Round(100 * double.Parse(dr["缩量"].ToString().Trim()), 2).ToString() + "% 已调整" + dr["调整天数"].ToString().Trim() + "日";
+                                string message = dr["信号"].ToString().Trim() + " " + currentDate.ToShortDateString() + dr["支撑"].ToString() + " 缩量：" + Math.Round(100 * double.Parse(dr["缩量"].ToString().Trim()), 2).ToString() + "% 已调整" + dr["调整天数"].ToString().Trim() + "日";
                                 double price = Math.Round(double.Parse(dr["买入价"].ToString()), 2);
 
                                 if (StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()),
@@ -507,8 +506,8 @@
                                     dr["名称"].ToString().Trim(),
                                     "买入价：" + price.ToString() + " " + message.Trim()))
                                 {
-                                    StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(), dr["名称"].ToString() + " " + message, price, "volumedecrease");
-                                    StockWatcher.SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", dr["代码"].ToString().Trim(), dr["名称"].ToString() + " " + message, price, "volumedecrease");
+                                    StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(), dr["名称"].ToString() + " " + message, price, "bottom");
+                                    StockWatcher.SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", dr["代码"].ToString().Trim(), dr["名称"].ToString() + " " + message, price, "bottom");
                                 }
                             }
 
