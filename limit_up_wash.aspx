@@ -387,10 +387,11 @@
                 default:
                     break;
             }
-            */
+            
 
             if (!stock.kLineDay[currentIndex].IsCrossStar || stock.kLineDay[currentIndex].HaveMast)
                 signal = false;
+                */
             DataRow dr = dt.NewRow();
             dr["代码"] = drOri["gid"].ToString();
             dr["名称"] = stock.Name.Trim();
