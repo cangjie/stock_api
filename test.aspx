@@ -6,30 +6,19 @@
 <script runat="server">
     protected void Page_Load(object sender, EventArgs e)
     {
-        DataTable dt = DBHelper.GetDataTable(" select * from limit_up  ");
-        foreach (DataRow dr in dt.Rows)
-        {
-            Stock stock = new Stock(dr["gid"].ToString().Trim());
-            stock.LoadKLineDay();
-            LimitUp.SearchCrossStar(stock, DateTime.Parse(dr["alert_date"].ToString()));
-        }
-        return;
         string[] gidArr = Util.GetAllGids();
-        for (int i = 0; i < gidArr.Length; i++)
+        foreach (string gid in gidArr)
         {
-
-            Stock s = new Stock(gidArr[i]);
-            s.LoadKLineDay();
-
-            for (int j = 1; j < s.kLineDay.Length - 1; j++)
+            Stock stock = new Stock(gid);
+            stock.LoadKLineDay();
+            int currentIndex = stock.GetItemIndex(DateTime.Parse("2017-9-29"));
+            if (stock.IsLimitUp(currentIndex))
             {
-
-                if (s.IsLimitUp(j))
-                {
-                    LimitUp.SaveLimitUp(s.gid.Trim(), DateTime.Parse(s.kLineDay[j].startDateTime.ToShortDateString()), s.kLineDay[j - 1].endPrice,
-                        s.kLineDay[j].startPrice, s.kLineDay[j].endPrice, s.kLineDay[j].volume);
-                }
+                LimitUp.SaveLimitUp(stock.gid.Trim(), DateTime.Parse(stock.kLineDay[currentIndex].startDateTime.ToShortDateString()),
+                    stock.kLineDay[currentIndex - 1].endPrice, stock.kLineDay[currentIndex].startPrice, stock.kLineDay[currentIndex].endPrice, 
+                    stock.kLineDay[currentIndex].volume);
             }
+           
         }
     }
 </script>

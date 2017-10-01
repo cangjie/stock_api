@@ -160,7 +160,20 @@ public class KLine
         get
         {
             bool value = false;
-            if (highestPrice - Math.Max(startPrice, endPrice) > 2 * (Math.Min(startPrice, endPrice) - lowestPrice))
+            if (highestPrice - Math.Max(startPrice, endPrice) > 2 * (Math.Min(startPrice, endPrice) - lowestPrice) &&
+                highestPrice - Math.Max(startPrice, endPrice) > 2 * Math.Abs(startPrice - endPrice))
+                value = true;
+            return value;
+        }
+    }
+
+    public bool HaveTail
+    {
+        get
+        {
+            bool value = false;
+            if (lowestPrice - Math.Min(startPrice, endPrice) > 2 * (highestPrice - Math.Max(startPrice, endPrice)) &&
+                lowestPrice - Math.Min(startPrice, endPrice) > 2 * Math.Abs(startPrice - endPrice))
                 value = true;
             return value;
         }
