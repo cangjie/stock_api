@@ -329,7 +329,7 @@
             }
             bool signal = false;
             KeyValuePair<string, double>[] qArr = stock.GetSortedQuota(currentIndex);
-            
+
             switch (currentIndex - limitUpIndex)
             {
                 case 1:
@@ -363,7 +363,7 @@
                 default:
                     break;
             }
-            
+
 
             if (!stock.kLineDay[currentIndex].IsCrossStar || stock.kLineDay[currentIndex].HaveMast)
                 signal = false;
@@ -377,6 +377,7 @@
             }
             if (signal)
                 dr["信号"] = dr["信号"] + "🎯";
+
             dr["涨停前收"] = beforeLimitUpSettlePrice;
             dr["涨停收"] = limitUpSettlePrice;
             dr["调整天数"] = currentIndex - limitUpIndex;
@@ -387,7 +388,14 @@
             dr["现价"] = currentPrice;
             double buyPrice = Util.GetBuyPrice(stock.kLineDay[limitUpIndex].lowestPrice, stock.kLineDay[limitUpIndex].highestPrice, stock.kLineDay[currentIndex].lowestPrice);
             dr["买入价"] = buyPrice;
-            dr["F5"] = Math.Round(Util.GetRaiseGoldLine(stock.kLineDay[limitUpIndex].lowestPrice, stock.kLineDay[limitUpIndex].highestPrice)[4], 2);
+            double f5Price = Math.Round(Util.GetRaiseGoldLine(stock.kLineDay[limitUpIndex].lowestPrice, stock.kLineDay[limitUpIndex].highestPrice)[4], 2);
+            dr["F5"] = f5Price;
+            if (stock.kLineDay[currentIndex].endPrice < f5Price)
+                dr["信号"] = dr["信号"].ToString() + "💩";
+            if (stock.kLineDay[currentIndex].endPrice > f5Price && stock.kLineDay[currentIndex].endPrice * 1.005 <= f5Price && stock.kLineDay[currentIndex].endPrice > stock.kLineDay[currentIndex].lowestPrice)
+            {
+                dr["信号"] = dr["信号"].ToString() + "🛍️";
+            }
             double maxPercent = -1;
             for (int i = 1; i <= 5 ; i++)
             {
@@ -399,7 +407,7 @@
                         && i < 5 && currentIndex + i < stock.kLineDay.Length
                         && dr["信号"].ToString().IndexOf("🔥") < 0 && stock.kLineDay[currentIndex].IsCrossStar )
                     {
-                        if ((currentIndex + i < stock.kLineDay.Length - 1) 
+                        if ((currentIndex + i < stock.kLineDay.Length - 1)
                             || (currentIndex + i == stock.kLineDay.Length - 1 && Util.GetDay(stock.kLineDay[currentIndex + i].startDateTime) < Util.GetDay(DateTime.Now)))
                             dr["信号"] = dr["信号"].ToString().Trim() + "🔥";
                         else
@@ -440,9 +448,9 @@
                                 string message = dr["信号"].ToString().Trim() + " " + currentDate.ToShortDateString() + "十字星缩量" + Math.Round(100 * double.Parse(dr["缩量"].ToString().Trim()), 2).ToString() + "% 已调整" + dr["调整天数"].ToString().Trim() + "日";
                                 double price = Math.Round(double.Parse(dr["买入价"].ToString()), 2);
 
-                                if (StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()), 
+                                if (StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()),
                                     dr["代码"].ToString().Trim(),
-                                    "limit_up_box", 
+                                    "limit_up_box",
                                     dr["名称"].ToString().Trim(),
                                     "买入价：" + price.ToString() + " " + message.Trim()))
                                 {
