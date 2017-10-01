@@ -409,9 +409,11 @@
             dr["调整天数"] = currentIndex - limitUpIndex;
             if (currentIndex - limitUpIndex >= 2)
             {
-                if (stock.kLineDay[currentIndex - 1].HaveMast  && stock.kLineDay[currentIndex].HaveTail)
+                if (stock.kLineDay[currentIndex - 1].HaveMast)
                 {
-                    dr["信号"] = dr["信号"].ToString() + "🎯";
+                    dr["信号"] = dr["信号"].ToString() + "🕯️";
+                    if ( stock.kLineDay[currentIndex].HaveTail)
+                        dr["信号"] = dr["信号"].ToString() + "🎯";
                 }
             }
             dr["缩量"] = stock.kLineDay[currentIndex].volume / limitUpVolume;
