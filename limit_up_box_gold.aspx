@@ -392,7 +392,9 @@
             dr["F5"] = f5Price;
             if (stock.kLineDay[currentIndex].endPrice < f5Price)
                 dr["信号"] = dr["信号"].ToString() + "💩";
-            if (stock.kLineDay[currentIndex].endPrice > f5Price && stock.kLineDay[currentIndex].endPrice * 1.005 <= f5Price && stock.kLineDay[currentIndex].endPrice > stock.kLineDay[currentIndex].lowestPrice)
+            if (stock.kLineDay[currentIndex].endPrice > f5Price 
+                && Math.Abs(stock.kLineDay[currentIndex].lowestPrice - f5Price) / f5Price <= 0.005 
+                && stock.kLineDay[currentIndex].endPrice > stock.kLineDay[currentIndex].lowestPrice)
             {
                 dr["信号"] = dr["信号"].ToString() + "🛍️";
             }
