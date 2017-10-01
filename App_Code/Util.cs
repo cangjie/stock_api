@@ -442,10 +442,9 @@ public class Util
         {
             if (i == 3)
                 continue;
-            if (currentPrice < priceArr[i])
+            if (Math.Abs(currentPrice - priceArr[i]) / currentPrice <= 0.005)
             {
-                price = priceArr[i];
-                break;
+                price = Math.Max(currentPrice, priceArr[i]);
             }
         }
         return price;
