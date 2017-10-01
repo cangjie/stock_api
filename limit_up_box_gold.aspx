@@ -386,7 +386,7 @@
             dr["最低价"] = boxLowestPrice;
             dr["现价"] = currentPrice;
             double buyPrice = Util.GetBuyPrice(stock.kLineDay[limitUpIndex].lowestPrice, stock.kLineDay[limitUpIndex].highestPrice, stock.kLineDay[currentIndex].lowestPrice);
-            dr["买入价"] = currentPrice;
+            dr["买入价"] = buyPrice;
             dr["买入日"] = 0;
             double maxPercent = -1;
             for (int i = 1; i <= 5 ; i++)
