@@ -417,4 +417,37 @@ public class Util
     {
         return DateTime.Parse(dateTime.ToShortTimeString());
     }
+
+    public static double[] GetRaiseGoldLine(double lowPrice, double highPrice)
+    {
+        double[] priceArr = new double[9];
+        double diff = highPrice - lowPrice;
+        priceArr[0] = lowPrice;
+        priceArr[1] = lowPrice + diff * 0.236;
+        priceArr[2] = lowPrice + diff * 0.382;
+        priceArr[3] = lowPrice + diff * 0.5;
+        priceArr[4] = lowPrice + diff * 0.618;
+        priceArr[5] = lowPrice + diff * 0.809;
+        priceArr[6] = highPrice;
+        priceArr[7] = lowPrice + diff * 1.382;
+        priceArr[8] = lowPrice + diff * 1.618;
+        return priceArr;
+    }
+
+    public static double GetBuyPrice(double lowPrice, double highPrice, double currentPrice)
+    {
+        double[] priceArr = GetRaiseGoldLine(lowPrice, highPrice);
+        double price = 0;
+        for (int i = 0; i < priceArr.Length; i++)
+        {
+            if (i == 3)
+                continue;
+            if (currentPrice < priceArr[i])
+            {
+                price = priceArr[i];
+                break;
+            }
+        }
+        return price;
+    }
 }
