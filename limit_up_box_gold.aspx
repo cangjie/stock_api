@@ -387,7 +387,7 @@
             dr["现价"] = currentPrice;
             double buyPrice = Util.GetBuyPrice(stock.kLineDay[limitUpIndex].lowestPrice, stock.kLineDay[limitUpIndex].highestPrice, stock.kLineDay[currentIndex].lowestPrice);
             dr["买入价"] = buyPrice;
-            dr["买入日"] = 0;
+            dr["F5"] = Math.Round(Util.GetRaiseGoldLine(stock.kLineDay[limitUpIndex].lowestPrice, stock.kLineDay[limitUpIndex].highestPrice)[4], 2);
             double maxPercent = -1;
             for (int i = 1; i <= 5 ; i++)
             {
