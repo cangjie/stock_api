@@ -436,7 +436,10 @@
                     buyPrice = f5Price * 1.005;
                 }
             }
-
+            if (dr["信号"].ToString().IndexOf("🎯") >= 0)
+            {
+                buyPrice = currentPrice;
+            }
 
             dr["买入价"] = buyPrice;
             dr["支撑"] = support;
