@@ -386,14 +386,16 @@
             dr["下跌天数"] = continuesFallingDownPriceDays;
             dr["最低价"] = boxLowestPrice;
             dr["现价"] = currentPrice;
-            double buyPrice = Util.GetBuyPrice(stock.kLineDay[limitUpIndex].lowestPrice, stock.kLineDay[limitUpIndex].highestPrice, stock.kLineDay[currentIndex].lowestPrice);
-            dr["买入价"] = buyPrice;
             double f5Price = Math.Round(Util.GetRaiseGoldLine(stock.kLineDay[limitUpIndex].lowestPrice, stock.kLineDay[limitUpIndex].highestPrice)[4], 2);
+            double buyPrice = f5Price;
+            if (stock.kLineDay[currentIndex].lowestPrice > f5Price)
+                buyPrice = stock.kLineDay[currentIndex].endPrice;
+            dr["买入价"] = buyPrice;
             dr["F5"] = f5Price;
             if (stock.kLineDay[currentIndex].endPrice < f5Price)
                 dr["信号"] = dr["信号"].ToString() + "💩";
-            if (stock.kLineDay[currentIndex].endPrice > f5Price 
-                && Math.Abs(stock.kLineDay[currentIndex].lowestPrice - f5Price) / f5Price <= 0.005 
+            if (stock.kLineDay[currentIndex].endPrice > f5Price
+                && Math.Abs(stock.kLineDay[currentIndex].lowestPrice - f5Price) / f5Price <= 0.005
                 && stock.kLineDay[currentIndex].endPrice > stock.kLineDay[currentIndex].lowestPrice)
             {
                 dr["信号"] = dr["信号"].ToString() + "🛍️";
