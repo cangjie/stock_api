@@ -433,7 +433,7 @@
             if (stock.kLineDay[currentIndex].endPrice < f3Price)
                 dr["信号"] = dr["信号"].ToString() + "💩";
 
-            if (dr["支撑"].ToString().Trim().StartsWith("F") && stock.kLineDay[currentIndex].volume / limitUpVolume < 1)
+            if (dr["支撑"].ToString().Trim().StartsWith("F") && stock.kLineDay[currentIndex].volume / limitUpVolume < 100)
             {
                 dr["信号"] = dr["信号"].ToString() + "🛍️";
             }
@@ -483,6 +483,7 @@
     {
         for (; true;)
         {
+            continue;
             DateTime currentDate = Util.GetDay(DateTime.Now);
             for (int i = 1; i <= 4; i++)
             {
