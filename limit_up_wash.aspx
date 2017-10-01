@@ -421,8 +421,13 @@
             dr["下跌天数"] = continuesFallingDownPriceDays;
             dr["最低价"] = boxLowestPrice;
             dr["现价"] = currentPrice;
-            double f5Price = Math.Round(Util.GetRaiseGoldLine(stock.kLineDay[limitUpIndex].lowestPrice, stock.kLineDay[limitUpIndex].highestPrice)[4], 2);
-            double f3Price = Math.Round(Util.GetRaiseGoldLine(stock.kLineDay[limitUpIndex].lowestPrice, stock.kLineDay[limitUpIndex].highestPrice)[2], 2);
+            double highestPrice = 0;
+            for (int i = limitUpIndex; i <= currentIndex; i++)
+            {
+                highestPrice = Math.Max(highestPrice, stock.kLineDay[i].highestPrice);
+            }
+            double f5Price = Math.Round(Util.GetRaiseGoldLine(stock.kLineDay[limitUpIndex].lowestPrice, highestPrice)[4], 2);
+            double f3Price = Math.Round(Util.GetRaiseGoldLine(stock.kLineDay[limitUpIndex].lowestPrice, highestPrice)[2], 2);
             double buyPrice = currentPrice;
             string support = "-";
             if (IsSupport(stock.kLineDay[currentIndex], f3Price))
