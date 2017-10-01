@@ -243,7 +243,7 @@
         dt.Columns.Add("最低价");
         dt.Columns.Add("现价");
         dt.Columns.Add("买入价");
-        dt.Columns.Add("买入日");
+        dt.Columns.Add("F5");
         for (int i = 1; i <= 5; i++)
         {
             dt.Columns.Add(i.ToString() + "日");
