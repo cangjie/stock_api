@@ -141,7 +141,7 @@
             if (dr["信号"].ToString().IndexOf("🔥") >= 0 )
             {
                 fireCount++;
-                buyDay = int.Parse(dr["买入日"].ToString().Trim());
+                buyDay = int.Parse(dr["F5"].ToString().Trim());
                 buyPrice = double.Parse(dr["买入价"].ToString().Trim());
                 valueFire = (buyPrice - currentPrice) / currentPrice;
             }
