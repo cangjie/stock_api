@@ -243,7 +243,7 @@
         dt.Columns.Add("最低价");
         dt.Columns.Add("现价");
         dt.Columns.Add("买入价");
-        dt.Columns.Add("F5");
+        dt.Columns.Add("支撑");
         for (int i = 1; i <= 5; i++)
         {
             dt.Columns.Add(i.ToString() + "日");
@@ -388,11 +388,25 @@
             dr["现价"] = currentPrice;
             double f5Price = Math.Round(Util.GetRaiseGoldLine(stock.kLineDay[limitUpIndex].lowestPrice, stock.kLineDay[limitUpIndex].highestPrice)[4], 2);
             double f3Price = Math.Round(Util.GetRaiseGoldLine(stock.kLineDay[limitUpIndex].lowestPrice, stock.kLineDay[limitUpIndex].highestPrice)[2], 2);
-            double buyPrice = f5Price*1.005;
-            if (stock.kLineDay[currentIndex].lowestPrice >= buyPrice)
-                buyPrice = currentPrice;
+            double buyPrice = currentPrice;
+            string support = "-";
+            if (IsSupport(stock.kLineDay[currentIndex], f3Price))
+            {
+                support = "F3";
+                buyPrice = f3Price * 1.005;
+            }
+            else
+            {
+                if (IsSupport(stock.kLineDay[currentIndex], f5Price))
+                {
+                    support = "F5";
+                    buyPrice = f5Price * 1.005;
+                }
+            }
+            
+            
             dr["买入价"] = buyPrice;
-            dr["F5"] = f5Price;
+            dr["支撑"] = support;
             if (stock.kLineDay[currentIndex].endPrice < f3Price)
                 dr["信号"] = dr["信号"].ToString() + "💩";
             if (stock.kLineDay[currentIndex].endPrice > f5Price
@@ -430,6 +444,17 @@
             dt.Rows.Add(dr);
         }
         return dt;
+    }
+
+    public static bool IsSupport(KLine kLine, double supportPrice)
+    {
+        bool support = false;
+        double startPrice = kLine.startPrice;
+        double lowestPrice = kLine.lowestPrice;
+        double endPrice = kLine.endPrice;
+        if (startPrice > supportPrice && Math.Abs(lowestPrice - supportPrice) / supportPrice < 0.005 && endPrice > supportPrice * 1.005)
+            support = true;
+        return support;
     }
 
     public static void PageWatcher()
