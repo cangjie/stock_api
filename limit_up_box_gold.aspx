@@ -390,7 +390,7 @@
             double f3Price = Math.Round(Util.GetRaiseGoldLine(stock.kLineDay[limitUpIndex].lowestPrice, stock.kLineDay[limitUpIndex].highestPrice)[2], 2);
             double buyPrice = f5Price*1.005;
             if (stock.kLineDay[currentIndex].lowestPrice >= buyPrice)
-                buyPrice = stock.kLineDay[currentIndex].endPrice;
+                buyPrice = currentPrice;
             dr["买入价"] = buyPrice;
             dr["F5"] = f5Price;
             if (stock.kLineDay[currentIndex].endPrice < f3Price)
