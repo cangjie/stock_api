@@ -329,6 +329,7 @@
             }
             bool signal = false;
             KeyValuePair<string, double>[] qArr = stock.GetSortedQuota(currentIndex);
+            
             switch (currentIndex - limitUpIndex)
             {
                 case 1:
@@ -362,7 +363,9 @@
                 default:
                     break;
             }
-            if (currentPrice < qArr[qArr.Length - 1].Value || !stock.kLineDay[currentIndex].IsCrossStar)
+            
+
+            if (!stock.kLineDay[currentIndex].IsCrossStar || stock.kLineDay[currentIndex].HaveMast)
                 signal = false;
             DataRow dr = dt.NewRow();
             dr["代码"] = drOri["gid"].ToString();

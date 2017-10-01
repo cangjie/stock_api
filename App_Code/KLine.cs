@@ -155,6 +155,17 @@ public class KLine
         }
     }
 
+    public bool HaveMast
+    {
+        get
+        {
+            bool value = false;
+            if (highestPrice - Math.Max(startPrice, endPrice) > 2 * (Math.Min(startPrice, endPrice) - lowestPrice))
+                value = true;
+            return value;
+        }
+    }
+
     public static KLine[] GetKLine(string type, string gid, DateTime startDateTime, DateTime endDateTime)
     {
         KLine[] kLineArr = new KLine[0];
