@@ -33,7 +33,7 @@
         if (!IsPostBack)
         {
             calendar.SelectedDate = Util.GetDay(DateTime.Now);
-            dg.DataSource = GetHtmlData(GetData().Select(""));
+            dg.DataSource = GetHtmlData(GetData().Select("", " 放量 desc "));
             dg.DataBind();
         }
     }
