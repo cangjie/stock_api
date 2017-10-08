@@ -29,7 +29,6 @@
         {
             Console.WriteLine(err.ToString());
         }
-
         if (!IsPostBack)
         {
             calendar.SelectedDate = Util.GetDay(DateTime.Now);
@@ -387,7 +386,7 @@
 
     protected void calendar_SelectionChanged(object sender, EventArgs e)
     {
-        dg.DataSource = GetHtmlData(GetData().Select(""));
+        dg.DataSource = GetHtmlData(GetData().Select("", " 放量 desc "));
         dg.DataBind();
     }
 
