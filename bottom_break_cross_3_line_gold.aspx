@@ -89,7 +89,7 @@
                         double upSpace = Math.Round(100 * double.Parse(dr["上涨空间"].ToString()), 2);
                         string message = (dr["信号"].ToString().Trim().IndexOf("📈")>=0?"📈":"")
                             + (dr["信号"].ToString().Trim().IndexOf("🔥")>=0?"🔥":"") + (dr["信号"].ToString().Trim().IndexOf("🛍️")>=0?"🛍️":"")
-                            + " 放量：" + volumeIncrease.ToString() + "% 上涨空间：" + upSpace.ToString() + "%";
+                            + " 放量：" + volumeIncrease.ToString() + "% 上涨空间：" + upSpace.ToString() + "% " + dr["3线势"].ToString() + ":" + dr["K线势"].ToString();
                         double price = Math.Round(double.Parse(dr["买入价"].ToString()), 2);
 
                         if (StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()),
