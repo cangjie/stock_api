@@ -86,9 +86,10 @@
                         Stock s = new Stock(gid);
                         KLine.RefreshKLine(gid, DateTime.Parse(DateTime.Now.ToShortDateString()));
                         double volumeIncrease = Math.Round(100 * double.Parse(dr["放量"].ToString().Trim()), 2);
+                        double upSpace = Math.Round(100 * double.Parse(dr["上涨空间"].ToString()), 2);
                         string message = (dr["信号"].ToString().Trim().IndexOf("📈")>=0?"📈":"")
                             + (dr["信号"].ToString().Trim().IndexOf("🔥")>=0?"🔥":"") + (dr["信号"].ToString().Trim().IndexOf("🛍️")>=0?"🛍️":"")
-                            + " 放量：" + volumeIncrease.ToString() + "%";
+                            + " 放量：" + volumeIncrease.ToString() + "% 上涨空间：" + upSpace.ToString() + "%";
                         double price = Math.Round(double.Parse(dr["买入价"].ToString()), 2);
 
                         if (StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()),
@@ -97,8 +98,8 @@
                             s.Name.Trim(),
                             "买入价：" + price.ToString() + " " + message.Trim()) && volumeIncrease > 100)
                         {
-                            //StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", s.gid.Trim(), s.Name + " " + message, price, "3_line");
-                            //StockWatcher.SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", s.gid.Trim(), s.Name + " " + message, price, "3_line");
+                            StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", s.gid.Trim(), s.Name + " " + message, price, "3_line");
+                            StockWatcher.SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", s.gid.Trim(), s.Name + " " + message, price, "3_line");
                         }
                     }
                 }
@@ -202,8 +203,8 @@
             dr["信号"] =  "";
             dr["信号"] = dr["信号"].ToString() + (currentPrice <= today3LinePrice ? "💩": "");
             //dr["信号"] = dr["信号"].ToString().Trim() + ((stock.kLineDay[currentIndex].startPrice < today3LinePrice) ? "<a title=\"盘中过3线\" >📈</a>" : "");
-            
-          
+
+
             dr["今开"] = startPrice;
             dr["3线价"] = today3LinePrice;
             buyPrice = ((newBuyPrice != 0) ? newBuyPrice : buyPrice);
