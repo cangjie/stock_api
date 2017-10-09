@@ -278,7 +278,7 @@
         }
 
 
-        DataTable dtTmp = DBHelper.GetDataTable(" select * from limit_up where alert_date < '" + date.ToShortDateString()
+        DataTable dtTmp = DBHelper.GetDataTable(" select * from limit_up where alert_date <= '" + date.ToShortDateString()
             + "'  and alert_date > '" + date.AddDays(-15).ToShortDateString() + "'  order by alert_date desc ");
         DataTable dtOri = dtTmp.Clone();
         foreach (DataRow drTmp in dtTmp.Rows)
@@ -309,7 +309,7 @@
             double limitUpSettlePrice = 0;
             double limitUpVolume = 0;
             double currentPrice = stock.kLineDay[currentIndex].endPrice;
-            if ((currentPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice >= 0.095)
+            if ((currentPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice >= 0.095 && currentIndex > limitUpIndex)
             {
                 continue;
             }

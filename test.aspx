@@ -6,6 +6,9 @@
 <script runat="server">
     protected void Page_Load(object sender, EventArgs e)
     {
+
+        StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", "sh600031", "测试消息", 10, "3_line");
+        /*
         string[] gidArr = Util.GetAllGids();
         foreach (string gid in gidArr)
         {
@@ -19,6 +22,6 @@
                     stock.kLineDay[currentIndex].volume);
             }
            
-        }
+        }*/
     }
 </script>
