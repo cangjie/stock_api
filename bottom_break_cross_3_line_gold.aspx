@@ -201,7 +201,7 @@
             dr["名称"] = drOri["name"].ToString().Trim();
             dr["信号"] =  "";
             dr["信号"] = dr["信号"].ToString() + (currentPrice <= today3LinePrice ? "💩": "");
-            dr["信号"] = dr["信号"].ToString().Trim() + (( ValidKLine(stock.kLineDay[currentIndex]) && newBuyPrice != 0  && volumeIncrease > 0.33 && supportPrice > 0) ? "<a title=\"下有均线支撑，上均线压力在3%之外，放量超1/3。\" >📈</a>" : "");
+            dr["信号"] = dr["信号"].ToString().Trim() + ((stock.kLineDay[currentIndex].startPrice < today3LinePrice) ? "<a title=\"盘中过3线\" >📈</a>" : "");
             dr["信号"] = dr["信号"].ToString().Trim() + ((currentPrice > today3LinePrice && (currentPrice - buyPrice) / buyPrice <= 0.015 && dr["信号"].ToString().IndexOf("📈")>=0) ? "<a title=\"当前价格高于3线，但是在提示买入价的正负1%之内。\" >🛍️</a>" : "");
             if (currentIndex > 0
                 && ((newBuyPrice==0?buyPrice:newBuyPrice) - stock.kLineDay[currentIndex - 1].endPrice)/stock.kLineDay[currentIndex-1].endPrice >= 0.03 )
