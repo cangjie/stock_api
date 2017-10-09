@@ -32,7 +32,7 @@
         if (!IsPostBack)
         {
             calendar.SelectedDate = Util.GetDay(DateTime.Now);
-            dg.DataSource = GetHtmlData(GetData().Select("", " 放量 desc "));
+            dg.DataSource = GetHtmlData(GetData().Select("", " 上涨空间 desc "));
             dg.DataBind();
         }
     }
@@ -396,7 +396,7 @@
 
     protected void calendar_SelectionChanged(object sender, EventArgs e)
     {
-        dg.DataSource = GetHtmlData(GetData().Select("", " 放量 desc "));
+        dg.DataSource = GetHtmlData(GetData().Select("", " 上涨空间 desc "));
         dg.DataBind();
     }
 
