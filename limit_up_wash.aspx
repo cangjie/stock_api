@@ -313,6 +313,11 @@
             {
                 continue;
             }
+            else
+            {
+                if (currentIndex == limitUpIndex && (stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex].startPrice) / stock.kLineDay[currentIndex].startPrice < 0.08)
+                    continue;
+            }
             double boxLowestPrice = currentPrice;
             int continuesReduceVolumeDays = 0;
             int continuesFallingDownPriceDays = 0;
