@@ -222,6 +222,10 @@
             dr["放量"] = (currentVolume - lastDayVolume) / lastDayVolume;
             dr["3线势"] = int.Parse(drOri["going_down_3_line_days"].ToString());
             dr["K线势"] = int.Parse(drOri["under_3_line_days"].ToString());
+            double minPrice = GetLowestPriceKlineForDays(stock, currentIndex, 20).lowestPrice;
+            double maxPrice = GetHighestPriceKlineForDays(stock, currentIndex, 20).highestPrice;
+            pressure = (maxPrice - minPrice) * 0.382 + minPrice;
+            upSpacePercent = (pressure - buyPrice) / buyPrice;
             dr["均线压力"] = pressure;
             dr["上涨空间"] = upSpacePercent;
             dr["均线支撑"] = supportPrice;
@@ -414,6 +418,43 @@
             }
         }
     }
+
+    public static KLine GetHighestPriceKlineForDays(Stock stock, int currentIndex, int days)
+    {
+        double maxPrice = 0;
+        KLine kLine = new KLine();
+        for (int i = 0; i < days; i++)
+        {
+            if (currentIndex - i - 1 >= 0)
+            {
+                maxPrice = Math.Max(stock.kLineDay[currentIndex - i - 1].highestPrice, maxPrice);
+                if (maxPrice == stock.kLineDay[currentIndex - i - 1].highestPrice)
+                {
+                    kLine = stock.kLineDay[currentIndex - i - 1];
+                }
+            }
+        }
+        return kLine;
+    }
+
+    public static KLine GetLowestPriceKlineForDays(Stock stock, int currentIndex, int days)
+    {
+        double minPrice = double.MaxValue;
+        KLine kLine = new KLine();
+        for (int i = 0; i < days; i++)
+        {
+            if (currentIndex - i - 1 >= 0)
+            {
+                minPrice = Math.Min(stock.kLineDay[currentIndex - i - 1].highestPrice, minPrice);
+                if (minPrice == stock.kLineDay[currentIndex - i - 1].highestPrice)
+                {
+                    kLine = stock.kLineDay[currentIndex - i - 1];
+                }
+            }
+        }
+        return kLine;
+    }
+
 </script>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
