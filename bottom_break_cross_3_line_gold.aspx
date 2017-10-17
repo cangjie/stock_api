@@ -213,8 +213,10 @@
             dr["放量"] = (currentVolume - lastDayVolume) / lastDayVolume;
             dr["3线势"] = int.Parse(drOri["going_down_3_line_days"].ToString());
             dr["K线势"] = int.Parse(drOri["under_3_line_days"].ToString());
-            dr["MACD"] = stock.macdDays(currentIndex);
-            dr["KDJ"] = stock.kdjDays(currentIndex);
+            //dr["MACD"] = stock.macdDays(currentIndex);
+            //dr["KDJ"] = stock.kdjDays(currentIndex);
+            dr["MACD"] = 0;
+            dr["KDJ"] = 0;
             double minPrice = GetLowestPriceKlineForDays(stock, currentIndex, 20).lowestPrice;
             double maxPrice = GetHighestPriceKlineForDays(stock, currentIndex, 20).highestPrice;
             pressure = (maxPrice - minPrice) * 0.382 + minPrice;
