@@ -213,10 +213,11 @@
             dr["放量"] = (currentVolume - lastDayVolume) / lastDayVolume;
             dr["3线势"] = int.Parse(drOri["going_down_3_line_days"].ToString());
             dr["K线势"] = int.Parse(drOri["under_3_line_days"].ToString());
-            //dr["MACD"] = stock.macdDays(currentIndex);
-            //dr["KDJ"] = stock.kdjDays(currentIndex);
-            dr["MACD"] = 0;
-            dr["KDJ"] = 0;
+            dr["MACD"] = stock.macdDays(currentIndex);
+            //dr["KDJ"] = 0;
+            dr["KDJ"] = stock.kdjDays(currentIndex);
+            //dr["MACD"] = 0;
+            //dr["KDJ"] = 0;
             double minPrice = GetLowestPriceKlineForDays(stock, currentIndex, 20).lowestPrice;
             double maxPrice = GetHighestPriceKlineForDays(stock, currentIndex, 20).highestPrice;
             pressure = (maxPrice - minPrice) * 0.382 + minPrice;
@@ -283,6 +284,8 @@
             dr["均线压力"] = Math.Round((double)drOri["均线压力"], 2).ToString();
             dr["上涨空间"] = Math.Round(100 * (double)drOri["上涨空间"], 2).ToString() + "%";
             dr["均线支撑"] = Math.Round((double)drOri["均线支撑"], 2).ToString();
+            dr["MACD"] = drOri["MACD"].ToString();
+            dr["KDJ"] = drOri["KDJ"].ToString();
             for (int i = 1; i <= 5; i++)
             {
                 if (drOri[i.ToString() + "日"].GetType().Name.Trim().Equals("DBNull"))

@@ -201,9 +201,9 @@ public class Stock
     {
         int days = -1;
         KLine.ComputeMACD(kLineDay);
-        for (int i = index; i > 0; i++)
+        for (int i = index; i > 0; i--)
         {
-            if (kLineDay[index].macd > 0)
+            if (kLineDay[i].macd > 0)
             {
                 days++;
             }
@@ -221,9 +221,9 @@ public class Stock
         int days = -1;
         KLine.ComputeRSV(kLineDay);
         KLine.ComputeKDJ(kLineDay);
-        for (int i = index; i > 0; i++)
+        for (int i = index; i > 0; i--)
         {
-            if (kLineDay[index].j > kLineDay[index].k && kLineDay[index].k > kLineDay[index].d)
+            if (kLineDay[i].j > kLineDay[i].k && kLineDay[i].k > kLineDay[i].d)
             {
                 days++;
             }

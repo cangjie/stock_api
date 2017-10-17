@@ -267,6 +267,8 @@
         dt.Columns.Add("现价");
         dt.Columns.Add("买入价");
         dt.Columns.Add("支撑");
+        dt.Columns.Add("KDJ");
+        dt.Columns.Add("MACD");
         for (int i = 1; i <= 5; i++)
         {
             dt.Columns.Add(i.ToString() + "日");
@@ -426,6 +428,8 @@
             dr["下跌天数"] = continuesFallingDownPriceDays;
             dr["最低价"] = boxLowestPrice;
             dr["现价"] = currentPrice;
+            dr["KDJ"] = stock.kdjDays(currentIndex);
+            dr["MACD"] = stock.macdDays(currentIndex);
             double highestPrice = 0;
             for (int i = limitUpIndex; i <= currentIndex; i++)
             {
