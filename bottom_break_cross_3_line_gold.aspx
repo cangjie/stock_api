@@ -124,6 +124,8 @@
         dt.Columns.Add("放量", Type.GetType("System.Double"));
         dt.Columns.Add("3线势", Type.GetType("System.Int32"));
         dt.Columns.Add("K线势", Type.GetType("System.Int32"));
+        dt.Columns.Add("MACD", Type.GetType("System.Int32"));
+        dt.Columns.Add("KDJ", Type.GetType("System.Int32"));
         dt.Columns.Add("1日", Type.GetType("System.Double"));
         dt.Columns.Add("2日", Type.GetType("System.Double"));
         dt.Columns.Add("3日", Type.GetType("System.Double"));
@@ -202,30 +204,23 @@
             dr["名称"] = drOri["name"].ToString().Trim();
             dr["信号"] =  "";
             dr["信号"] = dr["信号"].ToString() + (currentPrice <= today3LinePrice ? "💩": "");
-            //dr["信号"] = dr["信号"].ToString().Trim() + ((stock.kLineDay[currentIndex].startPrice < today3LinePrice) ? "<a title=\"盘中过3线\" >📈</a>" : "");
-
-
             dr["今开"] = startPrice;
             dr["3线价"] = today3LinePrice;
             buyPrice = ((newBuyPrice != 0) ? newBuyPrice : buyPrice);
-
             buyPrice = Math.Max(today3LinePrice, stock.kLineDay[currentIndex].startPrice);
-
-            //if ((buyPrice - today3LinePrice) / today3LinePrice < 0.01)
-            //    dr["信号"] = dr["信号"].ToString().Trim() + ((stock.kLineDay[currentIndex].startPrice < today3LinePrice) ? "<a title=\"买入价位于3线附近\" >📈</a>" : "");
-
             dr["买入价"] = buyPrice;
             dr["收盘价"] = currentPrice;
             dr["放量"] = (currentVolume - lastDayVolume) / lastDayVolume;
             dr["3线势"] = int.Parse(drOri["going_down_3_line_days"].ToString());
             dr["K线势"] = int.Parse(drOri["under_3_line_days"].ToString());
+            dr["MACD"] = stock.macdDays(currentIndex);
+            dr["KDJ"] = stock.kdjDays(currentIndex);
             double minPrice = GetLowestPriceKlineForDays(stock, currentIndex, 20).lowestPrice;
             double maxPrice = GetHighestPriceKlineForDays(stock, currentIndex, 20).highestPrice;
             pressure = (maxPrice - minPrice) * 0.382 + minPrice;
             upSpacePercent = (pressure - buyPrice) / buyPrice;
             dr["均线压力"] = pressure;
             dr["上涨空间"] = upSpacePercent;
-
             if (upSpacePercent > 0 && (upSpacePercent * 100 +  (currentVolume - lastDayVolume) / lastDayVolume) > 4  )
                 dr["信号"] = dr["信号"].ToString().Trim() +  "<a title=\"放量且有上涨空间\" >📈</a>";
 
@@ -236,7 +231,6 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"买入价上涨超3%\" >🔥</a>";
             }
-
             dr["均线支撑"] = supportPrice;
             double maxIncreaseRate = 0;
             for (int i = 1; i <= 5 && i + currentIndex < stock.kLineDay.Length ; i++)
@@ -501,6 +495,8 @@
                     <asp:BoundColumn DataField="均线支撑" HeaderText="均线支撑"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线势" HeaderText="3线势"></asp:BoundColumn>
                     <asp:BoundColumn DataField="K线势" HeaderText="K线势"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="MACD" HeaderText="MACD"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="KDJ" HeaderText="KDJ"></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="2日" HeaderText="2日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3日" HeaderText="3日"></asp:BoundColumn>

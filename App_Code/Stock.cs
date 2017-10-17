@@ -197,6 +197,44 @@ public class Stock
         return count;
     }
 
+    public int macdDays(int index)
+    {
+        int days = -1;
+        KLine.ComputeMACD(kLineDay);
+        for (int i = index; i > 0; i++)
+        {
+            if (kLineDay[index].macd > 0)
+            {
+                days++;
+            }
+            else
+            {
+                break;
+            }
+        }
+
+        return days;
+    }
+
+    public int kdjDays(int index)
+    {
+        int days = -1;
+        KLine.ComputeRSV(kLineDay);
+        KLine.ComputeKDJ(kLineDay);
+        for (int i = index; i > 0; i++)
+        {
+            if (kLineDay[index].j > kLineDay[index].k && kLineDay[index].k > kLineDay[index].d)
+            {
+                days++;
+            }
+            else
+            {
+                break;
+            }
+        }
+        return days;
+    }
+
     public static KLine[] LoadLocalKLine(string gid, string type)
     {
         DataTable dt = DBHelper.GetDataTable(" select * from " + gid.Trim() + "_k_line where  type = '" + type + "' order by start_date ");

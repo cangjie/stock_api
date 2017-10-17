@@ -431,11 +431,18 @@ public class KLine
         }
     }
 
+    public static void SearchMACDAlert(KLine[] kArr)
+    {
+        SearchMACDAlert(kArr, 0);
+        
+    }
+
+
     public static void SearchMACDAlert(KLine[] kArr, int startIndex)
     {
         for (int i = startIndex; i < kArr.Length; i++)
         {
-            if (kArr[i - 1].macd < 0 && kArr[i].macd > 0)
+            if (i > 0 && kArr[i - 1].macd < 0 && kArr[i].macd > 0 && Math.Abs(kArr[i - 1].macd) + Math.Abs(  kArr[i].macd) >= 0.05)
             {
                 try
                 {
@@ -464,12 +471,20 @@ public class KLine
             {
                 if (kArr[i].j >= kArr[i].k && kArr[i - 1].j <= kArr[i - 1].k && Math.Abs(kArr[i].j - 50) > unEffectValue && Math.Abs(kArr[i].k - 50) > unEffectValue)
                 {
-                    DBHelper.InsertData("kdj_alert", new string[,] {
-                        { "gid", "varchar", kArr[i].gid.Trim()},
-                        { "alert_time", "datetime", kArr[i].endDateTime.ToString()},
-                        { "type", "varchar", kArr[i].type},
-                        { "price", "float", kArr[i].endPrice.ToString()}
-                    });
+                    try
+                    {
+
+                        DBHelper.InsertData("kdj_alert", new string[,] {
+                            { "gid", "varchar", kArr[i].gid.Trim()},
+                            { "alert_time", "datetime", kArr[i].endDateTime.ToString()},
+                            { "type", "varchar", kArr[i].type},
+                            { "price", "float", kArr[i].endPrice.ToString()}
+                        });
+                    }
+                    catch
+                    {
+
+                    }
                 }
             }
         }
