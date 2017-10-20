@@ -250,11 +250,11 @@
             if (kdjDays > -1 && kdjDays < 2 && f3 > currentPrice && currentPrice > double.Parse(dr["3线"].ToString().Trim())
                 && currentVolume > lastDayVolume)
             {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"当前价格比F3低，且高于3线，并且KDJ金叉，放量\" >📈</a>";
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"当前价格比F3低，且高于3线，并且KDJ金叉1日内，放量\" >📈</a>";
             }
             if (kdjDays > -1 && kdjDays < 2 &&  highestPrice < currentPrice && currentVolume > lastDayVolume)
             {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"价格高于20最高，KDJ金叉，放量\" >🔥</a>";
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"价格高于20最高，KDJ金叉1日内，放量\" >🔥</a>";
             }
             KLine.ComputeMACD(stock.kLineDay);
             if (stock.kLineDay[currentIndex].macd < 0 || currentPrice <= double.Parse(dr["3线"].ToString().Trim()) )
