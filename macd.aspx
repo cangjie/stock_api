@@ -226,7 +226,8 @@
             double currentVolume = Stock.GetVolumeAndAmount(stock.gid, currentDate)[0];
             double volumeIncrease = (currentVolume - lastDayVolume) / lastDayVolume;
             dr["放量"] = currentVolume / lastDayVolume;
-            dr["kdj"] = stock.kdjDays(currentIndex);
+            int kdjDays = stock.kdjDays(currentIndex);
+            dr["kdj"] = kdjDays.ToString();
             dr["3线"] = stock.GetAverageSettlePrice(currentIndex, 3, 3);
             double lowestPrice = stock.LowestPrice(currentDate, 20);
             double highestPrice = stock.HighestPrice(currentDate, 40);
@@ -246,12 +247,12 @@
                 dr[i.ToString() + "日"] = (highPrice - currentPrice) / currentPrice;
             }
             dr["总计"] = (maxPrice - currentPrice) / currentPrice;
-            if (!dr["KDJ"].ToString().Equals("-1") && f3 > currentPrice && currentPrice > double.Parse(dr["3线"].ToString().Trim())
+            if (kdjDays > -1 && kdjDays < 2 && f3 > currentPrice && currentPrice > double.Parse(dr["3线"].ToString().Trim())
                 && currentVolume > lastDayVolume)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"当前价格比F3低，且高于3线，并且KDJ金叉，放量\" >📈</a>";
             }
-            if (!dr["KDJ"].ToString().Equals("-1") &&  highestPrice < currentPrice && currentVolume > lastDayVolume)
+            if (kdjDays > -1 && kdjDays < 2 &&  highestPrice < currentPrice && currentVolume > lastDayVolume)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"价格高于20最高，KDJ金叉，放量\" >🔥</a>";
             }
