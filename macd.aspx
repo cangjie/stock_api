@@ -106,7 +106,10 @@
 
     public DataTable RenderHtml(DataRow[] drArr)
     {
+        
         DataTable dt = new DataTable();
+        if (drArr.Length == 0)
+            return dt;
         for (int i = 0; i < drArr[0].Table.Columns.Count; i++)
         {
             dt.Columns.Add(drArr[0].Table.Columns[i].Caption.Trim(), Type.GetType("System.String"));

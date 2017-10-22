@@ -696,6 +696,10 @@ public class Stock
     }
     public static double[] GetVolumeAndAmount(string gid, DateTime currentDate)
     {
+        if (currentDate.ToShortTimeString().Equals("0:00"))
+        {
+            currentDate = currentDate.AddHours(16);
+        }
 
         DataTable dtTimeline = DBHelper.GetDataTable(" select top 1 * from  " + gid.Trim() + "_timeline where ticktime <= '" + currentDate.ToString() + "' order by ticktime desc ");
         DataTable dtNormal = DBHelper.GetDataTable(" select top 1 * from  " + gid + " where convert(datetime, date + ' ' + time )  <= '" + currentDate.ToString() + "'  order by convert(datetime, date + ' ' + time ) desc   ");
