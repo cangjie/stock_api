@@ -127,8 +127,11 @@
                     switch (drArr[0].Table.Columns[i].Caption.Trim())
                     {
                         case "昨收":
-                        case "买入":
                             dr[i] = Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2).ToString();
+                            break;
+                        case "买入":
+                            double buyPrice = Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2);
+                            dr[i] = "<font color=\"" + ((buyPrice > currentPrice) ? "red" : ((buyPrice==currentPrice)? "gray" : "green")) + "\" >" + Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2).ToString() + "</font>";
                             break;
                         case "今开":
                         case "今收":
@@ -265,10 +268,9 @@
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
             }
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
-            if (kdjDays > -1 && kdjDays < 2 &&   (double)dr["今涨"] > 0.04 &&currentPrice > double.Parse(dr["3线"].ToString().Trim())
-                && currentVolume > lastDayVolume)
+            if (kdjDays > -1 && kdjDays < 2 &&   openPrice > lowestPrice && openPrice < f3 * 0.985   && currentVolume > lastDayVolume && (double)dr["今涨"] <= 0.09)
             {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"双金叉放量涨幅超过4%\" >📈</a>";
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"开盘价距离F3有1.5%的上涨空间\" >📈</a>";
             }
             if (kdjDays > -1 && kdjDays < 2 &&  highestPrice < currentPrice && currentVolume > lastDayVolume)
             {
@@ -279,9 +281,9 @@
                 dr["信号"] = dr["信号"].ToString() + "🛍️";
             }
             KLine.ComputeMACD(stock.kLineDay);
-            if (stock.kLineDay[currentIndex].macd < 0 || currentPrice <= double.Parse(dr["3线"].ToString().Trim()) )
+            if (currentPrice <= double.Parse(dr["3线"].ToString().Trim()) )
             {
-                //dr["信号"] = dr["信号"].ToString() + "💩";
+                dr["信号"] = dr["信号"].ToString() + "💩";
             }
             dt.Rows.Add(dr);
         }
