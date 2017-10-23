@@ -127,6 +127,7 @@
                     switch (drArr[0].Table.Columns[i].Caption.Trim())
                     {
                         case "昨收":
+                        case "买入":
                             dr[i] = Math.Round(settle, 2).ToString();
                             break;
                         case "今开":
@@ -200,7 +201,7 @@
         dt.Columns.Add("F3", Type.GetType("System.Double"));
         dt.Columns.Add("F5", Type.GetType("System.Double"));
         dt.Columns.Add("高点", Type.GetType("System.Double"));
-
+        dt.Columns.Add("买入", Type.GetType("System.Double"));
         for (int i = 1; i <= 5; i++)
         {
             dt.Columns.Add(i.ToString() + "日", Type.GetType("System.Double"));
@@ -236,10 +237,24 @@
             double highestPrice = stock.HighestPrice(currentDate, 40);
             double f3 = lowestPrice + (highestPrice - lowestPrice) * 0.382;
             double f5 = lowestPrice + (highestPrice - lowestPrice) * 0.618;
+            double buyPrice = stock.kLineDay[currentIndex].highestPrice;
+            if (buyPrice > highestPrice)
+                buyPrice = Math.Max(highestPrice, openPrice);
+            else if (buyPrice > f5)
+                buyPrice = Math.Max(openPrice, f5);
+            else if (buyPrice > f3)
+                buyPrice = Math.Max(openPrice, f3);
+            else if (buyPrice > lowestPrice)
+                buyPrice = Math.Max(openPrice, lowestPrice);
+            else
+            {
+                buyPrice = currentPrice;
+            }
             dr["低点"] = lowestPrice;
             dr["F3"] = f3;
             dr["F5"] = f5;
             dr["高点"] = highestPrice;
+            dr["买入"] = buyPrice;
             double maxPrice = 0;
             for (int i = 1; i <= 5; i++)
             {
@@ -247,9 +262,9 @@
                     break;
                 double highPrice = stock.kLineDay[currentIndex + i].highestPrice;
                 maxPrice = Math.Max(maxPrice, highPrice);
-                dr[i.ToString() + "日"] = (highPrice - currentPrice) / currentPrice;
+                dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
             }
-            dr["总计"] = (maxPrice - currentPrice) / currentPrice;
+            dr["总计"] = (maxPrice - buyPrice) / buyPrice;
             if (kdjDays > -1 && kdjDays < 2 &&   (double)dr["今涨"] > 0.04 &&currentPrice > double.Parse(dr["3线"].ToString().Trim())
                 && currentVolume > lastDayVolume)
             {
@@ -308,7 +323,7 @@
             }
             System.Threading.Thread.Sleep(60000);
         }
-        
+
     }
 </script>
 
@@ -349,6 +364,7 @@
                     <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F5" HeaderText="F5"></asp:BoundColumn>
                     <asp:BoundColumn DataField="高点" HeaderText="高点"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="买入" HeaderText="买入"></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="2日" HeaderText="2日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3日" HeaderText="3日"></asp:BoundColumn>
