@@ -22,7 +22,7 @@
         if (currentDate.Year < 2000)
             currentDate = DateTime.Now;
         DataTable dtOri = GetData(currentDate);
-        DataRow[] drOriArr = dtOri.Select(Util.GetSafeRequestValue(Request, "whereclause", "").Trim(), sort);
+        DataRow[] drOriArr = dtOri.Select(Util.GetSafeRequestValue(Request, "whereclause", "").Trim(), sort + ", 总计 desc");
         return RenderHtml(drOriArr);
     }
 
@@ -257,7 +257,7 @@
             }
             if (kdjDays > -1 && kdjDays < 2 &&  highestPrice < currentPrice && currentVolume > lastDayVolume)
             {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"价格高于20最高，KDJ金叉1日内，放量\" >🔥</a>";
+                //dr["信号"] = dr["信号"].ToString() + "<a title=\"价格高于20最高，KDJ金叉1日内，放量\" >🔥</a>";
             }
             KLine.ComputeMACD(stock.kLineDay);
             if (stock.kLineDay[currentIndex].macd < 0 || currentPrice <= double.Parse(dr["3线"].ToString().Trim()) )
