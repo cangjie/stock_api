@@ -128,7 +128,7 @@
                     {
                         case "昨收":
                         case "买入":
-                            dr[i] = Math.Round(settle, 2).ToString();
+                            dr[i] = Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2).ToString();
                             break;
                         case "今开":
                         case "今收":
@@ -238,14 +238,14 @@
             double f3 = lowestPrice + (highestPrice - lowestPrice) * 0.382;
             double f5 = lowestPrice + (highestPrice - lowestPrice) * 0.618;
             double buyPrice = stock.kLineDay[currentIndex].highestPrice;
-            if (buyPrice > highestPrice)
-                buyPrice = Math.Max(highestPrice, openPrice);
-            else if (buyPrice > f5)
-                buyPrice = Math.Max(openPrice, f5);
-            else if (buyPrice > f3)
-                buyPrice = Math.Max(openPrice, f3);
-            else if (buyPrice > lowestPrice)
-                buyPrice = Math.Max(openPrice, lowestPrice);
+            if (buyPrice > highestPrice * 1.005)
+                buyPrice = Math.Max(highestPrice * 1.005, openPrice);
+            else if (buyPrice > f5 * 1.005 )
+                buyPrice = Math.Max(openPrice, f5 * 1.005);
+            else if (buyPrice > f3 * 1.005)
+                buyPrice = Math.Max(openPrice, f3 * 1.005 );
+            else if (buyPrice > lowestPrice * 1.005 )
+                buyPrice = Math.Max(openPrice, lowestPrice * 1.005);
             else
             {
                 buyPrice = currentPrice;
@@ -277,7 +277,7 @@
             KLine.ComputeMACD(stock.kLineDay);
             if (stock.kLineDay[currentIndex].macd < 0 || currentPrice <= double.Parse(dr["3线"].ToString().Trim()) )
             {
-                dr["信号"] = dr["信号"].ToString() + "💩";
+                //dr["信号"] = dr["信号"].ToString() + "💩";
             }
             dt.Rows.Add(dr);
         }
