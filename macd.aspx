@@ -274,6 +274,10 @@
             {
                 //dr["信号"] = dr["信号"].ToString() + "<a title=\"价格高于20最高，KDJ金叉1日内，放量\" >🔥</a>";
             }
+            if (Math.Abs(currentPrice - buyPrice) / currentPrice <= 0.005)
+            {
+                dr["信号"] = dr["信号"].ToString() + "🛍️";
+            }
             KLine.ComputeMACD(stock.kLineDay);
             if (stock.kLineDay[currentIndex].macd < 0 || currentPrice <= double.Parse(dr["3线"].ToString().Trim()) )
             {
