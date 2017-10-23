@@ -55,7 +55,13 @@ public class StockWatcher
                                 stock.kLineDay[currentIndex - 1].endPrice, stock.kLineDay[currentIndex].startPrice, stock.kLineDay[currentIndex].endPrice, 
                                 stock.kLineDay[currentIndex].volume);
                         }
-                        
+
+                        KLine.ComputeRSV(stock.kLineDay);
+                        KLine.ComputeKDJ(stock.kLineDay);
+                        KLine.ComputeMACD(stock.kLineDay);
+                        KLine.SearchMACDAlert(stock.kLineDay, stock.kLineDay.Length - 1);
+                        KLine.SearchKDJAlert(stock.kLineDay, stock.kLineDay.Length - 1);
+
                     }
                 }
             }

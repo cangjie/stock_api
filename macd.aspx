@@ -106,7 +106,7 @@
 
     public DataTable RenderHtml(DataRow[] drArr)
     {
-        
+
         DataTable dt = new DataTable();
         if (drArr.Length == 0)
             return dt;
@@ -277,7 +277,38 @@
 
     protected void dg_SortCommand(object source, DataGridSortCommandEventArgs e)
     {
+        sort = e.SortExpression.Replace("|", " ");
+        string columnName = sort.Split(' ')[0].Trim();
+        string sortSqu = sort.Split(' ')[1].Trim();
+        for (int i = 0; i < dg.Columns.Count; i++)
+        {
+            if (dg.Columns[i].SortExpression.StartsWith(columnName))
+            {
+                dg.Columns[i].SortExpression = columnName.Trim() + "|" + (sortSqu.Trim().Equals("asc")? "desc":"asc");
+            }
+        }
+        dg.DataSource = GetData();
+        dg.DataBind();
+    }
 
+    public static void SearchMacdKdjAlert()
+    {
+        for(; Util.IsTransacDay(Util.GetDay(DateTime.Now)) && Util.IsTransacTime(DateTime.Now); )
+        {
+            string[] gidArr = Util.GetAllGids();
+            for (int i = 0; i < gidArr.Length; i++)
+            {
+                Stock stock = new Stock(gidArr[i].Trim());
+                stock.LoadKLineDay();
+                KLine.ComputeRSV(stock.kLineDay);
+                KLine.ComputeKDJ(stock.kLineDay);
+                KLine.ComputeMACD(stock.kLineDay);
+                KLine.SearchMACDAlert(stock.kLineDay, stock.kLineDay.Length - 1);
+                KLine.SearchKDJAlert(stock.kLineDay, stock.kLineDay.Length - 1);
+            }
+            System.Threading.Thread.Sleep(60000);
+        }
+        
     }
 </script>
 
@@ -310,7 +341,7 @@
                     <asp:BoundColumn DataField="昨收" HeaderText="昨收"></asp:BoundColumn>
                     <asp:BoundColumn DataField="今开" HeaderText="今开"></asp:BoundColumn>
                     <asp:BoundColumn DataField="今收" HeaderText="今收"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="今涨" HeaderText="今涨"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="今涨" HeaderText="今涨" SortExpression="今涨|desc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="放量" HeaderText="放量" SortExpression="放量|desc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ" HeaderText="KDJ"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
