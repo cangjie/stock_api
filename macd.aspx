@@ -250,10 +250,10 @@
                 dr[i.ToString() + "日"] = (highPrice - currentPrice) / currentPrice;
             }
             dr["总计"] = (maxPrice - currentPrice) / currentPrice;
-            if (kdjDays > -1 && kdjDays < 2 && f3 > currentPrice && currentPrice > double.Parse(dr["3线"].ToString().Trim())
+            if (kdjDays > -1 && kdjDays < 2 &&   (double)dr["今涨"] > 0.04 &&currentPrice > double.Parse(dr["3线"].ToString().Trim())
                 && currentVolume > lastDayVolume)
             {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"当前价格比F3低，且高于3线，并且KDJ金叉1日内，放量\" >📈</a>";
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"双金叉放量涨幅超过4%\" >📈</a>";
             }
             if (kdjDays > -1 && kdjDays < 2 &&  highestPrice < currentPrice && currentVolume > lastDayVolume)
             {
