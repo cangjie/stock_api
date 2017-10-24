@@ -304,7 +304,7 @@
             dr["F5"] = f5;
             dr["高点"] = highestPrice;
             dr["买入"] = buyPrice;
-            if (kdjDays > -1 && kdjDays < 2 &&   openPrice > lowestPrice && openPrice < f3 * 0.985   && currentVolume > lastDayVolume && (double)dr["今涨"] <= 0.09)
+            if (kdjDays > -1 && kdjDays < 2 &&   openPrice > lowestPrice && openPrice < f3 * 0.985   && (double)dr["今涨"] <= 0.09)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"开盘价距离F3有1.5%的上涨空间\" >📈</a>";
             }
