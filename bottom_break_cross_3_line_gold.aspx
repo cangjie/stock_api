@@ -269,7 +269,7 @@
         {
             DataRow dr = dt.NewRow();
             dr["代码"] = "<a href=\"show_k_line_day.aspx?gid=" + drOri["代码"].ToString().Trim() + "&name="
-                + Server.UrlEncode(drOri["名称"].ToString().Trim()) + "&gids=" + allGids.Trim() + "\" target=\"_blank\" >"
+                + Server.UrlEncode(drOri["名称"].ToString().Trim()) + "&gids=" + Server.UrlEncode(allGids.Trim()) + "\" target=\"_blank\" >"
                 +  drOri["代码"].ToString().Trim().Remove(0, 2) + "</a>";
             dr["名称"] = "<a href=\"https://touzi.sina.com.cn/public/xray/details/" + drOri["代码"].ToString().Trim()
                 + "\" target=\"_blank\"  >" + drOri["名称"].ToString().Trim() + "</a>";
