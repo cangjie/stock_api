@@ -1,16 +1,35 @@
 ﻿<%@ Page Language="C#" %>
 <%@ Import Namespace="System.Data" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
+<%@ Import Namespace="System.Threading" %>
 <!DOCTYPE html>
 
 <script runat="server">
 
     public string sort = "放量 desc";
 
+    public static ThreadStart ts = new ThreadStart(PageWatcher);
+
+    public static Thread t = new Thread(ts);
+
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack)
         {
+            try
+            {
+                if (t.ThreadState != ThreadState.Running && t.ThreadState != ThreadState.WaitSleepJoin)
+                {
+                    t.Abort();
+                    ts = new ThreadStart(PageWatcher);
+                    t = new Thread(ts);
+                    t.Start();
+                }
+            }
+            catch(Exception err)
+            {
+                Console.WriteLine(err.ToString());
+            }
             dg.DataSource = GetData();
             dg.DataBind();
         }
@@ -331,6 +350,35 @@
         }
 
     }
+
+    public static void PageWatcher()
+    {
+        for (; true;)
+        {
+            if (Util.IsTransacDay(DateTime.Parse(DateTime.Now.ToShortDateString())) && Util.IsTransacTime(DateTime.Now))
+            {
+                DataTable dt = GetData(Util.GetDay(DateTime.Now));
+                foreach (DataRow dr in dt.Rows)
+                {
+                    if ((double)dr["放量"] >= 1 && dr["信号"].ToString().IndexOf("📈") >= 0 && dr["信号"].ToString().IndexOf("🛍️") >= 0 && dr["信号"].ToString().IndexOf("💩") < 0)
+                    {
+                        string gid = dr["代码"].ToString().Trim();
+                        Stock s = new Stock(gid);
+                        KLine.RefreshKLine(gid, DateTime.Parse(DateTime.Now.ToShortDateString()));
+                        double volumeIncrease = Math.Round(100 * double.Parse(dr["放量"].ToString().Trim()), 2);
+                        string message = "放量：" + volumeIncrease.ToString() + "%，KDJ：" + dr["KDJ"].ToString().Trim() + "，买入："
+                            + Math.Round((double)dr["买入"], 2).ToString() + "，现价：" + Math.Round((double)dr["今收"], 2);
+                        if (StockWatcher.AddAlert(Util.GetDay(DateTime.Now), gid, "macd", s.Name.Trim(), message))
+                        {
+                            StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", s.gid.Trim(), s.Name + " " + message, Math.Round((double)dr["今收"], 2), "macd");
+                        }
+                    }
+                }
+            }
+            Thread.Sleep(60000);
+        }
+    }
+
 </script>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -384,6 +432,9 @@
                 <PagerStyle BackColor="#999999" ForeColor="Black" HorizontalAlign="Center" Mode="NumericPages" />
                 <SelectedItemStyle BackColor="#008A8C" Font-Bold="True" ForeColor="White" />
                 </asp:DataGrid></td>
+            </tr>
+            <tr>
+                <td><%=t.ThreadState.ToString() %></td>
             </tr>
         </table>
     </div>
