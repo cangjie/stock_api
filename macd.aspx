@@ -331,7 +331,7 @@
             dr["F5"] = f5;
             dr["高点"] = highestPrice;
             dr["买入"] = buyPrice;
-            if (kdjDays > -1 && kdjDays < 2 &&   openPrice > lowestPrice && openPrice < f3 * 0.985   && (double)dr["今涨"] <= 0.09)
+            if (kdjDays > -1 && kdjDays < 2 &&   buyPrice > lowestPrice && buyPrice < f3 * 0.985 && (double)dr["今涨"] <= 0.09)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"开盘价距离F3有1.5%的上涨空间\" >📈</a>";
             }
@@ -348,7 +348,7 @@
 
             if (kdjDays > -1 && kdjDays < 2 &&  currentPrice < f3 &&  currentVolume < lastDayVolume )
             {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"价格低于F3，KDJ金叉1日内，缩量\" >🔥</a>";
+                //dr["信号"] = dr["信号"].ToString() + "<a title=\"价格低于F3，KDJ金叉1日内，缩量\" >🔥</a>";
             }
             if (Math.Abs(currentPrice - buyPrice) / currentPrice <= 0.005)
             {
@@ -359,6 +359,12 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "💩";
             }
+            KLine.ComputeMACD(stock.kLineDay);
+            if (Math.Abs(stock.kLineDay[currentIndex].dea - 0) < 0.05 && Math.Abs(stock.kLineDay[currentIndex].dif - 0) < 0.05)
+            {
+                dr["信号"] = dr["信号"].ToString() + "🔥";
+            }
+
             dt.Rows.Add(dr);
         }
         return dt;
@@ -474,7 +480,7 @@
                     <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F5" HeaderText="F5"></asp:BoundColumn>
                     <asp:BoundColumn DataField="高点" HeaderText="高点"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="买入" HeaderText="买入"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="2日" HeaderText="2日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3日" HeaderText="3日"></asp:BoundColumn>

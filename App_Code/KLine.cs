@@ -407,8 +407,8 @@ public class KLine
     }
     public static void ComputeMACD(KLine[] kArr)
     {
-        int shortDays = 12;
-        int longDays = 26;
+        int shortDays = 8;
+        int longDays = 17;
         int midDays = 9;
 
 
