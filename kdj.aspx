@@ -56,9 +56,6 @@
         int fireCount = 0;
         int[] fireSum = new int[] { 0, 0, 0, 0, 0, 0 };
 
-        int starCount = 0;
-        int[] starSum = new int[] { 0, 0, 0, 0, 0, 0 };
-
         int shitCount = 0;
 
         foreach (DataRow drOri in drOriArr)
@@ -66,17 +63,13 @@
             if (drOri["信号"].ToString().IndexOf("💩") < 0)
             {
                 totalCount++;
-                if (drOri["信号"].ToString().IndexOf("📈") >= 0)
+                if (drOri["信号"].ToString().IndexOf("📈") > 0)
                 {
                     raiseCount++;
                 }
-                if (drOri["信号"].ToString().IndexOf("🔥") >= 0)
+                if (drOri["信号"].ToString().IndexOf("🔥") > 0)
                 {
                     fireCount++;
-                }
-                if (drOri["信号"].ToString().IndexOf("🌟") >= 0)
-                {
-                    starCount++;
                 }
                 for (int i = 1; i < 7; i++)
                 {
@@ -84,17 +77,13 @@
                     if (!drOri[colName].ToString().Equals("") && (double)(drOri[colName]) >= 0.01)
                     {
                         totalSum[i - 1]++;
-                        if (drOri["信号"].ToString().IndexOf("📈") >= 0)
+                        if (drOri["信号"].ToString().IndexOf("📈") > 0)
                         {
                             raiseSum[i - 1]++;
                         }
-                        if (drOri["信号"].ToString().IndexOf("🔥") >= 0)
+                        if (drOri["信号"].ToString().IndexOf("🔥") > 0)
                         {
                             fireSum[i - 1]++;
-                        }
-                        if (drOri["信号"].ToString().IndexOf("🌟") >= 0)
-                        {
-                            starSum[i - 1]++;
                         }
                     }
                 }
@@ -120,24 +109,18 @@
         DataRow drFire = dt.NewRow();
         drFire["信号"] = "🔥";
         drFire["昨收"] = fireCount.ToString();
-        DataRow drStar = dt.NewRow();
-        drStar["信号"] = "🌟";
-        drStar["昨收"] = starCount.ToString();
-
         for (int i = 1; i < 7; i++)
         {
             string columeCaption = ((i == 6) ? "总计" : i.ToString() + "日");
             drTotal[columeCaption] = Math.Round(100 * (double)totalSum[i - 1] / (double)totalCount, 2).ToString() + "%";
             drFire[columeCaption] = Math.Round(100 * (double)fireSum[i-1] / (double)fireCount, 2).ToString() + "%";
             drRaise[columeCaption] = Math.Round(100 * (double)raiseSum[i-1] / (double)raiseCount, 2).ToString() + "%";
-            drStar[columeCaption] = Math.Round(100 * (double)starSum[i - 1] / (double)starCount, 2).ToString() + "%";
         }
 
         dt.Rows.Add(drTotal);
         dt.Rows.Add(drShit);
         dt.Rows.Add(drRaise);
         dt.Rows.Add(drFire);
-        dt.Rows.Add(drStar);
     }
 
     public DataTable RenderHtml(DataRow[] drArr)
@@ -223,7 +206,7 @@
     {
         currentDate = Util.GetDay(currentDate);
         DataTable dtOri = new DataTable();
-        SqlDataAdapter da = new SqlDataAdapter(" select * from macd_alert where alert_time = '" + currentDate.ToShortDateString() + " 15:00' ", Util.conStr);
+        SqlDataAdapter da = new SqlDataAdapter(" select * from kdj_alert where alert_time = '" + currentDate.ToShortDateString() + " 15:00' ", Util.conStr);
         da.Fill(dtOri);
         DataTable dt = new DataTable();
         dt.Columns.Add("代码", Type.GetType("System.String"));
@@ -234,7 +217,7 @@
         dt.Columns.Add("今收", Type.GetType("System.Double"));
         dt.Columns.Add("今涨", Type.GetType("System.Double"));
         dt.Columns.Add("放量", Type.GetType("System.Double"));
-        dt.Columns.Add("KDJ", Type.GetType("System.Int32"));
+        dt.Columns.Add("MACD", Type.GetType("System.Int32"));
         dt.Columns.Add("3线", Type.GetType("System.Double"));
         dt.Columns.Add("低点", Type.GetType("System.Double"));
         dt.Columns.Add("F3", Type.GetType("System.Double"));
@@ -250,8 +233,11 @@
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
             stock.LoadKLineDay();
+            KLine.ComputeRSV(stock.kLineDay);
+            KLine.ComputeKDJ(stock.kLineDay);
+            stock.kLineHour = KLine.GetLocalKLine(stock.gid, "1hr");
             int currentIndex = stock.GetItemIndex(currentDate);
-            if (currentIndex < 1)
+            if (currentIndex < 1 || stock.kLineDay[currentIndex].k >= 40 || stock.kLineDay[currentIndex].d >= 40 )
                 continue;
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
@@ -270,8 +256,8 @@
             double currentVolume = Stock.GetVolumeAndAmount(stock.gid, currentDate)[0];
             double volumeIncrease = (currentVolume - lastDayVolume) / lastDayVolume;
             dr["放量"] = currentVolume / lastDayVolume;
-            int kdjDays = stock.kdjDays(currentIndex);
-            dr["kdj"] = kdjDays.ToString();
+            int macdDays = stock.macdDays(currentIndex);
+            dr["kdj"] = macdDays.ToString();
             dr["3线"] = stock.GetAverageSettlePrice(currentIndex, 3, 3);
             double lowestPrice = stock.LowestPrice(currentDate, 20);
             double highestPrice = stock.HighestPrice(currentDate, 40);
@@ -348,7 +334,7 @@
             dr["F5"] = f5;
             dr["高点"] = highestPrice;
             dr["买入"] = buyPrice;
-            if (kdjDays > -1 && kdjDays < 2 &&   buyPrice > lowestPrice && buyPrice < f3 * 0.985 && (double)dr["今涨"] <= 0.09)
+            if (macdDays > -1 && macdDays < 2 &&   buyPrice > lowestPrice && buyPrice < f3 * 0.985 && (double)dr["今涨"] <= 0.09)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"开盘价距离F3有1.5%的上涨空间\" >📈</a>";
             }
@@ -363,7 +349,7 @@
             }
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
 
-            if (kdjDays > -1 && kdjDays < 2 &&  currentPrice < f3 &&  currentVolume < lastDayVolume )
+            if (macdDays > -1 && macdDays < 2 &&  currentPrice < f3 &&  currentVolume < lastDayVolume )
             {
                 //dr["信号"] = dr["信号"].ToString() + "<a title=\"价格低于F3，KDJ金叉1日内，缩量\" >🔥</a>";
             }
@@ -379,17 +365,9 @@
             KLine.ComputeMACD(stock.kLineDay);
             if (Math.Abs(stock.kLineDay[currentIndex].dea - 0) < 0.05 && Math.Abs(stock.kLineDay[currentIndex].dif - 0) < 0.05)
             {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"MACD小于0.05\" >🔥</a>";
+                dr["信号"] = dr["信号"].ToString() + "🔥";
             }
-            if (kdjDays > -1)
-            {
-                KLine.ComputeRSV(stock.kLineDay);
-                KLine.ComputeKDJ(stock.kLineDay);
-                if (stock.kLineDay[currentIndex - kdjDays].d <= 30 && stock.kLineDay[currentIndex - kdjDays].k <= 30)
-                {
-                    dr["信号"] = dr["信号"].ToString() + "<a title=\"KD小于30\" >🌟</a>";
-                }
-            }
+
             dt.Rows.Add(dr);
         }
         return dt;

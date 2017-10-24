@@ -216,6 +216,25 @@ public class Stock
         return days;
     }
 
+    public static int macdItems(int index, KLine[] kArr)
+    {
+        int itmes = -1;
+        KLine.ComputeMACD(kArr);
+        for (int i = index; i > 0; i--)
+        {
+            if (kArr[i].macd > 0)
+            {
+                itmes++;
+            }
+            else
+            {
+                break;
+            }
+        }
+
+        return itmes;
+    }
+
     public int kdjDays(int index)
     {
         int days = -1;
