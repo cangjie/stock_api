@@ -304,6 +304,10 @@
             dr["F5"] = f5;
             dr["高点"] = highestPrice;
             dr["买入"] = buyPrice;
+            if (kdjDays > -1 && kdjDays < 2 &&   openPrice > lowestPrice && openPrice < f3 * 0.985   && currentVolume > lastDayVolume && (double)dr["今涨"] <= 0.09)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"开盘价距离F3有1.5%的上涨空间\" >📈</a>";
+            }
             double maxPrice = 0;
             for (int i = 1; i <= 5; i++)
             {
@@ -314,10 +318,7 @@
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
             }
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
-            if (kdjDays > -1 && kdjDays < 2 &&   openPrice > lowestPrice && openPrice < f3 * 0.985   && currentVolume > lastDayVolume && (double)dr["今涨"] <= 0.09)
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"开盘价距离F3有1.5%的上涨空间\" >📈</a>";
-            }
+            
             if (kdjDays > -1 && kdjDays < 2 &&  currentPrice < f3 &&  currentVolume < lastDayVolume )
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"价格低于F3，KDJ金叉1日内，缩量\" >🔥</a>";
@@ -394,7 +395,8 @@
                         KLine.RefreshKLine(gid, DateTime.Parse(DateTime.Now.ToShortDateString()));
                         double volumeIncrease = Math.Round(100 * double.Parse(dr["放量"].ToString().Trim()), 2);
                         string message = "放量：" + volumeIncrease.ToString() + "%，KDJ：" + dr["KDJ"].ToString().Trim() + "，买入："
-                            + Math.Round((double)dr["买入"], 2).ToString() + "，现价：" + Math.Round((double)dr["今收"], 2);
+                            + Math.Round((double)dr["买入"], 2).ToString() + "，现价：" + Math.Round((double)dr["今收"], 2)
+                            + "，F3：" + Math.Round((double)dr["F3"], 2).ToString() + "，F5：" + Math.Round((double)dr["F5"], 2).ToString();
                         if (StockWatcher.AddAlert(Util.GetDay(DateTime.Now), gid, "macd", s.Name.Trim(), message))
                         {
                             StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", s.gid.Trim(), s.Name + " " + message, Math.Round((double)dr["今收"], 2), "macd");
