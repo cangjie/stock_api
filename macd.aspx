@@ -262,7 +262,32 @@
             double f5 = lowestPrice + (highestPrice - lowestPrice) * 0.618;
             double buyPrice = stock.kLineDay[currentIndex].startPrice;
             double todayHigh = stock.kLineDay[currentIndex].highestPrice;
+            if (todayHigh < lowestPrice * 0.985)
+            {
+                buyPrice = todayHigh;
+            }
+            else if (openPrice < lowestPrice * 0985 && todayHigh >= lowestPrice * 0.985)
+            {
+                buyPrice = lowestPrice * 0.985;
+            }
+            else if (openPrice < f3 * 0.985 && todayHigh >= f3 * 0.985)
+            {
+                buyPrice = f3 * 0.985;
+            }
+            else if (openPrice < f5 && todayHigh >= f5 * 0.985)
+            {
+                buyPrice = f5 * 0.985;
+            }
+            else if (openPrice < highestPrice * 0.985 && todayHigh >= highestPrice * 0.985)
+            {
+                buyPrice = highestPrice * 0.985;
+            }
+            else
+            {
+                buyPrice = openPrice;
+            }
 
+            /*
             if (openPrice < lowestPrice * 0.985 && todayHigh >= lowestPrice * 0.985)
             {
                 buyPrice = lowestPrice * 0.985;
@@ -283,7 +308,7 @@
             {
                 buyPrice = openPrice;
             }
-
+            */
             /*
 
             if (buyPrice > highestPrice * 1.005)
@@ -318,7 +343,7 @@
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
             }
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
-            
+
             if (kdjDays > -1 && kdjDays < 2 &&  currentPrice < f3 &&  currentVolume < lastDayVolume )
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"价格低于F3，KDJ金叉1日内，缩量\" >🔥</a>";
