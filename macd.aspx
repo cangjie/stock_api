@@ -318,9 +318,9 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"开盘价距离F3有1.5%的上涨空间\" >📈</a>";
             }
-            if (kdjDays > -1 && kdjDays < 2 &&  currentPrice < f3 &&  currentVolume > lastDayVolume )
+            if (kdjDays > -1 && kdjDays < 2 &&  currentPrice < f3 &&  currentVolume < lastDayVolume )
             {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"价格高于20最高，KDJ金叉1日内，放量\" >🔥</a>";
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"价格低于F3，KDJ金叉1日内，缩量\" >🔥</a>";
             }
             if (Math.Abs(currentPrice - buyPrice) / currentPrice <= 0.005)
             {
