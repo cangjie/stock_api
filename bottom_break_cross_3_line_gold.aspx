@@ -210,7 +210,7 @@
             buyPrice = Math.Max(today3LinePrice, stock.kLineDay[currentIndex].startPrice);
             dr["买入价"] = buyPrice;
             dr["收盘价"] = currentPrice;
-            dr["放量"] = (currentVolume - lastDayVolume) / lastDayVolume;
+            dr["放量"] = currentVolume  / lastDayVolume;
             dr["3线势"] = int.Parse(drOri["going_down_3_line_days"].ToString());
             dr["K线势"] = int.Parse(drOri["under_3_line_days"].ToString());
             dr["MACD"] = stock.macdDays(currentIndex);
