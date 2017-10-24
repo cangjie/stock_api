@@ -246,6 +246,7 @@
             dr["昨收"] = settlePrice;
             dr["今开"] = openPrice;
             dr["今收"] = currentPrice;
+
             dr["今涨"] = (stock.kLineDay[currentIndex].highestPrice - settlePrice) / settlePrice;
             DateTime lastDate = DateTime.Parse(stock.kLineDay[currentIndex - 1].startDateTime.ToShortDateString());
             double lastDayVolume = Stock.GetVolumeAndAmount(stock.gid, lastDate)[0];
@@ -259,7 +260,32 @@
             double highestPrice = stock.HighestPrice(currentDate, 40);
             double f3 = lowestPrice + (highestPrice - lowestPrice) * 0.382;
             double f5 = lowestPrice + (highestPrice - lowestPrice) * 0.618;
-            double buyPrice = stock.kLineDay[currentIndex].highestPrice;
+            double buyPrice = stock.kLineDay[currentIndex].startPrice;
+            double todayHigh = stock.kLineDay[currentIndex].highestPrice;
+
+            if (openPrice < lowestPrice * 0.985 && todayHigh >= lowestPrice * 0.985)
+            {
+                buyPrice = lowestPrice * 0.985;
+            }
+            else if (openPrice < f3 * 0.985 && todayHigh >= f3 * 0.985)
+            {
+                buyPrice = f3 * 0.985;
+            }
+            else if (openPrice < f5 * 0.985 && todayHigh >= f5 * 0.985)
+            {
+                buyPrice = f5 * 0.985;
+            }
+            else if (openPrice < highestPrice * 0.985 && todayHigh >= highestPrice * 0.985)
+            {
+                buyPrice = highestPrice * 0.985;
+            }
+            else
+            {
+                buyPrice = openPrice;
+            }
+
+            /*
+
             if (buyPrice > highestPrice * 1.005)
                 buyPrice = Math.Max(highestPrice * 1.005, openPrice);
             else if (buyPrice > f5 * 1.005 )
@@ -272,6 +298,7 @@
             {
                 buyPrice = currentPrice;
             }
+            */
             dr["低点"] = lowestPrice;
             dr["F3"] = f3;
             dr["F5"] = f5;
