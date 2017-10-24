@@ -385,9 +385,9 @@
             {
                 KLine.ComputeRSV(stock.kLineDay);
                 KLine.ComputeKDJ(stock.kLineDay);
-                if (stock.kLineDay[currentIndex - kdjDays].d <= 30 && stock.kLineDay[currentIndex - kdjDays].k <= 30)
+                if (stock.kLineDay[currentIndex - kdjDays].d <= 30 && stock.kLineDay[currentIndex - kdjDays].k <= 30 && currentVolume > lastDayVolume)
                 {
-                    dr["信号"] = dr["信号"].ToString() + "<a title=\"KD小于30\" >🌟</a>";
+                    dr["信号"] = dr["信号"].ToString() + "<a title=\"KD小于30 放量\" >🌟</a>";
                 }
             }
             dt.Rows.Add(dr);
