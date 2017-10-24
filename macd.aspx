@@ -266,7 +266,7 @@
             {
                 buyPrice = todayHigh;
             }
-            else if (openPrice < lowestPrice * 0985 && todayHigh >= lowestPrice * 0.985)
+            else if (openPrice < lowestPrice * 0.985 && todayHigh >= lowestPrice * 0.985)
             {
                 buyPrice = lowestPrice * 0.985;
             }
