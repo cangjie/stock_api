@@ -12,6 +12,8 @@
 
         StockWatcher.tWatchEachStock.Start();
 
+        StockWatcher.tLogQuota.Start();
+
     }
     
     void Application_End(object sender, EventArgs e) 

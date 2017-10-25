@@ -20,6 +20,10 @@ public class StockWatcher
 
     public static Thread tWatchEachStock = new Thread(tsWatchEachStock);
 
+    public static ThreadStart tsLogQuota = new ThreadStart(LogQuota);
+
+    public static Thread tLogQuota = new Thread(tsLogQuota);
+
     public StockWatcher()
     {
       
