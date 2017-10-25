@@ -386,7 +386,7 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"MACD小于0.05\" >🔥</a>";
             }
 
-            if (((stock.kLineDay[currentIndex].cci > 0 && stock.kLineDay[currentIndex - 1].cci < 0) || (stock.kLineDay[currentIndex].cci > -100 && stock.kLineDay[currentIndex - 1].cci < -100))
+            if (  (stock.kLineDay[currentIndex].cci > -100 && stock.kLineDay[currentIndex - 1].cci < -100)
                 && stock.kLineDay[currentIndex].cci < 80 && kdjDays >= 0 && kdjDays <= 2 && currentVolume / lastDayVolume > 1 && (stock.kLineDay[currentIndex].highestPrice - settlePrice) / settlePrice < 0.09 )
             {
                 dr["信号"] = dr["信号"].ToString() + "🌟"; 
