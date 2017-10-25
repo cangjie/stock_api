@@ -16,6 +16,7 @@
     {
         if (!IsPostBack)
         {
+            /*
             try
             {
                 if (t.ThreadState != ThreadState.Running && t.ThreadState != ThreadState.WaitSleepJoin)
@@ -30,6 +31,7 @@
             {
                 Console.WriteLine(err.ToString());
             }
+            */
             dg.DataSource = GetData();
             dg.DataBind();
         }
