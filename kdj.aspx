@@ -348,10 +348,7 @@
             dr["F5"] = f5;
             dr["高点"] = highestPrice;
             dr["买入"] = buyPrice;
-            if (macdHours > -1 && macdHours < 2 &&   buyPrice > lowestPrice && buyPrice < f3 * 0.985 && (double)dr["今涨"] <= 0.09)
-            {
-                //dr["信号"] = dr["信号"].ToString() + "<a title=\"开盘价距离F3有1.5%的上涨空间\" >📈</a>";
-            }
+            
             double maxPrice = 0;
             for (int i = 1; i <= 5; i++)
             {
@@ -375,6 +372,10 @@
             if (currentPrice <= double.Parse(dr["3线"].ToString().Trim()) )
             {
                 dr["信号"] = dr["信号"].ToString() + "💩";
+            }
+            if (macdHours > -1 && macdHours <= 4 && (double)dr["今涨"] <= 0.09)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"开盘价距离F3有1.5%的上涨空间\" >📈</a>";
             }
             KLine.ComputeMACD(stock.kLineDay);
             if (Math.Abs(stock.kLineDay[currentIndex].dea - 0) < 0.05 && Math.Abs(stock.kLineDay[currentIndex].dif - 0) < 0.05)
