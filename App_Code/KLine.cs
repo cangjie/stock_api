@@ -36,7 +36,9 @@ public class KLine
     public double dif = 0;
     public double dea = 0;
     public double macd = 0;
+    //public double typ = 0;
     public double cci = 0;
+    //public double ma = 0;
 
     public KLine()
     {
@@ -395,6 +397,7 @@ public class KLine
         }
     }
 
+
     
 
     public static double ema(double[] xArr, int currentIndex, int n)
@@ -432,8 +435,39 @@ public class KLine
         }
     }
 
+    public double TYP
+    {
+        get
+        {
+            return (highestPrice + lowestPrice + endPrice) / 3;
+        }
+    }
+
     public static void ComputeCci(KLine[] kArr)
     {
+        int n = 14;
+        if (kArr.Length < n)
+            return;
+        for (int i = kArr.Length - 1; i >= n ; i--)
+        {
+            KLine k = kArr[i];
+            //k.typ = (k.highestPrice + k.lowestPrice + k.endPrice) / 3;
+            double avgNTyp = 0;
+            for (int j = i; j > i - n && j >= 0; j--)
+            {
+                avgNTyp = avgNTyp + kArr[j].TYP;
+            }
+            avgNTyp = avgNTyp / n;
+
+            double aveDevValue = 0;
+
+            for (int j = i; j > i - n && j >= 0; j--)
+            {
+                aveDevValue = aveDevValue + Math.Abs(kArr[j].TYP - avgNTyp); 
+            }
+            aveDevValue = aveDevValue / n;
+            kArr[i].cci = (kArr[i].TYP - avgNTyp) / (0.015* aveDevValue); 
+        }
 
     }
 

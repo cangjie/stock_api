@@ -6,9 +6,34 @@
 <script runat="server">
     protected void Page_Load(object sender, EventArgs e)
     {
-        DateTime start = DateTime.Now;
-        StockWatcher.LogQuota();
-        Response.Write((DateTime.Now - start).ToString());
+        string[] gidArr = Util.GetAllGids();
+        for (int i = 0; i < gidArr.Length; i++)
+        {
+            string gid = gidArr[i].Trim();
+            string type = "day";
+
+            KLine[] kArr = Stock.LoadLocalKLine(gid, type);
+            for (int j = kArr.Length - 1; j >= 14; j--)
+            {
+                StockWatcher.SearchFolks(gid, type, kArr, j);
+            }
+
+            type = "1hr";
+            kArr = Stock.LoadLocalKLine(gid, type);
+            for (int j = kArr.Length - 1; j >= 14; j--)
+            {
+                StockWatcher.SearchFolks(gid, type, kArr, j);
+            }
+
+            type = "30min";
+            kArr = Stock.LoadLocalKLine(gid, type);
+            for (int j = kArr.Length - 1; j >= 14; j--)
+            {
+                StockWatcher.SearchFolks(gid, type, kArr, j);
+            }
+        }
+
+
         /*
         Stock stock = new Stock("sh600138");
         stock.LoadKLineDay();

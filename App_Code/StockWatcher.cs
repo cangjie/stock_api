@@ -75,8 +75,8 @@ public class StockWatcher
 
     public static void LogQuota()
     {
-        //for (; true;)
-        //{
+        for (; true;)
+        {
             try
             {
                 if (Util.IsTransacDay(DateTime.Parse(DateTime.Now.ToShortDateString())) && DateTime.Now.Hour >= 9 && DateTime.Now.Hour <= 15)
@@ -86,7 +86,6 @@ public class StockWatcher
                     {
                         KLine.RefreshKLine(gidArr[i], DateTime.Parse(DateTime.Now.ToShortDateString()));
                         string gid = gidArr[i];
-
                         KLine[] kArr = Stock.LoadLocalKLine(gid, "day");
                         SearchFolks(gid, "day", kArr, kArr.Length - 1);
                         kArr = Stock.LoadLocalKLine(gid, "1hr");
@@ -100,8 +99,8 @@ public class StockWatcher
             {
 
             }
-            //Thread.Sleep(10000);
-        //}
+            Thread.Sleep(120000);
+        }
     }
 
     public static void SearchFolks(string gid, string type, KLine[] kArr, int index)
@@ -128,17 +127,35 @@ public class StockWatcher
 
     public static bool IsMacdFolk(KLine[] kArr, int index)
     {
-        return false;
+        bool ret = false;
+        if (index > 0)
+        {
+            if (kArr[index].macd > 0 && kArr[index - 1].macd < 0 && Math.Abs(kArr[index].macd) + Math.Abs(kArr[index - 1].macd) > 0.05)
+            {
+                ret = true;
+            }
+        }
+        return ret;
     }
 
     public static bool IsKdjFolk(KLine[] kArr, int index)
     {
-        return false;
+        bool ret = false;
+        if (kArr[index].j >= kArr[index].k && kArr[index - 1].j <= kArr[index - 1].k && kArr[index].j < 30 && kArr[index].k < 30 && kArr[index].d < 30)
+        {
+            ret = true;
+        }
+        return ret;
     }
 
     public static bool IsCciFolk(KLine[] kArr, int index)
     {
-        return false;
+        bool ret = false;
+        if (kArr[index].cci < 0 && kArr[index].cci > -100 && kArr[index - 1].cci < -100)
+        {
+            ret = true;
+        }
+        return ret;
     }
 
     public static int LogMacd(string gid, string type, DateTime qTime, double price, double dif, double dea, double macd)
@@ -166,7 +183,7 @@ public class StockWatcher
         int ret = -1;
         try
         {
-            ret = DBHelper.InsertData("alert_macd", new string[,] { {"gid", "varchar", gid.Trim() },
+            ret = DBHelper.InsertData("alert_kdj", new string[,] { {"gid", "varchar", gid.Trim() },
             {"alert_type", "varchar", type.Trim() },
             {"alert_time", "datetime", qTime.ToString() },
             {"alert_price", "float", price.ToString()},
@@ -186,7 +203,7 @@ public class StockWatcher
         int ret = -1;
         try
         {
-            ret = DBHelper.InsertData("alert_macd", new string[,] { {"gid", "varchar", gid.Trim() },
+            ret = DBHelper.InsertData("alert_cci", new string[,] { {"gid", "varchar", gid.Trim() },
             {"alert_type", "varchar", type.Trim() },
             {"alert_time", "datetime", qTime.ToString() },
             {"alert_price", "float", price.ToString()},
