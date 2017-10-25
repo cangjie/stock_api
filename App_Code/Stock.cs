@@ -96,6 +96,25 @@ public class Stock
         return k;
     }
 
+    public static int GetItemIndex(DateTime currentDateTime, KLine[] kArr)
+    {
+        int index = -1;
+        DateTime indexDate = currentDateTime;
+        for (; !Util.IsTransacDay(indexDate) || !Util.IsTransacTimeReally(indexDate); indexDate = indexDate.AddMinutes(-1))
+        {
+
+        }
+        for (int i = kArr.Length - 1; i >= 0; i--)
+        {
+            if (kArr[i].startDateTime <= indexDate && kArr[i].endDateTime > indexDate)
+            {
+                index = i;
+                break;
+            }
+        }
+        return index;
+    }
+
     public bool IsCross3Line(int index, string type)
     {
         bool ret = false;

@@ -254,6 +254,16 @@ public class Util
         return ret && IsTransacDay(dateRef);
     }
 
+    public static bool IsTransacTimeReally(DateTime date)
+    {
+        DateTime dateRef = DateTime.Parse(date.ToShortDateString());
+        bool ret = false;
+        if ((date >= DateTime.Parse(dateRef.ToShortDateString() + " 9:30") && date < DateTime.Parse(dateRef.ToShortDateString() + " 11:30"))
+            || (date >= DateTime.Parse(dateRef.ToShortDateString() + " 13:00") && date < DateTime.Parse(dateRef.ToShortDateString() + " 15:00")))
+            ret = true;
+        return ret && IsTransacDay(dateRef);
+    }
+
     public static double Compute_3_3_Price(KLine[] kArr, DateTime date)
     {
         double ret = 0;

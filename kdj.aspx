@@ -232,13 +232,15 @@
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
+
             stock.LoadKLineDay();
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
-            stock.kLineHour = KLine.GetLocalKLine(stock.gid, "1hr");
             int currentIndex = stock.GetItemIndex(currentDate);
-            if (currentIndex < 1 || stock.kLineDay[currentIndex].k >= 40 || stock.kLineDay[currentIndex].d >= 40 )
+            if (currentIndex < 1 || stock.kLineDay[currentIndex].k >= 30 || stock.kLineDay[currentIndex].d >= 30 )
                 continue;
+
+            stock.kLineHour = KLine.GetLocalKLine(stock.gid, "1hr");
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
@@ -256,8 +258,17 @@
             double currentVolume = Stock.GetVolumeAndAmount(stock.gid, currentDate)[0];
             double volumeIncrease = (currentVolume - lastDayVolume) / lastDayVolume;
             dr["放量"] = currentVolume / lastDayVolume;
-            int macdDays = stock.macdDays(currentIndex);
-            dr["kdj"] = macdDays.ToString();
+
+            //stock.GetItemIndex(DateTime.Now);
+
+            int macdIndex = Stock.GetItemIndex(currentDate.ToShortDateString().Equals(DateTime.Now.ToShortDateString()) ? currentDate : DateTime.Parse(currentDate.ToShortDateString() + " 14:59:59"), stock.kLineHour);
+
+
+            int macdHours = Stock.macdItems(macdIndex, stock.kLineHour);
+
+            //int macdHours = stock.macdHours()
+
+            dr["MACD"] = macdHours.ToString();
             dr["3线"] = stock.GetAverageSettlePrice(currentIndex, 3, 3);
             double lowestPrice = stock.LowestPrice(currentDate, 20);
             double highestPrice = stock.HighestPrice(currentDate, 40);
@@ -334,7 +345,7 @@
             dr["F5"] = f5;
             dr["高点"] = highestPrice;
             dr["买入"] = buyPrice;
-            if (macdDays > -1 && macdDays < 2 &&   buyPrice > lowestPrice && buyPrice < f3 * 0.985 && (double)dr["今涨"] <= 0.09)
+            if (macdHours > -1 && macdHours < 2 &&   buyPrice > lowestPrice && buyPrice < f3 * 0.985 && (double)dr["今涨"] <= 0.09)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"开盘价距离F3有1.5%的上涨空间\" >📈</a>";
             }
@@ -349,7 +360,7 @@
             }
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
 
-            if (macdDays > -1 && macdDays < 2 &&  currentPrice < f3 &&  currentVolume < lastDayVolume )
+            if (macdHours > -1 && macdHours < 2 &&  currentPrice < f3 &&  currentVolume < lastDayVolume )
             {
                 //dr["信号"] = dr["信号"].ToString() + "<a title=\"价格低于F3，KDJ金叉1日内，缩量\" >🔥</a>";
             }
@@ -430,7 +441,7 @@
                         Stock s = new Stock(gid);
                         KLine.RefreshKLine(gid, DateTime.Parse(DateTime.Now.ToShortDateString()));
                         double volumeIncrease = Math.Round(100 * double.Parse(dr["放量"].ToString().Trim()), 2);
-                        string message = "放量：" + volumeIncrease.ToString() + "%，KDJ：" + dr["KDJ"].ToString().Trim() + "，买入："
+                        string message = "放量：" + volumeIncrease.ToString() + "%，MACD：" + dr["MACD"].ToString().Trim() + "，买入："
                             + Math.Round((double)dr["买入"], 2).ToString() + "，现价：" + Math.Round((double)dr["今收"], 2)
                             + "，F3：" + Math.Round((double)dr["F3"], 2).ToString() + "，F5：" + Math.Round((double)dr["F5"], 2).ToString();
                         if (StockWatcher.AddAlert(Util.GetDay(DateTime.Now), gid, "macd", s.Name.Trim(), message))
@@ -477,7 +488,7 @@
                     <asp:BoundColumn DataField="今收" HeaderText="今收"></asp:BoundColumn>
                     <asp:BoundColumn DataField="今涨" HeaderText="今涨" SortExpression="今涨|desc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="放量" HeaderText="放量" SortExpression="放量|desc"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="KDJ" HeaderText="KDJ" SortExpression="KDJ|asc"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="MACD" HeaderText="MACD" SortExpression="MACD|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
                     <asp:BoundColumn DataField="低点" HeaderText="低点"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>

@@ -9,6 +9,7 @@
         Stock stock = new Stock("sh600031");
         stock.LoadKLineDay();
         stock.kLineHour = Stock.LoadLocalKLine("sh600031", "1hr");
+        int i = Stock.GetItemIndex(DateTime.Now, stock.kLineHour);
 
 
         /*
