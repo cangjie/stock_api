@@ -368,7 +368,7 @@
             }
             if (Math.Abs(currentPrice - buyPrice) / currentPrice <= 0.005)
             {
-                dr["信号"] = dr["信号"].ToString() + "🛍️";
+                //dr["信号"] = dr["信号"].ToString() + "🛍️";
             }
             KLine.ComputeMACD(stock.kLineDay);
             if (currentPrice <= double.Parse(dr["3线"].ToString().Trim()) )
@@ -378,7 +378,7 @@
             KLine.ComputeMACD(stock.kLineDay);
             if (Math.Abs(stock.kLineDay[currentIndex].dea - 0) < 0.05 && Math.Abs(stock.kLineDay[currentIndex].dif - 0) < 0.05)
             {
-                dr["信号"] = dr["信号"].ToString() + "🔥";
+               // dr["信号"] = dr["信号"].ToString() + "🔥";
             }
 
             dt.Rows.Add(dr);
