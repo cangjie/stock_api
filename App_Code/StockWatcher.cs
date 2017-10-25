@@ -73,6 +73,133 @@ public class StockWatcher
         }
     }
 
+    public static void LogQuota()
+    {
+        //for (; true;)
+        //{
+            try
+            {
+                if (Util.IsTransacDay(DateTime.Parse(DateTime.Now.ToShortDateString())) && DateTime.Now.Hour >= 9 && DateTime.Now.Hour <= 15)
+                {
+                    string[] gidArr = Util.GetAllGids();
+                    for (int i = 0; i < gidArr.Length; i++)
+                    {
+                        KLine.RefreshKLine(gidArr[i], DateTime.Parse(DateTime.Now.ToShortDateString()));
+                        string gid = gidArr[i];
+
+                        KLine[] kArr = Stock.LoadLocalKLine(gid, "day");
+                        SearchFolks(gid, "day", kArr, kArr.Length - 1);
+                        kArr = Stock.LoadLocalKLine(gid, "1hr");
+                        SearchFolks(gid, "1hr", kArr, kArr.Length - 1);
+                        kArr = Stock.LoadLocalKLine(gid, "30min");
+                        SearchFolks(gid, "30min", kArr, kArr.Length - 1);
+                    }
+                }
+            }
+            catch
+            {
+
+            }
+            //Thread.Sleep(10000);
+        //}
+    }
+
+    public static void SearchFolks(string gid, string type, KLine[] kArr, int index)
+    {
+        KLine.ComputeMACD(kArr);
+        KLine k = kArr[index];
+        if (IsMacdFolk(kArr, index))
+        {
+            LogMacd(gid, type, k.endDateTime, k.endPrice, k.dif, k.dea, k.macd);
+        }
+        KLine.ComputeRSV(kArr);
+        KLine.ComputeKDJ(kArr);
+        if (IsKdjFolk(kArr, index))
+        {
+            LogKdj(gid, type, k.endDateTime, k.endPrice, k.k, k.d, k.j);
+        }
+        KLine.ComputeCci(kArr);
+        if (IsCciFolk(kArr, index))
+        {
+            LogCci(gid, type, k.endDateTime, k.endPrice, k.cci);
+        }
+
+    }
+
+    public static bool IsMacdFolk(KLine[] kArr, int index)
+    {
+        return false;
+    }
+
+    public static bool IsKdjFolk(KLine[] kArr, int index)
+    {
+        return false;
+    }
+
+    public static bool IsCciFolk(KLine[] kArr, int index)
+    {
+        return false;
+    }
+
+    public static int LogMacd(string gid, string type, DateTime qTime, double price, double dif, double dea, double macd)
+    {
+        int ret = -1;
+        try
+        {
+            ret = DBHelper.InsertData("alert_macd", new string[,] { {"gid", "varchar", gid.Trim() },
+            {"alert_type", "varchar", type.Trim() },
+            {"alert_time", "datetime", qTime.ToString() },
+            {"alert_price", "float", price.ToString()},
+            {"dif", "float", dif.ToString() },
+            {"dea", "float", dea.ToString() },
+            {"macd", "float", macd.ToString() } });
+        }
+        catch
+        {
+
+        }
+        return ret;
+    }
+
+    public static int LogKdj(string gid, string type, DateTime qTime, double price, double k, double d, double j)
+    {
+        int ret = -1;
+        try
+        {
+            ret = DBHelper.InsertData("alert_macd", new string[,] { {"gid", "varchar", gid.Trim() },
+            {"alert_type", "varchar", type.Trim() },
+            {"alert_time", "datetime", qTime.ToString() },
+            {"alert_price", "float", price.ToString()},
+            {"k", "float", k.ToString() },
+            {"d", "float", d.ToString() },
+            {"j", "float", j.ToString() } });
+        }
+        catch
+        {
+
+        }
+        return ret;
+    }
+
+    public static int LogCci(string gid, string type, DateTime qTime, double price, double cci)
+    {
+        int ret = -1;
+        try
+        {
+            ret = DBHelper.InsertData("alert_macd", new string[,] { {"gid", "varchar", gid.Trim() },
+            {"alert_type", "varchar", type.Trim() },
+            {"alert_time", "datetime", qTime.ToString() },
+            {"alert_price", "float", price.ToString()},
+            {"cci", "float", cci.ToString() }
+            });
+        }
+        catch
+        {
+
+        }
+        return ret;
+    }
+
 
 
     /// <old methods>

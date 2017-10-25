@@ -36,6 +36,7 @@ public class KLine
     public double dif = 0;
     public double dea = 0;
     public double macd = 0;
+    public double cci = 0;
 
     public KLine()
     {
@@ -431,6 +432,11 @@ public class KLine
         }
     }
 
+    public static void ComputeCci(KLine[] kArr)
+    {
+
+    }
+
     public static void SearchMACDAlert(KLine[] kArr)
     {
         SearchMACDAlert(kArr, 0);
@@ -617,6 +623,8 @@ public class KLine
         }
         return sum / itemsCount;
     }
+
+   
 
    
 }
