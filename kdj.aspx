@@ -269,7 +269,8 @@
             int macdHours = Stock.macdItems(macdIndex, stock.kLineHour);
 
             //int macdHours = stock.macdHours()
-
+            if (macdHours > 8)
+                continue;
             dr["MACD"] = macdHours.ToString();
             dr["3线"] = stock.GetAverageSettlePrice(currentIndex, 3, 3);
             double lowestPrice = stock.LowestPrice(currentDate, 20);
