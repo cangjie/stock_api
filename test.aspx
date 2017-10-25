@@ -6,9 +6,9 @@
 <script runat="server">
     protected void Page_Load(object sender, EventArgs e)
     {
-
+        DateTime start = DateTime.Now;
         StockWatcher.LogQuota();
-
+        Response.Write((DateTime.Now - start).ToString());
         /*
         Stock stock = new Stock("sh600138");
         stock.LoadKLineDay();
