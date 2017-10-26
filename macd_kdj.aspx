@@ -259,7 +259,7 @@
             if (currentIndex < 1)
                 continue;
             DataRow dr = dt.NewRow();
-\
+
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
             double settlePrice = stock.kLineDay[currentIndex - 1].endPrice;
