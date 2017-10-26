@@ -273,6 +273,8 @@ public class Stock
                 break;
             }
         }
+        if (kLineDay[index].k >= 35 && kLineDay[index].d >= 35)
+            days = -1;
         return days;
     }
 

@@ -209,6 +209,7 @@
 
             DataRow dr = dt.NewRow();
 
+            int kdjDays = stock.kdjDays(currentIndex);
 
             double sigalPrice = 0;
             DataRow[] drSigArr = dtMacd.Select(" gid = '" + stock.gid.Trim() + "' ");
@@ -218,7 +219,7 @@
                 sigalPrice = double.Parse(drSigArr[0]["alert_price"].ToString().Trim());
             }
             drSigArr = dtKdj.Select(" gid = '" + stock.gid.Trim() + "' ");
-            if (drSigArr.Length > 0)
+            if (drSigArr.Length > 0 || kdjDays == 0)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"kdj\" >🔥</a>";
                 sigalPrice = sigalPrice == 0?  double.Parse(drSigArr[0]["alert_price"].ToString().Trim()) : sigalPrice;
@@ -229,6 +230,8 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"cci\" >🔥</a>";
                 sigalPrice = sigalPrice == 0?  double.Parse(drSigArr[0]["alert_price"].ToString().Trim()) : sigalPrice;
             }
+
+           
 
 
 
@@ -248,7 +251,7 @@
             dr["K线势"] = int.Parse(drOri["under_3_line_days"].ToString());
             dr["MACD"] = stock.macdDays(currentIndex);
             //dr["KDJ"] = 0;
-            dr["KDJ"] = stock.kdjDays(currentIndex);
+            dr["KDJ"] = kdjDays;
             //dr["MACD"] = 0;
             //dr["KDJ"] = 0;
             double minPrice = GetLowestPriceKlineForDays(stock, currentIndex, 20).lowestPrice;
