@@ -80,7 +80,7 @@
                 foreach (DataRow dr in dt.Rows)
                 {
                     string signal = dr["信号"].ToString().Trim();
-                    if (signal.IndexOf("💩") < 0 && signal.IndexOf("📈") >= 0 && (signal.IndexOf("🔥") >= 0 || signal.IndexOf("🛍️") >= 0))
+                    if (signal.IndexOf("💩") < 0  && signal.IndexOf("🔥") >= 0 && signal.IndexOf("🛍️") >= 0)
                     {
                         string gid = dr["代码"].ToString().Trim();
                         Stock s = new Stock(gid);
