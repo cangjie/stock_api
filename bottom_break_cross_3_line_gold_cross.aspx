@@ -226,7 +226,7 @@
             }
             if (kdjDays == 0)
             {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"kdj\" >🔥</a>";
+                //dr["信号"] = dr["信号"].ToString() + "<a title=\"kdj\" >🔥</a>";
             }
             drSigArr = dtCci.Select(" gid = '" + stock.gid.Trim() + "' ");
             if (drSigArr.Length > 0)
