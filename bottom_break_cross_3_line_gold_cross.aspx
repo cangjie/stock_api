@@ -219,10 +219,14 @@
                 sigalPrice = double.Parse(drSigArr[0]["alert_price"].ToString().Trim());
             }
             drSigArr = dtKdj.Select(" gid = '" + stock.gid.Trim() + "' ");
-            if (drSigArr.Length > 0 || kdjDays == 0)
+            if (drSigArr.Length > 0 )
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"kdj\" >🔥</a>";
                 sigalPrice = sigalPrice == 0?  double.Parse(drSigArr[0]["alert_price"].ToString().Trim()) : sigalPrice;
+            }
+            if (kdjDays == 0)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"kdj\" >🔥</a>";
             }
             drSigArr = dtCci.Select(" gid = '" + stock.gid.Trim() + "' ");
             if (drSigArr.Length > 0)
@@ -231,7 +235,7 @@
                 sigalPrice = sigalPrice == 0?  double.Parse(drSigArr[0]["alert_price"].ToString().Trim()) : sigalPrice;
             }
 
-           
+
 
 
 
