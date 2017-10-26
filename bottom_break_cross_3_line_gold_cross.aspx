@@ -110,9 +110,9 @@
 
     public static DataTable GetData(DateTime date)
     {
-        DataTable dtMacd = DBHelper.GetDataTable(" select gid, alert_price from alert_macd where alert_type in ('day', '1hr) and  alert_time >= '" + date.ToShortDateString() + "' and alert_time < '" + date.ToShortDateString() + " 23:00' ");
-        DataTable dtKdj = DBHelper.GetDataTable(" select gid, alert_price from alert_kdj where alert_type in ('day', '1hr) and alert_time >= '" + date.ToShortDateString() + "' and alert_time < '" + date.ToShortDateString() + " 23:00' ");
-        DataTable dtCci = DBHelper.GetDataTable(" select gid, alert_price  from alert_cci where alert_type in ('day', '1hr) and alert_time >= '" + date.ToShortDateString() + "' and alert_time < '" + date.ToShortDateString() + " 23:00' ");
+        DataTable dtMacd = DBHelper.GetDataTable(" select gid, alert_price from alert_macd where alert_type in ('day', '1hr') and  alert_time >= '" + date.ToShortDateString() + "' and alert_time < '" + date.ToShortDateString() + " 23:00' ");
+        DataTable dtKdj = DBHelper.GetDataTable(" select gid, alert_price from alert_kdj where alert_type in ('day', '1hr') and alert_time >= '" + date.ToShortDateString() + "' and alert_time < '" + date.ToShortDateString() + " 23:00' ");
+        DataTable dtCci = DBHelper.GetDataTable(" select gid, alert_price  from alert_cci where alert_type in ('day', '1hr') and alert_time >= '" + date.ToShortDateString() + "' and alert_time < '" + date.ToShortDateString() + " 23:00' ");
 
 
         DataTable dt = new DataTable();
