@@ -205,7 +205,7 @@
 
             double supportPrice = stock.GetMaSupport(currentIndex, (newBuyPrice==0?buyPrice:newBuyPrice));
 
-
+            dr["信号"] =  "";
 
             DataRow dr = dt.NewRow();
 
@@ -241,7 +241,7 @@
 
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = drOri["name"].ToString().Trim();
-            dr["信号"] =  "";
+            
             dr["信号"] = dr["信号"].ToString() + (currentPrice <= today3LinePrice ? "💩": "");
             dr["今开"] = startPrice;
             dr["3线价"] = today3LinePrice;
