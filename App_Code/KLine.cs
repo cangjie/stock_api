@@ -353,6 +353,29 @@ public class KLine
         return ret;
     }
 
+    public static double ComputeMacdDegree(KLine[] kArr, int index)
+    {
+        int length = index + 1;
+        if (kArr[length - 1].macd < 0 || kArr[length - 2].macd > 0)
+            return 0;
+        int i = 0;
+        double macdSum = 0;
+        for (; length - 3 - i >= 0 && Math.Abs(kArr[length - 2 - i].macd) <= Math.Abs(kArr[length - 3 - i].macd); i++)
+        {
+            macdSum = macdSum + Math.Abs(kArr[length - 2 - i].macd);
+        }
+        if (i == 0)
+        {
+            return 0;
+        }
+        else
+        {
+            double v = macdSum / (double)i + kArr[length - 1].macd;
+            return v;
+        }
+        //return i == 0 ? 0 : macdSum / (double)i + kArr[length - 1].macd;
+    }
+
     public static KLine[] GetSubKLine(KLine[] kArr, int startIndex, int num)
     {
         if (startIndex + num > kArr.Length)
