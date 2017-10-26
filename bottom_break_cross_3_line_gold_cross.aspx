@@ -211,22 +211,23 @@
 
 
             double sigalPrice = 0;
-            if (dtMacd.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
+            DataRow[] drSigArr = dtMacd.Select(" gid = '" + stock.gid.Trim() + "' ");
+            if (drSigArr.Length > 0)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"macd\" >🔥</a>";
-                sigalPrice = double.Parse(dr["alert_price"].ToString().Trim());
+                sigalPrice = double.Parse(drSigArr[0]["alert_price"].ToString().Trim());
             }
-
-            if (dtKdj.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
+            drSigArr = dtKdj.Select(" gid = '" + stock.gid.Trim() + "' ");
+            if (drSigArr.Length > 0)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"kdj\" >🔥</a>";
-                sigalPrice = sigalPrice == 0?  double.Parse(dr["alert_price"].ToString().Trim()) : sigalPrice;
+                sigalPrice = sigalPrice == 0?  double.Parse(drSigArr[0]["alert_price"].ToString().Trim()) : sigalPrice;
             }
-
-            if (dtCci.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
+            drSigArr = dtCci.Select(" gid = '" + stock.gid.Trim() + "' ");
+            if (drSigArr.Length > 0)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"cci\" >🔥</a>";
-                sigalPrice = sigalPrice == 0?  double.Parse(dr["alert_price"].ToString().Trim()) : sigalPrice;
+                sigalPrice = sigalPrice == 0?  double.Parse(drSigArr[0]["alert_price"].ToString().Trim()) : sigalPrice;
             }
 
 
