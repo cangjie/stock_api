@@ -205,10 +205,10 @@
 
             double supportPrice = stock.GetMaSupport(currentIndex, (newBuyPrice==0?buyPrice:newBuyPrice));
 
-            dr["信号"] =  "";
+            
 
             DataRow dr = dt.NewRow();
-
+            dr["信号"] =  "";
             int kdjDays = stock.kdjDays(currentIndex);
 
             double sigalPrice = 0;
