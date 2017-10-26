@@ -301,6 +301,11 @@
             }
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
 
+            if (macdDegree == 0 || kdjDays == -1)
+            {
+                dr["信号"] = "💩";
+            }
+
             dt.Rows.Add(dr);
         }
 
