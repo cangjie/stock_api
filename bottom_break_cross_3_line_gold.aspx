@@ -22,7 +22,7 @@
                 t.Abort();
                 ts = new ThreadStart(PageWatcher);
                 t = new Thread(ts);
-                t.Start();
+                //t.Start();
             }
         }
         catch(Exception err)
