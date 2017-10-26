@@ -301,7 +301,7 @@
             }
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
 
-            if (macdDegree == 0 || kdjDays == -1)
+            if (macdDegree < 0.1 || kdjDays == -1)
             {
                 dr["信号"] = "💩";
             }
