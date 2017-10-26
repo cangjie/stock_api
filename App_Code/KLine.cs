@@ -355,6 +355,8 @@ public class KLine
 
     public static double ComputeMacdDegree(KLine[] kArr, int index)
     {
+        return kArr[index].macd - kArr[index - 1].macd;
+
         int length = index + 1;
         if (kArr[length - 1].macd < 0 || kArr[length - 2].macd > 0)
             return 0;
