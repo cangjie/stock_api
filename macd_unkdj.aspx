@@ -41,7 +41,7 @@
         if (currentDate.Year < 2000)
             currentDate = DateTime.Now;
         DataTable dtOri = GetData(currentDate);
-        DataRow[] drOriArr = dtOri.Select(Util.GetSafeRequestValue(Request, "whereclause", "").Trim(), sort + (!sort.Trim().Equals("")?",":"") + " 综指 desc  ");
+        DataRow[] drOriArr = dtOri.Select(Util.GetSafeRequestValue(Request, "whereclause", "").Trim(), sort + (!sort.Trim().Equals("")?",":"") + " 放量 desc  ");
         return RenderHtml(drOriArr);
     }
 
