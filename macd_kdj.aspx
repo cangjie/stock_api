@@ -323,7 +323,7 @@
 	        if (kdjDays > -1 && macdDegree > 0 && days3Line > -1 )
 	        {
                 totalScore = 1000 - kdjDays * 100 - days3Line * 50
-	                + macdDegree + kdjDegree ;
+	                + macdDegree + kdjDegree - Math.Abs(volumeIncrease) * 100;
 	                
 	            //double dayDiv = (double)kdjDays + (double)days3Line*0.75;
                 //dayDiv = ((dayDiv==0) ? 0.75 : dayDiv);
