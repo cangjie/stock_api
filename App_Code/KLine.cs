@@ -368,8 +368,8 @@ public class KLine
                 minMacdIndex = i;
             }
         }
-        return index - minMacdIndex;
-        return (kArr[index].macd - minMacd) / (double)(index - minMacdIndex);
+        //return index - minMacdIndex;
+        return (kArr[index].macd - minMacd) / ((double)(index - minMacdIndex));
 
         /*
         return kArr[index].macd - kArr[index - 1].macd;
