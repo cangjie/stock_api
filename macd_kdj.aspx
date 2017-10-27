@@ -323,7 +323,7 @@
 	        if (kdjDays > -1 && macdDegree > 0 && days3Line > -1 )
 	        {
 	            totalScore = kdjDegree + macdDegree * 100 - kdjDays * 20
-                     - days3Line * 20 - Math.Abs(volumeIncrease) * 50;
+                     - days3Line * 20 - Math.Abs(volumeIncrease) * 20;
 	        }
 
 
@@ -332,7 +332,7 @@
 	        dr["综指"] = totalScore;
 	        
 	
-	        if (totalScore > 0 && (stock.kLineDay[currentIndex].highestPrice - settlePrice) / settlePrice < 0.07 )
+	        if ( (stock.kLineDay[currentIndex].highestPrice - settlePrice) / settlePrice < 0.07 )
                 dt.Rows.Add(dr);
         }
 
