@@ -341,6 +341,7 @@
 
     protected void dg_SortCommand(object source, DataGridSortCommandEventArgs e)
     {
+	    Response.Write(e.SortExpression);
         sort = e.SortExpression.Replace("|", " ");
         string columnName = sort.Split(' ')[0].Trim();
         string sortSqu = sort.Split(' ')[1].Trim();
