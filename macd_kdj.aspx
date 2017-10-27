@@ -298,7 +298,7 @@
             dr["高点"] = highestPrice;
             dr["买入"] = buyPrice;
             double macdDegree = KLine.ComputeMacdDegree(stock.kLineDay, currentIndex);
-            dr["MACD率"] = macdDegree * 100;
+            dr["MACD率"] = macdDegree * 1000;
 	        double kdjDegree = KLine.ComputeKdjDegree(stock.kLineDay, currentIndex);
 	        dr["KDJ率"] = kdjDegree;
             double maxPrice = 0;
