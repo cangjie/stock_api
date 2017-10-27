@@ -353,7 +353,7 @@
             dr["上涨空间"] = upSpace;
             dr["下跌空间"] = downSpace;
         
-            double totalScore = macdDegree * kdjDegree * (currentVolume/lastDayVolume);
+            double totalScore = (macdDegree + kdjDegree) * (currentVolume/lastDayVolume);
             
 
             totalScore = Math.Round(totalScore, 2);
