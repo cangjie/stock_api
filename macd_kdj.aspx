@@ -317,8 +317,15 @@
                 //dr["信号"] = "💩";
             }
 
-            double totalScore = kdjDegree + macdDegree * 100 - (kdjDays>-1?kdjDays * 10:20)
-	            + volumeIncrease * 10 - (days3Line>-1? days3Line * 10 : 50);
+
+	
+            double totalScore = 0;
+	        if (kdjDays > -1 && macdDegree > 0 && kdjDays > -1 )
+	        {
+	            totalScore = kdjDegree + macdDegree * 100 - kdjDays * 10
+                    + volumeIncrease * 10 - days3Line * 10);
+	        }
+
 
 	        totalScore = Math.Round(totalScore, 2);
 
