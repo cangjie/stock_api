@@ -411,7 +411,7 @@ public class KLine
         {
             return -1;
         }
-        for (int i = index - 1; s.kLineDay[i].endPrice > s.GetAverageSettlePrice(index, 3, 3) && i >= 0; i--)
+        for (int i = index - 1; i >= 0  && s.kLineDay[i].endPrice > s.GetAverageSettlePrice(index, 3, 3) ; i--)
         {
             days++;
         }
