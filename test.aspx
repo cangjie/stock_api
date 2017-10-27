@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" %>
+﻿ <%@ Page Language="C#" %>
 <%@ Import Namespace="System.Threading" %>
 <%@ Import Namespace="System.Collections" %>
 <%@ Import Namespace="System.Data" %>
@@ -7,9 +7,14 @@
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        Stock s = new Stock("sz000525");
+        Stock s = new Stock("sh600036");
         s.LoadKLineDay();
-        int days = s.kdjDays(s.GetItemIndex(Util.GetDay(DateTime.Now)));
+        KLine.ComputeMACD(s.kLineDay);
+        KLine.ComputeRSV(s.kLineDay);
+        KLine.ComputeKDJ(s.kLineDay);
+        
+
+        Response.Write(s.kLineDay[s.kLineDay.Length - 2].macd);
 
 
         /*
