@@ -404,6 +404,20 @@ public class KLine
         }
     }
 
+    public static int Above3LineDays(Stock s, int index)
+    {
+        int days = 0;
+        if (s.kLineDay[index].endPrice <= s.GetAverageSettlePrice(index, 3, 3))
+        {
+            return -1;
+        }
+        for (int i = index - 1; s.kLineDay[index].endPrice > s.GetAverageSettlePrice(index, 3, 3); i--)
+        {
+            days++;
+        }
+        return days;
+    }
+
     public static KLine[] GetSubKLine(KLine[] kArr, int startIndex, int num)
     {
         if (startIndex + num > kArr.Length)

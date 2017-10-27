@@ -240,6 +240,7 @@
         dt.Columns.Add("KDJ", Type.GetType("System.Int32"));
 	    dt.Columns.Add("KDJ率", Type.GetType("System.Double"));
         dt.Columns.Add("MACD率", Type.GetType("System.Double"));
+	    dt.Columns.Add("3线日", Type.GetType("System.Int32"));
         dt.Columns.Add("3线", Type.GetType("System.Double"));
         dt.Columns.Add("低点", Type.GetType("System.Double"));
         dt.Columns.Add("F3", Type.GetType("System.Double"));
