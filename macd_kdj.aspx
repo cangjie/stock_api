@@ -332,8 +332,8 @@
 	        dr["综指"] = totalScore;
 	        
 	
-	        if (totalScore > 0)
-            dt.Rows.Add(dr);
+	        if (totalScore > 0 && (stock.kLineDay[currentIndex].highestPrice - settlePrice) / settlePrice < 0.07 )
+                dt.Rows.Add(dr);
         }
 
 
