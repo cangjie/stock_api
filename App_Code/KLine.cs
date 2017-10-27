@@ -358,7 +358,7 @@ public class KLine
         if (index < 0)
             return -100;
         
-        int minMacdIndex = 0;
+        int minMacdIndex = index;
         double minMacd = kArr[index].macd;
         for (int i = index - 1; kArr[i].macd < 0 && i >= 0; i-- )
         {
@@ -368,31 +368,34 @@ public class KLine
                 minMacdIndex = i;
             }
         }
-        //return index - minMacdIndex;
-        return (kArr[index].macd - minMacd) / ((double)(index - minMacdIndex));
-
-        /*
-        return kArr[index].macd - kArr[index - 1].macd;
-
-        int length = index + 1;
-        if (kArr[length - 1].macd < 0 || kArr[length - 2].macd > 0)
+        if (index - minMacdIndex > 0)
+            return (kArr[index].macd - minMacd) / ((double)(index - minMacdIndex));
+        else
             return 0;
-        int i = 0;
-        double macdSum = 0;
-        for (; length - 3 - i >= 0 && Math.Abs(kArr[length - 2 - i].macd) <= Math.Abs(kArr[length - 3 - i].macd); i++)
+    }
+
+    public static double ComputeKdjDegree(KLine[] kArr, int index)
+    {
+        if (index < 0)
+            return -100;
+        double minJ = kArr[index].j;
+        int minJIndex = index;
+        for (int i = index - 1; i >= 0 && kArr[i].d > kArr[i].k && kArr[i].k > kArr[i].j; i-- )
         {
-            macdSum = macdSum + Math.Abs(kArr[length - 2 - i].macd);
+            if (minJ >= kArr[i].j)
+            {
+                minJ = kArr[i].j;
+                minJIndex = i;
+            }
         }
-        if (i == 0)
+        if (index - minJIndex > 0)
         {
-            return 0;
+            return kArr[index].j - minJ / (double)(index - minJIndex);
         }
         else
         {
-            double v = macdSum / (double)i + kArr[length - 1].macd;
-            return v;
-        }*/
-        //return i == 0 ? 0 : macdSum / (double)i + kArr[length - 1].macd;
+            return 0;
+        }
     }
 
     public static KLine[] GetSubKLine(KLine[] kArr, int startIndex, int num)

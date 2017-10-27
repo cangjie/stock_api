@@ -164,6 +164,7 @@
                     {
                         case "昨收":
                         case "MACD率":
+	                    case "KDJ率":
                             dr[i] = Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2).ToString();
                             break;
                         case "买入":
@@ -237,6 +238,7 @@
         dt.Columns.Add("今涨", Type.GetType("System.Double"));
         dt.Columns.Add("放量", Type.GetType("System.Double"));
         dt.Columns.Add("KDJ", Type.GetType("System.Int32"));
+	    dt.Columns.Add("KDJ率", Type.GetType("System.Double"));
         dt.Columns.Add("MACD率", Type.GetType("System.Double"));
         dt.Columns.Add("3线", Type.GetType("System.Double"));
         dt.Columns.Add("低点", Type.GetType("System.Double"));
@@ -255,6 +257,8 @@
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
             stock.LoadKLineDay();
             KLine.ComputeMACD(stock.kLineDay);
+	        KLine.ComputeRSV(stock.kLineDay);
+            KLine.ComputeKDJ(stock.kLineDay);
             int currentIndex = stock.GetItemIndex(currentDate);
             if (currentIndex < 1)
                 continue;
@@ -288,8 +292,10 @@
             dr["F5"] = f5;
             dr["高点"] = highestPrice;
             dr["买入"] = buyPrice;
-            double macdDegree = KLine.ComputeMacdDegree(stock.kArr, currentIndex);
+            double macdDegree = KLine.ComputeMacdDegree(stock.KLineDay, currentIndex);
             dr["MACD率"] = macdDegree;
+	        double kdjDegree = KLine.ComputeKdjDegree(stock.KLineDay, currentIndex);
+	        dr["KDJ率"] = kdjDegree;
             double maxPrice = 0;
             for (int i = 1; i <= 5; i++)
             {
@@ -483,7 +489,7 @@
         dg.DataSource = GetData();
         dg.DataBind();
     }
-
+    /*
     public static void SearchMacdKdjAlert()
     {
         for(; Util.IsTransacDay(Util.GetDay(DateTime.Now)) && Util.IsTransacTime(DateTime.Now); )
@@ -503,7 +509,7 @@
         }
 
     }
-
+    */
     public static void PageWatcher()
     {
         for (; true;)
@@ -567,6 +573,7 @@
                     <asp:BoundColumn DataField="今涨" HeaderText="今涨" SortExpression="今涨|desc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="放量" HeaderText="放量" SortExpression="放量|desc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ" HeaderText="KDJ" SortExpression="KDJ|asc"></asp:BoundColumn>
+					<asp:BoundColumn DataField="KDJ率" HeaderText="KDJ率" SortExpression="KDJ率|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="MACD率" HeaderText="MACD率" SortExpression="MACD率|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
                     <asp:BoundColumn DataField="低点" HeaderText="低点"></asp:BoundColumn>
