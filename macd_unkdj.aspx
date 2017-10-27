@@ -377,8 +377,8 @@
 	        }
 
 	
-            //if (totalScore !=0 && (stock.kLineDay[currentIndex].highestPrice - settlePrice) / settlePrice < 0.07 )
-            dt.Rows.Add(dr);
+            if ( (stock.kLineDay[currentIndex].highestPrice - settlePrice) / settlePrice < 0.09 )
+                dt.Rows.Add(dr);
         }
 
 
