@@ -386,8 +386,7 @@ public class KLine
             if ((kArr[i].d > kArr[i].k && kArr[i].k > kArr[i].j && kArr[i+1] .j > kArr[i + 1].k && kArr[i + 1].k > kArr[i + 1].d)
                 || (kArr[i].d < kArr[i].k && kArr[i].k < kArr[i].j && kArr[i + 1].j < kArr[i + 1].k && kArr[i + 1].k < kArr[i + 1].d) )
             {
-
-                corssTimes++;
+                crossTimes++;
             }
             if (minJ >= kArr[i].j)
             {
