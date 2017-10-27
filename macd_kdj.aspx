@@ -6,7 +6,7 @@
 
 <script runat="server">
 
-    public string sort = "叉角 desc, 放量 desc";
+    public string sort = "MACD率 desc, 放量 desc";
 
     public static ThreadStart ts = new ThreadStart(PageWatcher);
 
@@ -163,7 +163,7 @@
                     switch (drArr[0].Table.Columns[i].Caption.Trim())
                     {
                         case "昨收":
-                        case "叉角":
+                        case "MACD率":
                             dr[i] = Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2).ToString();
                             break;
                         case "买入":
@@ -237,7 +237,7 @@
         dt.Columns.Add("今涨", Type.GetType("System.Double"));
         dt.Columns.Add("放量", Type.GetType("System.Double"));
         dt.Columns.Add("KDJ", Type.GetType("System.Int32"));
-        dt.Columns.Add("叉角", Type.GetType("System.Double"));
+        dt.Columns.Add("MACD率", Type.GetType("System.Double"));
         dt.Columns.Add("3线", Type.GetType("System.Double"));
         dt.Columns.Add("低点", Type.GetType("System.Double"));
         dt.Columns.Add("F3", Type.GetType("System.Double"));
@@ -289,7 +289,7 @@
             dr["高点"] = highestPrice;
             dr["买入"] = buyPrice;
             double macdDegree = KLine.ComputeMacdDegree(stock.kArr, currentIndex);
-            dr["叉角"] = macdDegree;
+            dr["MACD率"] = macdDegree;
             double maxPrice = 0;
             for (int i = 1; i <= 5; i++)
             {
@@ -566,7 +566,7 @@
                     <asp:BoundColumn DataField="今涨" HeaderText="今涨" SortExpression="今涨|desc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="放量" HeaderText="放量" SortExpression="放量|desc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ" HeaderText="KDJ" SortExpression="KDJ|asc"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="叉角" HeaderText="叉角" SortExpression="叉角|asc"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="MACD率" HeaderText="MACD率" SortExpression="MACD率|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
                     <asp:BoundColumn DataField="低点" HeaderText="低点"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>
