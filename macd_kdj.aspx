@@ -6,7 +6,7 @@
 
 <script runat="server">
 
-    public string sort = "综指 desc";
+    public string sort = "KDJ, ";
 
     public static ThreadStart ts = new ThreadStart(PageWatcher);
 
@@ -41,7 +41,7 @@
         if (currentDate.Year < 2000)
             currentDate = DateTime.Now;
         DataTable dtOri = GetData(currentDate);
-        DataRow[] drOriArr = dtOri.Select(Util.GetSafeRequestValue(Request, "whereclause", "").Trim(), sort + ", 总计 desc");
+        DataRow[] drOriArr = dtOri.Select(Util.GetSafeRequestValue(Request, "whereclause", "").Trim(), sort + " 3线日 , 1日 desc");
         return RenderHtml(drOriArr);
     }
 
