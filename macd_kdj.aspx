@@ -320,7 +320,7 @@
 
 	
             double totalScore = 0;
-	        if (kdjDays > -1 && macdDegree > 0 && kdjDays > -1 )
+	        if (kdjDays > -1 && macdDegree > 0 && days3Line > -1 )
 	        {
 	            totalScore = kdjDegree + macdDegree * 100 - kdjDays * 10
                     + volumeIncrease * 10 - days3Line * 10;
