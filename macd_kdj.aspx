@@ -6,7 +6,7 @@
 
 <script runat="server">
 
-    public string sort = "MACD率 desc, 放量 desc";
+    public string sort = "综指 desc";
 
     public static ThreadStart ts = new ThreadStart(PageWatcher);
 
@@ -23,7 +23,7 @@
                     t.Abort();
                     ts = new ThreadStart(PageWatcher);
                     t = new Thread(ts);
-                    t.Start();
+                    //t.Start();
                 }
             }
             catch(Exception err)
@@ -162,6 +162,7 @@
                 {
                     switch (drArr[0].Table.Columns[i].Caption.Trim())
                     {
+	                    case "综指":
                         case "昨收":
                         case "MACD率":
 	                    case "KDJ率":
@@ -247,6 +248,7 @@
         dt.Columns.Add("F5", Type.GetType("System.Double"));
         dt.Columns.Add("高点", Type.GetType("System.Double"));
         dt.Columns.Add("买入", Type.GetType("System.Double"));
+	    dt.Columns.Add("综指", Type.GetType("System.Double"));
         for (int i = 1; i <= 5; i++)
         {
             dt.Columns.Add(i.ToString() + "日", Type.GetType("System.Double"));
@@ -282,7 +284,8 @@
             dr["放量"] = currentVolume / lastDayVolume;
             int kdjDays = stock.kdjDays(currentIndex);
             dr["kdj"] = kdjDays.ToString();
-	        dr["3线日"] = KLine.Above3LineDays(stock, currentIndex);
+	        int days3Line = KLine.Above3LineDays(stock, currentIndex);
+	        dr["3线日"] = days3Line;
             dr["3线"] = stock.GetAverageSettlePrice(currentIndex, 3, 3);
             double buyPrice = stock.kLineDay[currentIndex].endPrice;
             double lowestPrice = stock.LowestPrice(currentDate, 20);
@@ -314,8 +317,16 @@
                 //dr["信号"] = "💩";
             }
 
-	        if (macdDegree >= 0.1)
-                dt.Rows.Add(dr);
+            double totalScore = kdjDegree + macdDegree * 100 - (kdjDays>-1?kdjDays * 10:40)
+	            + volumeIncrease * 10 - (days3Line>-1? days3Line * 10 : 50);
+
+	        totalScore = Math.Round(totalScore, 2);
+
+	        dr["综指"] = totalScore;
+	        
+	
+	        //if (macdDegree >= 0.1)
+            dt.Rows.Add(dr);
         }
 
         /*
@@ -569,6 +580,7 @@
                     <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号" SortExpression="信号|desc" ></asp:BoundColumn>
+					<asp:BoundColumn DataField="综指" HeaderText="综指" SortExpression="综指|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="昨收" HeaderText="昨收"></asp:BoundColumn>
                     <asp:BoundColumn DataField="今开" HeaderText="今开"></asp:BoundColumn>
                     <asp:BoundColumn DataField="今收" HeaderText="今收"></asp:BoundColumn>
