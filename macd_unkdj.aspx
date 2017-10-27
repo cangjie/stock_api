@@ -371,7 +371,12 @@
 
             dr["综指"] = totalScore;
             
-    
+            if (buyPrice > highestPrice)
+	        {
+                dr["信号"] = "📈";
+	        }
+
+	
             //if (totalScore !=0 && (stock.kLineDay[currentIndex].highestPrice - settlePrice) / settlePrice < 0.07 )
             dt.Rows.Add(dr);
         }
