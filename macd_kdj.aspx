@@ -332,7 +332,7 @@
 	        dr["综指"] = totalScore;
 	        
 	
-	        //if (macdDegree >= 0.1)
+	        if (totalScore > 0)
             dt.Rows.Add(dr);
         }
 
