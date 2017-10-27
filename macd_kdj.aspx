@@ -303,10 +303,11 @@
 
             if (macdDegree < 0.1 || kdjDays == -1)
             {
-                dr["信号"] = "💩";
+                //dr["信号"] = "💩";
             }
 
-            dt.Rows.Add(dr);
+	        if（macdDegree >= 0.1)
+                dt.Rows.Add(dr);
         }
 
         /*
