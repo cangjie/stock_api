@@ -323,7 +323,7 @@
 	        if (kdjDays > -1 && macdDegree > 0 && days3Line > -1 )
 	        {
 	            totalScore = kdjDegree + macdDegree * 100 - kdjDays * 20
-                     - days3Line * 20;
+                     - days3Line * 20 - Math.Abs(volumeIncrease) * 50;
 	        }
 
 
