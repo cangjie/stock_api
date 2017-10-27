@@ -306,7 +306,7 @@
                 //dr["信号"] = "💩";
             }
 
-	        if（macdDegree >= 0.1)
+	        if (macdDegree >= 0.1)
                 dt.Rows.Add(dr);
         }
 
