@@ -249,6 +249,8 @@
         dt.Columns.Add("高点", Type.GetType("System.Double"));
         dt.Columns.Add("买入", Type.GetType("System.Double"));
 	    dt.Columns.Add("综指", Type.GetType("System.Double"));
+	    dt.Columns.Add("上涨空间", Type.GetType("System.Double"));
+	    dt.Columns.Add("下跌空间", Type.GetType("System.Double"));
         for (int i = 1; i <= 5; i++)
         {
             dt.Columns.Add(i.ToString() + "日", Type.GetType("System.Double"));
@@ -317,8 +319,38 @@
                 //dr["信号"] = "💩";
             }
 
+            double upSpace = 0;
+	        double downSpace = 0;
 
-	
+	        if (buyPrice <= lowestPrice )
+	        {
+                downSpace = 0.1;
+	            upSpace = (lowestPrice - buyPrice) / buyPrice;
+	        }
+	        else if (buyPrice <= f3)
+	        {
+                downSpace = (buyPrice - lowestPrice) / buyPrice;
+	            upSpace = (f3 - buyPrice) / buyPrice;
+	        }
+	        else if (buyPrice <= f5)
+	        {
+                downSpace = (buyPrice - f3) / buyPrice;
+                upSpace = (f5 - buyPrice) / buyPrice;
+	        }
+	        else if (buyPrice <= highestPrice)
+	        {
+                downSpace = (buyPrice - f5) / buyPrice;
+                upSpace = (highestPrice - buyPrice) / buyPrice;
+	        }
+	        else
+            {
+                upSpace = 0.1;
+	            downSpace = (buyPrice - highestPrice) / buyPrice;
+	        }
+
+	        dr["上涨空间"] = upSpace;
+	        dr["下跌空间"] = downSpace;
+	    
             double totalScore = 0;
 	        if (kdjDays > -1 && macdDegree > 0 && days3Line > -1 )
 	        {
