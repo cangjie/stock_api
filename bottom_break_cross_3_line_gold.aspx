@@ -213,9 +213,11 @@
             dr["放量"] = currentVolume  / lastDayVolume;
             dr["3线势"] = int.Parse(drOri["going_down_3_line_days"].ToString());
             dr["K线势"] = int.Parse(drOri["under_3_line_days"].ToString());
-            dr["MACD"] = stock.macdDays(currentIndex);
+	        int macdDays = stock.macdDays(currentIndex);
+            dr["MACD"] = macdDays;
             //dr["KDJ"] = 0;
-            dr["KDJ"] = stock.kdjDays(currentIndex);
+	        int kdjDays = stock.kdjDays(currentIndex);
+            dr["KDJ"] = kdjDays;
             //dr["MACD"] = 0;
             //dr["KDJ"] = 0;
             double minPrice = GetLowestPriceKlineForDays(stock, currentIndex, 20).lowestPrice;
@@ -224,7 +226,7 @@
             upSpacePercent = (pressure - buyPrice) / buyPrice;
             dr["均线压力"] = pressure;
             dr["上涨空间"] = upSpacePercent;
-            if (upSpacePercent > 0 && (upSpacePercent * 100 +  (currentVolume - lastDayVolume) / lastDayVolume) > 4  )
+            if (upSpacePercent > 0 && (upSpacePercent * 100 +  (currentVolume - lastDayVolume) / lastDayVolume) > 4  && kdjDays <= 1 && macdDays <= 0 )
                 dr["信号"] = dr["信号"].ToString().Trim() +  "<a title=\"放量且有上涨空间\" >📈</a>";
 
             dr["信号"] = dr["信号"].ToString().Trim() + ((currentPrice > buyPrice && (currentPrice - buyPrice) / buyPrice <= 0.01 && dr["信号"].ToString().IndexOf("📈")>=0) ? "<a title=\"当前价格高于3线，但是在提示买入价的正负1%之内。\" >🛍️</a>" : "");
