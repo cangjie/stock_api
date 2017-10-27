@@ -6,7 +6,7 @@
 
 <script runat="server">
 
-    public string sort = "KDJ, ";
+    public string sort = "";
 
     public static ThreadStart ts = new ThreadStart(PageWatcher);
 
@@ -41,7 +41,7 @@
         if (currentDate.Year < 2000)
             currentDate = DateTime.Now;
         DataTable dtOri = GetData(currentDate);
-        DataRow[] drOriArr = dtOri.Select(Util.GetSafeRequestValue(Request, "whereclause", "").Trim(), sort + " 3线日 , 1日 desc");
+        DataRow[] drOriArr = dtOri.Select(Util.GetSafeRequestValue(Request, "whereclause", "").Trim(), sort + (!sort.Trim().Equals("")?",":"") + " KDJ, 3线日 , 综指 desc , 1日 desc");
         return RenderHtml(drOriArr);
     }
 
@@ -297,8 +297,8 @@
             dr["F5"] = f5;
             dr["高点"] = highestPrice;
             dr["买入"] = buyPrice;
-            double macdDegree = KLine.ComputeMacdDegree(stock.kLineDay, currentIndex);
-            dr["MACD率"] = macdDegree * 1000;
+            double macdDegree = KLine.ComputeMacdDegree(stock.kLineDay, currentIndex)*1000;
+            dr["MACD率"] = macdDegree;
 	        double kdjDegree = KLine.ComputeKdjDegree(stock.kLineDay, currentIndex);
 	        dr["KDJ率"] = kdjDegree;
             double maxPrice = 0;
@@ -322,8 +322,7 @@
             double totalScore = 0;
 	        if (kdjDays > -1 && macdDegree > 0 && days3Line > -1 )
 	        {
-	            totalScore = 100 - kdjDays * 20 - days3Line * 10 + kdjDegree 
-	                + macdDegree  - Math.Abs(volumeIncrease) * 10;
+	            totalScore = macdDegree + kdjDegree;
 	            
 	        }
 
