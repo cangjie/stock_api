@@ -329,155 +329,7 @@
             dt.Rows.Add(dr);
         }
 
-        /*
 
-
-        foreach (DataRow drOri in dtOri.Rows)
-        {
-            Stock stock = new Stock(drOri["gid"].ToString().Trim());
-            stock.LoadKLineDay();
-            int currentIndex = stock.GetItemIndex(currentDate);
-            if (currentIndex < 1)
-                continue;
-            DataRow dr = dt.NewRow();
-            dr["代码"] = stock.gid.Trim();
-            dr["名称"] = stock.Name.Trim();
-            dr["信号"] = "";
-            double settlePrice = stock.kLineDay[currentIndex - 1].endPrice;
-            double openPrice = stock.kLineDay[currentIndex].startPrice;
-            double currentPrice = stock.kLineDay[currentIndex].endPrice;
-            dr["昨收"] = settlePrice;
-            dr["今开"] = openPrice;
-            dr["今收"] = currentPrice;
-
-            dr["今涨"] = (stock.kLineDay[currentIndex].highestPrice - settlePrice) / settlePrice;
-            DateTime lastDate = DateTime.Parse(stock.kLineDay[currentIndex - 1].startDateTime.ToShortDateString());
-            double lastDayVolume = Stock.GetVolumeAndAmount(stock.gid, lastDate)[0];
-            double currentVolume = Stock.GetVolumeAndAmount(stock.gid, currentDate)[0];
-            double volumeIncrease = (currentVolume - lastDayVolume) / lastDayVolume;
-            dr["放量"] = currentVolume / lastDayVolume;
-            int kdjDays = stock.kdjDays(currentIndex);
-            dr["kdj"] = kdjDays.ToString();
-            dr["3线"] = stock.GetAverageSettlePrice(currentIndex, 3, 3);
-            double lowestPrice = stock.LowestPrice(currentDate, 20);
-            double highestPrice = stock.HighestPrice(currentDate, 40);
-            double f3 = lowestPrice + (highestPrice - lowestPrice) * 0.382;
-            double f5 = lowestPrice + (highestPrice - lowestPrice) * 0.618;
-            double buyPrice = stock.kLineDay[currentIndex].startPrice;
-            double todayHigh = stock.kLineDay[currentIndex].highestPrice;
-            if (todayHigh < lowestPrice * 0.985)
-            {
-                buyPrice = todayHigh;
-            }
-            else if (openPrice < lowestPrice * 0.985 && todayHigh >= lowestPrice * 0.985)
-            {
-                buyPrice = lowestPrice * 0.985;
-            }
-            else if (openPrice < f3 * 0.985 && todayHigh >= f3 * 0.985)
-            {
-                buyPrice = f3 * 0.985;
-            }
-            else if (openPrice < f5 && todayHigh >= f5 * 0.985)
-            {
-                buyPrice = f5 * 0.985;
-            }
-            else if (openPrice < highestPrice * 0.985 && todayHigh >= highestPrice * 0.985)
-            {
-                buyPrice = highestPrice * 0.985;
-            }
-            else
-            {
-                buyPrice = openPrice;
-            }
-
-            buyPrice = Math.Max(buyPrice, double.Parse(drOri["price"].ToString()));
-            buyPrice = Math.Round(buyPrice, 2);
-            
-            if (openPrice < lowestPrice * 0.985 && todayHigh >= lowestPrice * 0.985)
-            {
-                buyPrice = lowestPrice * 0.985;
-            }
-            else if (openPrice < f3 * 0.985 && todayHigh >= f3 * 0.985)
-            {
-                buyPrice = f3 * 0.985;
-            }
-            else if (openPrice < f5 * 0.985 && todayHigh >= f5 * 0.985)
-            {
-                buyPrice = f5 * 0.985;
-            }
-            else if (openPrice < highestPrice * 0.985 && todayHigh >= highestPrice * 0.985)
-            {
-                buyPrice = highestPrice * 0.985;
-            }
-            else
-            {
-                buyPrice = openPrice;
-            }
-          
-
-            if (buyPrice > highestPrice * 1.005)
-                buyPrice = Math.Max(highestPrice * 1.005, openPrice);
-            else if (buyPrice > f5 * 1.005 )
-                buyPrice = Math.Max(openPrice, f5 * 1.005);
-            else if (buyPrice > f3 * 1.005)
-                buyPrice = Math.Max(openPrice, f3 * 1.005 );
-            else if (buyPrice > lowestPrice * 1.005 )
-                buyPrice = Math.Max(openPrice, lowestPrice * 1.005);
-            else
-            {
-                buyPrice = currentPrice;
-            }
-            
-            dr["低点"] = lowestPrice;
-            dr["F3"] = f3;
-            dr["F5"] = f5;
-            dr["高点"] = highestPrice;
-            dr["买入"] = buyPrice;
-            if (kdjDays > -1 && kdjDays < 2 &&   buyPrice > lowestPrice && buyPrice < f3 * 0.985 && (double)dr["今涨"] <= 0.09)
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"开盘价距离F3有1.5%的上涨空间\" >📈</a>";
-            }
-            double maxPrice = 0;
-            for (int i = 1; i <= 5; i++)
-            {
-                if (currentIndex + i >= stock.kLineDay.Length)
-                    break;
-                double highPrice = stock.kLineDay[currentIndex + i].highestPrice;
-                maxPrice = Math.Max(maxPrice, highPrice);
-                dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
-            }
-            dr["总计"] = (maxPrice - buyPrice) / buyPrice;
-
-            if (kdjDays > -1 && kdjDays < 2 &&  currentPrice < f3 &&  currentVolume < lastDayVolume )
-            {
-                //dr["信号"] = dr["信号"].ToString() + "<a title=\"价格低于F3，KDJ金叉1日内，缩量\" >🔥</a>";
-            }
-            if (Math.Abs(currentPrice - buyPrice) / currentPrice <= 0.005)
-            {
-                dr["信号"] = dr["信号"].ToString() + "🛍️";
-            }
-            KLine.ComputeMACD(stock.kLineDay);
-            if (currentPrice <= double.Parse(dr["3线"].ToString().Trim()) )
-            {
-                dr["信号"] = dr["信号"].ToString() + "💩";
-            }
-            KLine.ComputeMACD(stock.kLineDay);
-            if (Math.Abs(stock.kLineDay[currentIndex].dea - 0) < 0.05 && Math.Abs(stock.kLineDay[currentIndex].dif - 0) < 0.05)
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"MACD小于0.05\" >🔥</a>";
-            }
-            if (kdjDays > -1)
-            {
-                KLine.ComputeRSV(stock.kLineDay);
-                KLine.ComputeKDJ(stock.kLineDay);
-                if (stock.kLineDay[currentIndex - kdjDays].d <= 30 && stock.kLineDay[currentIndex - kdjDays].k <= 30 && currentVolume > lastDayVolume)
-                {
-                    dr["信号"] = dr["信号"].ToString() + "<a title=\"KD小于30 放量\" >🌟</a>";
-                }
-            }
-            dt.Rows.Add(dr);
-        }
-        */
         return dt;
     }
 
@@ -502,27 +354,7 @@
         dg.DataSource = GetData();
         dg.DataBind();
     }
-    /*
-    public static void SearchMacdKdjAlert()
-    {
-        for(; Util.IsTransacDay(Util.GetDay(DateTime.Now)) && Util.IsTransacTime(DateTime.Now); )
-        {
-            string[] gidArr = Util.GetAllGids();
-            for (int i = 0; i < gidArr.Length; i++)
-            {
-                Stock stock = new Stock(gidArr[i].Trim());
-                stock.LoadKLineDay();
-                KLine.ComputeRSV(stock.kLineDay);
-                KLine.ComputeKDJ(stock.kLineDay);
-                KLine.ComputeMACD(stock.kLineDay);
-                KLine.SearchMACDAlert(stock.kLineDay, stock.kLineDay.Length - 1);
-                KLine.SearchKDJAlert(stock.kLineDay, stock.kLineDay.Length - 1);
-            }
-            System.Threading.Thread.Sleep(60000);
-        }
 
-    }
-    */
     public static void PageWatcher()
     {
         for (; true;)
@@ -611,7 +443,7 @@
                 </asp:DataGrid></td>
             </tr>
             <tr>
-                <td><%=t.ThreadState.ToString() %></td>
+                <td><%=sort %></td>
             </tr>
         </table>
     </div>
