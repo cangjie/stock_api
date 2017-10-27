@@ -360,7 +360,7 @@ public class KLine
         
         int minMacdIndex = 0;
         double minMacd = kArr[index].macd;
-        for (int i = index - 1; kArr[index].macd < 0; i-- )
+        for (int i = index - 1; kArr[i].macd < 0 && i >= 0; i-- )
         {
             if (minMacd >= kArr[i].macd)
             {
