@@ -355,6 +355,22 @@ public class KLine
 
     public static double ComputeMacdDegree(KLine[] kArr, int index)
     {
+        if (index < 0)
+            return -100;
+        
+        int minMacdIndex = 0;
+        double minMacd = kArr[index].macd;
+        for (int i = index - 1; kArr[index].macd < 0; i-- )
+        {
+            if (minMacd >= kArr[i].macd)
+            {
+                minMacd = kArr[i].macd;
+                minMacdIndex = i;
+            }
+        }
+        return (kArr[index].macd - minMacd) / (double)index - minMacdIndex;
+
+        /*
         return kArr[index].macd - kArr[index - 1].macd;
 
         int length = index + 1;
@@ -374,7 +390,7 @@ public class KLine
         {
             double v = macdSum / (double)i + kArr[length - 1].macd;
             return v;
-        }
+        }*/
         //return i == 0 ? 0 : macdSum / (double)i + kArr[length - 1].macd;
     }
 
