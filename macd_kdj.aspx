@@ -322,7 +322,10 @@
             double totalScore = 0;
 	        if (kdjDays > -1 && macdDegree > 0 && days3Line > -1 )
 	        {
-	            totalScore = macdDegree + kdjDegree;
+	            int dayDiv = kdjDays + days3Line;
+                dayDiv = dayDiv==0?0.75:dayDiv;
+	            totalScore = (macdDegree + kdjDegree)/dayDiv;
+	            
 	            
 	        }
 
