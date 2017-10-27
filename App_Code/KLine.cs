@@ -380,8 +380,15 @@ public class KLine
             return -100;
         double minJ = kArr[index].j;
         int minJIndex = index;
-        for (int i = index - 1; i >= 0 && kArr[i].d > kArr[i].k && kArr[i].k > kArr[i].j; i-- )
+        int crossTimes = 0;
+        for (int i = index - 1;  crossTimes <= 1 && i >= 0 ; i-- )
         {
+            if ((kArr[i].d > kArr[i].k && kArr[i].k > kArr[i].j && kArr[i+1] .j > kArr[i + 1].k && kArr[i + 1].k > kArr[i + 1].d)
+                || (kArr[i].d < kArr[i].k && kArr[i].k < kArr[i].j && kArr[i + 1].j < kArr[i + 1].k && kArr[i + 1].k < kArr[i + 1].d) )
+            {
+
+                corssTimes++;
+            }
             if (minJ >= kArr[i].j)
             {
                 minJ = kArr[i].j;
