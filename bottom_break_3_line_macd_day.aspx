@@ -7,7 +7,7 @@
 
     public DateTime currentDate = Util.GetDay(DateTime.Now);
 
-    public string sort = " 震幅 desc ";
+    public string sort = " MACD率 desc ";
 
     protected void Page_Load(object sender, EventArgs e)
     {

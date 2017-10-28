@@ -7,12 +7,13 @@
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        Stock s = new Stock("sh600036");
+        Stock s = new Stock("sh600259");
         s.LoadKLineDay();
         KLine.ComputeMACD(s.kLineDay);
         KLine.ComputeRSV(s.kLineDay);
         KLine.ComputeKDJ(s.kLineDay);
-        
+        int currentIndex = s.GetItemIndex(DateTime.Parse("2017-10-20"));
+        double macdRate = KLine.ComputeMacdDegree(s.kLineDay, currentIndex);
 
         Response.Write(s.kLineDay[s.kLineDay.Length - 2].macd);
 

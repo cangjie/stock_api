@@ -41,7 +41,7 @@
         if (currentDate.Year < 2000)
             currentDate = DateTime.Now;
         DataTable dtOri = GetData(currentDate);
-        DataRow[] drOriArr = dtOri.Select(Util.GetSafeRequestValue(Request, "whereclause", "").Trim(), sort + (!sort.Trim().Equals("")?",":"") + " 综指 desc  ");
+        DataRow[] drOriArr = dtOri.Select(Util.GetSafeRequestValue(Request, "whereclause", "").Trim(), sort + (!sort.Trim().Equals("")?",":"") + " MACD率 desc  ");
         return RenderHtml(drOriArr);
     }
 
@@ -162,10 +162,10 @@
                 {
                     switch (drArr[0].Table.Columns[i].Caption.Trim())
                     {
-	                    case "综指":
+                        case "综指":
                         case "昨收":
                         case "MACD率":
-	                    case "KDJ率":
+                        case "KDJ率":
                             dr[i] = Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2).ToString();
                             break;
                         case "买入":
@@ -179,6 +179,7 @@
                                 + Math.Round(todayPrice, 2).ToString() + "</font>";
                             break;
                         case "低点":
+                        case "F1":
                         case "F3":
                         case "F5":
                         case "高点":
@@ -239,18 +240,20 @@
         dt.Columns.Add("今涨", Type.GetType("System.Double"));
         dt.Columns.Add("放量", Type.GetType("System.Double"));
         dt.Columns.Add("KDJ", Type.GetType("System.Int32"));
-	    dt.Columns.Add("KDJ率", Type.GetType("System.Double"));
+        dt.Columns.Add("KDJ率", Type.GetType("System.Double"));
         dt.Columns.Add("MACD率", Type.GetType("System.Double"));
-	    dt.Columns.Add("3线日", Type.GetType("System.Int32"));
+        dt.Columns.Add("3线日", Type.GetType("System.Int32"));
         dt.Columns.Add("3线", Type.GetType("System.Double"));
         dt.Columns.Add("低点", Type.GetType("System.Double"));
+        dt.Columns.Add("F1", Type.GetType("System.Double"));
         dt.Columns.Add("F3", Type.GetType("System.Double"));
         dt.Columns.Add("F5", Type.GetType("System.Double"));
         dt.Columns.Add("高点", Type.GetType("System.Double"));
         dt.Columns.Add("买入", Type.GetType("System.Double"));
-	    dt.Columns.Add("综指", Type.GetType("System.Double"));
-	    dt.Columns.Add("上涨空间", Type.GetType("System.Double"));
-	    dt.Columns.Add("下跌空间", Type.GetType("System.Double"));
+        dt.Columns.Add("综指", Type.GetType("System.Double"));
+        dt.Columns.Add("涨幅", Type.GetType("System.Double"));
+        dt.Columns.Add("跌幅", Type.GetType("System.Double"));
+        dt.Columns.Add("震幅", Type.GetType("System.Double"));
         for (int i = 1; i <= 5; i++)
         {
             dt.Columns.Add(i.ToString() + "日", Type.GetType("System.Double"));
@@ -262,7 +265,7 @@
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
             stock.LoadKLineDay();
             KLine.ComputeMACD(stock.kLineDay);
-	        KLine.ComputeRSV(stock.kLineDay);
+            KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
             int currentIndex = stock.GetItemIndex(currentDate);
             if (currentIndex < 1)
@@ -286,23 +289,25 @@
             dr["放量"] = currentVolume / lastDayVolume;
             int kdjDays = stock.kdjDays(currentIndex);
             dr["kdj"] = kdjDays.ToString();
-	        int days3Line = KLine.Above3LineDays(stock, currentIndex);
-	        dr["3线日"] = days3Line;
+            int days3Line = KLine.Above3LineDays(stock, currentIndex);
+            dr["3线日"] = days3Line;
             dr["3线"] = stock.GetAverageSettlePrice(currentIndex, 3, 3);
             double buyPrice = stock.kLineDay[currentIndex].endPrice;
             double lowestPrice = stock.LowestPrice(currentDate, 20);
             double highestPrice = stock.HighestPrice(currentDate, 40);
+            double f1 = lowestPrice + (highestPrice - lowestPrice) * 0.236;
             double f3 = lowestPrice + (highestPrice - lowestPrice) * 0.382;
             double f5 = lowestPrice + (highestPrice - lowestPrice) * 0.618;
             dr["低点"] = lowestPrice;
+            dr["F1"] = f1;
             dr["F3"] = f3;
             dr["F5"] = f5;
             dr["高点"] = highestPrice;
             dr["买入"] = buyPrice;
-            double macdDegree = KLine.ComputeMacdDegree(stock.kLineDay, currentIndex)*1000;
+            double macdDegree = KLine.ComputeMacdDegree(stock.kLineDay, currentIndex)*100;
             dr["MACD率"] = macdDegree;
-	        double kdjDegree = KLine.ComputeKdjDegree(stock.kLineDay, currentIndex);
-	        dr["KDJ率"] = kdjDegree;
+            double kdjDegree = KLine.ComputeKdjDegree(stock.kLineDay, currentIndex);
+            dr["KDJ率"] = kdjDegree;
             double maxPrice = 0;
             for (int i = 1; i <= 5; i++)
             {
@@ -320,57 +325,62 @@
             }
 
             double upSpace = 0;
-	        double downSpace = 0;
+            double downSpace = 0;
 
-	        if (buyPrice <= lowestPrice )
-	        {
+            if (buyPrice <= lowestPrice)
+            {
                 downSpace = 0.1;
-	            upSpace = (lowestPrice - buyPrice) / buyPrice;
-	        }
-	        else if (buyPrice <= f3)
-	        {
+                upSpace = (lowestPrice - buyPrice) / buyPrice;
+            }
+            else if (buyPrice <= f1)
+            {
                 downSpace = (buyPrice - lowestPrice) / buyPrice;
-	            upSpace = (f3 - buyPrice) / buyPrice;
-	        }
-	        else if (buyPrice <= f5)
-	        {
+                upSpace = (f1 - buyPrice) / buyPrice;
+            }
+            else if (buyPrice <= f3)
+            {
+                downSpace = (buyPrice - f1) / buyPrice;
+                upSpace = (f3 - buyPrice) / buyPrice;
+            }
+            else if (buyPrice <= f5)
+            {
                 downSpace = (buyPrice - f3) / buyPrice;
                 upSpace = (f5 - buyPrice) / buyPrice;
-	        }
-	        else if (buyPrice <= highestPrice)
-	        {
+            }
+            else if (buyPrice <= highestPrice)
+            {
                 downSpace = (buyPrice - f5) / buyPrice;
                 upSpace = (highestPrice - buyPrice) / buyPrice;
-	        }
-	        else
+            }
+            else
             {
                 upSpace = 0.1;
-	            downSpace = (buyPrice - highestPrice) / buyPrice;
-	        }
+                downSpace = (buyPrice - highestPrice) / buyPrice;
+            }
 
-	        dr["上涨空间"] = upSpace;
-	        dr["下跌空间"] = downSpace;
-	    
+            dr["涨幅"] = upSpace;
+            dr["跌幅"] = downSpace;
+            dr["震幅"] = upSpace + downSpace;
             double totalScore = 0;
-	        if (kdjDays > -1 && macdDegree > 0 && days3Line > -1 )
-	        {
+            if (kdjDays > -1 && macdDegree > 0 && days3Line > -1 )
+            {
                 totalScore = 1000 - kdjDays * 100 - days3Line * 50
-	                + macdDegree + kdjDegree - Math.Abs(volumeIncrease) * 100;
-	                
-	            //double dayDiv = (double)kdjDays + (double)days3Line*0.75;
+                    + macdDegree + kdjDegree - Math.Abs(volumeIncrease) * 100;
+
+                //double dayDiv = (double)kdjDays + (double)days3Line*0.75;
                 //dayDiv = ((dayDiv==0) ? 0.75 : dayDiv);
-	            //totalScore = (macdDegree + kdjDegree)/dayDiv;
-	            
-	            
-	        }
+                //totalScore = (macdDegree + kdjDegree)/dayDiv;
 
 
-	        totalScore = Math.Round(totalScore, 2);
+            }
 
-	        dr["综指"] = totalScore;
-	        
-	
-	        if (totalScore !=0 && (stock.kLineDay[currentIndex].highestPrice - settlePrice) / settlePrice < 0.07 )
+
+            totalScore = Math.Round(totalScore, 2);
+
+            dr["综指"] = totalScore;
+
+
+            if (totalScore !=0 && (stock.kLineDay[currentIndex].highestPrice - settlePrice) / settlePrice < 0.07 )
                 dt.Rows.Add(dr);
         }
 
@@ -386,7 +396,7 @@
 
     protected void dg_SortCommand(object source, DataGridSortCommandEventArgs e)
     {
-	    Response.Write(e.SortExpression);
+        Response.Write(e.SortExpression);
         sort = e.SortExpression.Replace("|", " ");
         string columnName = sort.Split(' ')[0].Trim();
         string sortSqu = sort.Split(' ')[1].Trim();
@@ -470,12 +480,14 @@
 					<asp:BoundColumn DataField="3线日" HeaderText="3线日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
                     <asp:BoundColumn DataField="低点" HeaderText="低点"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="F1" HeaderText="F1"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F5" HeaderText="F5"></asp:BoundColumn>
                     <asp:BoundColumn DataField="高点" HeaderText="高点"></asp:BoundColumn>
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
-			        <asp:BoundColumn DataField="上涨空间" HeaderText="上涨空间"  ></asp:BoundColumn>
-					<asp:BoundColumn DataField="下跌空间" HeaderText="下跌空间"  ></asp:BoundColumn>
+			        <asp:BoundColumn DataField="涨幅" HeaderText="涨幅"  ></asp:BoundColumn>
+					<asp:BoundColumn DataField="跌幅" HeaderText="跌幅"  ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="震幅" HeaderText="震幅"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日" SortExpression="1日|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="2日" HeaderText="2日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3日" HeaderText="3日"></asp:BoundColumn>
