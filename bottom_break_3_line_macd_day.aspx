@@ -234,7 +234,7 @@
     public DataTable GetData(DateTime currentDate)
     {
         currentDate = Util.GetDay(currentDate);
-        DataTable dtOri = DBHelper.GetDataTable(" select * from bottom_break_cross_3_line  join alert_kdj on bottom_break_cross_3_line.gid = alert_kdj.gid and alert_time > '"
+        DataTable dtOri = DBHelper.GetDataTable(" select * from bottom_break_cross_3_line  join alert_macd on bottom_break_cross_3_line.gid = alert_macd.gid and alert_time > '"
             + currentDate.ToShortDateString() + "' and  alert_time < '" + currentDate.ToShortDateString() + " 17:00' "
             + " and alert_type = 'day' where suggest_date = '" + currentDate.ToShortDateString() + "' ");
         DataTable dt = new DataTable();
@@ -246,6 +246,7 @@
         dt.Columns.Add("今收", Type.GetType("System.Double"));
         dt.Columns.Add("今涨", Type.GetType("System.Double"));
         dt.Columns.Add("放量", Type.GetType("System.Double"));
+        dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
         dt.Columns.Add("KDJ率", Type.GetType("System.Double"));
         dt.Columns.Add("MACD率", Type.GetType("System.Double"));
         dt.Columns.Add("3线", Type.GetType("System.Double"));
@@ -288,7 +289,7 @@
             double f3 = lowestPrice + (highestPrice - lowestPrice) * 0.382;
             double f5 = lowestPrice + (highestPrice - lowestPrice) * 0.618;
             double buyPrice = currentPrice;
-            double macdDegree = KLine.ComputeMacdDegree(stock.kLineDay, currentIndex)*1000;
+            double macdDegree = KLine.ComputeMacdDegree(stock.kLineDay, currentIndex)*100;
             double kdjDegree = KLine.ComputeKdjDegree(stock.kLineDay, currentIndex);
             double upSpace = 0;
             double downSpace = 0;
@@ -340,6 +341,7 @@
             dr["高点"] = highestPrice;
             dr["买入"] = buyPrice;
             dr["MACD率"] = macdDegree;
+            dr["KDJ日"] = kdjDays;
             dr["KDJ率"] = kdjDegree;
             dr["涨幅"] = upSpace;
             dr["跌幅"] = downSpace;
@@ -402,6 +404,7 @@
                     <asp:BoundColumn DataField="今收" HeaderText="今收"></asp:BoundColumn>
                     <asp:BoundColumn DataField="今涨" HeaderText="今涨" SortExpression="今涨|desc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="放量" HeaderText="放量" SortExpression="放量|desc"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ日|asc"></asp:BoundColumn>
 					<asp:BoundColumn DataField="KDJ率" HeaderText="KDJ率" SortExpression="KDJ率|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="MACD率" HeaderText="MACD率" SortExpression="MACD率|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
