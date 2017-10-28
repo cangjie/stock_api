@@ -6,13 +6,16 @@
 <script runat="server">
     protected void Page_Load(object sender, EventArgs e)
     {
+        StockWatcher.LogQuota();
 
-        Stock s = new Stock("sh600259");
+        Stock s = new Stock("sh601128");
         s.LoadKLineDay();
         KLine.ComputeMACD(s.kLineDay);
         KLine.ComputeRSV(s.kLineDay);
         KLine.ComputeKDJ(s.kLineDay);
-        int currentIndex = s.GetItemIndex(DateTime.Parse("2017-10-20"));
+        int currentIndex = s.GetItemIndex(DateTime.Parse("2017-10-27"));
+        int kdjDays = s.kdjDays(currentIndex);
+        bool isKdj = StockWatcher.IsKdjFolk(s.kLineDay, s.kLineDay.Length - 1);
         double macdRate = KLine.ComputeMacdDegree(s.kLineDay, currentIndex);
 
         Response.Write(s.kLineDay[s.kLineDay.Length - 2].macd);

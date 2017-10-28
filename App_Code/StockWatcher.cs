@@ -83,19 +83,23 @@ public class StockWatcher
         {
             try
             {
-                if (Util.IsTransacDay(DateTime.Parse(DateTime.Now.ToShortDateString())) && DateTime.Now.Hour >= 9 && DateTime.Now.Hour <= 15)
+                if (Util.IsTransacDay(DateTime.Parse(DateTime.Now.ToShortDateString())) && DateTime.Now.Hour >= 9 && DateTime.Now.Hour <= 16)
                 {
                     string[] gidArr = Util.GetAllGids();
                     for (int i = 0; i < gidArr.Length; i++)
                     {
-                        KLine.RefreshKLine(gidArr[i], DateTime.Parse(DateTime.Now.ToShortDateString()));
-                        string gid = gidArr[i];
-                        KLine[] kArr = Stock.LoadLocalKLine(gid, "day");
-                        SearchFolks(gid, "day", kArr, kArr.Length - 1);
-                        kArr = Stock.LoadLocalKLine(gid, "1hr");
-                        SearchFolks(gid, "1hr", kArr, kArr.Length - 1);
-                        kArr = Stock.LoadLocalKLine(gid, "30min");
-                        SearchFolks(gid, "30min", kArr, kArr.Length - 1);
+                        //if (gidArr[i].Trim().Equals("sh601128"))
+                        {
+
+                            KLine.RefreshKLine(gidArr[i], DateTime.Parse(DateTime.Now.ToShortDateString()));
+                            string gid = gidArr[i];
+                            KLine[] kArr = Stock.LoadLocalKLine(gid, "day");
+                            SearchFolks(gid, "day", kArr, kArr.Length - 1);
+                            kArr = Stock.LoadLocalKLine(gid, "1hr");
+                            SearchFolks(gid, "1hr", kArr, kArr.Length - 1);
+                            kArr = Stock.LoadLocalKLine(gid, "30min");
+                            SearchFolks(gid, "30min", kArr, kArr.Length - 1);
+                        }
                     }
                 }
             }
