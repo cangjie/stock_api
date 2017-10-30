@@ -385,7 +385,7 @@
                 dr["信号"] = dr["信号"].ToString().Trim() + "🛍️";
             }
 
-            if (kdjDays == 0 && days3Line == 0 && macdDegree > 0.15 && (upSpace < 0.005 || (upSpace >= downSpace * 2 && upSpace + downSpace > 0.04)))
+            if (kdjDays == 0 && days3Line == 0 && (upSpace < 0.005 || (upSpace >= downSpace * 2 && upSpace + downSpace > 0.04)))
             {
                 dr["信号"] = dr["信号"].ToString().Trim() + "📈";
             }
