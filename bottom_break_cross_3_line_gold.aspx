@@ -126,6 +126,7 @@
         dt.Columns.Add("K线势", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD", Type.GetType("System.Int32"));
         dt.Columns.Add("KDJ", Type.GetType("System.Int32"));
+	    dt.Columns.Add("TD", Type.GetType("System.Int32"));
         dt.Columns.Add("1日", Type.GetType("System.Double"));
         dt.Columns.Add("2日", Type.GetType("System.Double"));
         dt.Columns.Add("3日", Type.GetType("System.Double"));
@@ -244,6 +245,7 @@
                 dr[i.ToString() + "日"] = (stock.kLineDay[i + currentIndex].highestPrice - buyPrice) / buyPrice;
             }
             dr["总计"] = maxIncreaseRate;
+	        dr["TD"] = KLine.ComputeDeMarkValue(stock.KLineDay, currentIndex);
             dt.Rows.Add(dr);
         }
 
@@ -504,6 +506,7 @@
                     <asp:BoundColumn DataField="K线势" HeaderText="K线势"></asp:BoundColumn>
                     <asp:BoundColumn DataField="MACD" HeaderText="MACD"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ" HeaderText="KDJ"></asp:BoundColumn>
+					<asp:BoundColumn DataField="TD" HeaderText="TD"></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="2日" HeaderText="2日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3日" HeaderText="3日"></asp:BoundColumn>

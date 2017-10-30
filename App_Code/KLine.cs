@@ -723,6 +723,32 @@ public class KLine
         return sum / itemsCount;
     }
 
+    public static int ComputeDeMarkValue(KLine[] kArr, int index)
+    {
+        if (index < 12)
+            return 0;
+        int deMarkValue = 0;
+        bool isRaise = false;
+        if (kArr[index].endPrice > kArr[index - 4].endPrice)
+            isRaise = true;
+        for (int i = 0; i < 9; i++)
+        {
+            if (kArr[index - i].endPrice > kArr[index - i - 4].endPrice && isRaise)
+            {
+                deMarkValue++;
+            }
+            else if (kArr[index - i].endPrice < kArr[index - i - 4].endPrice && !isRaise)
+            {
+                deMarkValue++;
+            }
+            else
+            {
+                break;
+            }
+        }
+        return isRaise ? deMarkValue : deMarkValue * -1;
+
+    }
    
 
    
