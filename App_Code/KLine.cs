@@ -815,6 +815,7 @@ public class KLine
                     }
 
                 }
+                break;
             }
 
         }
