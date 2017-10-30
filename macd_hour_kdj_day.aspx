@@ -227,7 +227,7 @@
     {
         currentDate = Util.GetDay(currentDate);
         DataTable dtOri = new DataTable();
-        SqlDataAdapter da = new SqlDataAdapter(" select * from alert_macd where alert_type = '1hr' and alert_time = '" + currentDate.ToShortDateString() + " 15:00' ", Util.conStr);
+        SqlDataAdapter da = new SqlDataAdapter(" select * from alert_macd where alert_type = '1hr' and alert_time  > '" + currentDate.ToShortDateString() + "'and  alert_time < '" + currentDate.ToShortDateString() + " 15:00' ", Util.conStr);
         da.Fill(dtOri);
 
         DataTable dt = new DataTable();
