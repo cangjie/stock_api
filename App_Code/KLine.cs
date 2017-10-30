@@ -754,7 +754,7 @@ public class KLine
     public static string ComputeDeMarkCount(KLine[] kArr, int index)
     {
         ArrayList countQ = new ArrayList();
-        string retValue = "-";
+        string retValue = "";
         for (int i = index; i >= 13; i--)
         {
             int deMarkValue = ComputeDeMarkValue(kArr, i);
