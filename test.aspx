@@ -14,10 +14,10 @@
             s.LoadKLineDay();
             for (int i = s.kLineDay.Length - 1; i >= 15; i--)
             {
-		int count = KLine.ComputeDeMarkValue(s.kLineDay, i).Trim();
-		if (count == 9 || count == -9)
-		{
-try
+		        int count = KLine.ComputeDeMarkValue(s.kLineDay, i);
+		        if (count != 0)
+		        {
+                    try
                     {
                         DBHelper.InsertData("alert_demark", new string[,] {
                             {"gid", "varchar", s.gid.Trim() },
@@ -31,7 +31,7 @@ try
                     {
                         Console.WriteLine(err.ToString());
                     }
-		}
+		        }
 /*
                 string count = KLine.ComputeDeMarkCount(s.kLineDay, i).Trim();
                 if (count.IndexOf("(") < 0 && !count.Equals("++") && !count.Equals("--"))
