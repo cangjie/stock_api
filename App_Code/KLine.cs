@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -748,6 +749,76 @@ public class KLine
         }
         return isRaise ? deMarkValue : deMarkValue * -1;
 
+    }
+
+    public static string ComputeDeMarkCount(KLine[] kArr, int index)
+    {
+        ArrayList countQ = new ArrayList();
+        string retValue = "-";
+        for (int i = index; i >= 13; i--)
+        {
+            int deMarkValue = ComputeDeMarkValue(kArr, i);
+            if (Math.Abs(deMarkValue) == 9)
+            {
+                bool buyStruct = deMarkValue < 0;
+                int count = 0;
+                for (int j = i; j <= index; j++)
+                {
+                    if (buyStruct && kArr[j].endPrice <= kArr[j - 2].lowestPrice && count <= 11)
+                    {
+                        count++;
+                        countQ.Add(j);
+                        retValue = count.ToString();
+                    }
+                    else if (count >= 12 && buyStruct && kArr[j].endPrice <= kArr[j - 2].lowestPrice)
+                    {
+                        if (kArr[j].lowestPrice <= kArr[(int)countQ[8]].endPrice)
+                        {
+                            count++;
+                            retValue = -1 * count.ToString();
+                        }
+                        else
+                        {
+
+                            retValue = "--";
+                        }
+
+                    }
+                    else
+                    {
+                        retValue = "-";
+                    }
+
+                    if (!buyStruct && kArr[j].endPrice >= kArr[j - 2].highestPrice && count <= 11)
+                    {
+                        count++;
+                        countQ.Add(j);
+                        retValue = count.ToString();
+                    }
+                    else if (count >= 12 && !buyStruct && kArr[j].endPrice >= kArr[j - 2].highestPrice)
+                    {
+                        if (kArr[j].highestPrice >= kArr[(int)countQ[8]].endPrice)
+                        {
+                            count++;
+                            retValue = count.ToString();
+                        }
+                        else
+                        {
+
+                            retValue = "++";
+                        }
+
+                    }
+                    else
+                    {
+                        retValue = "+";
+                    }
+
+                }
+            }
+
+        }
+        return retValue;
     }
    
 
