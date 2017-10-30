@@ -382,7 +382,7 @@
 
             dr["综指"] = totalScore;
 
-            if (currentPrice <= buyPrice * 0.005)
+            if (currentPrice <= buyPrice * 1.005)
             {
                 dr["信号"] = dr["信号"].ToString().Trim() + "🛍️";
             }
