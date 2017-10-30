@@ -281,7 +281,8 @@
             dr["昨收"] = settlePrice;
             dr["今开"] = openPrice;
             dr["今收"] = currentPrice;
-            dr["MACD"] = stock.macdDays(currentIndex);
+            int macdDays = stock.macdDays(currentIndex);
+            dr["MACD"] = macdDays;
             dr["今涨"] = (stock.kLineDay[currentIndex].highestPrice - settlePrice) / settlePrice;
             DateTime lastDate = DateTime.Parse(stock.kLineDay[currentIndex - 1].startDateTime.ToShortDateString());
             double lastDayVolume = Stock.GetVolumeAndAmount(stock.gid, lastDate)[0];
@@ -386,7 +387,7 @@
                 dr["信号"] = dr["信号"].ToString().Trim() + "🛍️";
             }
 
-            if (kdjDays == 0 && days3Line == 0 && (upSpace < 0.005 || (upSpace >= downSpace * 2 && upSpace + downSpace > 0.04)))
+            if (kdjDays >= 0 && kdjDays <= 1 && days3Line >= 0 && days3Line <= 1 && macdDays <= 0)
             {
                 dr["信号"] = dr["信号"].ToString().Trim() + "📈";
             }
