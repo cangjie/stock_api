@@ -775,7 +775,7 @@ public class KLine
                         if (kArr[j].lowestPrice <= kArr[(int)countQ[8]].endPrice)
                         {
                             count++;
-                            retValue = -1 * count.ToString();
+                            retValue = (-1 * count).ToString();
                         }
                         else
                         {
