@@ -12,7 +12,29 @@
         {
             Stock s = new Stock(gid);
             s.LoadKLineDay();
-            KLine.ComputeDeMarkCount(s.kLineDay, s.kLineDay.Length - 1);
+            for (int i = s.kLineDay.Length - 1; i >= 15; i--)
+            {
+                string count = KLine.ComputeDeMarkCount(s.kLineDay, i).Trim();
+                if (count.IndexOf("(") < 0 && !count.Equals("++") && !count.Equals("--"))
+                {
+                    count = count.Replace("+", "");
+                    try
+                    {
+                        DBHelper.InsertData("alert_demark", new string[,] {
+                            {"gid", "varchar", s.gid.Trim() },
+                            {"alert_time", "datetime", s.kLineDay[i].endDateTime.ToString() },
+                            {"alert_type", "varchar", "day" },
+                            {"value", "int", int.Parse(count).ToString() },
+                            {"price", "float", s.kLineDay[i].endPrice.ToString() }
+                        });
+                    }
+                    catch(Exception err)
+                    {
+                        Console.WriteLine(err.ToString());
+                    }
+                }
+            }
+
         }
 
 
