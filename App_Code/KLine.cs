@@ -764,56 +764,60 @@ public class KLine
                 int count = 0;
                 for (int j = i; j <= index; j++)
                 {
-                    if (buyStruct && kArr[j].endPrice <= kArr[j - 2].lowestPrice && count <= 11)
+
+                    if (buyStruct)
                     {
-                        count++;
-                        countQ.Add(j);
-                        retValue = (-1 *count).ToString();
-                    }
-                    else if (count >= 12 && buyStruct && kArr[j].endPrice <= kArr[j - 2].lowestPrice)
-                    {
-                        if (kArr[j].lowestPrice <= kArr[(int)countQ[8]].endPrice)
+                        if (kArr[j].endPrice <= kArr[j - 2].lowestPrice && count <= 11)
                         {
                             count++;
+                            countQ.Add(j);
                             retValue = (-1 * count).ToString();
                         }
+                        else if (count >= 12 && kArr[j].endPrice <= kArr[j - 2].lowestPrice)
+                        {
+                            if (kArr[j].lowestPrice <= kArr[(int)countQ[8]].endPrice)
+                            {
+                                count++;
+                                retValue = (-1 * count).ToString();
+                            }
+                            else
+                            {
+
+                                retValue = "--";
+                            }
+                        }
                         else
                         {
-
-                            retValue = "--";
+                            retValue = "-(" + count.ToString() + ")";
                         }
-
                     }
                     else
                     {
-                        retValue = "-(" + count.ToString()+")";
-                    }
-
-                    if (!buyStruct && kArr[j].endPrice >= kArr[j - 2].highestPrice && count <= 11)
-                    {
-                        count++;
-                        countQ.Add(j);
-                        retValue = count.ToString();
-                    }
-                    else if (count >= 12 && !buyStruct && kArr[j].endPrice >= kArr[j - 2].highestPrice)
-                    {
-                        if (kArr[j].highestPrice >= kArr[(int)countQ[8]].endPrice)
+                        if (kArr[j].endPrice >= kArr[j - 2].highestPrice && count <= 11)
                         {
                             count++;
+                            countQ.Add(j);
                             retValue = "+" + count.ToString();
+                        }
+                        else if (count >= 12  && kArr[j].endPrice >= kArr[j - 2].highestPrice)
+                        {
+                            if (kArr[j].highestPrice >= kArr[(int)countQ[8]].endPrice)
+                            {
+                                count++;
+                                retValue = "+" + count.ToString();
+                            }
+                            else
+                            {
+
+                                retValue = "++";
+                            }
+
                         }
                         else
                         {
-
-                            retValue = "++";
+                            retValue = "+(" + count.ToString() + ")";
                         }
-
                     }
-                    else
-                    {
-                        retValue = "+("+count.ToString()+")";
-                    }
-
                 }
                 break;
             }
