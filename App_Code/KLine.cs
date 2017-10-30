@@ -800,7 +800,7 @@ public class KLine
                         if (kArr[j].highestPrice >= kArr[(int)countQ[8]].endPrice)
                         {
                             count++;
-                            retValue = count.ToString();
+                            retValue = "+" + count.ToString();
                         }
                         else
                         {
