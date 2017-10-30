@@ -768,7 +768,7 @@ public class KLine
                     {
                         count++;
                         countQ.Add(j);
-                        retValue = count.ToString();
+                        retValue = (-1 *count).ToString();
                     }
                     else if (count >= 12 && buyStruct && kArr[j].endPrice <= kArr[j - 2].lowestPrice)
                     {
