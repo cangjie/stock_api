@@ -290,6 +290,7 @@
             dr["均线支撑"] = Math.Round((double)drOri["均线支撑"], 2).ToString();
             dr["MACD"] = drOri["MACD"].ToString();
             dr["KDJ"] = drOri["KDJ"].ToString();
+	        dr["TD"] = drOri["TD"].ToString();
             for (int i = 1; i <= 5; i++)
             {
                 if (drOri[i.ToString() + "日"].GetType().Name.Trim().Equals("DBNull"))
