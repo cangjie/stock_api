@@ -507,7 +507,7 @@
                     <asp:BoundColumn DataField="K线势" HeaderText="K线势"></asp:BoundColumn>
                     <asp:BoundColumn DataField="MACD" HeaderText="MACD"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ" HeaderText="KDJ"></asp:BoundColumn>
-					<asp:BoundColumn DataField="TD" HeaderText="TD"></asp:BoundColumn>
+					<asp:BoundColumn DataField="TD" HeaderText="TD" SortExpression="TD|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="2日" HeaderText="2日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3日" HeaderText="3日"></asp:BoundColumn>
