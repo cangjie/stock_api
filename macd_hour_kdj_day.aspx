@@ -380,6 +380,15 @@
 
             dr["综指"] = totalScore;
 
+            if (currentPrice <= buyPrice * 0.005)
+            {
+                dr["信号"] = dr["信号"].ToString().Trim() + "🛍️";
+            }
+
+            if (kdjDays == 0 && days3Line == 0 && macdDegree > 0.15 && (upSpace < 0.005 || (upSpace >= downSpace * 2 && upSpace + downSpace > 0.04)))
+            {
+                dr["信号"] = dr["信号"].ToString().Trim() + "📈";
+            }
 
             //if (totalScore !=0 && (stock.kLineDay[currentIndex].highestPrice - settlePrice) / settlePrice < 0.07 )
             dt.Rows.Add(dr);
