@@ -786,7 +786,7 @@ public class KLine
                     }
                     else
                     {
-                        retValue = "-";
+                        retValue = "-" + count.ToString();
                     }
 
                     if (!buyStruct && kArr[j].endPrice >= kArr[j - 2].highestPrice && count <= 11)
@@ -811,7 +811,7 @@ public class KLine
                     }
                     else
                     {
-                        retValue = "+";
+                        retValue = "+"+count.ToString();
                     }
 
                 }
