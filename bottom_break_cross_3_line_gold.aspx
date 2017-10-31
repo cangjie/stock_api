@@ -126,7 +126,7 @@
         dt.Columns.Add("K线势", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD", Type.GetType("System.Int32"));
         dt.Columns.Add("KDJ", Type.GetType("System.Int32"));
-	    dt.Columns.Add("TD", Type.GetType("System.String"));
+	    dt.Columns.Add("TD", Type.GetType("System.Int32"));
         dt.Columns.Add("1日", Type.GetType("System.Double"));
         dt.Columns.Add("2日", Type.GetType("System.Double"));
         dt.Columns.Add("3日", Type.GetType("System.Double"));
@@ -245,7 +245,7 @@
                 dr[i.ToString() + "日"] = (stock.kLineDay[i + currentIndex].highestPrice - buyPrice) / buyPrice;
             }
             dr["总计"] = maxIncreaseRate;
-	        dr["TD"] = KLine.ComputeDeMarkCount(stock.kLineDay, currentIndex);
+	        dr["TD"] = KLine.ComputeDeMarkValue(stock.kLineDay, currentIndex);
             dt.Rows.Add(dr);
         }
 
