@@ -1,6 +1,7 @@
 ﻿<%@ Page Language="C#" %>
 <%@ Import Namespace="System.Data" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
+<%@ Import Namespace="System.Threading" %>
 <!DOCTYPE html>
 
 <script runat="server">
@@ -9,14 +10,35 @@
 
     public string sort = " TD, 放量 desc  ";
 
+    public static ThreadStart tsQ = new ThreadStart(StockWatcher.LogQuota);
+
+    public static Thread tQ = new Thread(tsQ);
+
+
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack)
         {
+            try
+            {
+                if (tQ.ThreadState != ThreadState.Running && tQ.ThreadState != ThreadState.WaitSleepJoin)
+                {
+                    tQ.Abort();
+                    tsQ = new ThreadStart(StockWatcher.LogQuota);
+                    tQ = new Thread(ts);
+                    tQ.Start();
+                }
+            }
+            catch(Exception err)
+            {
+                Console.WriteLine(err.ToString());
+            }
             DataTable dt = GetData();
             dg.DataSource = dt;
             dg.DataBind();
         }
+
+
     }
 
     public DataTable GetData()
