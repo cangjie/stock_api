@@ -385,7 +385,7 @@
             }
             if (currentVolume / lastDayVolume >= 0.75 && currentVolume / lastDayVolume <= 1.5 && (upSpace <= 0.005 || (upSpace >= downSpace * 2 && upSpace + downSpace >= 0.04)))
             {
-                dr["信号"] = dr["信号"].ToString() + "📈";
+                //dr["信号"] = dr["信号"].ToString() + "📈";
             }
             dt.Rows.Add(dr);
         }
