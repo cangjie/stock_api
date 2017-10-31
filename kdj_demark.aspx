@@ -404,12 +404,12 @@
 
             if (currentPrice <= buyPrice * 1.005)
             {
-                dr["信号"] = dr["信号"].ToString().Trim() + "🛍️";
+                //dr["信号"] = dr["信号"].ToString().Trim() + "🛍️";
             }
 
             if (kdjDays >= 0 && kdjDays <= 1 && days3Line >= 0 && days3Line <= 1 && macdDays <= 0)
             {
-                dr["信号"] = dr["信号"].ToString().Trim() + "📈";
+                //dr["信号"] = dr["信号"].ToString().Trim() + "📈";
             }
 
             //if (totalScore !=0 && (stock.kLineDay[currentIndex].highestPrice - settlePrice) / settlePrice < 0.07 )

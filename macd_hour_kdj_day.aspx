@@ -261,7 +261,7 @@
         dt.Columns.Add("KDJ率", Type.GetType("System.Double"));
         dt.Columns.Add("MACD", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD率", Type.GetType("System.Double"));
-	    dt.Columns.Add("TD", Type.GetType("System.String"));
+	    dt.Columns.Add("TD", Type.GetType("System.Int32"));
         dt.Columns.Add("3线日", Type.GetType("System.Int32"));
         dt.Columns.Add("3线", Type.GetType("System.Double"));
         dt.Columns.Add("低点", Type.GetType("System.Double"));
@@ -315,7 +315,7 @@
             dr["3线日"] = days3Line;
             dr["3线"] = stock.GetAverageSettlePrice(currentIndex, 3, 3);
             //double buyPrice = stock.kLineDay[currentIndex].endPrice;
-            double buyPrice = double.Parse(drOri["alert_price"].ToString().Trim());
+            double buyPrice = stock.kLineDay[currentIndex].endPrice;
             double lowestPrice = stock.LowestPrice(currentDate, 20);
             double highestPrice = stock.HighestPrice(currentDate, 40);
             double f1 = lowestPrice + (highestPrice - lowestPrice) * 0.236;
