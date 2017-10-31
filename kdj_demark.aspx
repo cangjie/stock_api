@@ -59,7 +59,7 @@
         if (currentDate.Year < 2000)
             currentDate = DateTime.Now;
         DataTable dtOri = GetData(currentDate);
-        DataRow[] drOriArr = dtOri.Select(Util.GetSafeRequestValue(Request, "whereclause", " KDJ >= 0  ").Trim(), sort + (!sort.Trim().Equals("")?",":"") + " KDJ, TD   ");
+        DataRow[] drOriArr = dtOri.Select(Util.GetSafeRequestValue(Request, "whereclause", "   ").Trim(), sort + (!sort.Trim().Equals("")?",":"") + " KDJ, TD   ");
         return RenderHtml(drOriArr);
     }
 
@@ -411,6 +411,11 @@
             {
                 dr["信号"] = dr["信号"].ToString().Trim() + "📈";
             }
+
+	        if (kdjDays < 0)
+	        {
+	            dr["信号"] = "💩";
+	        }
 
             //if (totalScore !=0 && (stock.kLineDay[currentIndex].highestPrice - settlePrice) / settlePrice < 0.07 )
             dt.Rows.Add(dr);

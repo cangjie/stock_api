@@ -59,7 +59,7 @@
         if (currentDate.Year < 2000)
             currentDate = DateTime.Now;
         DataTable dtOri = GetData(currentDate);
-        DataRow[] drOriArr = dtOri.Select(Util.GetSafeRequestValue(Request, "whereclause", " KDJ >= 0 ").Trim(), sort + (!sort.Trim().Equals("")?",":"") + " KDJ, TD  ");
+        DataRow[] drOriArr = dtOri.Select(Util.GetSafeRequestValue(Request, "whereclause", "  ").Trim(), sort + (!sort.Trim().Equals("")?",":"") + " KDJ, TD  ");
         return RenderHtml(drOriArr);
     }
 
@@ -342,9 +342,9 @@
             }
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
 
-            if (macdDegree < 0.1 || kdjDays == -1)
+            if (kdjDays < 0)
             {
-                //dr["信号"] = "💩";
+                dr["信号"] = "💩";
             }
 
             double upSpace = 0;
