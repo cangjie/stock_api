@@ -245,7 +245,7 @@
                 dr[i.ToString() + "日"] = (stock.kLineDay[i + currentIndex].highestPrice - buyPrice) / buyPrice;
             }
             dr["总计"] = maxIncreaseRate;
-	        dr["TD"] = KLine.ComputeDeMarkCount(stock.kLineDay, currentIndex);
+	        dr["TD"] = currentIndex - KLine.GetLastDeMarkBuyPointIndex(stock.kLineDay, currentIndex);
             dt.Rows.Add(dr);
         }
 
