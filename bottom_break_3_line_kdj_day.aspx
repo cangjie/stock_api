@@ -7,7 +7,7 @@
 
     public DateTime currentDate = Util.GetDay(DateTime.Now);
 
-    public string sort = " 震幅 desc ";
+    public string sort = " TD desc ";
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -246,6 +246,7 @@
         dt.Columns.Add("今收", Type.GetType("System.Double"));
         dt.Columns.Add("今涨", Type.GetType("System.Double"));
         dt.Columns.Add("放量", Type.GetType("System.Double"));
+        dt.Columns.Add("TD", Type.GetType("System.Int32"));
         dt.Columns.Add("KDJ率", Type.GetType("System.Double"));
         dt.Columns.Add("MACD率", Type.GetType("System.Double"));
         dt.Columns.Add("3线", Type.GetType("System.Double"));
@@ -345,6 +346,7 @@
             dr["跌幅"] = downSpace;
             dr["震幅"] = upSpace + downSpace;
             dr["综指"] = (macdDegree + kdjDegree) * (currentVolume / lastDayVolume) * (upSpace / downSpace) * (upSpace + downSpace);
+            dr["TD"] = KLine.GetLastDeMarkBuyPointIndex(stock.kLineDay, currentIndex);
             double maxPrice = 0;
             for (int i = 1; i <= 5; i++)
             {
@@ -402,6 +404,7 @@
                     <asp:BoundColumn DataField="今收" HeaderText="今收"></asp:BoundColumn>
                     <asp:BoundColumn DataField="今涨" HeaderText="今涨" SortExpression="今涨|desc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="放量" HeaderText="放量" SortExpression="放量|desc"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="TD" HeaderText="TD" SortExpression="TD|asc"></asp:BoundColumn>
 					<asp:BoundColumn DataField="KDJ率" HeaderText="KDJ率" SortExpression="KDJ率|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="MACD率" HeaderText="MACD率" SortExpression="MACD率|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
