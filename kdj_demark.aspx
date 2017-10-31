@@ -245,7 +245,7 @@
     {
         currentDate = Util.GetDay(currentDate);
         DataTable dtOri = new DataTable();
-        SqlDataAdapter da = new SqlDataAdapter(" select * from alert_kdj where alert_type = 'day' and alert_time  > '" + currentDate.ToShortDateString() + "'and  alert_time <= '" + currentDate.ToShortDateString() + " 15:00' ", Util.conStr);
+        SqlDataAdapter da = new SqlDataAdapter(" select * from alert_kdj where alert_type = 'day' and alert_time  > '" + currentDate.ToShortDateString() + "'and  alert_time <= '" + currentDate.ToShortDateString() + " 16:00' ", Util.conStr);
         da.Fill(dtOri);
 
         DataTable dt = new DataTable();
