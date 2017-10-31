@@ -66,6 +66,25 @@ public class StockWatcher
                         KLine.SearchMACDAlert(stock.kLineDay, stock.kLineDay.Length - 1);
                         KLine.SearchKDJAlert(stock.kLineDay, stock.kLineDay.Length - 1);
 
+                        int countDemark = KLine.ComputeDeMarkValue(stock.kLineDay, stock.kLineDay.Length - 1);
+                        if (countDemark != 0)
+                        {
+                            try
+                            {
+                                DBHelper.InsertData("alert_demark", new string[,] {
+                                {"gid", "varchar", stock.gid.Trim() },
+                                {"alert_time", "datetime", stock.kLineDay[stock.kLineDay.Length - 1].endDateTime.ToString() },
+                                {"alert_type", "varchar", "day" },
+                                {"value", "int", countDemark.ToString() },
+                                {"price", "float", stock.kLineDay[stock.kLineDay.Length - 1].endPrice.ToString() }
+                            });
+                            }
+                            catch (Exception err)
+                            {
+                                Console.WriteLine(err.ToString());
+                            }
+                        }
+
                     }
                 }
             }

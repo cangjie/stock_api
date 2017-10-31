@@ -12,6 +12,10 @@
 
     public static Thread t = new Thread(ts);
 
+    public static ThreadStart tsQ = new ThreadStart(StockWatcher.LogQuota);
+
+    public static Thread tQ = new Thread(tsQ);
+
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack)
@@ -24,6 +28,20 @@
                     ts = new ThreadStart(PageWatcher);
                     t = new Thread(ts);
                     //t.Start();
+                }
+            }
+            catch(Exception err)
+            {
+                Console.WriteLine(err.ToString());
+            }
+            try
+            {
+                if (tQ.ThreadState != ThreadState.Running && tQ.ThreadState != ThreadState.WaitSleepJoin)
+                {
+                    tQ.Abort();
+                    tsQ = new ThreadStart(StockWatcher.LogQuota);
+                    tQ = new Thread(ts);
+                    tQ.Start();
                 }
             }
             catch(Exception err)
