@@ -404,10 +404,10 @@
 
             if (currentPrice <= buyPrice * 1.005)
             {
-                dr["信号"] = dr["信号"].ToString().Trim() + "🛍️";
+                //dr["信号"] = dr["信号"].ToString().Trim() + "🛍️";
             }
 
-            if (kdjDays >= 0 && kdjDays <= 1 && days3Line >= 0 && days3Line <= 1 && macdDays <= 0)
+            if (kdjDays >= 0 && kdjDays <= 2 && macdDays <= kdjDays && (int)dr["TD"] <= 4 )
             {
                 dr["信号"] = dr["信号"].ToString().Trim() + "📈";
             }
