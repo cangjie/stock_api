@@ -168,7 +168,7 @@ public class StockWatcher
     public static bool IsKdjFolk(KLine[] kArr, int index)
     {
         bool ret = false;
-        if (kArr[index].j >= kArr[index].k && kArr[index - 1].j <= kArr[index - 1].k && kArr[index].k <= 35 && kArr[index].d <= 35)
+        if (kArr[index].j >= kArr[index].k && kArr[index - 1].j <= kArr[index - 1].k && Math.Abs(kArr[index].k - 50) >= 15 && Math.Abs(kArr[index].d - 50) >= 15)
         {
             ret = true;
         }
