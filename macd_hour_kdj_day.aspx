@@ -284,7 +284,7 @@
             dr["今收"] = currentPrice;
             int macdDays = stock.macdDays(currentIndex);
             dr["MACD"] = macdDays;
-	        dr["TD"] = KLine.ComputeDeMarkCount(stock.kLineDay, currentIndex);
+	        dr["TD"] = currentIndex - KLine.GetLastDeMarkBuyPointIndex(stock.kLineDay, currentIndex);
             dr["今涨"] = (stock.kLineDay[currentIndex].highestPrice - settlePrice) / settlePrice;
             DateTime lastDate = DateTime.Parse(stock.kLineDay[currentIndex - 1].startDateTime.ToShortDateString());
             double lastDayVolume = Stock.GetVolumeAndAmount(stock.gid, lastDate)[0];

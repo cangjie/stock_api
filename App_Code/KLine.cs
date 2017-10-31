@@ -724,6 +724,20 @@ public class KLine
         return sum / itemsCount;
     }
 
+    public static int GetLastDeMarkBuyPointIndex(KLine[] kArr, int index)
+    {
+        int newIndex = 0;
+        for (int i = index; i >= 9; i--)
+        {
+            if (ComputeDeMarkValue(kArr, index) == -9)
+            {
+                newIndex = i;
+                break;
+            }
+        }
+        return newIndex;
+    }
+
     public static int ComputeDeMarkValue(KLine[] kArr, int index)
     {
         if (index < 12)

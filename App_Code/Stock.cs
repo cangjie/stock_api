@@ -276,6 +276,7 @@ public class Stock
         return days;
     }
 
+
     public static KLine[] LoadLocalKLine(string gid, string type)
     {
         DataTable dt = DBHelper.GetDataTable(" select * from " + gid.Trim() + "_k_line where  type = '" + type + "' order by start_date ");
