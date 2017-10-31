@@ -40,7 +40,7 @@
                 {
                     tQ.Abort();
                     tsQ = new ThreadStart(StockWatcher.LogQuota);
-                    tQ = new Thread(ts);
+                    tQ = new Thread(tsQ);
                     tQ.Start();
                 }
             }
