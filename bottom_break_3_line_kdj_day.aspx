@@ -381,7 +381,7 @@
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
             if (currentPrice < line3Price || kdjDays == -1)
             {
-                //dr["信号"] = "💩";
+                dr["信号"] = "💩";
             }
             if (currentVolume / lastDayVolume >= 0.75 && currentVolume / lastDayVolume <= 1.5 && (upSpace <= 0.005 || (upSpace >= downSpace * 2 && upSpace + downSpace >= 0.04)))
             {
