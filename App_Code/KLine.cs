@@ -729,7 +729,7 @@ public class KLine
         int newIndex = 0;
         for (int i = index; i >= 9; i--)
         {
-            if (ComputeDeMarkValue(kArr, index) == -9)
+            if (ComputeDeMarkValue(kArr, i) == -9)
             {
                 newIndex = i;
                 break;
