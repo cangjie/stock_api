@@ -227,7 +227,7 @@
     {
         currentDate = Util.GetDay(currentDate);
         DataTable dtOri = new DataTable();
-        SqlDataAdapter da = new SqlDataAdapter(" select * from alert_macd where alert_type = '1hr' and alert_time  > '" + currentDate.ToShortDateString() + "'and  alert_time <= '" + currentDate.ToShortDateString() + " 15:00' ", Util.conStr);
+        SqlDataAdapter da = new SqlDataAdapter(" select * from alert_demark where alert_type = 'day' and [value] = -9 and alert_time  > '" + currentDate.ToShortDateString() + "'and  alert_time <= '" + currentDate.ToShortDateString() + " 15:00' ", Util.conStr);
         da.Fill(dtOri);
 
         DataTable dt = new DataTable();
@@ -297,7 +297,7 @@
             dr["3线日"] = days3Line;
             dr["3线"] = stock.GetAverageSettlePrice(currentIndex, 3, 3);
             //double buyPrice = stock.kLineDay[currentIndex].endPrice;
-            double buyPrice = double.Parse(drOri["alert_price"].ToString().Trim());
+            double buyPrice = double.Parse(drOri["price"].ToString().Trim());
             double lowestPrice = stock.LowestPrice(currentDate, 20);
             double highestPrice = stock.HighestPrice(currentDate, 40);
             double f1 = lowestPrice + (highestPrice - lowestPrice) * 0.236;
@@ -487,7 +487,7 @@
                     <asp:BoundColumn DataField="今收" HeaderText="今收"></asp:BoundColumn>
                     <asp:BoundColumn DataField="今涨" HeaderText="今涨" SortExpression="今涨|desc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="放量" HeaderText="放量" SortExpression="放量|desc"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="KDJ" HeaderText="KDJ" SortExpression="KDJ|asc"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="KDJ" HeaderText="KDJ" SortExpression="KDJ|desc"></asp:BoundColumn>
 					<asp:BoundColumn DataField="KDJ率" HeaderText="KDJ率" SortExpression="KDJ率|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="MACD" HeaderText="MACD" SortExpression="MACD|desc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="MACD率" HeaderText="MACD率" SortExpression="MACD率|asc"></asp:BoundColumn>

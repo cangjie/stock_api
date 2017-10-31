@@ -227,7 +227,7 @@
     {
         currentDate = Util.GetDay(currentDate);
         DataTable dtOri = new DataTable();
-        SqlDataAdapter da = new SqlDataAdapter(" select * from alert_macd where alert_type = '1hr' and alert_time  > '" + currentDate.ToShortDateString() + "'and  alert_time <= '" + currentDate.ToShortDateString() + " 15:00' ", Util.conStr);
+        SqlDataAdapter da = new SqlDataAdapter(" select * from alert_kdj where alert_type = 'day' and alert_time  > '" + currentDate.ToShortDateString() + "'and  alert_time <= '" + currentDate.ToShortDateString() + " 15:00' ", Util.conStr);
         da.Fill(dtOri);
 
         DataTable dt = new DataTable();
@@ -487,7 +487,7 @@
                     <asp:BoundColumn DataField="今收" HeaderText="今收"></asp:BoundColumn>
                     <asp:BoundColumn DataField="今涨" HeaderText="今涨" SortExpression="今涨|desc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="放量" HeaderText="放量" SortExpression="放量|desc"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="KDJ" HeaderText="KDJ" SortExpression="KDJ|asc"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="KDJ" HeaderText="KDJ" SortExpression="KDJ|desc"></asp:BoundColumn>
 					<asp:BoundColumn DataField="KDJ率" HeaderText="KDJ率" SortExpression="KDJ率|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="MACD" HeaderText="MACD" SortExpression="MACD|desc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="MACD率" HeaderText="MACD率" SortExpression="MACD率|asc"></asp:BoundColumn>
