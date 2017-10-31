@@ -12,6 +12,10 @@
 
     public static Thread t = new Thread(ts);
 
+    public static ThreadStart tsQ = new ThreadStart(StockWatcher.LogQuota);
+
+    public static Thread tQ = new Thread(tsQ);
+
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack)
@@ -30,6 +34,20 @@
             {
                 Console.WriteLine(err.ToString());
             }
+            try
+            {
+                if (tQ.ThreadState != ThreadState.Running && tQ.ThreadState != ThreadState.WaitSleepJoin)
+                {
+                    tQ.Abort();
+                    tsQ = new ThreadStart(StockWatcher.LogQuota);
+                    tQ = new Thread(ts);
+                    tQ.Start();
+                }
+            }
+            catch(Exception err)
+            {
+                Console.WriteLine(err.ToString());
+            }
             dg.DataSource = GetData();
             dg.DataBind();
         }
@@ -41,7 +59,7 @@
         if (currentDate.Year < 2000)
             currentDate = DateTime.Now;
         DataTable dtOri = GetData(currentDate);
-        DataRow[] drOriArr = dtOri.Select(Util.GetSafeRequestValue(Request, "whereclause", "").Trim(), sort + (!sort.Trim().Equals("")?",":"") + " MACD率 desc  ");
+        DataRow[] drOriArr = dtOri.Select(Util.GetSafeRequestValue(Request, "whereclause", "").Trim(), sort + (!sort.Trim().Equals("")?",":"") + " TD desc  ");
         return RenderHtml(drOriArr);
     }
 
