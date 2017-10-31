@@ -7,7 +7,7 @@
 
     public DateTime currentDate = Util.GetDay(DateTime.Now);
 
-    public string sort = " TD desc ";
+    public string sort = " TD  ";
 
     protected void Page_Load(object sender, EventArgs e)
     {
