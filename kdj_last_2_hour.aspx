@@ -332,7 +332,7 @@
                 dr["TD"] = currentIndex - 1 - KLine.GetLastDeMarkBuyPointIndex(stock.kLineDay, currentIndex - 1);
                 dr["明涨"] = (stock.kLineDay[currentIndex].highestPrice - settlePrice) / settlePrice;
                 DateTime lastDate = DateTime.Parse(stock.kLineDay[currentIndex - 2].startDateTime.ToShortDateString());
-                DateTime curDate =  DateTime.Parse(stock.kLineDay[currentIndex - 1].startDateTime.ToShortDateString());
+                DateTime curDate = DateTime.Parse(stock.kLineDay[currentIndex - 1].startDateTime.ToShortDateString());
                 double lastDayVolume = Stock.GetVolumeAndAmount(stock.gid, lastDate)[0];
                 double currentVolume = Stock.GetVolumeAndAmount(stock.gid, curDate)[0];
                 double volumeIncrease = (currentVolume - lastDayVolume) / lastDayVolume;
@@ -366,7 +366,7 @@
                         break;
                     double highPrice = stock.kLineDay[currentIndex + i].highestPrice;
                     maxPrice = Math.Max(maxPrice, highPrice);
-                    dr[(i+1).ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
+                    dr[(i + 1).ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
                 }
                 dr["总计"] = (maxPrice - buyPrice) / buyPrice;
 
@@ -445,9 +445,92 @@
                     //dr["信号"] = "💩";
                 }
             }
+            else
+            {
+                dr["明开"] = 0;
+                dr["明收"] = 0;
+                dr["MACD"] = -1;
+                dr["TD"] = currentIndex - KLine.GetLastDeMarkBuyPointIndex(stock.kLineDay, currentIndex);
+                dr["明涨"] = 0;
+                DateTime lastDate = DateTime.Parse(stock.kLineDay[currentIndex - 1].startDateTime.ToShortDateString());
+                DateTime curDate = DateTime.Parse(stock.kLineDay[currentIndex].startDateTime.ToShortDateString());
+                double lastDayVolume = Stock.GetVolumeAndAmount(stock.gid, lastDate)[0];
+                double currentVolume = Stock.GetVolumeAndAmount(stock.gid, curDate)[0];
+                double volumeIncrease = (currentVolume - lastDayVolume) / lastDayVolume;
+                dr["放量"] = currentVolume / lastDayVolume;
+
+
+                dr["kdj"] = -1;
+                int days3Line = KLine.Above3LineDays(stock, currentIndex);
+                dr["3线日"] = days3Line;
+                dr["3线"] = stock.GetAverageSettlePrice(currentIndex, 3, 3);
+                //double buyPrice = stock.kLineDay[currentIndex].endPrice;
+                double buyPrice = settlePrice;
+                double lowestPrice = stock.LowestPrice(currentDate, 20);
+                double highestPrice = stock.HighestPrice(currentDate, 40);
+                double f1 = lowestPrice + (highestPrice - lowestPrice) * 0.236;
+                double f3 = lowestPrice + (highestPrice - lowestPrice) * 0.382;
+                double f5 = lowestPrice + (highestPrice - lowestPrice) * 0.618;
+                dr["低点"] = lowestPrice;
+                dr["F1"] = f1;
+                dr["F3"] = f3;
+                dr["F5"] = f5;
+                dr["高点"] = highestPrice;
+                dr["买入"] = buyPrice;
+                double macdDegree = KLine.ComputeMacdDegree(stock.kLineDay, currentIndex) * 100;
+                dr["MACD率"] = macdDegree;
+                double kdjDegree = KLine.ComputeKdjDegree(stock.kLineDay, currentIndex);
+                dr["KDJ率"] = kdjDegree;
+                double maxPrice = 0;
+                for (int i = 0; i < 5; i++)
+                {
+                    dr[(i + 1).ToString() + "日"] = 0;
+                }
+                dr["总计"] =0;
+                double upSpace = 0;
+                double downSpace = 0;
+
+                if (buyPrice <= lowestPrice)
+                {
+                    downSpace = 0.1;
+                    upSpace = (lowestPrice - buyPrice) / buyPrice;
+                }
+                else if (buyPrice <= f1)
+                {
+                    downSpace = (buyPrice - lowestPrice) / buyPrice;
+                    upSpace = (f1 - buyPrice) / buyPrice;
+                }
+                else if (buyPrice <= f3)
+                {
+                    downSpace = (buyPrice - f1) / buyPrice;
+                    upSpace = (f3 - buyPrice) / buyPrice;
+                }
+                else if (buyPrice <= f5)
+                {
+                    downSpace = (buyPrice - f3) / buyPrice;
+                    upSpace = (f5 - buyPrice) / buyPrice;
+                }
+                else if (buyPrice <= highestPrice)
+                {
+                    downSpace = (buyPrice - f5) / buyPrice;
+                    upSpace = (highestPrice - buyPrice) / buyPrice;
+                }
+                else
+                {
+                    upSpace = 0.1;
+                    downSpace = (buyPrice - highestPrice) / buyPrice;
+                }
+
+                dr["涨幅"] = upSpace;
+                dr["跌幅"] = downSpace;
+                dr["震幅"] = upSpace + downSpace;
+                dr["综指"] = 0;
+
+            }
             //if (totalScore !=0 && (stock.kLineDay[currentIndex].highestPrice - settlePrice) / settlePrice < 0.07 )
             if (isShit)
                 dr["信号"] = "💩";
+
             dt.Rows.Add(dr);
         }
 
