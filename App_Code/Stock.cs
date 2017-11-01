@@ -96,6 +96,20 @@ public class Stock
         return k;
     }
 
+    public static int GetItemIndex(KLine[] kArr, DateTime currentDateTime)
+    {
+        int ret = -1;
+        for (int i = kArr.Length - 1; i >= 0; i--)
+        {
+            if (kArr[i].endDateTime == currentDateTime)
+            {
+                ret = i;
+                break;
+            }
+        }
+        return ret;
+    }
+
     public static int GetItemIndex(DateTime currentDateTime, KLine[] kArr)
     {
         int index = -1;
