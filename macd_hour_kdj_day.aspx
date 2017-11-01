@@ -261,7 +261,7 @@
         dt.Columns.Add("KDJ率", Type.GetType("System.Double"));
         dt.Columns.Add("MACD", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD率", Type.GetType("System.Double"));
-	    dt.Columns.Add("TD", Type.GetType("System.Int32"));
+        dt.Columns.Add("TD", Type.GetType("System.Int32"));
         dt.Columns.Add("3线日", Type.GetType("System.Int32"));
         dt.Columns.Add("3线", Type.GetType("System.Double"));
         dt.Columns.Add("低点", Type.GetType("System.Double"));
@@ -282,11 +282,27 @@
 
         foreach (DataRow drOri in dtOri.Rows)
         {
+            DateTime macdTime = DateTime.Now;
+            DataTable dtMacd = DBHelper.GetDataTable(" select top 1 * from alert_macd where alert_time > '" + currentDate.ToShortDateString()
+                + "' and alert_time <= '" + currentDate.ToShortDateString() + " 17:00'  and gid = '" + drOri["gid"].ToString().Trim() 
+                + "' and alert_type = '1hr'  order by alert_time desc  ");
+            if (dtMacd.Rows.Count == 0)
+                continue;
+            else
+            {
+                macdTime = DateTime.Parse(dtMacd.Rows[0]["alert_time"].ToString());
+            }
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
             stock.LoadKLineDay();
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
+            stock.kLineHour = KLine.GetLocalKLine(stock.gid, "1hr");
+            int macdIndex = Stock.GetItemIndex(stock.kLineHour, macdTime);
+            KLine.ComputeMACD(stock.kLineHour);
+            bool isMacd = StockWatcher.IsMacdFolk(stock.kLineHour, macdIndex);
+
+
             int currentIndex = stock.GetItemIndex(currentDate);
             if (currentIndex < 1)
                 continue;
@@ -302,7 +318,7 @@
             dr["今收"] = currentPrice;
             int macdDays = stock.macdDays(currentIndex);
             dr["MACD"] = macdDays;
-	        dr["TD"] = currentIndex - KLine.GetLastDeMarkBuyPointIndex(stock.kLineDay, currentIndex);
+            dr["TD"] = currentIndex - KLine.GetLastDeMarkBuyPointIndex(stock.kLineDay, currentIndex);
             dr["今涨"] = (stock.kLineDay[currentIndex].highestPrice - settlePrice) / settlePrice;
             DateTime lastDate = DateTime.Parse(stock.kLineDay[currentIndex - 1].startDateTime.ToShortDateString());
             double lastDayVolume = Stock.GetVolumeAndAmount(stock.gid, lastDate)[0];
@@ -342,7 +358,7 @@
             }
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
 
-            if (kdjDays < 0)
+            if (kdjDays < 0 || !isMacd)
             {
                 dr["信号"] = "💩";
             }
