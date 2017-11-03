@@ -288,9 +288,9 @@
             double f1 = lowestPrice + (highestPrice - lowestPrice) * 0.236;
             double f3 = lowestPrice + (highestPrice - lowestPrice) * 0.382;
             double f5 = lowestPrice + (highestPrice - lowestPrice) * 0.618;
-            //double buyPrice = currentPrice;
+            double buyPrice = currentPrice;
 
-            double buyPrice = Math.Max(line3Price, double.Parse(drOri["alert_price"].ToString().Trim()));
+            //double buyPrice = Math.Max(line3Price, double.Parse(drOri["alert_price"].ToString().Trim()));
 
             double macdDegree = KLine.ComputeMacdDegree(stock.kLineDay, currentIndex)*100;
             double kdjDegree = KLine.ComputeKdjDegree(stock.kLineDay, currentIndex);
