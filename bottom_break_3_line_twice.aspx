@@ -311,7 +311,7 @@
             {
                 if (StockWatcher.IsMacdFolk(stock.kLineHour, stock.kLineHour.Length - i - 1))
                 {
-                    hourMacdGoldFolk = 0;
+                    hourMacdGoldFolk = i;
                     break;
                 }
             }
