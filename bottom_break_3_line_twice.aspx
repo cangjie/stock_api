@@ -307,9 +307,9 @@
             stock.kLineHour = KLine.GetLocalKLine(stock.gid.Trim(), "1hr");
 
             int hourMacdGoldFolk = -1;
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < 6 && stock.kLineHour.Length - i - 1 >= 0; i++)
             {
-                if (StockWatcher.IsMacdFolk(stock.kLineHour, stock.kLineHour.Length - i))
+                if (StockWatcher.IsMacdFolk(stock.kLineHour, stock.kLineHour.Length - i - 1))
                 {
                     hourMacdGoldFolk = 0;
                     break;
