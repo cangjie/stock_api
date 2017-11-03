@@ -8,7 +8,7 @@
 
     public DateTime currentDate = Util.GetDay(DateTime.Now);
 
-    public string sort = " 信号 desc, KDJ率 desc  ";
+    public string sort = " 信号 desc, 综指 desc  ";
 
     public static ThreadStart tsQ = new ThreadStart(StockWatcher.LogQuota);
 
@@ -375,7 +375,7 @@
             dr["涨幅"] = upSpace;
             dr["跌幅"] = downSpace;
             dr["震幅"] = upSpace + downSpace;
-            dr["综指"] = (macdDegree + kdjDegree) * (currentVolume / lastDayVolume) * (upSpace / downSpace) * (upSpace + downSpace);
+            dr["综指"] = macdDegree + kdjDegree;
             dr["TD"] = KLine.GetLastDeMarkBuyPointIndex(stock.kLineDay, currentIndex);
             double maxPrice = 0;
             for (int i = 1; i <= 5; i++)
