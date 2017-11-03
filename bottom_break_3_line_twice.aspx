@@ -305,13 +305,17 @@
 
 
             stock.kLineHour = KLine.GetLocalKLine(stock.gid.Trim(), "1hr");
+            KLine.ComputeMACD(stock.kLineHour);
+            int currentHourIndex = Stock.GetItemIndex(DateTime.Parse(stock.kLineDay[currentIndex].endDateTime.ToShortDateString() + " 16:00"), stock.kLineHour);
+
 
             int hourMacdGoldFolk = -1;
-            for (int i = 0;  stock.kLineHour.Length - i - 1 >= 0; i++)
+
+            for (int i = currentHourIndex;  i >= 0; i--)
             {
-                if (StockWatcher.IsMacdFolk(stock.kLineHour, stock.kLineHour.Length - i - 1))
+                if (StockWatcher.IsMacdFolk(stock.kLineHour, currentHourIndex))
                 {
-                    hourMacdGoldFolk = i;
+                    hourMacdGoldFolk = currentHourIndex - i;
                     break;
                 }
             }
@@ -410,9 +414,13 @@
             {
                 //dr["信号"] = dr["信号"].ToString() + "📈";
             }
-            if ((int)dr["TD"] == 0 && kdjDays == 0 && (int)dr["MACD日"] <= kdjDays && currentVolume / lastDayVolume > 1.5)
+            if ((int)dr["TD"] == 0 && kdjDays == 0 && (int)dr["MACD日"] <= kdjDays && currentVolume / lastDayVolume > 1.25)
             {
                 dr["信号"] = dr["信号"].ToString() + "📈";
+            }
+            if ((int)dr["MACD时"] >= 0 && (int)dr["KDJ日"] >= 0 && currentVolume / lastDayVolume > 1.25)
+            {
+                dr["信号"] = dr["信号"].ToString() + "🔥";
             }
             dt.Rows.Add(dr);
         }
