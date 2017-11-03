@@ -257,7 +257,7 @@
     {
         currentDate = Util.GetDay(currentDate);
         DataTable dtOri = DBHelper.GetDataTable(" select * from bottom_break_cross_3_line  a where suggest_date = '" + currentDate.ToShortDateString() + "' "
-            + " and exists ( select 'a' from bottom_break_cross_3_line b where suggest_date < '" + currentDate.ToShortDateString() + "' and   suggest_date >= '" 
+            + " and exists ( select 'a' from bottom_break_cross_3_line b where suggest_date < '" + currentDate.ToShortDateString() + "' and   suggest_date >= '"
             + currentDate.AddDays(-7).ToShortDateString() + "' and a.gid = b.gid  )   ");
         DataTable dt = new DataTable();
         dt.Columns.Add("代码", Type.GetType("System.String"));
@@ -389,11 +389,15 @@
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
             if (currentPrice < line3Price || kdjDays == -1)
             {
-                dr["信号"] = "💩";
+                //dr["信号"] = "💩";
             }
             if (currentVolume / lastDayVolume >= 0.75 && currentVolume / lastDayVolume <= 1.5 && (upSpace <= 0.005 || (upSpace >= downSpace * 2 && upSpace + downSpace >= 0.04)))
             {
                 //dr["信号"] = dr["信号"].ToString() + "📈";
+            }
+            if ((int)dr["TD"] == 0 && kdjDays == 0 && (int)dr["MACD日"] <= kdjDays)
+            {
+                dr["信号"] = dr["信号"].ToString() + "📈";
             }
             dt.Rows.Add(dr);
         }
