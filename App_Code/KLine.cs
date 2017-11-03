@@ -839,7 +839,27 @@ public class KLine
         }
         return retValue;
     }
-   
 
+    public static bool IsCross3Line(KLine[] kArr, int index)
+    {
+        bool ret = false;
+        if (kArr[index].endPrice > GetAverageSettlePrice(kArr, index, 3, 3)
+            && (kArr[index].startPrice <= GetAverageSettlePrice(kArr, index, 3, 3) || kArr[index - 1].endPrice <= GetAverageSettlePrice(kArr, index - 1, 3, 3)))
+        {
+            ret = true;
+        }
+        return ret;
+    }
+
+    public static bool IsCros3LineTwice(KLine[] kArr, int index, int days)
+    {
+        bool ret = false;
+        for (int i = index - 1; i >= index - days; i--)
+        {
+            ret = ret || IsCross3Line(kArr, i);
+        }
+        return ret && IsCross3Line(kArr, index);
+
+    }
    
 }

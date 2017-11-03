@@ -651,6 +651,8 @@ public class Stock
         return ret;
     }
 
+
+
     public bool IsOverFlowYesterday(DateTime currentDate, double percent)
     {
         int dateIndex = GetItemIndex(currentDate);
