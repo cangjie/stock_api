@@ -395,7 +395,7 @@
             {
                 //dr["信号"] = dr["信号"].ToString() + "📈";
             }
-            if ((int)dr["TD"] == 0 && kdjDays == 0 && (int)dr["MACD日"] <= kdjDays)
+            if ((int)dr["TD"] == 0 && kdjDays == 0 && (int)dr["MACD日"] <= kdjDays && currentVolume / lastDayVolume > 1.5)
             {
                 dr["信号"] = dr["信号"].ToString() + "📈";
             }
