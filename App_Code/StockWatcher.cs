@@ -157,7 +157,7 @@ public class StockWatcher
         bool ret = false;
         if (index > 0)
         {
-            if (kArr[index].macd > 0 && kArr[index - 1].macd < 0 && Math.Abs(kArr[index].macd) + Math.Abs(kArr[index - 1].macd) > 0.05)
+            if (kArr[index].macd >= 0 && kArr[index - 1].macd < 0 )
             {
                 ret = true;
             }
