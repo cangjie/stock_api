@@ -271,6 +271,7 @@
         dt.Columns.Add("TD", Type.GetType("System.Int32"));
         dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
         dt.Columns.Add("KDJ率", Type.GetType("System.Double"));
+        dt.Columns.Add("MACD时", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD率", Type.GetType("System.Double"));
         dt.Columns.Add("3线", Type.GetType("System.Double"));
@@ -301,6 +302,19 @@
                 continue;
             if (!KLine.IsCros3LineTwice(stock.kLineDay, currentIndex, 5))
                 continue;
+
+
+            stock.kLineHour = KLine.GetLocalKLine(stock.gid.Trim(), "1hr");
+
+            int hourMacdGoldFolk = -1;
+            for (int i = 0; i < 6; i++)
+            {
+                if (StockWatcher.IsMacdFolk(stock.kLineHour, stock.kLineHour.Length - i))
+                {
+                    hourMacdGoldFolk = 0;
+                    break;
+                }
+            }
 
 
             double settlePrice = stock.kLineDay[currentIndex - 1].endPrice;
@@ -369,6 +383,7 @@
             dr["高点"] = highestPrice;
             dr["买入"] = buyPrice;
             dr["KDJ日"] = kdjDays;
+            dr["MACD时"] = hourMacdGoldFolk;
             dr["MACD日"] = stock.macdDays(currentIndex);
             dr["MACD率"] = macdDegree;
             dr["KDJ率"] = kdjDegree;
@@ -441,7 +456,8 @@
                     <asp:BoundColumn DataField="TD" HeaderText="TD" SortExpression="TD|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>
 					<asp:BoundColumn DataField="KDJ率" HeaderText="KDJ率" SortExpression="KDJ率|asc"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD率|asc"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="MACD时" HeaderText="MACD时" SortExpression="MACD时|asc"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD日|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="MACD率" HeaderText="MACD率" SortExpression="MACD率|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
                     <asp:BoundColumn DataField="低点" HeaderText="低点"></asp:BoundColumn>
