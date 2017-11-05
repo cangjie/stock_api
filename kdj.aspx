@@ -208,7 +208,7 @@
     {
         currentDate = Util.GetDay(currentDate);
         DataTable dtOri = new DataTable();
-        SqlDataAdapter da = new SqlDataAdapter(" select * from kdj_alert where alert_time = '" + currentDate.ToShortDateString() + " 15:00' ", Util.conStr);
+        SqlDataAdapter da = new SqlDataAdapter(" select * from alert_kdj where alert_time = '" + currentDate.ToShortDateString() + " 15:00' ", Util.conStr);
         da.Fill(dtOri);
         DataTable dt = new DataTable();
         dt.Columns.Add("代码", Type.GetType("System.String"));
