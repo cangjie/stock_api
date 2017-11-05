@@ -59,7 +59,7 @@
         if (currentDate.Year < 2000)
             currentDate = DateTime.Now;
         DataTable dtOri = GetData(currentDate);
-        DataRow[] drOriArr = dtOri.Select(Util.GetSafeRequestValue(Request, "whereclause", "   ").Trim(), sort + (!sort.Trim().Equals("")?",":"") + " KDJ, TD   ");
+        DataRow[] drOriArr = dtOri.Select(Util.GetSafeRequestValue(Request, "whereclause", "   ").Trim(), sort + (!sort.Trim().Equals("")?",":"") + " 综指 desc ");
         return RenderHtml(drOriArr);
     }
 
@@ -261,7 +261,7 @@
         dt.Columns.Add("KDJ率", Type.GetType("System.Double"));
         dt.Columns.Add("MACD", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD率", Type.GetType("System.Double"));
-	    dt.Columns.Add("TD", Type.GetType("System.Int32"));
+        dt.Columns.Add("TD", Type.GetType("System.Int32"));
         dt.Columns.Add("3线日", Type.GetType("System.Int32"));
         dt.Columns.Add("3线", Type.GetType("System.Double"));
         dt.Columns.Add("低点", Type.GetType("System.Double"));
@@ -302,7 +302,7 @@
             dr["今收"] = currentPrice;
             int macdDays = stock.macdDays(currentIndex);
             dr["MACD"] = macdDays;
-	        dr["TD"] = currentIndex - KLine.GetLastDeMarkBuyPointIndex(stock.kLineDay, currentIndex);
+            dr["TD"] = currentIndex - KLine.GetLastDeMarkBuyPointIndex(stock.kLineDay, currentIndex);
             dr["今涨"] = (stock.kLineDay[currentIndex].highestPrice - settlePrice) / settlePrice;
             DateTime lastDate = DateTime.Parse(stock.kLineDay[currentIndex - 1].startDateTime.ToShortDateString());
             double lastDayVolume = Stock.GetVolumeAndAmount(stock.gid, lastDate)[0];
@@ -384,18 +384,8 @@
             dr["涨幅"] = upSpace;
             dr["跌幅"] = downSpace;
             dr["震幅"] = upSpace + downSpace;
-            double totalScore = 0;
-            if (kdjDays > -1 && macdDegree > 0 && days3Line > -1 )
-            {
-                totalScore = 1000 - kdjDays * 100 - days3Line * 50
-                    + macdDegree + kdjDegree - Math.Abs(volumeIncrease) * 100;
+            double totalScore = macdDegree + kdjDegree;
 
-                //double dayDiv = (double)kdjDays + (double)days3Line*0.75;
-                //dayDiv = ((dayDiv==0) ? 0.75 : dayDiv);
-                //totalScore = (macdDegree + kdjDegree)/dayDiv;
-
-
-            }
 
 
             totalScore = Math.Round(totalScore, 2);
@@ -412,11 +402,16 @@
                 //dr["信号"] = dr["信号"].ToString().Trim() + "📈";
             }
 
-	        if (stock.kLineDay[currentIndex].endPrice > stock.kLineDay[currentIndex].startPrice && (double)dr["放量"] >= 1.5 
+            if (stock.kLineDay[currentIndex].endPrice > stock.kLineDay[currentIndex].startPrice && (double)dr["放量"] >= 1.5
                 && (stock.kLineDay[currentIndex].highestPrice - stock.kLineDay[currentIndex].endPrice) / (stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex].startPrice) < 0.1 )
-	        {
-	            dr["信号"] = "📈";
-	        }
+            {
+                dr["信号"] = "📈";
+            }
+
+            if (stock.kLineDay[currentIndex].lowestPrice > stock.kLineDay[currentIndex - 1].highestPrice)
+            {
+                dr["信号"] = "🔥";
+            }
 
             //if (totalScore !=0 && (stock.kLineDay[currentIndex].highestPrice - settlePrice) / settlePrice < 0.07 )
             dt.Rows.Add(dr);
@@ -506,6 +501,7 @@
                     <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号" SortExpression="信号|desc" ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="综指" HeaderText="综指" SortExpression="综指|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="昨收" HeaderText="昨收"></asp:BoundColumn>
                     <asp:BoundColumn DataField="今开" HeaderText="今开"></asp:BoundColumn>
                     <asp:BoundColumn DataField="今收" HeaderText="今收"></asp:BoundColumn>
