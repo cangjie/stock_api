@@ -236,7 +236,7 @@ public class Stock
         KLine.ComputeMACD(kLineDay);
         for (int i = index; i > 0; i--)
         {
-            if (kLineDay[i].macd > 0)
+            if (kLineDay[i].macd >= 0)
             {
                 days++;
             }
@@ -255,7 +255,7 @@ public class Stock
         KLine.ComputeMACD(kArr);
         for (int i = index; i > 0; i--)
         {
-            if (kArr[i].macd > 0)
+            if (kArr[i].macd >= 0)
             {
                 itmes++;
             }
@@ -279,6 +279,10 @@ public class Stock
             {
                 days++;
                 break;
+            }
+            else if (kLineDay[i].j > kLineDay[i].k && kLineDay[i].k > kLineDay[i].d)
+            {
+                days++;
             }
             /*
             if (kLineDay[i].j > kLineDay[i].k && kLineDay[i].k > kLineDay[i].d)
