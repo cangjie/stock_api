@@ -290,7 +290,7 @@
             int currentIndex = stock.GetItemIndex(currentDate);
             if (currentIndex < 1)
                 continue;
-            if ( stock.kLineDay[currentIndex - 1].macd < 0 ||  
+            if ( stock.kLineDay[currentIndex - 1].macd < 0 ||
                 (stock.kLineDay[currentIndex - 1].j < stock.kLineDay[currentIndex - 1].k && stock.kLineDay[currentIndex - 1].k < stock.kLineDay[currentIndex - 1].d ) )
                 continue;
 
@@ -317,6 +317,8 @@
             dr["放量"] = currentVolume / lastDayVolume;
             int kdjDays = stock.kdjDays(currentIndex);
             dr["kdj"] = kdjDays.ToString();
+            if (macdDays > kdjDays)
+                continue;
             int days3Line = KLine.Above3LineDays(stock, currentIndex);
             dr["3线日"] = days3Line;
             dr["3线"] = stock.GetAverageSettlePrice(currentIndex, 3, 3);
