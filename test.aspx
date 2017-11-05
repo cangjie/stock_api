@@ -9,31 +9,45 @@
         string[] gidArr = Util.GetAllGids();
         for (int i = 0; i < gidArr.Length; i++)
         {
-            Stock stock = new Stock(gidArr[i].Trim());
-            stock.LoadKLineDay();
-            KLine.ComputeMACD(stock.kLineDay);
-            KLine.ComputeRSV(stock.kLineDay);
-            KLine.ComputeKDJ(stock.kLineDay);
-            for (int j = 1; j < stock.kLineDay.Length; j++)
+            try
             {
-                if (KLine.IsJumpHigh(stock.kLineDay, j))
+                Stock stock = new Stock(gidArr[i].Trim());
+                stock.LoadKLineDay();
+                KLine.ComputeMACD(stock.kLineDay);
+                KLine.ComputeRSV(stock.kLineDay);
+                KLine.ComputeKDJ(stock.kLineDay);
+                for (int j = 1; j < stock.kLineDay.Length; j++)
                 {
-                    int macdDays = stock.macdDays(j);
-                    int kdjDays = stock.kdjDays(j);
                     try
                     {
-                        DBHelper.InsertData("alert_jump_high", new string[,] { {"gid", "varhcar", stock.gid },
+                        if (KLine.IsJumpHigh(stock.kLineDay, j))
+                        {
+                            int macdDays = stock.macdDays(j);
+                            int kdjDays = stock.kdjDays(j);
+                            try
+                            {
+                                DBHelper.InsertData("alert_jump_high", new string[,] { {"gid", "varhcar", stock.gid },
                             {"alert_time", "datetime", Util.GetDay(stock.kLineDay[j].endDateTime).ToShortDateString() },
                             {"alert_price", "float", stock.kLineDay[j].startPrice.ToString() },
                             {"settle", "float", stock.kLineDay[j - 1].endPrice.ToString() },
                             {"macd_days", "int", macdDays.ToString() },
                             {"kdj_days", "int", kdjDays.ToString() } });
+                            }
+                            catch
+                            {
+
+                            }
+                        }
                     }
                     catch
                     {
 
                     }
                 }
+            }
+            catch
+            {
+
             }
         }
         /*
