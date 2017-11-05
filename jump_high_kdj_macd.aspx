@@ -405,10 +405,10 @@
             if (stock.kLineDay[currentIndex].endPrice > stock.kLineDay[currentIndex].startPrice && (double)dr["放量"] >= 1.5
                 && (stock.kLineDay[currentIndex].highestPrice - stock.kLineDay[currentIndex].endPrice) / (stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex].startPrice) < 0.1 )
             {
-                dr["信号"] = "📈";
+                //dr["信号"] = "📈";
             }
 
-            if (stock.kLineDay[currentIndex].lowestPrice > stock.kLineDay[currentIndex - 1].highestPrice)
+            if (stock.kLineDay[currentIndex].lowestPrice > stock.kLineDay[currentIndex - 1].highestPrice && (double)dr["今涨"] <= 0.095 )
             {
                 dr["信号"] = "🔥";
             }
