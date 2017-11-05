@@ -8,7 +8,7 @@
 
     public DateTime currentDate = Util.GetDay(DateTime.Now);
 
-    public string sort = " 信号 desc, 综指 desc  ";
+    public string sort = "  综指 desc  ";
 
     public static ThreadStart tsQ = new ThreadStart(StockWatcher.LogQuota);
 
