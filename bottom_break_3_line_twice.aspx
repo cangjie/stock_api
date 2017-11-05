@@ -422,10 +422,7 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "🔥";
             }
-            if ((stock.kLineDay[currentIndex].lowestPrice >= stock.kLineDay[currentIndex - 1].highestPrice ||
-                (stock.kLineDay[currentIndex].startPrice > stock.kLineDay[currentIndex - 1].endPrice
-                && stock.kLineDay[currentIndex].highestPrice - stock.kLineDay[currentIndex].endPrice / stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex].startPrice < 0.15
-                && stock.kLineDay[currentIndex].endPrice > stock.kLineDay[currentIndex].startPrice && lastDayVolume / currentVolume >= 1.5))  )
+            if (stock.kLineDay[currentIndex].lowestPrice > stock.kLineDay[currentIndex - 1].highestPrice && (double)dr["今涨"] <= 0.095 )
             {
                 dr["信号"] = dr["信号"].ToString() + "🌟";
             }
