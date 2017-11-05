@@ -59,7 +59,7 @@
         if (currentDate.Year < 2000)
             currentDate = DateTime.Now;
         DataTable dtOri = GetData(currentDate);
-        DataRow[] drOriArr = dtOri.Select(Util.GetSafeRequestValue(Request, "whereclause", "   ").Trim(), sort + (!sort.Trim().Equals("")?",":"") + " 综指 desc ");
+        DataRow[] drOriArr = dtOri.Select(Util.GetSafeRequestValue(Request, "whereclause", "   ").Trim(), sort + (!sort.Trim().Equals("")?",":"") + " 今涨 desc ");
         return RenderHtml(drOriArr);
     }
 
@@ -245,7 +245,7 @@
     {
         currentDate = Util.GetDay(currentDate);
         DataTable dtOri = new DataTable();
-        SqlDataAdapter da = new SqlDataAdapter(" select *  from alert_kdj where alert_type = 'day' and alert_time  < '" + currentDate.ToShortDateString() + "' and alert_time > '" + currentDate.AddDays(-7) + "'  order by alert_time  " , Util.conStr);
+        SqlDataAdapter da = new SqlDataAdapter(" select *  from alert_jump_high where macd_days >= 0 and kdj_days >= 0   and alert_time = '" + currentDate.ToShortDateString() + "' " , Util.conStr);
         da.Fill(dtOri);
 
         DataTable dt = new DataTable();
