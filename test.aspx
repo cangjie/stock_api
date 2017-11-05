@@ -6,6 +6,37 @@
 <script runat="server">
     protected void Page_Load(object sender, EventArgs e)
     {
+        string[] gidArr = Util.GetAllGids();
+        for (int i = 0; i < gidArr.Length; i++)
+        {
+            Stock stock = new Stock(gidArr[i].Trim());
+            stock.LoadKLineDay();
+            KLine.ComputeMACD(stock.kLineDay);
+            KLine.ComputeRSV(stock.kLineDay);
+            KLine.ComputeKDJ(stock.kLineDay);
+            for (int j = 1; j < stock.kLineDay.Length; j++)
+            {
+                if (KLine.IsJumpHigh(stock.kLineDay, j))
+                {
+                    int macdDays = stock.macdDays(j);
+                    int kdjDays = stock.kdjDays(j);
+                    try
+                    {
+                        DBHelper.InsertData("alert_jump_high", new string[,] { {"gid", "varhcar", stock.gid },
+                            {"alert_time", "datetime", Util.GetDay(stock.kLineDay[j].endDateTime).ToShortDateString() },
+                            {"alert_price", "float", stock.kLineDay[j].startPrice.ToString() },
+                            {"settle", "float", stock.kLineDay[j - 1].endPrice.ToString() },
+                            {"macd_days", "int", macdDays.ToString() },
+                            {"kdj_days", "int", kdjDays.ToString() } });
+                    }
+                    catch
+                    {
+
+                    }
+                }
+            }
+        }
+        /*
         Stock s = new Stock("sh600088");
         s.LoadKLineDay();
         int count = KLine.ComputeDeMarkValue(s.kLineDay, s.kLineDay.Length - 1);
@@ -14,6 +45,7 @@
         countDays = KLine.GetLastDeMarkBuyPointIndex(s.kLineDay, s.kLineDay.Length - 2);
         count = KLine.ComputeDeMarkValue(s.kLineDay, s.kLineDay.Length - 3);
         countDays = KLine.GetLastDeMarkBuyPointIndex(s.kLineDay, s.kLineDay.Length - 3);
+        */
         /*
         for (int i = s.kLineDay.Length - 1; i >= 15; i--)
         {

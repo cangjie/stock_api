@@ -861,5 +861,19 @@ public class KLine
         return ret && IsCross3Line(kArr, index);
 
     }
+
+    public static bool IsJumpHigh(KLine[] kArr, int index)
+    {
+        if (index <= 0)
+            return false;
+        if (kArr[index].startPrice > kArr[index - 1].endPrice)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
    
 }
