@@ -288,6 +288,12 @@
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
             int currentIndex = stock.GetItemIndex(currentDate);
+
+            if (stock.gid.Trim().Equals("sz002522"))
+            {
+                string aa = "aa";
+            }
+
             if (currentIndex < 1)
                 continue;
             if ( stock.kLineDay[currentIndex - 1].macd < 0 ||

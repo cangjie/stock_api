@@ -284,18 +284,10 @@ public class Stock
             {
                 days++;
             }
-            /*
-            if (kLineDay[i].j > kLineDay[i].k && kLineDay[i].k > kLineDay[i].d)
-            {
-                days++;
-            }
             else
             {
-                //if ((kLineDay[i].j < 60 && kLineDay[i].j > 40) || (kLineDay[i].d < 60 && kLineDay[i].d > 40) || (kLineDay[i].k < 60 && kLineDay[i].k > 40))
-                if (kLineDay[i].k >= 35 || kLineDay[i].d >= 35)
-                    days = -1 * days;
                 break;
-            }*/
+            }
         }
         return days;
     }
