@@ -289,7 +289,7 @@
             KLine.ComputeKDJ(stock.kLineDay);
             int currentIndex = stock.GetItemIndex(currentDate);
 
-            if (stock.gid.Trim().Equals("sz002522"))
+            if (stock.gid.Trim().Equals("sz300546"))
             {
                 string aa = "aa";
             }
@@ -426,7 +426,8 @@
             {
                 dr["信号"] = "🔥";
             }
-            if (stock.kLineDay[currentIndex - 1].endPrice >= stock.HighestPrice(Util.GetDay(stock.kLineDay[currentIndex - 1].startDateTime), 20))
+            highestPrice = KLine.GetHighestPrice(stock.kLineDay, currentIndex - 1, 40);
+            if (stock.kLineDay[currentIndex - 1].endPrice >= highestPrice)
             {
                 dr["信号"] = dr["信号"].ToString() + "📈";
             }

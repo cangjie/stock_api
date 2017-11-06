@@ -875,5 +875,15 @@ public class KLine
             return false;
         }
     }
+
+    public static double GetHighestPrice(KLine[] kArr, int index, int days)
+    {
+        double highestPrice = 0;
+        for (int i = 0; i < days && index - i >= 0; i++)
+        {
+            highestPrice = Math.Max(kArr[index - i].highestPrice, highestPrice);
+        }
+        return highestPrice;
+    }
    
 }

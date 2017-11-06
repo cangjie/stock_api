@@ -810,6 +810,7 @@ public class Stock
         }
         return maxPrice;
     }
+ 
 
     public double LowestPrice(DateTime currentDate, int days)
     {
