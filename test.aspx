@@ -16,7 +16,7 @@
                 KLine.ComputeMACD(stock.kLineDay);
                 KLine.ComputeRSV(stock.kLineDay);
                 KLine.ComputeKDJ(stock.kLineDay);
-                for (int j = 1; j < stock.kLineDay.Length; j++)
+                for (int j =  stock.kLineDay.Length - 1; j < stock.kLineDay.Length; j++)
                 {
                     try
                     {

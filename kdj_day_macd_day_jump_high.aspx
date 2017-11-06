@@ -27,7 +27,7 @@
                     t.Abort();
                     ts = new ThreadStart(PageWatcher);
                     t = new Thread(ts);
-                    //t.Start();
+                    t.Start();
                 }
             }
             catch(Exception err)
@@ -426,7 +426,10 @@
             {
                 dr["信号"] = "🔥";
             }
-
+            if (stock.kLineDay[currentIndex - 1].endPrice >= stock.HighestPrice(Util.GetDay(stock.kLineDay[currentIndex - 1].startDateTime), 20))
+            {
+                dr["信号"] = dr["信号"].ToString() + "📈";
+            }
             //if (totalScore !=0 && (stock.kLineDay[currentIndex].highestPrice - settlePrice) / settlePrice < 0.07 )
             dt.Rows.Add(dr);
         }
@@ -460,30 +463,39 @@
 
     public static void PageWatcher()
     {
-        for (; true;)
+        if (Util.IsTransacDay(Util.GetDay(DateTime.Now)) && DateTime.Now.Hour == 9 && DateTime.Now.Minute >= 30  )
         {
-            if (Util.IsTransacDay(DateTime.Parse(DateTime.Now.ToShortDateString())) && Util.IsTransacTime(DateTime.Now))
+            string[] gidArr = Util.GetAllGids();
+            foreach (string gid in gidArr)
             {
-                DataTable dt = GetData(Util.GetDay(DateTime.Now));
-                foreach (DataRow dr in dt.Rows)
+                Stock stock = new Stock(gid);
+                stock.LoadKLineDay();
+                KLine.ComputeMACD(stock.kLineDay);
+                KLine.ComputeRSV(stock.kLineDay);
+                KLine.ComputeKDJ(stock.kLineDay);
+                if (stock.kLineDay[stock.kLineDay.Length - 1].startDateTime.ToShortDateString().Equals(DateTime.Now.ToShortDateString()))
                 {
-                    if ((double)dr["放量"] >= 1 && dr["信号"].ToString().IndexOf("📈") >= 0 && dr["信号"].ToString().IndexOf("🛍️") >= 0 && dr["信号"].ToString().IndexOf("💩") < 0)
+                    int j = stock.kLineDay.Length - 1;
+                    if (KLine.IsJumpHigh(stock.kLineDay, j))
                     {
-                        string gid = dr["代码"].ToString().Trim();
-                        Stock s = new Stock(gid);
-                        KLine.RefreshKLine(gid, DateTime.Parse(DateTime.Now.ToShortDateString()));
-                        double volumeIncrease = Math.Round(100 * double.Parse(dr["放量"].ToString().Trim()), 2);
-                        string message = "放量：" + volumeIncrease.ToString() + "%，KDJ：" + dr["KDJ"].ToString().Trim() + "，买入："
-                            + Math.Round((double)dr["买入"], 2).ToString() + "，现价：" + Math.Round((double)dr["今收"], 2)
-                            + "，F3：" + Math.Round((double)dr["F3"], 2).ToString() + "，F5：" + Math.Round((double)dr["F5"], 2).ToString();
-                        if (StockWatcher.AddAlert(Util.GetDay(DateTime.Now), gid, "macd", s.Name.Trim(), message))
+                        int macdDays = stock.macdDays(j);
+                        int kdjDays = stock.kdjDays(j);
+                        try
                         {
-                            StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", s.gid.Trim(), s.Name + " " + message, Math.Round((double)dr["今收"], 2), "macd");
+                            DBHelper.InsertData("alert_jump_high", new string[,] { {"gid", "varhcar", stock.gid },
+                                {"alert_time", "datetime", Util.GetDay(stock.kLineDay[j].endDateTime).ToShortDateString() },
+                                {"alert_price", "float", stock.kLineDay[j].startPrice.ToString() },
+                                {"settle", "float", stock.kLineDay[j - 1].endPrice.ToString() },
+                                {"macd_days", "int", macdDays.ToString() },
+                                {"kdj_days", "int", kdjDays.ToString() } });
+                        }
+                        catch
+                        {
+
                         }
                     }
                 }
             }
-            Thread.Sleep(60000);
         }
     }
 
