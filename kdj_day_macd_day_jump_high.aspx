@@ -330,6 +330,49 @@
             dr["3线"] = stock.GetAverageSettlePrice(currentIndex, 3, 3);
             //double buyPrice = stock.kLineDay[currentIndex].endPrice;
             double buyPrice = stock.kLineDay[currentIndex].startPrice;
+
+            stock.kLineHour = KLine.GetLocalKLine(stock.gid.Trim(), "1hr");
+
+            int hourIndex = Stock.GetItemIndex(stock.kLineHour, DateTime.Parse(currentDate.ToShortDateString() + " 10:30"));
+            if (hourIndex > -1)
+            {
+                for (int i = 0; i < 4 && hourIndex + i < stock.kLineHour.Length; i++)
+                {
+                    switch (i)
+                    {
+                        case 0:
+                            buyPrice = stock.kLineDay[currentIndex].endPrice;
+                            break;
+                        case 1:
+                            buyPrice = stock.kLineDay[currentIndex].endPrice;
+                            break;
+                        case 2:
+                            if (stock.kLineHour[hourIndex + i].startPrice > stock.kLineDay[currentIndex].startPrice)
+                            {
+                                buyPrice = stock.kLineHour[hourIndex + i].startPrice;
+                            }
+                            else
+                            {
+                                buyPrice = stock.kLineDay[currentIndex].endPrice;
+                            }
+                            break;
+                        case 3:
+                            if (stock.kLineHour[hourIndex + i].startPrice > stock.kLineDay[currentIndex].startPrice)
+                            {
+                                buyPrice = stock.kLineHour[hourIndex + i].startPrice;
+                            }
+                            else
+                            {
+                                buyPrice = stock.kLineDay[currentIndex].endPrice;
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+
+
+                }
+            }
             double lowestPrice = stock.LowestPrice(currentDate, 20);
             double highestPrice = stock.HighestPrice(currentDate, 40);
             double f1 = lowestPrice + (highestPrice - lowestPrice) * 0.236;
@@ -534,13 +577,17 @@
                     <asp:BoundColumn DataField="今收" HeaderText="今收"></asp:BoundColumn>
                     <asp:BoundColumn DataField="今涨" HeaderText="今涨" SortExpression="今涨|desc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="放量" HeaderText="放量" SortExpression="放量|desc"></asp:BoundColumn>
+
                     <asp:BoundColumn DataField="KDJ" HeaderText="KDJ" SortExpression="KDJ|desc"></asp:BoundColumn>
-					<asp:BoundColumn DataField="KDJ率" HeaderText="KDJ率" SortExpression="KDJ率|asc"></asp:BoundColumn>
+					
                     <asp:BoundColumn DataField="MACD" HeaderText="MACD" SortExpression="MACD|desc"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="MACD率" HeaderText="MACD率" SortExpression="MACD率|asc"></asp:BoundColumn>
+                    
 					<asp:BoundColumn DataField="3线日" HeaderText="3线日"></asp:BoundColumn>
-					<asp:BoundColumn DataField="TD" HeaderText="TD" SortExpression="TD|desc" ></asp:BoundColumn>				
+					<asp:BoundColumn DataField="TD" HeaderText="TD" SortExpression="TD|desc" ></asp:BoundColumn>	
+                    <asp:BoundColumn DataField="KDJ率" HeaderText="KDJ率" SortExpression="KDJ率|asc"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="MACD率" HeaderText="MACD率" SortExpression="MACD率|asc"></asp:BoundColumn>			
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
+
                     <asp:BoundColumn DataField="低点" HeaderText="低点"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F1" HeaderText="F1"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>
