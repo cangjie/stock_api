@@ -330,7 +330,7 @@
             dr["3线"] = stock.GetAverageSettlePrice(currentIndex, 3, 3);
             //double buyPrice = stock.kLineDay[currentIndex].endPrice;
             double buyPrice = stock.kLineDay[currentIndex].startPrice;
-            /*
+            
             stock.kLineHour = KLine.GetLocalKLine(stock.gid.Trim(), "1hr");
 
             int hourIndex = Stock.GetItemIndex(stock.kLineHour, DateTime.Parse(currentDate.ToShortDateString() + " 10:30"));
@@ -373,7 +373,7 @@
 
                 }
             }
-            */
+            
             double lowestPrice = stock.LowestPrice(currentDate, 20);
             double highestPrice = stock.HighestPrice(currentDate, 40);
             double f1 = lowestPrice + (highestPrice - lowestPrice) * 0.236;
