@@ -33,6 +33,7 @@
             {
                 Console.WriteLine(err.ToString());
             }
+            sort = Util.GetSafeRequestValue(Request, "sort", " 综指 desc ");
             DataTable dt = GetData();
             dg.DataSource = dt;
             dg.DataBind();
