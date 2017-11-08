@@ -6,6 +6,12 @@
 <script runat="server">
     protected void Page_Load(object sender, EventArgs e)
     {
+
+	Stock s = new Stock("sh603677");
+	s.LoadKLineDay();
+	Response.Write(KLine.GetMACDFolkPrice(s.kLineDay, s.kLineDay.Length - 1).ToString());
+	Response.End();
+/*
         string[] gidArr = Util.GetAllGids();
         for (int i = 0; i < gidArr.Length; i++)
         {
@@ -50,6 +56,7 @@
 
             }
         }
+*/
         /*
         Stock s = new Stock("sh600088");
         s.LoadKLineDay();
