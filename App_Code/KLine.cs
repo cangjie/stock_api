@@ -501,6 +501,34 @@ public class KLine
         }
     }
 
+    public static double GetMACDFolkPrice(KLine[] kArr, int index)
+    {
+        KLine[] kArrNew = new KLine[kArr.Length];
+        for (int i = 0; i < kArr.Length; i++)
+        {
+            kArrNew[i] = new KLine();
+            kArrNew[i].startPrice = kArr[i].startPrice;
+            kArrNew[i].endPrice = kArr[i].endPrice;
+        }
+        if (kArrNew[index].macd < 0 || (kArrNew[index].macd > 0 && kArrNew[index - 1].macd >= 0))
+            return 0;
+        double settle = kArrNew[index].endPrice;
+        double folkPrice = 0;
+        for (kArrNew[index].endPrice = kArrNew[index].lowestPrice; 
+             kArrNew[index].endPrice <= kArrNew[index].highestPrice; 
+             kArrNew[index].endPrice = kArrNew[index].endPrice + 0.01 )
+        {
+            KLine.ComputeMACD(kArrNew);
+            if (kArrNew[index-1].macd < 0 && kArrNew[index].macd >=0)
+            {
+                folkPrice = kArrNew[index].endPrice;
+                break;
+            }
+
+        }
+        return folkPrice;
+    }
+
     public double TYP
     {
         get
