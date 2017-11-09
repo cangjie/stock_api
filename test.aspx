@@ -6,35 +6,55 @@
 <script runat="server">
     protected void Page_Load(object sender, EventArgs e)
     {
-
-        StockWatcher.WatchEachStock();
-/*
-        string[] gidArr = Util.GetAllGids();
-        for (int i = 0; i < gidArr.Length; i++)
+        foreach (string gid in Util.GetAllGids())
         {
-            try
+            Stock stock = new Stock(gid);
+            stock.LoadKLineDay();
+            KLine.ComputeMACD(stock.kLineDay);
+            for (int i = stock.kLineDay.Length - 2; i >= 0; i--)
             {
-                Stock stock = new Stock(gidArr[i].Trim());
-                stock.LoadKLineDay();
-                KLine.ComputeMACD(stock.kLineDay);
-                KLine.ComputeRSV(stock.kLineDay);
-                KLine.ComputeKDJ(stock.kLineDay);
-                for (int j =  stock.kLineDay.Length - 1; j < stock.kLineDay.Length; j++)
+                if (StockWatcher.IsMacdFolk(stock.kLineDay, i))
+                {
+                    StockWatcher.LogMacd(stock.gid, "day", stock.kLineDay[i].endDateTime, KLine.GetMACDFolkPrice(stock.kLineDay, i), 
+                        stock.kLineDay[i].dif, stock.kLineDay[i].dea, stock.kLineDay[i].macd);
+                }
+            }
+        }
+
+        //StockWatcher.WatchEachStock();
+        /*
+                string[] gidArr = Util.GetAllGids();
+                for (int i = 0; i < gidArr.Length; i++)
                 {
                     try
                     {
-                        if (KLine.IsJumpHigh(stock.kLineDay, j))
+                        Stock stock = new Stock(gidArr[i].Trim());
+                        stock.LoadKLineDay();
+                        KLine.ComputeMACD(stock.kLineDay);
+                        KLine.ComputeRSV(stock.kLineDay);
+                        KLine.ComputeKDJ(stock.kLineDay);
+                        for (int j =  stock.kLineDay.Length - 1; j < stock.kLineDay.Length; j++)
                         {
-                            int macdDays = stock.macdDays(j);
-                            int kdjDays = stock.kdjDays(j);
                             try
                             {
-                                DBHelper.InsertData("alert_jump_high", new string[,] { {"gid", "varhcar", stock.gid },
-                            {"alert_time", "datetime", Util.GetDay(stock.kLineDay[j].endDateTime).ToShortDateString() },
-                            {"alert_price", "float", stock.kLineDay[j].startPrice.ToString() },
-                            {"settle", "float", stock.kLineDay[j - 1].endPrice.ToString() },
-                            {"macd_days", "int", macdDays.ToString() },
-                            {"kdj_days", "int", kdjDays.ToString() } });
+                                if (KLine.IsJumpHigh(stock.kLineDay, j))
+                                {
+                                    int macdDays = stock.macdDays(j);
+                                    int kdjDays = stock.kdjDays(j);
+                                    try
+                                    {
+                                        DBHelper.InsertData("alert_jump_high", new string[,] { {"gid", "varhcar", stock.gid },
+                                    {"alert_time", "datetime", Util.GetDay(stock.kLineDay[j].endDateTime).ToShortDateString() },
+                                    {"alert_price", "float", stock.kLineDay[j].startPrice.ToString() },
+                                    {"settle", "float", stock.kLineDay[j - 1].endPrice.ToString() },
+                                    {"macd_days", "int", macdDays.ToString() },
+                                    {"kdj_days", "int", kdjDays.ToString() } });
+                                    }
+                                    catch
+                                    {
+
+                                    }
+                                }
                             }
                             catch
                             {
@@ -47,13 +67,7 @@
 
                     }
                 }
-            }
-            catch
-            {
-
-            }
-        }
-*/
+        */
         /*
         Stock s = new Stock("sh600088");
         s.LoadKLineDay();
