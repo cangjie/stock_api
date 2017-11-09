@@ -67,16 +67,16 @@
     public void AddTotal(DataRow[] drOriArr, DataTable dt)
     {
         int totalCount = 0;
-        int[] totalSum = new int[] { 0, 0, 0, 0, 0, 0 };
+        int[] totalSum = new int[] { 0, 0, 0, 0, 0, 0,0,0,0,0,0 };
 
         int raiseCount = 0;
-        int[] raiseSum = new int[] { 0, 0, 0, 0, 0, 0 };
+        int[] raiseSum = new int[] { 0, 0, 0, 0, 0, 0,0,0,0,0,0 };
 
         int fireCount = 0;
-        int[] fireSum = new int[] { 0, 0, 0, 0, 0, 0 };
+        int[] fireSum = new int[] { 0, 0, 0, 0, 0, 0,0,0,0,0,0 };
 
         int starCount = 0;
-        int[] starSum = new int[] { 0, 0, 0, 0, 0, 0 };
+        int[] starSum = new int[] { 0, 0, 0, 0, 0, 0,0,0,0,0,0 };
 
         int shitCount = 0;
 
@@ -97,7 +97,7 @@
                 {
                     starCount++;
                 }
-                for (int i = 1; i < 7; i++)
+                for (int i = 1; i < 12; i++)
                 {
                     string colName = ((i == 6) ? "总计" : i.ToString() + "日");
                     if (!drOri[colName].ToString().Equals("") && (double)(drOri[colName]) >= 0.01)
