@@ -386,7 +386,7 @@
             dr["F5"] = f5;
             dr["高点"] = highestPrice;
             dr["买入"] = buyPrice;
-            double macdDegree = KLine.ComputeMacdDegree(stock.kLineDay, currentIndex)*100;
+            double macdDegree = KLine.ComputeMacdDegree(stock.kLineDay, currentIndex-macdDays)*100;
             dr["MACD率"] = macdDegree;
             double kdjDegree = KLine.ComputeKdjDegree(stock.kLineDay, currentIndex);
             dr["KDJ率"] = kdjDegree;
