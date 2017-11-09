@@ -145,7 +145,7 @@
         drStar["信号"] = "🌟";
         drStar["昨收"] = starCount.ToString();
 
-        for (int i = 1; i < 7; i++)
+        for (int i = 1; i < 12; i++)
         {
             string columeCaption = ((i == 6) ? "总计" : i.ToString() + "日");
             drTotal[columeCaption] = Math.Round(100 * (double)totalSum[i - 1] / (double)totalCount, 2).ToString() + "%";
