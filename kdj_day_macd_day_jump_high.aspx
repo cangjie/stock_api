@@ -134,9 +134,11 @@
         drShit["今开"] = Math.Round(100 * (double)shitCount / (double)drOriArr.Length, 2).ToString() + "%";
 
         DataRow drRaise = dt.NewRow();
+        drRaise["名称"] = "前高";
         drRaise["信号"] = "📈";
         drRaise["昨收"] = raiseCount.ToString();
         DataRow drFire = dt.NewRow();
+        drFire["信号"] = "缺口";
         drFire["信号"] = "🔥";
         drFire["昨收"] = fireCount.ToString();
         DataRow drStar = dt.NewRow();
