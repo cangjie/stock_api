@@ -18,6 +18,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
+        sort = Util.GetSafeRequestValue(Request, "sort", "MACD, KDJ,3线日,综指 desc");
         if (!IsPostBack)
         {
             try
@@ -59,7 +60,7 @@
         if (currentDate.Year < 2000)
             currentDate = DateTime.Now;
         DataTable dtOri = GetData(currentDate);
-        DataRow[] drOriArr = dtOri.Select(Util.GetSafeRequestValue(Request, "whereclause", "   ").Trim(), sort + (!sort.Trim().Equals("")?",":"") + " MACD, KDJ, 信号 desc, 今涨 desc ");
+        DataRow[] drOriArr = dtOri.Select(Util.GetSafeRequestValue(Request, "whereclause", "   ").Trim(), sort);
         return RenderHtml(drOriArr);
     }
 
