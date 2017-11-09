@@ -337,10 +337,12 @@
             double f3 = lowestPrice + (highestPrice - lowestPrice) * 0.382;
             double f5 = lowestPrice + (highestPrice - lowestPrice) * 0.618;
             double buyPrice = currentPrice;
+	double macdPrice = KLine.GetMACDFolkPrice(stock.kLineDay, currentIndex);
             double macdDegree = KLine.ComputeMacdDegree(stock.kLineDay, currentIndex)*1000;
             double kdjDegree = KLine.ComputeKdjDegree(stock.kLineDay, currentIndex);
             double upSpace = 0;
             double downSpace = 0;
+	buyPrice = Math.Max(macdPrice, line3Price);
             if (buyPrice <= lowestPrice)
             {
                 downSpace = 0.1;
@@ -416,11 +418,11 @@
             {
                 //dr["信号"] = dr["信号"].ToString() + "📈";
             }
-            if ((int)dr["TD"] == 0 && kdjDays == 0 && (int)dr["MACD日"] <= kdjDays && currentVolume / lastDayVolume > 1.25)
+            if (kdjDays == 0 && (int)dr["MACD日"] == 0 && currentPrice < f3  && currentVolume / lastDayVolume > 1.25)
             {
                 dr["信号"] = dr["信号"].ToString() + "📈";
             }
-            if ((int)dr["MACD时"] >= 0 && (int)dr["KDJ日"] >= 0 && currentVolume / lastDayVolume > 1.25)
+            if ((int)dr["MACD时"] >= 0 && (int)dr["KDJ日"] >= 0 && currentPrice < f3 && currentVolume / lastDayVolume > 1.25)
             {
                 dr["信号"] = dr["信号"].ToString() + "🔥";
             }
@@ -428,6 +430,10 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "🌟";
             }
+		if (currentPrice <= buyPrice * 1.005 && currentPrice >= buyPrice)
+		{
+			dr["信号"] = dr["信号"].ToString() + "🛍️";
+		}
             dt.Rows.Add(dr);
         }
         return dt;
