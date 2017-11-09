@@ -575,9 +575,6 @@
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号" SortExpression="信号|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="综指" HeaderText="综指" SortExpression="综指|desc" ></asp:BoundColumn>
-                    <asp:BoundColumn DataField="昨收" HeaderText="昨收"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="今开" HeaderText="今开"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="今收" HeaderText="今收"></asp:BoundColumn>
                     <asp:BoundColumn DataField="今涨" HeaderText="今涨" SortExpression="今涨|desc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="放量" HeaderText="放量" SortExpression="放量|desc"></asp:BoundColumn>
 
@@ -589,13 +586,9 @@
 					<asp:BoundColumn DataField="TD" HeaderText="TD" SortExpression="TD|desc" ></asp:BoundColumn>	
                     <asp:BoundColumn DataField="KDJ率" HeaderText="KDJ率" SortExpression="KDJ率|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="MACD率" HeaderText="MACD率" SortExpression="MACD率|asc"></asp:BoundColumn>			
-                    <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
 
-                    <asp:BoundColumn DataField="低点" HeaderText="低点"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="F1" HeaderText="F1"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F5" HeaderText="F5"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="高点" HeaderText="高点"></asp:BoundColumn>
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
 			        <asp:BoundColumn DataField="涨幅" HeaderText="涨幅"  ></asp:BoundColumn>
 					<asp:BoundColumn DataField="跌幅" HeaderText="跌幅"  ></asp:BoundColumn>
