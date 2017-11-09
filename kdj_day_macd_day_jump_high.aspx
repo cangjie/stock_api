@@ -466,8 +466,7 @@
             {
                 //dr["信号"] = "📈";
             }
-
-            if (stock.kLineDay[currentIndex].lowestPrice > stock.kLineDay[currentIndex - 1].highestPrice && (double)dr["今涨"] <= 0.095 && days3Line > -1)
+            if (stock.kLineDay[currentIndex].lowestPrice > stock.kLineDay[currentIndex - 1].highestPrice )
             {
                 dr["信号"] = "🔥";
             }
