@@ -99,7 +99,7 @@
                 }
                 for (int i = 1; i < 12; i++)
                 {
-                    string colName = ((i == 6) ? "总计" : i.ToString() + "日");
+                    string colName = ((i == 11) ? "总计" : i.ToString() + "日");
                     if (!drOri[colName].ToString().Equals("") && (double)(drOri[colName]) >= 0.01)
                     {
                         totalSum[i - 1]++;
@@ -147,7 +147,7 @@
 
         for (int i = 1; i < 12; i++)
         {
-            string columeCaption = ((i == 6) ? "总计" : i.ToString() + "日");
+            string columeCaption = ((i == 11) ? "总计" : i.ToString() + "日");
             drTotal[columeCaption] = Math.Round(100 * (double)totalSum[i - 1] / (double)totalCount, 2).ToString() + "%";
             drFire[columeCaption] = Math.Round(100 * (double)fireSum[i-1] / (double)fireCount, 2).ToString() + "%";
             drRaise[columeCaption] = Math.Round(100 * (double)raiseSum[i-1] / (double)raiseCount, 2).ToString() + "%";
