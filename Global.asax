@@ -9,9 +9,7 @@
         //StockWatcher.tKLineRefresher.Start();
         //StockWatcher.tKDJMACD.Start();
         //StockWatcher.tSearchBottomBreak3Line.Start();
-
         StockWatcher.tWatchEachStock.Start();
-
         StockWatcher.tLogQuota.Start();
 
     }

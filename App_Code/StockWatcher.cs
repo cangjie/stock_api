@@ -35,7 +35,7 @@ public class StockWatcher
         {
             try
             {
-                if (Util.IsTransacDay(DateTime.Parse(DateTime.Now.ToShortDateString())) && DateTime.Now.Hour >= 9 && DateTime.Now.Hour <= 15)
+                if (Util.IsTransacDay(DateTime.Parse(DateTime.Now.ToShortDateString())) && DateTime.Now.Hour >= 9 && DateTime.Now.Hour <= 16)
                 {
                     string[] gidArr = Util.GetAllGids();
                     for (int i = 0; i < gidArr.Length; i++)

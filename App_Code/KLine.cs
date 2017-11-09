@@ -509,6 +509,8 @@ public class KLine
             kArrNew[i] = new KLine();
             kArrNew[i].startPrice = kArr[i].startPrice;
             kArrNew[i].endPrice = kArr[i].endPrice;
+            kArrNew[i].lowestPrice = kArr[i].lowestPrice;
+            kArrNew[i].highestPrice = kArr[i].highestPrice;
         }
         if (kArrNew[index].macd < 0 || (kArrNew[index].macd > 0 && kArrNew[index - 1].macd >= 0))
             return 0;
@@ -576,16 +578,11 @@ public class KLine
     {
         for (int i = startIndex; i < kArr.Length; i++)
         {
-            if (i > 0 && kArr[i - 1].macd < 0 && kArr[i].macd > 0 && Math.Abs(kArr[i - 1].macd) + Math.Abs(  kArr[i].macd) >= 0.05)
+            if (StockWatcher.IsMacdFolk(kArr, kArr.Length - 1))
             {
                 try
                 {
-                    DBHelper.InsertData("macd_alert", new string[,] {
-                        { "gid", "varchar", kArr[i].gid.Trim()},
-                        { "alert_time", "datetime", kArr[i].endDateTime.ToString()},
-                        { "type", "varchar", kArr[i].type},
-                        { "price", "float", kArr[i].endPrice.ToString()}
-                    });
+                    StockWatcher.LogMacd(kArr[i].gid.Trim(), "day", kArr[i].endDateTime, kArr[i].endPrice, kArr[i].dif, kArr[i].dea, kArr[i].macd);
                 }
                 catch
                 {
