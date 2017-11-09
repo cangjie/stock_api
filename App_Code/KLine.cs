@@ -582,7 +582,8 @@ public class KLine
             {
                 try
                 {
-                    StockWatcher.LogMacd(kArr[i].gid.Trim(), "day", kArr[i].endDateTime, kArr[i].endPrice, kArr[i].dif, kArr[i].dea, kArr[i].macd);
+                    StockWatcher.LogMacd(kArr[i].gid.Trim(), "day", kArr[i].endDateTime, 
+                        KLine.GetMACDFolkPrice(kArr, startIndex), kArr[i].dif, kArr[i].dea, kArr[i].macd);
                 }
                 catch
                 {
