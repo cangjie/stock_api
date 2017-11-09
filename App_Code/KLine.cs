@@ -512,7 +512,7 @@ public class KLine
             kArrNew[i].lowestPrice = kArr[i].lowestPrice;
             kArrNew[i].highestPrice = kArr[i].highestPrice;
         }
-        if (kArrNew[index].macd < 0 || (kArrNew[index].macd > 0 && kArrNew[index - 1].macd >= 0))
+        if (!StockWatcher.IsMacdFolk(kArr, index))
             return 0;
         double settle = kArrNew[index].endPrice;
         double folkPrice = 0;
@@ -624,21 +624,15 @@ public class KLine
 
     public static void SearchKDJAlert(KLine[] kArr, int startIndex)
     {
-        int unEffectValue = 5;
         for (int i = startIndex; i < kArr.Length; i++)
         {
             if (i > 0)
             {
-                if (kArr[i].j >= kArr[i].k && kArr[i - 1].j <= kArr[i - 1].k && Math.Abs(kArr[i].j - 50) > unEffectValue && Math.Abs(kArr[i].k - 50) > unEffectValue)
+                if (StockWatcher.IsKdjFolk(kArr, startIndex))
                 {
                     try
                     {
-                        DBHelper.InsertData("kdj_alert", new string[,] {
-                        { "gid", "varchar", kArr[i].gid.Trim()},
-                        { "alert_time", "datetime", kArr[i].endDateTime.ToString()},
-                        { "type", "varchar", kArr[i].type},
-                        { "price", "float", kArr[i].endPrice.ToString()}
-                        });
+                        StockWatcher.LogKdj(kArr[i].gid.Trim(), "day", kArr[i].endDateTime, kArr[i].endPrice, kArr[i].k, kArr[i].d, kArr[i].j);
                     }
                     catch
                     {
@@ -892,7 +886,10 @@ public class KLine
     {
         if (index <= 0)
             return false;
-        if (kArr[index].startPrice > kArr[index - 1].endPrice)
+        double macdPrice = KLine.GetMACDFolkPrice(kArr, index - 1);
+        if (macdPrice <= 0)
+            return false;
+        if (kArr[index].startPrice > macdPrice)
         {
             return true;
         }

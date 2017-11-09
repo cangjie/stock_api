@@ -11,12 +11,25 @@
             Stock stock = new Stock(gid);
             stock.LoadKLineDay();
             KLine.ComputeMACD(stock.kLineDay);
-            for (int i = stock.kLineDay.Length - 2; i >= 0; i--)
+            for (int i = stock.kLineDay.Length - 1; i >= 0; i--)
             {
-                if (StockWatcher.IsMacdFolk(stock.kLineDay, i))
+                if (KLine.IsJumpHigh(stock.kLineDay, i))
                 {
-                    StockWatcher.LogMacd(stock.gid, "day", stock.kLineDay[i].endDateTime, KLine.GetMACDFolkPrice(stock.kLineDay, i), 
-                        stock.kLineDay[i].dif, stock.kLineDay[i].dea, stock.kLineDay[i].macd);
+                    int macdDays = stock.macdDays(i);
+                    int kdjDays = stock.kdjDays(i);
+                    try
+                    {
+                        DBHelper.InsertData("alert_jump_high", new string[,] { {"gid", "varhcar", stock.gid },
+                            {"alert_time", "datetime", Util.GetDay(stock.kLineDay[i].endDateTime).ToShortDateString() },
+                            {"alert_price", "float", stock.kLineDay[i].startPrice.ToString() },
+                            {"settle", "float", stock.kLineDay[i - 1].endPrice.ToString() },
+                            {"macd_days", "int", macdDays.ToString() },
+                            {"kdj_days", "int", kdjDays.ToString() } });
+                    }
+                    catch
+                    {
+
+                    }
                 }
             }
         }
