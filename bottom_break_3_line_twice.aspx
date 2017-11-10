@@ -14,6 +14,9 @@
 
     public static Thread tQ = new Thread(tsQ);
 
+    public static ThreadStart ts = new ThreadStart(PageWatcher);
+
+    public static Thread t = new Thread(ts);
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -34,7 +37,23 @@
             {
                 Console.WriteLine(err.ToString());
             }
-            
+
+            try
+            {
+                if (t.ThreadState != ThreadState.Running && t.ThreadState != ThreadState.WaitSleepJoin)
+                {
+                    t.Abort();
+                    t = new Thread(ts);
+                    t.Start();
+
+                }
+            }
+            catch
+            {
+
+            }
+
+
             DataTable dt = GetData();
             dg.DataSource = dt;
             dg.DataBind();
@@ -337,12 +356,12 @@
             double f3 = lowestPrice + (highestPrice - lowestPrice) * 0.382;
             double f5 = lowestPrice + (highestPrice - lowestPrice) * 0.618;
             double buyPrice = currentPrice;
-	double macdPrice = KLine.GetMACDFolkPrice(stock.kLineDay, currentIndex);
+            double macdPrice = KLine.GetMACDFolkPrice(stock.kLineDay, currentIndex);
             double macdDegree = KLine.ComputeMacdDegree(stock.kLineDay, currentIndex)*1000;
             double kdjDegree = KLine.ComputeKdjDegree(stock.kLineDay, currentIndex);
             double upSpace = 0;
             double downSpace = 0;
-	buyPrice = Math.Max(macdPrice, line3Price);
+            buyPrice = Math.Max(macdPrice, line3Price);
             if (buyPrice <= lowestPrice)
             {
                 downSpace = 0.1;
@@ -430,46 +449,46 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "🌟";
             }
-		if (currentPrice <= buyPrice * 1.005 && currentPrice >= buyPrice)
-		{
-			dr["信号"] = dr["信号"].ToString() + "🛍️";
-		}
+            if (currentPrice <= buyPrice * 1.005 && currentPrice >= buyPrice)
+            {
+                dr["信号"] = dr["信号"].ToString() + "🛍️";
+            }
             dt.Rows.Add(dr);
         }
         return dt;
     }
 
     public static void PageWatcher()
-	{
+    {
         for(; true; )
-	    {
-	        DateTime currentDate = Util.GetDay(DateTime.Now);
-	        if (Util.IsTransacDay(currentDate) && Util.IsTransacTime(DateTime.Now))
-	        {
+        {
+            DateTime currentDate = Util.GetDay(DateTime.Now);
+            if (Util.IsTransacDay(currentDate) && Util.IsTransacTime(DateTime.Now))
+            {
                 DataTable dt = GetData(currentDate);
-	            foreach(DataRow dr in dt.Rows)
-	            {
-                    if (dr["信号"].ToString().IndexOf("🛍️") >= 0 
-	                    && (dr["信号"].ToString().IndexOf("📈") >= 0 || dr["信号"].ToString().IndexOf("🔥") >= 0 || dr["信号"].ToString().IndexOf("🌟") >= 0))
-	                {
-                        string message = dr["信号"].ToString().Trim() + " " + dr["代码"].ToString() + " " + dr["名称"].ToString(); 
-	                    double price = Math.Round(double.Parse(dr["买入"].ToString()), 2);
-	                    if (StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()),
+                foreach(DataRow dr in dt.Rows)
+                {
+                    if (dr["信号"].ToString().IndexOf("🛍️") >= 0
+                        && (dr["信号"].ToString().IndexOf("📈") >= 0 || dr["信号"].ToString().IndexOf("🔥") >= 0 || dr["信号"].ToString().IndexOf("🌟") >= 0))
+                    {
+                        string message = dr["信号"].ToString().Trim() + " " + dr["代码"].ToString() + " " + dr["名称"].ToString();
+                        double price = Math.Round(double.Parse(dr["买入"].ToString()), 2);
+                        if (StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()),
                                 dr["代码"].ToString().Trim(),
                                 "break_3_line_twice",
                                 dr["名称"].ToString().Trim(),
                                 "买入价：" + price.ToString() + " " + message.Trim()))
-	                    {
-	                        StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(), 
-	                            dr["名称"].ToString() + " " + message, price, "break_3_line_twice");
-	                    }
-	                    
-	                }
-	            }
-	        }
-	
-	    }
-	}
+                        {
+                            StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(),
+                                dr["名称"].ToString() + " " + message, price, "break_3_line_twice");
+                        }
+
+                    }
+                }
+            }
+
+        }
+    }
 
 </script>
 
