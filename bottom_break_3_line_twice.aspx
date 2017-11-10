@@ -255,7 +255,7 @@
         dt.Rows.Add(drStar);
     }
 
-    public DataTable GetData(DateTime currentDate)
+    public static DataTable GetData(DateTime currentDate)
     {
         currentDate = Util.GetDay(currentDate);
         DataTable dtOri = DBHelper.GetDataTable(" select * from bottom_break_cross_3_line  a where suggest_date = '" + currentDate.ToShortDateString() + "' "
