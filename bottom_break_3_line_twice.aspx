@@ -439,6 +439,38 @@
         return dt;
     }
 
+    public static void PageWatcher()
+	{
+        for(; true; )
+	    {
+	        DateTime currentDate = Util.GetDay(DateTime.Now);
+	        if (Util.IsTransacDay(currentDate) && Util.IsTransacTime(DateTime.Now))
+	        {
+                DataTable dt = GetData(currentDate);
+	            foreach(DataRow dr in dt.Rows)
+	            {
+                    if (dr["信号"].ToString().IndexOf("🛍️") >= 0 
+	                    && (dr["信号"].ToString().IndexOf("📈") >= 0 || dr["信号"].ToString().IndexOf("🔥") >= 0 || dr["信号"].ToString().IndexOf("🌟") >= 0))
+	                {
+                        string message = dr["信号"].ToString().Trim() + " " + dr["代码"].ToString() + " " + dr["名称"].ToString(); 
+	                    double price = Math.Round(double.Parse(dr["买入"].ToString()), 2);
+	                    if (StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()),
+                                dr["代码"].ToString().Trim(),
+                                "break_3_line_twice",
+                                dr["名称"].ToString().Trim(),
+                                "买入价：" + price.ToString() + " " + message.Trim()))
+	                    {
+	                        StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(), 
+	                            dr["名称"].ToString() + " " + message, price, "break_3_line_twice");
+	                    }
+	                    
+	                }
+	            }
+	        }
+	
+	    }
+	}
+
 </script>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
