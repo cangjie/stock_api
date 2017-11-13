@@ -8,7 +8,7 @@
 
     public DateTime currentDate = Util.GetDay(DateTime.Now);
 
-    public string sort = "MACD日,KDJ日,综指";
+    public string sort = "MACD日,KDJ日,综指 desc";
 
     public static ThreadStart tsQ = new ThreadStart(StockWatcher.LogQuota);
 
