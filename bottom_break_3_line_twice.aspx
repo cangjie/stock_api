@@ -437,11 +437,11 @@
             {
                 //dr["信号"] = dr["信号"].ToString() + "📈";
             }
-            if (kdjDays == 0 && (int)dr["MACD日"] == 0 && currentPrice <= f5 && currentPrice >= f1 && currentVolume / lastDayVolume > 1.25)
+            if (kdjDays == 0 && (int)dr["MACD日"] == 0 && currentPrice <= f5 && currentPrice >= f1 && currentVolume / lastDayVolume >= 0.85)
             {
                 dr["信号"] = dr["信号"].ToString() + "📈";
             }
-            if ((int)dr["MACD时"] >= 0 && (int)dr["KDJ日"] >= 0 && currentPrice <= f5 && currentPrice >= f1 && currentVolume / lastDayVolume > 1.25)
+            if ((int)dr["MACD时"] >= 0 && (int)dr["KDJ日"] >= 0 && currentPrice <= f5 && currentPrice >= f1 && currentVolume / lastDayVolume >= 0.85)
             {
                 dr["信号"] = dr["信号"].ToString() + "🔥";
             }
