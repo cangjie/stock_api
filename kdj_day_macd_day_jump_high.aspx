@@ -520,7 +520,7 @@
                 KLine.ComputeMACD(stock.kLineDay);
                 KLine.ComputeRSV(stock.kLineDay);
                 KLine.ComputeKDJ(stock.kLineDay);
-                if (stock.kLineDay[stock.kLineDay.Length - 1].startDateTime.ToShortDateString().Equals(DateTime.Now.ToShortDateString()))
+                if (stock.kLineDay.Length > 0 && stock.kLineDay[stock.kLineDay.Length - 1].startDateTime.ToShortDateString().Equals(DateTime.Now.ToShortDateString()))
                 {
                     int j = stock.kLineDay.Length - 1;
                     if (KLine.IsJumpHigh(stock.kLineDay, j))
