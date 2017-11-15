@@ -358,6 +358,8 @@ public class KLine
     {
         if (index < 0)
             return -100;
+        if (kArr.Length <= index)
+            return -100;
         
         int minMacdIndex = index;
         double minMacd = kArr[index].macd;
