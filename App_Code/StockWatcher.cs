@@ -6,13 +6,14 @@ using System.Data;
 using System.Net;
 using System.IO;
 using System.Threading;
+using System.Collections;
 using System.Text.RegularExpressions;
 /// <summary>
 /// Summary description for StockWatcher
 /// </summary>
 public class StockWatcher
 {
-    public static ThreadStart tsKLineRefresher = new ThreadStart(RefreshKLine);
+    public static ThreadStart tsKLineRefresher = new ThreadStart(RefreshKLineMultiThread);
 
     public static Thread tKLineRefresher = new Thread(tsKLineRefresher);
 
@@ -24,9 +25,53 @@ public class StockWatcher
 
     public static Thread tLogQuota = new Thread(tsLogQuota);
 
+    public static Queue gidForRefreshKLine = new Queue();
+
+    
+
     public StockWatcher()
     {
       
+    }
+
+    public static void RefreshKLineMultiThread()
+    {
+        for (; Util.IsTransacDay(DateTime.Parse(DateTime.Now.ToShortDateString())) && DateTime.Now.Hour >= 9 && DateTime.Now.Hour <= 16;)
+        {
+            if (gidForRefreshKLine.Count == 0)
+            {
+                string[] gidArr = Util.GetAllGids();
+                foreach (string s in gidArr)
+                {
+                    gidForRefreshKLine.Enqueue((object)s);
+                }
+            }
+            for (; gidForRefreshKLine.Count > 0;)
+            {
+                ThreadStart tsKLIneStart = new ThreadStart(StockWatcher.RefreshKLineForSingleStock);
+                Thread tKLine = new Thread(tsKLIneStart);
+                tKLine.Start();
+                Thread.Sleep(10);
+            }
+            Thread.Sleep(60000);
+        }
+    }
+
+    public static void RefreshKLineForSingleStock()
+    {
+        if (gidForRefreshKLine.Count>0)
+        {
+            try
+            {
+                string gid = gidForRefreshKLine.Dequeue().ToString();
+                KLine.RefreshKLine(gid, DateTime.Parse(DateTime.Now.ToShortDateString()));
+            }
+            catch
+            {
+
+            }
+        }
+        
     }
 
     public static void WatchEachStock()

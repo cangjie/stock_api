@@ -510,7 +510,8 @@
 
     public static void PageWatcher()
     {
-        if (Util.IsTransacDay(Util.GetDay(DateTime.Now)) && DateTime.Now.Hour == 9 && DateTime.Now.Minute >= 30  )
+        //if (Util.IsTransacDay(Util.GetDay(DateTime.Now)) && DateTime.Now.Hour == 9 && DateTime.Now.Minute >= 30  )
+        if (true)
         {
             string[] gidArr = Util.GetAllGids();
             foreach (string gid in gidArr)

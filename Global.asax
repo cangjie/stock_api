@@ -11,6 +11,8 @@
         //StockWatcher.tSearchBottomBreak3Line.Start();
         StockWatcher.tWatchEachStock.Start();
         StockWatcher.tLogQuota.Start();
+        StockWatcher.tKLineRefresher.Start();
+
 
     }
     
