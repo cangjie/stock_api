@@ -33,7 +33,7 @@
         Response.End();
         */
 
-        PageWatcher();
+        
 
         sort = Util.GetSafeRequestValue(Request, "sort", "3线日 desc,MACD,KDJ,综指 desc");
         if (!IsPostBack)
@@ -45,7 +45,7 @@
                     t.Abort();
                     ts = new ThreadStart(PageWatcher);
                     t = new Thread(ts);
-                    //t.Start();
+                    t.Start();
                 }
             }
             catch(Exception err)
