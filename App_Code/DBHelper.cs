@@ -190,7 +190,7 @@ public class DBHelper
         }
         fieldClause = fieldClause.Remove(0, 1);
         valuesClause = valuesClause.Remove(0, 1);
-        string sql = " insert into " + tableName.Trim() + "  ( "
+        string sql = " insert into dbo.[" + tableName.Trim() + "]  ( "
             + fieldClause + " )  values (" + valuesClause + " )  ";
         cmd.Connection = conn;
         cmd.CommandText = sql;

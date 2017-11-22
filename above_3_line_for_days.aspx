@@ -18,6 +18,20 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
+        for (DateTime startDate = DateTime.Parse("2017-8-1"); startDate < DateTime.Now.Date; startDate = startDate.AddDays(1))
+        {
+            if (Util.IsTransacDay(startDate))
+            {
+                for (int i = 5; i <= 15; i++)
+                {
+                    LogAbove3LineForDays(startDate, i);
+                }
+            }
+        }
+
+        Response.End();
+
+
         sort = Util.GetSafeRequestValue(Request, "sort", "MACD, KDJ,3线日,综指 desc");
         if (!IsPostBack)
         {
@@ -526,6 +540,49 @@
         dg.DataSource = GetData();
         dg.DataBind();
     }
+
+
+    public static void LogAbove3LineForDays(DateTime currentDate, int days)
+    {
+        DateTime  break3LineDate = Util.GetLastTransactDate(currentDate, days);
+        DataTable dtOri = new DataTable();
+        SqlDataAdapter da = new SqlDataAdapter(" select * from bottom_break_cross_3_line where suggest_date = '" + break3LineDate.ToShortDateString() + "' " , Util.conStr);
+        da.Fill(dtOri);
+        da.Dispose();
+        foreach (DataRow drOri in dtOri.Rows)
+        {
+            Stock s = new Stock(drOri["gid"].ToString().Trim());
+            s.LoadKLineDay();
+
+            int currentIndex = s.GetItemIndex(currentDate);
+            int break3LineIndex = s.GetItemIndex(break3LineDate);
+            if (currentIndex - break3LineIndex != days)
+                continue;
+            bool isAlwaysAbove3Line = true;
+            for (int i = 0; i < days; i++)
+            {
+                if (s.kLineDay[break3LineIndex + i].endPrice < s.GetAverageSettlePrice(break3LineIndex + i, 3, 3))
+                {
+                    isAlwaysAbove3Line = false;
+                    break;
+                }
+            }
+
+            if (!isAlwaysAbove3Line)
+                continue;
+            try
+            {
+                DBHelper.InsertData("alert_above_3_line_for_days", new string[,] { {"alert_date", "datetime", currentDate.ToShortDateString() },
+                    {"gid", "varchar", drOri["gid"].ToString().Trim() }, {"above_3_line_days", "int", days.ToString() } });
+            }
+            catch
+            {
+
+            }
+        }
+    }
+
+
 
     public static void PageWatcher()
     {
