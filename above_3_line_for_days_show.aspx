@@ -33,6 +33,8 @@
         Response.End();
         */
 
+        PageWatcher();
+
         sort = Util.GetSafeRequestValue(Request, "sort", "3线日 desc,MACD,KDJ,综指 desc");
         if (!IsPostBack)
         {
@@ -74,7 +76,7 @@
         DateTime currentDate = calendar.SelectedDate;
         if (currentDate.Year < 2000)
             currentDate = DateTime.Now;
-        DataTable dtOri = GetData(currentDate, int.Parse(Util.GetSafeRequestValue(Request, "days", "10")));
+        DataTable dtOri = GetData(currentDate);
         DataRow[] drOriArr = dtOri.Select(Util.GetSafeRequestValue(Request, "whereclause", "   ").Trim(), sort);
         return RenderHtml(drOriArr);
     }
@@ -259,10 +261,9 @@
         return dt;
     }
 
-    public static DataTable GetData(DateTime currentDate, int days)
+    public static DataTable GetData(DateTime currentDate)
     {
         DateTime alertDate = Util.GetLastTransactDate(currentDate, 1);
-        DateTime  break3LineDate = Util.GetLastTransactDate(currentDate, days);
         DataTable dtOri = new DataTable();
         SqlDataAdapter da = new SqlDataAdapter(" select *  from alert_above_3_line_for_days where alert_date = '" + alertDate.ToShortDateString()
             + "' and above_3_line_days >= 10 ", Util.conStr);
@@ -525,38 +526,55 @@
 
     public static void PageWatcher()
     {
-        if (Util.IsTransacDay(Util.GetDay(DateTime.Now)) && DateTime.Now.Hour == 9 && DateTime.Now.Minute >= 30  )
+        if (Util.IsTransacDay(DateTime.Now.Date))
         {
-            string[] gidArr = Util.GetAllGids();
-            foreach (string gid in gidArr)
+            if (DateTime.Now.Hour >= 9)
             {
-                Stock stock = new Stock(gid);
-                stock.LoadKLineDay();
-                KLine.ComputeMACD(stock.kLineDay);
-                KLine.ComputeRSV(stock.kLineDay);
-                KLine.ComputeKDJ(stock.kLineDay);
-                if (stock.kLineDay.Length > 0 && stock.kLineDay[stock.kLineDay.Length - 1].startDateTime.ToShortDateString().Equals(DateTime.Now.ToShortDateString()))
+                for (; true;)
                 {
-                    int j = stock.kLineDay.Length - 1;
-                    if (KLine.IsJumpHigh(stock.kLineDay, j))
+                    try
                     {
-                        int macdDays = stock.macdDays(j);
-                        int kdjDays = stock.kdjDays(j);
-                        try
+                        DataTable dt = GetData(DateTime.Now);
+                        foreach (DataRow dr in dt.Rows)
                         {
-                            DBHelper.InsertData("alert_jump_high", new string[,] { {"gid", "varhcar", stock.gid },
-                                {"alert_time", "datetime", Util.GetDay(stock.kLineDay[j].endDateTime).ToShortDateString() },
-                                {"alert_price", "float", stock.kLineDay[j].startPrice.ToString() },
-                                {"settle", "float", stock.kLineDay[j - 1].endPrice.ToString() },
-                                {"macd_days", "int", macdDays.ToString() },
-                                {"kdj_days", "int", kdjDays.ToString() } });
-                        }
-                        catch
-                        {
-
+                            if (dr["信号"].ToString().IndexOf("📈") >= 0)
+                            {
+                                Stock s = new Stock(dr["代码"].ToString().Trim());
+                                s.kLineHour = KLine.GetLocalKLine(s.gid.Trim(), "1hr");
+                                s.LoadKLineDay();
+                                KLine.ComputeRSV(s.kLineHour);
+                                KLine.ComputeKDJ(s.kLineHour);
+                                KLine.ComputeMACD(s.kLineHour);
+                                string message = "";
+                                if (StockWatcher.IsKdjFolk(s.kLineHour, s.kLineHour.Length - 1))
+                                    message = "KDJ金叉";
+                                if (StockWatcher.IsMacdFolk(s.kLineHour, s.kLineHour.Length - 1))
+                                    message = "MACD金叉";
+                                if (!message.Trim().Equals("") && s.LastTrade < s.kLineDay[s.kLineDay.Length - 1].startPrice)
+                                {
+                                    if (StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()),
+                                        s.gid,
+                                        "above_3_line_for_days",
+                                        s.Name,
+                                        "买入价：" + s.LastTrade.ToString() + " " + message))
+                                    {
+                                        StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(),
+                                            dr["名称"].ToString() + " " + message, s.LastTrade, "above_3_line_for_days");
+                                    }
+                                }
+                            }
                         }
                     }
+                    catch
+                    {
+
+                    }
+                    Thread.Sleep(60000);
                 }
+            }
+            if (DateTime.Now.Hour >= 16)
+            {
+
             }
         }
     }
