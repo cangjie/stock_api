@@ -463,4 +463,16 @@ public class Util
             price = currentPrice;
         return price;
     }
+
+    public static DateTime GetLastTransactDate(DateTime currentDate, int days)
+    {
+        DateTime nowDate = currentDate;
+        for (int i = 1; i <= days; i++)
+        {
+            nowDate = nowDate.AddDays(-1);
+            if (!Util.IsTransacDay(nowDate))
+                i--;
+        }
+        return nowDate;
+    }
 }

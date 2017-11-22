@@ -6,6 +6,9 @@
 <script runat="server">
     protected void Page_Load(object sender, EventArgs e)
     {
+        Response.Write(Util.GetLastTransactDate(DateTime.Parse("2017-11-17"), 3));
+        Response.End();
+
         foreach (string gid in Util.GetAllGids())
         {
             Stock stock = new Stock(gid);
