@@ -18,11 +18,12 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        for (DateTime startDate = DateTime.Parse("2017-8-1"); startDate < DateTime.Now.Date; startDate = startDate.AddDays(1))
+        
+        for (DateTime startDate = DateTime.Parse("2017-11-22"); startDate < DateTime.Now.Date; startDate = startDate.AddDays(1))
         {
             if (Util.IsTransacDay(startDate))
             {
-                for (int i = 5; i <= 15; i++)
+                for (int i = 15; i <= 5; i--)
                 {
                     LogAbove3LineForDays(startDate, i);
                 }
@@ -30,9 +31,9 @@
         }
 
         Response.End();
+        
 
-
-        sort = Util.GetSafeRequestValue(Request, "sort", "MACD, KDJ,3线日,综指 desc");
+        sort = Util.GetSafeRequestValue(Request, "sort", "3线日 desc,MACD,KDJ,综指 desc");
         if (!IsPostBack)
         {
             try
@@ -148,7 +149,7 @@
         drShit["今开"] = Math.Round(100 * (double)shitCount / (double)drOriArr.Length, 2).ToString() + "%";
 
         DataRow drRaise = dt.NewRow();
-        drRaise["名称"] = "前高";
+        drRaise["名称"] = "双金叉";
         drRaise["信号"] = "📈";
         drRaise["昨收"] = raiseCount.ToString();
         DataRow drFire = dt.NewRow();
@@ -262,7 +263,8 @@
     {
         DateTime  break3LineDate = Util.GetLastTransactDate(currentDate, days);
         DataTable dtOri = new DataTable();
-        SqlDataAdapter da = new SqlDataAdapter(" select *  from bottom_break_cross_3_line where suggest_date = '" + break3LineDate.ToShortDateString() + "' " , Util.conStr);
+        SqlDataAdapter da = new SqlDataAdapter(" select *  from alert_above_3_line_for_days where alert_date = '" + currentDate.ToShortDateString() 
+            + "' and above_3_line_days >= 10 ", Util.conStr);
         da.Fill(dtOri);
 
         DataTable dt = new DataTable();
@@ -302,39 +304,17 @@
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
             stock.LoadKLineDay();
             int currentIndex = stock.GetItemIndex(currentDate);
-            int break3LineIndex = stock.GetItemIndex(break3LineDate);
-            if (currentIndex - break3LineIndex != days)
-                continue;
-            bool isAlwaysAbove3Line = true;
-            for (int i = 0; i < days; i++)
-            {
-                if (stock.kLineDay[break3LineIndex + i].endPrice < stock.GetAverageSettlePrice(break3LineIndex + i, 3, 3))
-                {
-                    isAlwaysAbove3Line = false;
-                    break;
-                }
-            }
-
-            if (!isAlwaysAbove3Line)
-                continue;
-
-
+          
 
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
 
 
-            if (stock.gid.Trim().Equals("sz300546"))
-            {
-                string aa = "aa";
-            }
 
             if (currentIndex < 1)
                 continue;
-            if ( stock.kLineDay[currentIndex - 1].macd < 0 ||
-                (stock.kLineDay[currentIndex - 1].j < stock.kLineDay[currentIndex - 1].k && stock.kLineDay[currentIndex - 1].k < stock.kLineDay[currentIndex - 1].d ) )
-                continue;
+            
 
             DataRow dr = dt.NewRow();
 
@@ -350,8 +330,7 @@
             dr["MACD"] = macdDays;
             dr["TD"] = currentIndex - KLine.GetLastDeMarkBuyPointIndex(stock.kLineDay, currentIndex);
             dr["今涨"] = (stock.kLineDay[currentIndex].startPrice - settlePrice) / settlePrice;
-            if ((double)dr["今涨"] <= 0)
-                continue;
+   
             DateTime lastDate = DateTime.Parse(stock.kLineDay[currentIndex - 1].startDateTime.ToShortDateString());
             double lastDayVolume = Stock.GetVolumeAndAmount(stock.gid, lastDate)[0];
             double currentVolume = Stock.GetVolumeAndAmount(stock.gid, currentDate)[0];
@@ -359,57 +338,11 @@
             dr["放量"] = currentVolume / lastDayVolume;
             int kdjDays = stock.kdjDays(currentIndex);
             dr["kdj"] = kdjDays.ToString();
-            if (macdDays > kdjDays)
-                continue;
+       
             int days3Line = KLine.Above3LineDays(stock, currentIndex);
-            dr["3线日"] = days3Line;
+            dr["3线日"] = int.Parse(drOri["above_3_line_days"].ToString());
             dr["3线"] = stock.GetAverageSettlePrice(currentIndex, 3, 3);
-            //double buyPrice = stock.kLineDay[currentIndex].endPrice;
             double buyPrice = stock.kLineDay[currentIndex].startPrice;
-            /*
-            stock.kLineHour = KLine.GetLocalKLine(stock.gid.Trim(), "1hr");
-
-            int hourIndex = Stock.GetItemIndex(stock.kLineHour, DateTime.Parse(currentDate.ToShortDateString() + " 10:30"));
-            if (hourIndex > -1)
-            {
-                for (int i = 0; i < 4 && hourIndex + i < stock.kLineHour.Length; i++)
-                {
-                    switch (i)
-                    {
-                        case 0:
-                            buyPrice = stock.kLineDay[currentIndex].endPrice;
-                            break;
-                        case 1:
-                            buyPrice = stock.kLineDay[currentIndex].endPrice;
-                            break;
-                        case 2:
-                            if (stock.kLineHour[hourIndex + i].startPrice > stock.kLineDay[currentIndex].startPrice)
-                            {
-                                buyPrice = stock.kLineHour[hourIndex + i].startPrice;
-                            }
-                            else
-                            {
-                                buyPrice = stock.kLineDay[currentIndex].endPrice;
-                            }
-                            break;
-                        case 3:
-                            if (stock.kLineHour[hourIndex + i].startPrice > stock.kLineDay[currentIndex].startPrice)
-                            {
-                                buyPrice = stock.kLineHour[hourIndex + i].startPrice;
-                            }
-                            else
-                            {
-                                buyPrice = stock.kLineDay[currentIndex].endPrice;
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-
-
-                }
-            }
-            */
             double lowestPrice = stock.LowestPrice(currentDate, 20);
             double highestPrice = stock.HighestPrice(currentDate, 40);
             double f1 = lowestPrice + (highestPrice - lowestPrice) * 0.236;
@@ -506,7 +439,7 @@
                 dr["信号"] = "🔥";
             }
             highestPrice = KLine.GetHighestPrice(stock.kLineDay, currentIndex - 1, 40);
-            if (stock.kLineDay[currentIndex - 1].endPrice >= highestPrice)
+            if (kdjDays >= 0 && macdDays >= 0)
             {
                 dr["信号"] = dr["信号"].ToString() + "📈";
             }
