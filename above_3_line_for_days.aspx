@@ -31,7 +31,6 @@
         }
 
         Response.End();
-        
 
         sort = Util.GetSafeRequestValue(Request, "sort", "3线日 desc,MACD,KDJ,综指 desc");
         if (!IsPostBack)
