@@ -306,8 +306,8 @@
             int currentIndex = stock.GetItemIndex(currentDate);
             if (currentIndex == -1)
             {
-                currentDate = Util.GetLastTransactDate(currentDate, 1);
-                currentIndex = stock.GetItemIndex(currentDate);
+                DateTime lastTDate = Util.GetLastTransactDate(currentDate, 1);
+                currentIndex = stock.GetItemIndex(lastTDate);
             }
 
             KLine.ComputeMACD(stock.kLineDay);
