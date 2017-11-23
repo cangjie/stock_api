@@ -454,7 +454,7 @@
                 dr["信号"] = "🔥";
             }
             highestPrice = KLine.GetHighestPrice(stock.kLineDay, currentIndex - 1, 40);
-            if (kdjDays >= 0 && macdDays >= 0 && todayRaise < 0 && Math.Abs(todayRaise)/avgRaiseRate < 0.34)
+            if (kdjDays >= 0 && macdDays >= 0 && todayRaise < 0 && Math.Abs(todayRaise)/avgRaiseRate < 0.34 && kdjDays <= 4 && macdDays <= 4 && kdjDays <= macdDays)
             {
                 dr["信号"] = dr["信号"].ToString() + "📈";
             }
