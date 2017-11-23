@@ -35,7 +35,7 @@
 
 
 
-        sort = Util.GetSafeRequestValue(Request, "sort", "3线日 desc,MACD,KDJ,综指 desc");
+        sort = Util.GetSafeRequestValue(Request, "sort", "3线日,日均涨幅 desc");
         if (!IsPostBack)
         {
             try
@@ -618,7 +618,7 @@
                     <asp:BoundColumn DataField="放量" HeaderText="放量" SortExpression="放量|desc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ" HeaderText="KDJ" SortExpression="KDJ|desc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="MACD" HeaderText="MACD" SortExpression="MACD|desc"></asp:BoundColumn>
-					<asp:BoundColumn DataField="3线日" HeaderText="3线日"></asp:BoundColumn>
+					<asp:BoundColumn DataField="3线日" HeaderText="3线日" SortExpression="3线日|asc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="日均涨幅" HeaderText="日均涨幅" SortExpression="日均涨幅|asc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ率" HeaderText="KDJ率" SortExpression="KDJ率|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="MACD率" HeaderText="MACD率" SortExpression="MACD率|asc"></asp:BoundColumn>			
