@@ -620,7 +620,6 @@
                     <asp:BoundColumn DataField="MACD" HeaderText="MACD" SortExpression="MACD|desc"></asp:BoundColumn>
 					<asp:BoundColumn DataField="3线日" HeaderText="3线日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="日均涨幅" HeaderText="日均涨幅" SortExpression="日均涨幅|asc" ></asp:BoundColumn>
-					<asp:BoundColumn DataField="TD" HeaderText="TD" SortExpression="TD|desc" ></asp:BoundColumn>	
                     <asp:BoundColumn DataField="KDJ率" HeaderText="KDJ率" SortExpression="KDJ率|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="MACD率" HeaderText="MACD率" SortExpression="MACD率|asc"></asp:BoundColumn>			
                     <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>
