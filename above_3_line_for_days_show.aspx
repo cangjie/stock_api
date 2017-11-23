@@ -331,7 +331,7 @@
 
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
-            dr["日均涨幅"] = (stock.kLineDay[currentIndex].endPrice - startRaisePrice) / daysAbove3Line * startRaisePrice ;
+            dr["日均涨幅"] = (stock.kLineDay[currentIndex].endPrice - startRaisePrice) / (startRaisePrice * daysAbove3Line) ;
 
             double settlePrice = stock.kLineDay[currentIndex - 1].endPrice;
             double openPrice = stock.kLineDay[currentIndex].startPrice;
