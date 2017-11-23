@@ -33,9 +33,9 @@
         Response.End();
         */
 
-        
 
-        sort = Util.GetSafeRequestValue(Request, "sort", "3线日,MACD,KDJ,综指 desc");
+
+        sort = Util.GetSafeRequestValue(Request, "sort", "3线日 desc,MACD,KDJ,综指 desc");
         if (!IsPostBack)
         {
             try
@@ -76,7 +76,7 @@
         DateTime currentDate = calendar.SelectedDate;
         if (currentDate.Year < 2000)
             currentDate = DateTime.Now;
-        DataTable dtOri = GetData(currentDate, Util.GetSafeRequestValue(Request, "days", ""));
+        DataTable dtOri = GetData(currentDate, Util.GetSafeRequestValue(Request, "days", "10,11,12,13,14,15"));
         DataRow[] drOriArr = dtOri.Select(Util.GetSafeRequestValue(Request, "whereclause", "   ").Trim(), sort);
         return RenderHtml(drOriArr);
     }
@@ -283,6 +283,7 @@
         dt.Columns.Add("MACD率", Type.GetType("System.Double"));
         dt.Columns.Add("TD", Type.GetType("System.Int32"));
         dt.Columns.Add("3线日", Type.GetType("System.Int32"));
+        dt.Columns.Add("日均涨幅", Type.GetType("System.Double"));
         dt.Columns.Add("3线", Type.GetType("System.Double"));
         dt.Columns.Add("低点", Type.GetType("System.Double"));
         dt.Columns.Add("F1", Type.GetType("System.Double"));
@@ -310,6 +311,11 @@
                 DateTime lastTDate = Util.GetLastTransactDate(currentDate, 1);
                 currentIndex = stock.GetItemIndex(lastTDate);
             }
+            int daysAbove3Line = int.Parse(drOri["above_3_line_days"].ToString());
+            if (currentIndex - daysAbove3Line - 1 < 0)
+                continue;
+
+            double startRaisePrice = stock.kLineDay[currentIndex - daysAbove3Line - 1].endPrice;
 
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
@@ -325,7 +331,7 @@
 
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
-
+            dr["日均涨幅"] = (stock.kLineDay[currentIndex].endPrice - startRaisePrice) / daysAbove3Line;
 
             double settlePrice = stock.kLineDay[currentIndex - 1].endPrice;
             double openPrice = stock.kLineDay[currentIndex].startPrice;
@@ -347,7 +353,7 @@
             dr["kdj"] = kdjDays.ToString();
 
             int days3Line = KLine.Above3LineDays(stock, currentIndex);
-            dr["3线日"] = int.Parse(drOri["above_3_line_days"].ToString());
+            dr["3线日"] = daysAbove3Line;
             dr["3线"] = stock.GetAverageSettlePrice(currentIndex, 3, 3);
             double buyPrice = stock.kLineDay[currentIndex].startPrice;
             double lowestPrice = stock.LowestPrice(currentDate, 20);
@@ -613,6 +619,7 @@
                     <asp:BoundColumn DataField="KDJ" HeaderText="KDJ" SortExpression="KDJ|desc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="MACD" HeaderText="MACD" SortExpression="MACD|desc"></asp:BoundColumn>
 					<asp:BoundColumn DataField="3线日" HeaderText="3线日"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="日均涨幅" HeaderText="日均涨幅" SortExpression="日均涨幅|asc" ></asp:BoundColumn>
 					<asp:BoundColumn DataField="TD" HeaderText="TD" SortExpression="TD|desc" ></asp:BoundColumn>	
                     <asp:BoundColumn DataField="KDJ率" HeaderText="KDJ率" SortExpression="KDJ率|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="MACD率" HeaderText="MACD率" SortExpression="MACD率|asc"></asp:BoundColumn>			
