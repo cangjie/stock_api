@@ -76,7 +76,7 @@
         DateTime currentDate = calendar.SelectedDate;
         if (currentDate.Year < 2000)
             currentDate = DateTime.Now;
-        DataTable dtOri = GetData(currentDate);
+        DataTable dtOri = GetData(currentDate, Util.GetSafeRequestValue(Request, "days", ""));
         DataRow[] drOriArr = dtOri.Select(Util.GetSafeRequestValue(Request, "whereclause", "   ").Trim(), sort);
         return RenderHtml(drOriArr);
     }
@@ -261,12 +261,12 @@
         return dt;
     }
 
-    public static DataTable GetData(DateTime currentDate)
+    public static DataTable GetData(DateTime currentDate, string days)
     {
         DateTime alertDate = Util.GetLastTransactDate(currentDate, 1);
         DataTable dtOri = new DataTable();
-        SqlDataAdapter da = new SqlDataAdapter(" select *  from alert_above_3_line_for_days where alert_date = '" + alertDate.ToShortDateString()
-            + "' and above_3_line_days >= 6 ", Util.conStr);
+        SqlDataAdapter da = new SqlDataAdapter(" select *  from alert_above_3_line_for_days where alert_date = '" + alertDate.ToShortDateString() + "'  "
+            + (!days.Trim().Equals("")? " and above_3_line_days  in (" + days + ") " : "  "), Util.conStr);
         da.Fill(dtOri);
         DataTable dt = new DataTable();
         dt.Columns.Add("代码", Type.GetType("System.String"));
@@ -534,7 +534,7 @@
                 {
                     try
                     {
-                        DataTable dt = GetData(DateTime.Now);
+                        DataTable dt = GetData(DateTime.Now, "10,11,12,13,14,15");
                         foreach (DataRow dr in dt.Rows)
                         {
                             if (dr["信号"].ToString().IndexOf("📈") >= 0)
