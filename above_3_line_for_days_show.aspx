@@ -331,7 +331,8 @@
 
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
-            dr["日均涨幅"] = (stock.kLineDay[currentIndex].endPrice - startRaisePrice) / (startRaisePrice * daysAbove3Line) ;
+            double avgRaiseRate = (stock.kLineDay[currentIndex].endPrice - startRaisePrice) / (startRaisePrice * daysAbove3Line) ;
+            dr["日均涨幅"] = avgRaiseRate;
 
             double settlePrice = stock.kLineDay[currentIndex - 1].endPrice;
             double openPrice = stock.kLineDay[currentIndex].startPrice;
@@ -342,7 +343,8 @@
             int macdDays = stock.macdDays(currentIndex);
             dr["MACD"] = macdDays;
             dr["TD"] = currentIndex - KLine.GetLastDeMarkBuyPointIndex(stock.kLineDay, currentIndex);
-            dr["今涨"] = (stock.kLineDay[currentIndex].startPrice - settlePrice) / settlePrice;
+            double todayRaise = (stock.kLineDay[currentIndex].startPrice - settlePrice) / settlePrice;
+            dr["今涨"] = todayRaise;
 
             DateTime lastDate = DateTime.Parse(stock.kLineDay[currentIndex - 1].startDateTime.ToShortDateString());
             double lastDayVolume = Stock.GetVolumeAndAmount(stock.gid, lastDate)[0];
@@ -452,7 +454,7 @@
                 dr["信号"] = "🔥";
             }
             highestPrice = KLine.GetHighestPrice(stock.kLineDay, currentIndex - 1, 40);
-            if (kdjDays >= 0 && macdDays >= 0)
+            if (kdjDays >= 0 && macdDays >= 0 && todayRaise < 0 && Math.Abs(todayRaise)/avgRaiseRate < 0.34)
             {
                 dr["信号"] = dr["信号"].ToString() + "📈";
             }
