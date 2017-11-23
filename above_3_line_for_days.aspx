@@ -19,11 +19,11 @@
     protected void Page_Load(object sender, EventArgs e)
     {
         
-        for (DateTime startDate = DateTime.Parse("2017-11-23"); startDate >= DateTime.Parse("2017-11-23"); startDate = startDate.AddDays(-1))
+        for (DateTime startDate = DateTime.Parse("2017-11-23"); startDate >= DateTime.Parse("2017-8-1"); startDate = startDate.AddDays(-1))
         {
             if (Util.IsTransacDay(startDate))
             {
-                for (int i = 15; i >= 5; i--)
+                for (int i = 7; i >= 3; i--)
                 {
                     LogAbove3LineForDays(startDate, i);
                 }
