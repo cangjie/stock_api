@@ -35,7 +35,7 @@
 
         
 
-        sort = Util.GetSafeRequestValue(Request, "sort", "3线日 desc,MACD,KDJ,综指 desc");
+        sort = Util.GetSafeRequestValue(Request, "sort", "3线日,MACD,KDJ,综指 desc");
         if (!IsPostBack)
         {
             try
@@ -266,7 +266,7 @@
         DateTime alertDate = Util.GetLastTransactDate(currentDate, 1);
         DataTable dtOri = new DataTable();
         SqlDataAdapter da = new SqlDataAdapter(" select *  from alert_above_3_line_for_days where alert_date = '" + alertDate.ToShortDateString()
-            + "' and above_3_line_days >= 10 ", Util.conStr);
+            + "' and above_3_line_days >= 6 ", Util.conStr);
         da.Fill(dtOri);
         DataTable dt = new DataTable();
         dt.Columns.Add("代码", Type.GetType("System.String"));
