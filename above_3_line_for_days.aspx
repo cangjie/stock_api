@@ -19,7 +19,7 @@
     protected void Page_Load(object sender, EventArgs e)
     {
         
-        for (DateTime startDate = DateTime.Parse("2017-11-22"); startDate >= DateTime.Parse("2017-8-1"); startDate = startDate.AddDays(-1))
+        for (DateTime startDate = DateTime.Parse("2017-11-23"); startDate >= DateTime.Parse("2017-11-23"); startDate = startDate.AddDays(-1))
         {
             if (Util.IsTransacDay(startDate))
             {
@@ -476,7 +476,7 @@
 
     public static void LogAbove3LineForDays(DateTime currentDate, int days)
     {
-        DateTime  break3LineDate = Util.GetLastTransactDate(currentDate, days);
+        DateTime  break3LineDate = Util.GetLastTransactDate(currentDate, days-1);
         DataTable dtOri = new DataTable();
         SqlDataAdapter da = new SqlDataAdapter(" select * from bottom_break_cross_3_line where suggest_date = '" + break3LineDate.ToShortDateString() + "' " , Util.conStr);
         da.Fill(dtOri);
@@ -488,7 +488,7 @@
 
             int currentIndex = s.GetItemIndex(currentDate);
             int break3LineIndex = s.GetItemIndex(break3LineDate);
-            if (currentIndex - break3LineIndex != days)
+            if (currentIndex - break3LineIndex != days-1)
                 continue;
             bool isAlwaysAbove3Line = true;
             for (int i = 0; i < days; i++)

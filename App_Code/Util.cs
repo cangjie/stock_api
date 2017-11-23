@@ -467,7 +467,10 @@ public class Util
     public static DateTime GetLastTransactDate(DateTime currentDate, int days)
     {
         DateTime nowDate = currentDate;
-        for (int i = 1; i <= days; i++)
+        int i = 0;
+        if (!Util.IsTransacDay(nowDate))
+            i--;
+        for (; i < days; i++)
         {
             nowDate = nowDate.AddDays(-1);
             if (!Util.IsTransacDay(nowDate))

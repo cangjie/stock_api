@@ -6,7 +6,7 @@
 <script runat="server">
     protected void Page_Load(object sender, EventArgs e)
     {
-        Response.Write(Util.GetLastTransactDate(DateTime.Parse("2017-11-17"), 3));
+        Response.Write(Util.GetLastTransactDate(DateTime.Parse("2017-11-19"), 0));
         Response.End();
 
         foreach (string gid in Util.GetAllGids())
