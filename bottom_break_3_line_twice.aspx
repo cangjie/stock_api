@@ -315,6 +315,12 @@
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
             stock.LoadKLineDay();
+
+            if (stock.gid.Trim().Equals("sh601898"))
+            {
+                string aa = "aa";
+            }
+
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
@@ -325,7 +331,7 @@
                 continue;
             double current3LinePrice = stock.GetAverageSettlePrice(currentIndex, 3, 3);
             double previous3LinePrice = 0;
-            for (int i = stock.kLineDay.Length - 1; i >= 0; i--)
+            for (int i = stock.kLineDay.Length - 2; i >= 0; i--)
             {
                 if (KLine.IsCross3Line(stock.kLineDay, i))
                 {
