@@ -319,6 +319,60 @@ public class Stock
         return kArr;
     }
 
+    public static KLine[] LoadWholeLocalKLineFromDB(string gid, string type)
+    {
+        DataTable dt = DBHelper.GetDataTable(" select * from " + gid.Trim() + "_k_line where  type = '" + type + "' order by start_date ");
+        KLine[] kArr = new KLine[dt.Rows.Count];
+        for (int i = 0; i < dt.Rows.Count; i++)
+        {
+            kArr[i] = new KLine();
+            kArr[i].gid = gid.Trim();
+            kArr[i].startDateTime = DateTime.Parse(dt.Rows[i]["start_date"].ToString());
+            kArr[i].type = type.Trim();
+            kArr[i].startPrice = double.Parse(dt.Rows[i]["open"].ToString());
+            kArr[i].endPrice = double.Parse(dt.Rows[i]["settle"].ToString());
+            if (type.Trim().Equals("day")
+                && kArr[i].startDateTime.ToShortDateString().Equals(DateTime.Now.ToShortDateString()))
+            {
+                Stock stock = new Stock(gid.Trim());
+                kArr[i].endPrice = stock.LastTrade;
+            }
+            kArr[i].highestPrice = double.Parse(dt.Rows[i]["highest"].ToString());
+            kArr[i].lowestPrice = double.Parse(dt.Rows[i]["lowest"].ToString());
+            kArr[i].volume = int.Parse(dt.Rows[i]["volume"].ToString());
+            kArr[i].amount = double.Parse(dt.Rows[i]["amount"].ToString());
+        }
+        return kArr;
+    }
+
+    public static KLine LoadLastKLineFromDB(string gid, string type)
+    {
+        DataTable dt = DBHelper.GetDataTable(" select top 1 * from " + gid.Trim() + "_k_line where  type = '" + type + "' order by start_date desc ");
+        KLine k = new KLine();
+        for (int i = 0; i < dt.Rows.Count; i++)
+        {
+            k.gid = gid.Trim();
+            k.startDateTime = DateTime.Parse(dt.Rows[i]["start_date"].ToString());
+            k.type = type.Trim();
+            k.startPrice = double.Parse(dt.Rows[i]["open"].ToString());
+            k.endPrice = double.Parse(dt.Rows[i]["settle"].ToString());
+            if (type.Trim().Equals("day")
+                && k.startDateTime.ToShortDateString().Equals(DateTime.Now.ToShortDateString()))
+            {
+                Stock stock = new Stock(gid.Trim());
+                k.endPrice = stock.LastTrade;
+               
+            }
+            k.highestPrice = double.Parse(dt.Rows[i]["highest"].ToString());
+            k.lowestPrice = double.Parse(dt.Rows[i]["lowest"].ToString());
+            k.volume = int.Parse(dt.Rows[i]["volume"].ToString());
+            k.amount = double.Parse(dt.Rows[i]["amount"].ToString());
+        }
+        return k;
+    }
+
+
+
     public static void SearchBottomBreak3Line(DateTime currentDate)
     {
         if (!Util.IsTransacDay(currentDate))
