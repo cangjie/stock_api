@@ -355,6 +355,7 @@
             double upSpace = 0;
             double downSpace = 0;
             buyPrice = Math.Max(macdPrice, line3Price);
+            buyPrice = Math.Max(stock.kLineDay[currentIndex].startPrice, buyPrice);
             if (buyPrice <= lowestPrice)
             {
                 downSpace = 0.1;
