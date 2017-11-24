@@ -279,7 +279,7 @@
         currentDate = Util.GetDay(currentDate);
         DataTable dtOri = DBHelper.GetDataTable(" select * from bottom_break_cross_3_line  a where suggest_date = '" + currentDate.ToShortDateString() + "' "
             + " and exists ( select 'a' from bottom_break_cross_3_line b where suggest_date < '" + currentDate.ToShortDateString() + "' and   suggest_date >= '"
-            + currentDate.AddDays(-7).ToShortDateString() + "' and a.gid = b.gid  )   ");
+            + currentDate.AddDays(-15).ToShortDateString() + "' and a.gid = b.gid  )   ");
         DataTable dt = new DataTable();
         dt.Columns.Add("代码", Type.GetType("System.String"));
         dt.Columns.Add("名称", Type.GetType("System.String"));
@@ -292,7 +292,7 @@
         dt.Columns.Add("TD", Type.GetType("System.Int32"));
         dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
         dt.Columns.Add("KDJ率", Type.GetType("System.Double"));
-        dt.Columns.Add("MACD时", Type.GetType("System.Int32"));
+        //dt.Columns.Add("MACD时", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD率", Type.GetType("System.Double"));
         dt.Columns.Add("3线", Type.GetType("System.Double"));
@@ -323,13 +323,25 @@
                 continue;
             if (!KLine.IsCros3LineTwice(stock.kLineDay, currentIndex, 5))
                 continue;
+            double current3LinePrice = stock.GetAverageSettlePrice(currentIndex, 3, 3);
+            double previous3LinePrice = 0;
+            for (int i = stock.kLineDay.Length - 1; i >= 0; i--)
+            {
+                if (KLine.IsCross3Line(stock.kLineDay, i))
+                {
+                    previous3LinePrice = stock.GetAverageSettlePrice(i, 3, 3);
+                    break;
+                }
+            }
 
+            if (previous3LinePrice > current3LinePrice)
+                continue;
 
-            stock.kLineHour = KLine.GetLocalKLine(stock.gid.Trim(), "1hr");
-            KLine.ComputeMACD(stock.kLineHour);
-            int currentHourIndex = Stock.GetItemIndex(DateTime.Parse(stock.kLineDay[currentIndex].endDateTime.ToShortDateString() + " 16:00"), stock.kLineHour);
+            //stock.kLineHour = KLine.GetLocalKLine(stock.gid.Trim(), "1hr");
+            //KLine.ComputeMACD(stock.kLineHour);
+            //int currentHourIndex = Stock.GetItemIndex(DateTime.Parse(stock.kLineDay[currentIndex].endDateTime.ToShortDateString() + " 16:00"), stock.kLineHour);
 
-
+            /*
             int hourMacdGoldFolk = -1;
 
             for (int i = currentHourIndex;  i >= 0; i--)
@@ -340,7 +352,7 @@
                     break;
                 }
             }
-
+            */
 
             double settlePrice = stock.kLineDay[currentIndex - 1].endPrice;
             double openPrice = stock.kLineDay[currentIndex].startPrice;
@@ -410,7 +422,7 @@
             dr["高点"] = highestPrice;
             dr["买入"] = buyPrice;
             dr["KDJ日"] = kdjDays;
-            dr["MACD时"] = hourMacdGoldFolk;
+            //dr["MACD时"] = hourMacdGoldFolk;
             dr["MACD日"] = stock.macdDays(currentIndex);
             dr["MACD率"] = macdDegree;
             dr["KDJ率"] = kdjDegree;
@@ -441,10 +453,12 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "📈";
             }
+            /*
             if ((int)dr["MACD时"] >= 0 && (int)dr["KDJ日"] >= 0 && currentPrice <= f5 && currentPrice >= f1 && currentVolume / lastDayVolume >= 0.85)
             {
                 dr["信号"] = dr["信号"].ToString() + "🔥";
             }
+            */
             if (stock.kLineDay[currentIndex].lowestPrice > stock.kLineDay[currentIndex - 1].highestPrice && (double)dr["今涨"] <= 0.095 )
             {
                 dr["信号"] = dr["信号"].ToString() + "🌟";
@@ -524,7 +538,6 @@
                     <asp:BoundColumn DataField="今涨" HeaderText="今涨" SortExpression="今涨|desc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="放量" HeaderText="放量" SortExpression="放量|desc"></asp:BoundColumn>
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD日|asc"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="MACD时" HeaderText="MACD时" SortExpression="MACD时|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="TD" HeaderText="TD" SortExpression="TD|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ率" HeaderText="KDJ率" SortExpression="KDJ率|asc"></asp:BoundColumn>
