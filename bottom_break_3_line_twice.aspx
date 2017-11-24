@@ -315,12 +315,6 @@
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
             stock.LoadKLineDay();
-
-            if (stock.gid.Trim().Equals("sh601898"))
-            {
-                string aa = "aa";
-            }
-
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
@@ -339,27 +333,8 @@
                     break;
                 }
             }
-
             if (previous3LinePrice > current3LinePrice)
                 continue;
-
-            //stock.kLineHour = KLine.GetLocalKLine(stock.gid.Trim(), "1hr");
-            //KLine.ComputeMACD(stock.kLineHour);
-            //int currentHourIndex = Stock.GetItemIndex(DateTime.Parse(stock.kLineDay[currentIndex].endDateTime.ToShortDateString() + " 16:00"), stock.kLineHour);
-
-            /*
-            int hourMacdGoldFolk = -1;
-
-            for (int i = currentHourIndex;  i >= 0; i--)
-            {
-                if (StockWatcher.IsMacdFolk(stock.kLineHour, currentHourIndex))
-                {
-                    hourMacdGoldFolk = currentHourIndex - i;
-                    break;
-                }
-            }
-            */
-
             double settlePrice = stock.kLineDay[currentIndex - 1].endPrice;
             double openPrice = stock.kLineDay[currentIndex].startPrice;
             double currentPrice = stock.kLineDay[currentIndex].endPrice;
@@ -428,7 +403,6 @@
             dr["高点"] = highestPrice;
             dr["买入"] = buyPrice;
             dr["KDJ日"] = kdjDays;
-            //dr["MACD时"] = hourMacdGoldFolk;
             dr["MACD日"] = stock.macdDays(currentIndex);
             dr["MACD率"] = macdDegree;
             dr["KDJ率"] = kdjDegree;
@@ -455,7 +429,7 @@
             {
                 //dr["信号"] = dr["信号"].ToString() + "📈";
             }
-            if (kdjDays == 0 && (int)dr["MACD日"] == 0 && currentPrice <= f5 && currentPrice >= f1 && currentVolume / lastDayVolume >= 0.85)
+            if (kdjDays == 0 && (int)dr["MACD日"] == 0 && currentVolume / lastDayVolume >= 0.85)
             {
                 dr["信号"] = dr["信号"].ToString() + "📈";
             }
