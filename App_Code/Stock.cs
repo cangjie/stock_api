@@ -4,10 +4,19 @@ using System.Linq;
 using System.Web;
 using System.Data;
 using System.Text.RegularExpressions;
-
+using System.Collections;
 /// <summary>
 /// Summary description for Stock
 /// </summary>
+/// 
+
+public struct CachedKLine
+{
+    public string gid;
+    public string type;
+    public KLine[] kLine;
+}
+
 public class Stock
 {
     public string gid = "";
@@ -25,6 +34,8 @@ public class Stock
     public KLine[] kLineHalfHour;
 
     public KLine[] kLineQuaterHour;
+
+    public static ArrayList kLineCache = new ArrayList();
 
     public Stock()
     {
@@ -292,8 +303,71 @@ public class Stock
         return days;
     }
 
-
     public static KLine[] LoadLocalKLine(string gid, string type)
+    {
+        KLine[] kArr = LoadLocalKLineFromCache(gid, type);
+        if (kArr.Length == 0)
+        {
+            kArr = LoadLocalKLineFromDB(gid, type);
+        }
+        else
+        {
+            KLine[] kArrLatest = LoadLocalKLineFromDB(gid, type, kArr[kArr.Length - 1].startDateTime);
+            KLine[] kArrNew = new KLine[kArr.Length + kArrLatest.Length - 1];
+            for (int i = 0; i < kArr.Length; i++)
+            {
+                kArrNew[i] = kArr[i];
+            }
+            for (int i = 0; i < kArrLatest.Length; i++)
+            {
+                kArrNew[i + kArr.Length - 1] = kArrLatest[i];
+            }
+            kArr = kArrNew;
+        }
+        SaveLocalKLineToCache(gid, type, kArr);
+        return kArr;
+    }
+
+    public static KLine[] LoadLocalKLineFromCache(string gid, string type)
+    {
+        KLine[] retKLineArr  = new KLine[0];
+        foreach (object o in kLineCache)
+        {
+            CachedKLine kLine = (CachedKLine)o;
+            if (kLine.type.Trim().Equals(type.Trim()) && kLine.gid.Trim().Equals(gid.Trim()))
+            {
+                retKLineArr = kLine.kLine;
+                break;
+            } 
+        }
+        return retKLineArr;
+    }
+
+    public static void SaveLocalKLineToCache(string gid, string type, KLine[] kLineArr)
+    {
+        bool exsitsInCache = false;
+        foreach (object o in kLineCache)
+        {
+            CachedKLine kLine = (CachedKLine)o;
+            if (kLine.type.Trim().Equals(type.Trim()) && kLine.gid.Trim().Equals(gid.Trim()))
+            {
+                exsitsInCache = true;
+                kLine.kLine = kLineArr;
+                break;
+            }
+        }
+        if (!exsitsInCache)
+        {
+            CachedKLine kLineObject = new CachedKLine();
+            kLineObject.gid = gid.Trim();
+            kLineObject.type = type.Trim();
+            kLineObject.kLine = kLineArr;
+            kLineCache.Add(kLineObject);
+        }
+    }
+
+
+    public static KLine[] LoadLocalKLineFromDB(string gid, string type)
     {
         DataTable dt = DBHelper.GetDataTable(" select * from " + gid.Trim() + "_k_line where  type = '" + type + "' order by start_date ");
         KLine[] kArr = new KLine[dt.Rows.Count];
@@ -319,9 +393,12 @@ public class Stock
         return kArr;
     }
 
-    public static KLine[] LoadWholeLocalKLineFromDB(string gid, string type)
+
+
+    public static KLine[] LoadLocalKLineFromDB(string gid, string type, DateTime startDate)
     {
-        DataTable dt = DBHelper.GetDataTable(" select * from " + gid.Trim() + "_k_line where  type = '" + type + "' order by start_date ");
+        DataTable dt = DBHelper.GetDataTable(" select * from " + gid.Trim() + "_k_line where   type = '" + type 
+            + "' and start_date >= '" + startDate.ToString() + "'  order by start_date ");
         KLine[] kArr = new KLine[dt.Rows.Count];
         for (int i = 0; i < dt.Rows.Count; i++)
         {
@@ -344,34 +421,6 @@ public class Stock
         }
         return kArr;
     }
-
-    public static KLine LoadLastKLineFromDB(string gid, string type)
-    {
-        DataTable dt = DBHelper.GetDataTable(" select top 1 * from " + gid.Trim() + "_k_line where  type = '" + type + "' order by start_date desc ");
-        KLine k = new KLine();
-        for (int i = 0; i < dt.Rows.Count; i++)
-        {
-            k.gid = gid.Trim();
-            k.startDateTime = DateTime.Parse(dt.Rows[i]["start_date"].ToString());
-            k.type = type.Trim();
-            k.startPrice = double.Parse(dt.Rows[i]["open"].ToString());
-            k.endPrice = double.Parse(dt.Rows[i]["settle"].ToString());
-            if (type.Trim().Equals("day")
-                && k.startDateTime.ToShortDateString().Equals(DateTime.Now.ToShortDateString()))
-            {
-                Stock stock = new Stock(gid.Trim());
-                k.endPrice = stock.LastTrade;
-               
-            }
-            k.highestPrice = double.Parse(dt.Rows[i]["highest"].ToString());
-            k.lowestPrice = double.Parse(dt.Rows[i]["lowest"].ToString());
-            k.volume = int.Parse(dt.Rows[i]["volume"].ToString());
-            k.amount = double.Parse(dt.Rows[i]["amount"].ToString());
-        }
-        return k;
-    }
-
-
 
     public static void SearchBottomBreak3Line(DateTime currentDate)
     {
