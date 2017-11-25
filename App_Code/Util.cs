@@ -248,8 +248,8 @@ public class Util
     {
         DateTime dateRef = DateTime.Parse(date.ToShortDateString());
         bool ret = false;
-        if ((date >= DateTime.Parse(dateRef.ToShortDateString() + " 9:30") && date <= DateTime.Parse(dateRef.ToShortDateString() + " 11:45"))
-            || (date >= DateTime.Parse(dateRef.ToShortDateString() + " 13:00") && date <= DateTime.Parse(dateRef.ToShortDateString() + " 15:15")))
+        if ((date >= DateTime.Parse(dateRef.ToShortDateString() + " 9:30") && date <= DateTime.Parse(dateRef.ToShortDateString() + " 12:00"))
+            || (date >= DateTime.Parse(dateRef.ToShortDateString() + " 13:00") && date <= DateTime.Parse(dateRef.ToShortDateString() + " 15:30")))
             ret = true;
         return ret && IsTransacDay(dateRef);
     }

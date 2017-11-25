@@ -14,6 +14,7 @@ public struct CachedKLine
 {
     public string gid;
     public string type;
+    public DateTime lastUpdate;
     public KLine[] kLine;
 }
 
@@ -305,42 +306,50 @@ public class Stock
 
     public static KLine[] LoadLocalKLine(string gid, string type)
     {
-        KLine[] kArr = LoadLocalKLineFromCache(gid, type);
-        if (kArr.Length == 0)
+        CachedKLine cachedKLine = LoadLocalKLineFromCache(gid, type);
+        KLine[] kArr = cachedKLine.kLine;
+        if (cachedKLine.gid.Trim().Equals(""))
         {
             kArr = LoadLocalKLineFromDB(gid, type);
+            SaveLocalKLineToCache(gid, type, kArr);
         }
         else
         {
-            KLine[] kArrLatest = LoadLocalKLineFromDB(gid, type, kArr[kArr.Length - 1].startDateTime);
-            KLine[] kArrNew = new KLine[kArr.Length + kArrLatest.Length - 1];
-            for (int i = 0; i < kArr.Length; i++)
+            if ((Util.IsTransacDay(cachedKLine.lastUpdate) && Util.IsTransacTime(cachedKLine.lastUpdate)) || DateTime.Now - cachedKLine.lastUpdate > new TimeSpan(1, 0, 0, 0))
             {
-                kArrNew[i] = kArr[i];
+                KLine[] kArrLatest = LoadLocalKLineFromDB(gid, type, kArr[kArr.Length - 1].startDateTime);
+                KLine[] kArrNew = new KLine[kArr.Length + kArrLatest.Length - 1];
+                for (int i = 0; i < kArr.Length; i++)
+                {
+                    kArrNew[i] = kArr[i];
+                }
+                for (int i = 0; i < kArrLatest.Length; i++)
+                {
+                    kArrNew[i + kArr.Length - 1] = kArrLatest[i];
+                }
+                kArr = kArrNew;
+                SaveLocalKLineToCache(gid, type, kArr);
             }
-            for (int i = 0; i < kArrLatest.Length; i++)
-            {
-                kArrNew[i + kArr.Length - 1] = kArrLatest[i];
-            }
-            kArr = kArrNew;
         }
-        SaveLocalKLineToCache(gid, type, kArr);
+        
         return kArr;
     }
 
-    public static KLine[] LoadLocalKLineFromCache(string gid, string type)
+    public static CachedKLine LoadLocalKLineFromCache(string gid, string type)
     {
-        KLine[] retKLineArr  = new KLine[0];
+        //KLine[] retKLineArr  = new KLine[0];
+        CachedKLine ret = new CachedKLine();
+        ret.gid = "";
         foreach (object o in kLineCache)
         {
             CachedKLine kLine = (CachedKLine)o;
             if (kLine.type.Trim().Equals(type.Trim()) && kLine.gid.Trim().Equals(gid.Trim()))
             {
-                retKLineArr = kLine.kLine;
+                ret = kLine;
                 break;
             } 
         }
-        return retKLineArr;
+        return ret;
     }
 
     public static void SaveLocalKLineToCache(string gid, string type, KLine[] kLineArr)
@@ -352,6 +361,7 @@ public class Stock
             if (kLine.type.Trim().Equals(type.Trim()) && kLine.gid.Trim().Equals(gid.Trim()))
             {
                 exsitsInCache = true;
+                kLine.lastUpdate = DateTime.Now;
                 kLine.kLine = kLineArr;
                 break;
             }
@@ -362,6 +372,7 @@ public class Stock
             kLineObject.gid = gid.Trim();
             kLineObject.type = type.Trim();
             kLineObject.kLine = kLineArr;
+            kLineObject.lastUpdate = DateTime.Now;
             kLineCache.Add(kLineObject);
         }
     }
