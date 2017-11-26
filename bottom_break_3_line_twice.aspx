@@ -292,9 +292,9 @@
         dt.Columns.Add("TD", Type.GetType("System.Int32"));
         dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
         dt.Columns.Add("KDJ率", Type.GetType("System.Double"));
-        //dt.Columns.Add("MACD时", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD率", Type.GetType("System.Double"));
+        dt.Columns.Add("调整日", Type.GetType("System.Int32"));
         dt.Columns.Add("3线", Type.GetType("System.Double"));
         dt.Columns.Add("低点", Type.GetType("System.Double"));
         dt.Columns.Add("F1", Type.GetType("System.Double"));
@@ -314,6 +314,10 @@
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
+            if (stock.gid.Trim().Equals("sz002046"))
+            {
+                string aa = "aa";
+            }
             stock.LoadKLineDay();
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
@@ -325,14 +329,28 @@
                 continue;
             double current3LinePrice = stock.GetAverageSettlePrice(currentIndex, 3, 3);
             double previous3LinePrice = 0;
-            for (int i = stock.kLineDay.Length - 2; i >= 0; i--)
+            double previous3LineIndex = 0;
+            for (int i = currentIndex - 1; i >= 0; i--)
             {
+                if (previous3LineIndex == 0)
+                {
+                    double line3PriceTemp = stock.GetAverageSettlePrice(i, 3, 3);
+                    if (stock.kLineDay[i].startPrice >= line3PriceTemp && stock.kLineDay[i].endPrice < line3PriceTemp)
+                        previous3LineIndex = i;
+                    if (Math.Min(stock.kLineDay[i].startPrice, stock.kLineDay[i].endPrice) > line3PriceTemp &&
+                        stock.kLineDay[i + 1].startPrice < stock.GetAverageSettlePrice(i + 1, 3, 3))
+                        previous3LineIndex = i + 1;
+                }
                 if (KLine.IsCross3Line(stock.kLineDay, i))
                 {
                     previous3LinePrice = stock.GetAverageSettlePrice(i, 3, 3);
                     break;
                 }
             }
+
+            if (previous3LineIndex == 0)
+                continue;
+
             if (previous3LinePrice > current3LinePrice)
                 continue;
             double settlePrice = stock.kLineDay[currentIndex - 1].endPrice;
@@ -398,6 +416,7 @@
             dr["放量"] = currentVolume / lastDayVolume;
             dr["3线"] = line3Price;
             dr["低点"] = lowestPrice;
+            dr["调整日"] = currentIndex - previous3LineIndex;
             dr["F1"] = f1;
             dr["F3"] = f3;
             dr["F5"] = f5;
@@ -511,6 +530,7 @@
                 <AlternatingItemStyle BackColor="#DCDCDC" />
                 <Columns>
                     <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号" SortExpression="信号|desc" ></asp:BoundColumn>
 					<asp:BoundColumn DataField="综指" HeaderText="综指" SortExpression="综指|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="昨收" HeaderText="昨收"></asp:BoundColumn>
@@ -520,7 +540,7 @@
                     <asp:BoundColumn DataField="放量" HeaderText="放量" SortExpression="放量|desc"></asp:BoundColumn>
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD日|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="TD" HeaderText="TD" SortExpression="TD|asc"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="调整日" HeaderText="调整日" SortExpression="调整日|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ率" HeaderText="KDJ率" SortExpression="KDJ率|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="MACD率" HeaderText="MACD率" SortExpression="MACD率|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
@@ -530,9 +550,6 @@
                     <asp:BoundColumn DataField="F5" HeaderText="F5"></asp:BoundColumn>
                     <asp:BoundColumn DataField="高点" HeaderText="高点"></asp:BoundColumn>
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
-			        <asp:BoundColumn DataField="涨幅" HeaderText="涨幅" SortExpression="涨幅|desc"  ></asp:BoundColumn>
-					<asp:BoundColumn DataField="跌幅" HeaderText="跌幅"  SortExpression="跌幅|asc"  ></asp:BoundColumn>
-                    <asp:BoundColumn DataField="震幅" HeaderText="震幅"  SortExpression="震幅|asc"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日" SortExpression="1日|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="2日" HeaderText="2日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3日" HeaderText="3日"></asp:BoundColumn>
