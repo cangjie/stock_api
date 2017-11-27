@@ -6,8 +6,8 @@
 <script runat="server">
     protected void Page_Load(object sender, EventArgs e)
     {
-        Stock s = new Stock("sh600031");
-        s.LoadKLineDay();
+
+        Util.RefreshTodayKLine();
         Response.End();
 
         foreach (string gid in Util.GetAllGids())
