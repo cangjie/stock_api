@@ -306,33 +306,40 @@ public class Stock
 
     public static KLine[] LoadLocalKLine(string gid, string type)
     {
-        CachedKLine cachedKLine = LoadLocalKLineFromCache(gid, type);
-        KLine[] kArr = cachedKLine.kLine;
-        if (cachedKLine.gid.Trim().Equals(""))
+        try
         {
-            kArr = LoadLocalKLineFromDB(gid, type);
-            SaveLocalKLineToCache(gid, type, kArr);
-        }
-        else
-        {
-            if ((Util.IsTransacDay(cachedKLine.lastUpdate) && Util.IsTransacTime(cachedKLine.lastUpdate)) || DateTime.Now - cachedKLine.lastUpdate > new TimeSpan(1, 0, 0, 0))
+            CachedKLine cachedKLine = LoadLocalKLineFromCache(gid, type);
+            KLine[] kArr = cachedKLine.kLine;
+            if (cachedKLine.gid.Trim().Equals(""))
             {
-                KLine[] kArrLatest = LoadLocalKLineFromDB(gid, type, kArr[kArr.Length - 1].startDateTime);
-                KLine[] kArrNew = new KLine[kArr.Length + kArrLatest.Length - 1];
-                for (int i = 0; i < kArr.Length; i++)
-                {
-                    kArrNew[i] = kArr[i];
-                }
-                for (int i = 0; i < kArrLatest.Length; i++)
-                {
-                    kArrNew[i + kArr.Length - 1] = kArrLatest[i];
-                }
-                kArr = kArrNew;
+                kArr = LoadLocalKLineFromDB(gid, type);
                 SaveLocalKLineToCache(gid, type, kArr);
             }
+            else
+            {
+                if ((Util.IsTransacDay(cachedKLine.lastUpdate) && Util.IsTransacTime(cachedKLine.lastUpdate)) || DateTime.Now - cachedKLine.lastUpdate > new TimeSpan(1, 0, 0, 0))
+                {
+                    KLine[] kArrLatest = LoadLocalKLineFromDB(gid, type, kArr[kArr.Length - 1].startDateTime);
+                    KLine[] kArrNew = new KLine[kArr.Length + kArrLatest.Length - 1];
+                    for (int i = 0; i < kArr.Length; i++)
+                    {
+                        kArrNew[i] = kArr[i];
+                    }
+                    for (int i = 0; i < kArrLatest.Length; i++)
+                    {
+                        kArrNew[i + kArr.Length - 1] = kArrLatest[i];
+                    }
+                    kArr = kArrNew;
+                    SaveLocalKLineToCache(gid, type, kArr);
+                }
+            }
+            return kArr;
+        }
+        catch
+        {
+            return LoadLocalKLineFromDB(gid, type);
         }
         
-        return kArr;
     }
 
     public static CachedKLine LoadLocalKLineFromCache(string gid, string type)
