@@ -347,9 +347,10 @@ public class Stock
         //KLine[] retKLineArr  = new KLine[0];
         CachedKLine ret = new CachedKLine();
         ret.gid = "";
-        foreach (object o in kLineCache)
+        for(int i = 0; i < kLineCache.Count; i++)
+        //foreach (object o in kLineCache)
         {
-            CachedKLine kLine = (CachedKLine)o;
+            CachedKLine kLine = (CachedKLine)kLineCache[i];
             if (kLine.type.Trim().Equals(type.Trim()) && kLine.gid.Trim().Equals(gid.Trim()))
             {
                 ret = kLine;
@@ -362,9 +363,10 @@ public class Stock
     public static void SaveLocalKLineToCache(string gid, string type, KLine[] kLineArr)
     {
         bool exsitsInCache = false;
-        foreach (object o in kLineCache)
+        for(int i = 0; i < kLineCache.Count; i++)
+        //foreach (object o in kLineCache)
         {
-            CachedKLine kLine = (CachedKLine)o;
+            CachedKLine kLine = (CachedKLine)kLineCache[i];
             if (kLine.type.Trim().Equals(type.Trim()) && kLine.gid.Trim().Equals(gid.Trim()))
             {
                 exsitsInCache = true;
