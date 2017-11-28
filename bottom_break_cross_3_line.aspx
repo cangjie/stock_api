@@ -84,7 +84,7 @@
                     {
                         string gid = dr["代码"].ToString().Trim();
                         Stock s = new Stock(gid);
-                        KLine.RefreshKLine(gid, DateTime.Parse(DateTime.Now.ToShortDateString()));
+                        //KLine.RefreshKLine(gid, DateTime.Parse(DateTime.Now.ToShortDateString()));
                         double volumeIncrease = Math.Round(100 * double.Parse(dr["放量"].ToString().Trim()), 2);
                         string message = (dr["信号"].ToString().Trim().IndexOf("📈")>=0?"📈":"")
                             + (dr["信号"].ToString().Trim().IndexOf("🔥")>=0?"🔥":"") + (dr["信号"].ToString().Trim().IndexOf("🛍️")>=0?"🛍️":"")

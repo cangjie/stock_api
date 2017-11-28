@@ -450,7 +450,7 @@
                     {
                         string gid = dr["代码"].ToString().Trim();
                         Stock s = new Stock(gid);
-                        KLine.RefreshKLine(gid, DateTime.Parse(DateTime.Now.ToShortDateString()));
+                        //KLine.RefreshKLine(gid, DateTime.Parse(DateTime.Now.ToShortDateString()));
                         double volumeIncrease = Math.Round(100 * double.Parse(dr["放量"].ToString().Trim()), 2);
                         string message = "放量：" + volumeIncrease.ToString() + "%，KDJ：" + dr["KDJ"].ToString().Trim() + "，买入："
                             + Math.Round((double)dr["买入"], 2).ToString() + "，现价：" + Math.Round((double)dr["今收"], 2)

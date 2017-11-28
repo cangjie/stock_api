@@ -40,7 +40,7 @@ public class StockWatcher
                     string[] gidArr = Util.GetAllGids();
                     for (int i = 0; i < gidArr.Length; i++)
                     {
-                        KLine.RefreshKLine(gidArr[i], DateTime.Parse(DateTime.Now.ToShortDateString()));
+                        //KLine.RefreshKLine(gidArr[i], DateTime.Parse(DateTime.Now.ToShortDateString()));
                         Stock stock = new Stock(gidArr[i].Trim());
                         stock.LoadKLineDay();
                         int currentIndex = stock.GetItemIndex(DateTime.Parse(DateTime.Now.ToShortDateString()));
@@ -110,7 +110,7 @@ public class StockWatcher
                         //if (gidArr[i].Trim().Equals("sh601128"))
                         {
 
-                            KLine.RefreshKLine(gidArr[i], DateTime.Parse(DateTime.Now.ToShortDateString()));
+                            //KLine.RefreshKLine(gidArr[i], DateTime.Parse(DateTime.Now.ToShortDateString()));
                             string gid = gidArr[i];
                             KLine[] kArr = Stock.LoadLocalKLine(gid, "day");
                             SearchFolks(gid, "day", kArr, kArr.Length - 1);
@@ -253,7 +253,7 @@ public class StockWatcher
     {
         for (; true;)
         {
-            if (Util.IsTransacTime(DateTime.Now))
+            if (Util.IsTransacDay(DateTime.Now.Date) && Util.IsTransacTime(DateTime.Now))
             {
                 try
                 {

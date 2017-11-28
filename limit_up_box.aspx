@@ -433,7 +433,7 @@
                         DataTable dt = GetData(currentDate);
                         foreach (DataRow dr in dt.Rows)
                         {
-                            KLine.RefreshKLine(dr["代码"].ToString().Trim(), DateTime.Parse(DateTime.Now.ToShortDateString()));
+                            //KLine.RefreshKLine(dr["代码"].ToString().Trim(), DateTime.Parse(DateTime.Now.ToShortDateString()));
                             if (dr["信号"].ToString().IndexOf("🔺") >= 0)
                             {
                                 string message = dr["信号"].ToString().Trim() + " " + currentDate.ToShortDateString() + "十字星缩量" + Math.Round(100 * double.Parse(dr["缩量"].ToString().Trim()), 2).ToString() + "% 已调整" + dr["调整天数"].ToString().Trim() + "日";
