@@ -335,7 +335,7 @@ public class Stock
             }
             return kArr;
         }
-        catch
+        catch(Exception err)
         {
             return LoadLocalKLineFromDB(gid, type);
         }
