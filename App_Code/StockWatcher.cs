@@ -277,7 +277,7 @@ public class StockWatcher
 
     public static void RefreshUpdatedKLine()
     {
-        for (; Util.IsTransacDay(DateTime.Now.Date);)
+        for (; Util.IsTransacDay(DateTime.Now.Date) && Util.IsTransacTime(DateTime.Now);)
         {
             if (gidNeedUpdateKLine.Count == 0)
             {
