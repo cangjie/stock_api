@@ -11,7 +11,7 @@
         //StockWatcher.tSearchBottomBreak3Line.Start();
         StockWatcher.tWatchEachStock.Start();
         StockWatcher.tLogQuota.Start();
-        //StockWatcher.tRefreshUpdatedKLine.Start();
+        StockWatcher.tRefreshUpdatedKLine.Start();
     }
     
     void Application_End(object sender, EventArgs e) 
