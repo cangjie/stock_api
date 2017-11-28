@@ -7,12 +7,15 @@ using System.Net;
 using System.IO;
 using System.Threading;
 using System.Text.RegularExpressions;
+using System.Collections;
 /// <summary>
 /// Summary description for StockWatcher
 /// </summary>
 public class StockWatcher
 {
     public static ThreadStart tsKLineRefresher = new ThreadStart(RefreshKLine);
+
+    public static Queue gidNeedUpdateKLine = new Queue();
 
     public static Thread tKLineRefresher = new Thread(tsKLineRefresher);
 
@@ -23,6 +26,10 @@ public class StockWatcher
     public static ThreadStart tsLogQuota = new ThreadStart(LogQuota);
 
     public static Thread tLogQuota = new Thread(tsLogQuota);
+
+    public static ThreadStart tsRefreshUpdatedKLine = new ThreadStart(RefreshUpdatedKLine);
+
+    public static Thread tRefreshUpdatedKLine = new Thread(tsRefreshUpdatedKLine);
 
     public StockWatcher()
     {
@@ -265,6 +272,46 @@ public class StockWatcher
                 }
             }
             Thread.Sleep(1000);
+        }
+    }
+
+    public static void RefreshUpdatedKLine()
+    {
+        for (; Util.IsTransacDay(DateTime.Now.Date);)
+        {
+            if (gidNeedUpdateKLine.Count == 0)
+            {
+                Thread.Sleep(60000);
+                DataTable dt = DBHelper.GetDataTable(" select * from timeline_update where deal = 0 and update_date = '" + DateTime.Now.ToShortDateString() + "' ");
+                foreach (DataRow dr in dt.Rows)
+                {
+                    gidNeedUpdateKLine.Enqueue(dr["gid"].ToString().Trim());
+                }
+            }
+            else
+            {
+                ThreadStart tsRefreshUpdatedKLineForSingleStock = new ThreadStart(RefreshUpdatedKLineForSingleStock);
+                Thread tRefreshUpdatedKLineForSingleStock = new Thread(tsRefreshUpdatedKLineForSingleStock);
+                tRefreshUpdatedKLineForSingleStock.Start();
+                Thread.Sleep(10);
+            }
+            
+        }
+    }
+
+    public static void RefreshUpdatedKLineForSingleStock()
+    {
+        try
+        {
+            string gid = gidNeedUpdateKLine.Dequeue().ToString();
+            DBHelper.UpdateData(" timeline_update ", new string[,] { { "deal", "int", "1" } },
+                new string[,] { { "gid", "varchar", gid.Trim() }, { "update_date", "datetime", DateTime.Now.ToShortDateString() } }, Util.conStr);
+            KLine.RefreshKLine(gid, DateTime.Parse(DateTime.Now.ToShortDateString()));
+
+        }
+        catch
+        {
+
         }
     }
 

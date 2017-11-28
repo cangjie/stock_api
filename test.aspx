@@ -7,7 +7,8 @@
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        Util.RefreshTodayKLine();
+        //Util.RefreshTodayKLine();
+        StockWatcher.RefreshUpdatedKLine();
         Response.End();
 
         foreach (string gid in Util.GetAllGids())
