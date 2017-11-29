@@ -311,6 +311,15 @@
             dt.Columns.Add(i.ToString() + "日", Type.GetType("System.Double"));
         }
         dt.Columns.Add("总计", Type.GetType("System.Double"));
+
+        string sqlUnion = "";
+        foreach (DataRow drOri in dtOri.Rows)
+        {
+            sqlUnion = sqlUnion + (sqlUnion.Trim().Equals("") ? " " : " union ") + "  select  * from " + drOri["gid"].ToString().Trim() + "_k_line where type = 'day' and start_date = '" 
+                + currentDate.ToShortDateString() + " 9:30' ";
+        }
+
+
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
