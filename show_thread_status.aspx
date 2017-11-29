@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="C#" %>
-
+<%@ Import Namespace="System.Threading" %>
 <!DOCTYPE html>
 
 <script runat="server">
@@ -8,6 +8,7 @@
     {
         if (StockWatcher.tRefreshUpdatedKLine.ThreadState == System.Threading.ThreadState.Stopped)
         {
+            StockWatcher.tRefreshUpdatedKLine = new Thread(StockWatcher.tsRefreshUpdatedKLine);
             StockWatcher.tRefreshUpdatedKLine.Start();
         }
     }
