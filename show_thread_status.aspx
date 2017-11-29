@@ -6,7 +6,10 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-
+        if (StockWatcher.tRefreshUpdatedKLine.ThreadState == System.Threading.ThreadState.Stopped)
+        {
+            StockWatcher.tRefreshUpdatedKLine.Start();
+        }
     }
 </script>
 
