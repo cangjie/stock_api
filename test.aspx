@@ -14,7 +14,7 @@
             gidArrNew[i] = gidArr[i];
         }
         */
-        CachedKLine[] clArr = Stock.GetKLineSetArray(gidArr, "day", 10);
+        CachedKLine[] clArr = Stock.GetKLineSetArray(gidArr, "day", 100);
         Stock[] sArr = new Stock[gidArr.Length];
         for (int i = 0; i < sArr.Length; i++)
         {

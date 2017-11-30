@@ -45,6 +45,7 @@ public class StockWatcher
                 if (Util.IsTransacDay(DateTime.Parse(DateTime.Now.ToShortDateString())) && DateTime.Now.Hour >= 9 && DateTime.Now.Hour <= 16)
                 {
                     string[] gidArr = Util.GetAllGids();
+                    Stock.GetKLineSetArray(gidArr, "day", 100);
                     for (int i = 0; i < gidArr.Length; i++)
                     {
                         //KLine.RefreshKLine(gidArr[i], DateTime.Parse(DateTime.Now.ToShortDateString()));
@@ -112,6 +113,7 @@ public class StockWatcher
                 if (Util.IsTransacDay(DateTime.Parse(DateTime.Now.ToShortDateString())) && DateTime.Now.Hour >= 9 && DateTime.Now.Hour <= 16)
                 {
                     string[] gidArr = Util.GetAllGids();
+                    Stock.GetKLineSetArray(gidArr, "day", 100);
                     for (int i = 0; i < gidArr.Length; i++)
                     {
                         //if (gidArr[i].Trim().Equals("sh601128"))
