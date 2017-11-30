@@ -313,12 +313,20 @@
         dt.Columns.Add("总计", Type.GetType("System.Double"));
 
         string sqlUnion = "";
-        foreach (DataRow drOri in dtOri.Rows)
+        string[] gidArr = new string[dtOri.Rows.Count];
+        for (int i = 0; i < gidArr.Length; i++)
         {
-            sqlUnion = sqlUnion + (sqlUnion.Trim().Equals("") ? " " : " union ") + "  select  * from " + drOri["gid"].ToString().Trim() + "_k_line where type = 'day' and start_date = '" 
-                + currentDate.ToShortDateString() + " 9:30' ";
+            gidArr[i] = dtOri.Rows[i]["gid"].ToString().Trim();
         }
 
+        Stock.GetKLineSetArray(gidArr, "day");
+        /*
+        foreach (DataRow drOri in dtOri.Rows)
+        {
+            sqlUnion = sqlUnion + (sqlUnion.Trim().Equals("") ? " " : " union ") + "  select  * from " + drOri["gid"].ToString().Trim() + "_k_line where type = 'day' and start_date = '"
+                + currentDate.ToShortDateString() + " 9:30' ";
+        }
+        */
 
         foreach (DataRow drOri in dtOri.Rows)
         {
