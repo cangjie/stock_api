@@ -532,6 +532,7 @@ public class Stock
                 kArr = LoadLocalKLineFromDB(gid, type);
                 SaveLocalKLineToCache(gid, type, kArr);
             }
+            /*
             else
             {
                 if ((Util.IsTransacDay(cachedKLine.lastUpdate) && Util.IsTransacTime(cachedKLine.lastUpdate)) || DateTime.Now - cachedKLine.lastUpdate > new TimeSpan(1, 0, 0, 0))
@@ -550,6 +551,7 @@ public class Stock
                     SaveLocalKLineToCache(gid, type, kArr);
                 }
             }
+            */
             return kArr;
         }
         catch(Exception err)
