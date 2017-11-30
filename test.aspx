@@ -7,7 +7,7 @@
     protected void Page_Load(object sender, EventArgs e)
     {
         string[] gidArr = Util.GetAllGids();
-        string[] gidArrNew = new string[3000];
+        string[] gidArrNew = new string[600];
         for (int i = 0; i < gidArrNew.Length; i++)
         {
             gidArrNew[i] = gidArr[i];
