@@ -327,7 +327,49 @@ public class Stock
         return kLine;
     }
 
-    
+    public static CachedKLine[] GetKLineSetArray(string[] gidArr, string type, int groupSize)
+    {
+        ArrayList retArrayList = new ArrayList();
+        int currentIndex = 0;
+        for (int i = 0; i < gidArr.Length; i++)
+        {
+            
+            if (((i + 1) / groupSize) * groupSize == i + 1)
+            {
+                currentIndex = i;
+                string[] subGidArr = new string[groupSize];
+                for (int j = 0; j < groupSize; j++)
+                {
+                    subGidArr[j] = gidArr[i - j];
+                }
+                CachedKLine[] cacheArr = GetKLineSetArray(subGidArr, type);
+                for (int j = 0; j < cacheArr.Length; j++)
+                {
+                    retArrayList.Add(cacheArr[j]);
+                }
+            }
+            if (i == gidArr.Length - 1)
+            {
+                string[] subGidArr = new string[gidArr.Length - currentIndex - 1];
+                for (int j = 0; j < subGidArr.Length; j++)
+                {
+                    subGidArr[j] = gidArr[currentIndex + 1 + j];
+                }
+                CachedKLine[] cacheArr = GetKLineSetArray(subGidArr, type);
+                for (int j = 0; j < cacheArr.Length; j++)
+                {
+                    retArrayList.Add(cacheArr[j]);
+                }
+            }
+        }
+
+        CachedKLine[] ret = new CachedKLine[retArrayList.Count];
+        for (int i = 0; i < ret.Length; i++)
+        {
+            ret[i] = (CachedKLine)retArrayList[i];
+        }
+        return ret;
+    }
 
     public static CachedKLine[] GetKLineSetArray(string[] gidArr, string type)
     {
