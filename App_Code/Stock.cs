@@ -304,6 +304,223 @@ public class Stock
         return days;
     }
 
+    public static CachedKLine GetKLineInCache(string gid, string type)
+    {
+        CachedKLine kLine = new CachedKLine();
+        kLine.gid = "";
+        try
+        {
+            for (int i = 0; i < kLineCache.Count; i++)
+            {
+                CachedKLine cachedKLine = (CachedKLine)kLineCache[i];
+                if (cachedKLine.gid.Trim().Equals(gid) && cachedKLine.type.Trim().Equals(type))
+                {
+                    kLine = cachedKLine;
+                    break;
+                }
+            }
+        }
+        catch
+        {
+
+        }
+        return kLine;
+    }
+
+    
+
+    public static CachedKLine[] GetKLineSetArray(string[] gidArr, string type)
+    {
+        CachedKLine[] retArr = new CachedKLine[gidArr.Length];
+        ArrayList inCacheGids = new ArrayList();
+        ArrayList outOfCacheGids = new ArrayList();
+        foreach (string gid in gidArr)
+        {
+            CachedKLine cachedKLine = GetKLineInCache(gid, type);
+            if (!cachedKLine.gid.Trim().Equals(""))
+            {
+                inCacheGids.Add(cachedKLine);
+            }
+            else
+            {
+                outOfCacheGids.Add(gid);
+            }
+        }
+        CachedKLine[] cachedKLineArrInCache = new CachedKLine[inCacheGids.Count];
+        for (int i = 0; i < inCacheGids.Count; i++)
+        {
+            cachedKLineArrInCache[i] = (CachedKLine)inCacheGids[i];
+        }
+        UpdateCachedKLine(cachedKLineArrInCache);
+        string[] gidArrOutOfCache = new string[outOfCacheGids.Count];
+        for (int i = 0; i < gidArrOutOfCache.Length; i++)
+        {
+            gidArrOutOfCache[i] = outOfCacheGids[i].ToString();
+        }
+        CachedKLine[] cachedKLineArrOutOfCache = CreateCachedKLineArray(gidArrOutOfCache, type);
+        CachedKLine[] totalCache = new CachedKLine[cachedKLineArrInCache.Length + cachedKLineArrOutOfCache.Length];
+        for (int k = 0; k < totalCache.Length; k++)
+        {
+            if (k < cachedKLineArrInCache.Length)
+            {
+                totalCache[k] = cachedKLineArrInCache[k];
+            }
+            else
+            {
+                totalCache[k] = cachedKLineArrOutOfCache[k - cachedKLineArrInCache.Length];
+            }
+        }
+        UpdateStockCache(totalCache);
+        return totalCache;
+    }
+
+    public static void UpdateStockCache(CachedKLine[] cArr)
+    {
+        for (int i = 0; i < cArr.Length; i++)
+        {
+            bool exists = false;
+            for (int j = 0; j < kLineCache.Count; j++)
+            {
+                CachedKLine c = (CachedKLine)kLineCache[j];
+                if (c.gid.Trim().Equals(cArr[i].gid.Trim()) && c.type.Trim().Equals(cArr[i].type.Trim()))
+                {
+                    kLineCache[j] = cArr[i];
+                    exists = true;
+                    break;
+                }
+            }
+            if (!exists)
+            {
+                kLineCache.Add(cArr[i]);
+            }
+        }
+    }
+
+
+    public static CachedKLine[] CreateCachedKLineArray(string[] gidArr, string type)
+    {
+        if (gidArr.Length == 0)
+            return new CachedKLine[0];
+        CachedKLine[] cArr = new CachedKLine[gidArr.Length];
+        string sql = "";
+        for (int i = 0; i < gidArr.Length; i++)
+        {
+            string subSql = " select * from " + gidArr[i].Trim() + "_k_line where [type] = '" + type.Trim() + "' ";
+            sql = sql + (sql.Trim().Equals("") ? "" : " union ") + subSql;
+        }
+        DataTable dt = DBHelper.GetDataTable(sql);
+        for (int i = 0; i < gidArr.Length; i++)
+        {
+            cArr[i] = new CachedKLine();
+            cArr[i].gid = gidArr[i].Trim();
+            cArr[i].type = type.Trim();
+            DataRow[] drArr = dt.Select("gid = '" + gidArr[i].Trim() + "' ", " start_date ");
+            KLine[] kArr = new KLine[drArr.Length];
+            for (int j = 0; j < drArr.Length; j++)
+            {
+                kArr[j] = new KLine();
+                kArr[j].gid = drArr[j]["gid"].ToString().Trim();
+                kArr[j].type = drArr[j]["type"].ToString().Trim();
+                kArr[j].startDateTime = DateTime.Parse(drArr[j]["start_date"].ToString());
+                kArr[j].startPrice = double.Parse(drArr[j]["open"].ToString());
+                kArr[j].endPrice = double.Parse(drArr[j]["settle"].ToString());
+                kArr[j].highestPrice = double.Parse(drArr[j]["highest"].ToString());
+                kArr[j].lowestPrice = double.Parse(drArr[j]["lowest"].ToString());
+                kArr[j].volume = double.Parse(drArr[j]["volume"].ToString());
+                kArr[j].amount = double.Parse(drArr[j]["amount"].ToString());
+            }
+            cArr[i].kLine = kArr;
+            cArr[i].lastUpdate = DateTime.Now;
+        }
+        return cArr;
+    }
+
+    public static void UpdateCachedKLine(CachedKLine[] cachedKLineArr)
+    {
+        if (cachedKLineArr.Length > 0)
+        {
+            string type = cachedKLineArr[0].type.Trim();
+            string sql = "";
+            foreach (CachedKLine c in cachedKLineArr)
+            {
+                if (c.kLine.Length > 0)
+                {
+                    string subSql = " select  * from  " + c.gid.Trim() + "_k_line where [type] = '" + type.Trim() + "' and start_date >= '" + c.kLine[c.kLine.Length - 1].startDateTime.ToString() + "' ";
+                    sql = sql + (sql.Trim().Equals("") ? "" : " union ") + subSql;
+                }
+            }
+            DataTable dt = DBHelper.GetDataTable(sql);
+            for (int i = 0; i < cachedKLineArr.Length; i++)
+            {
+                CachedKLine c = cachedKLineArr[i];
+                c.kLine = MergeSortedDataRowsToKLineArray(dt.Select(" gid = '" + c.gid.Trim() + "' ", " start_date "), c.kLine);
+            }
+        }
+    }
+
+    public static KLine[] MergeSortedDataRowsToKLineArray(DataRow[] drArr, KLine[] kArr)
+    {
+        int startIndex = 0;
+        if (drArr.Length <= 0)
+            return new KLine[0];
+        for (int i = 0; i < kArr.Length; i++)
+        {
+            if (kArr[i].startDateTime == DateTime.Parse(drArr[0]["start_date"].ToString().Trim()))
+            {
+                startIndex = i;
+                break;
+            }
+        }
+        int newArrayLength = kArr.Length + (drArr.Length - (kArr.Length - startIndex));
+        if (newArrayLength == kArr.Length)
+        {
+            for (int i = startIndex; i < kArr.Length; i++)
+            {
+                kArr[i].startDateTime = DateTime.Parse(drArr[i - startIndex]["start_date"].ToString());
+                kArr[i].startPrice = double.Parse(drArr[i - startIndex]["open"].ToString());
+                kArr[i].endPrice = double.Parse(drArr[i - startIndex]["settle"].ToString());
+                kArr[i].highestPrice = double.Parse(drArr[i - startIndex]["highest"].ToString());
+                kArr[i].lowestPrice = double.Parse(drArr[i - startIndex]["lowest"].ToString());
+                kArr[i].volume = double.Parse(drArr[i - startIndex]["volume"].ToString());
+                kArr[i].amount = double.Parse(drArr[i - startIndex]["amount"].ToString());
+            }
+            return kArr;
+        }
+        else
+        {
+            KLine[] newKArr = new KLine[newArrayLength];
+            for (int i = 0; i < newKArr.Length; i++)
+            {
+                if (i < startIndex)
+                {
+                    newKArr[i] = kArr[i];
+                }
+                else
+                {
+                    if (i == startIndex)
+                    {
+                        newKArr[i] = kArr[i];
+                    }
+                    else
+                    {
+                        newKArr[i] = new KLine();
+                    }
+                    newKArr[i].gid = drArr[i - startIndex]["gid"].ToString().Trim();
+                    newKArr[i].type = drArr[i - startIndex]["type"].ToString().Trim();
+                    newKArr[i].startDateTime = DateTime.Parse(drArr[i - startIndex]["start_date"].ToString());
+                    newKArr[i].startPrice = double.Parse(drArr[i - startIndex]["open"].ToString());
+                    newKArr[i].endPrice = double.Parse(drArr[i - startIndex]["settle"].ToString());
+                    newKArr[i].highestPrice = double.Parse(drArr[i - startIndex]["highest"].ToString());
+                    newKArr[i].lowestPrice = double.Parse(drArr[i - startIndex]["lowest"].ToString());
+                    newKArr[i].volume = double.Parse(drArr[i - startIndex]["volume"].ToString());
+                    newKArr[i].amount = double.Parse(drArr[i - startIndex]["amount"].ToString());
+                }
+            }
+            return newKArr;
+        }
+    }
+
+
     public static KLine[] LoadLocalKLine(string gid, string type)
     {
         try
