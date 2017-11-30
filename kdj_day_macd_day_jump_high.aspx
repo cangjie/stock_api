@@ -283,6 +283,16 @@
         }
         dt.Columns.Add("总计", Type.GetType("System.Double"));
 
+
+        string[] gidArr = new string[dtOri.Rows.Count];
+        for (int i = 0; i < gidArr.Length; i++)
+        {
+            gidArr[i] = dtOri.Rows[i]["gid"].ToString().Trim();
+        }
+
+        Stock.GetKLineSetArray(gidArr, "day", 50);
+
+
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
@@ -510,9 +520,12 @@
 
     public static void PageWatcher()
     {
-        if (Util.IsTransacDay(Util.GetDay(DateTime.Now)) && DateTime.Now.Hour == 9 && DateTime.Now.Minute >= 30  )
+        if (Util.IsTransacDay(Util.GetDay(DateTime.Now)) && DateTime.Now.Hour >= 9 && DateTime.Now.Minute >= 30  )
         {
             string[] gidArr = Util.GetAllGids();
+            
+
+            Stock.GetKLineSetArray(gidArr, "day", 50);
             foreach (string gid in gidArr)
             {
                 Stock stock = new Stock(gid);
