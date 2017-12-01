@@ -32,7 +32,7 @@
     {
         string[] gidArr = Util.GetAllGids();
         Stock.kLineCacheTemp = new ArrayList();
-        CachedKLine[] cache = Stock.GetKLineSetArray(gidArr, "day", 100);
+        CachedKLine[] cache = Stock.GetKLineSetArray(gidArr, "day", 500);
         Stock.kLineCache = new ArrayList();
         foreach (CachedKLine c in cache)
         {
