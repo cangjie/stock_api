@@ -29,7 +29,13 @@
     public static void LoadAllKLineToCache()
     {
         string[] gidArr = Util.GetAllGids();
-        Stock.GetKLineSetArray(gidArr, "day", 10);
+        Stock.kLineCacheTemp = new ArrayList();
+        CachedKLine[] cache = Stock.GetKLineSetArray(gidArr, "day", 500);
+        Stock.kLineCache = new ArrayList();
+        foreach (CachedKLine c in cache)
+        {
+            Stock.kLineCache.Add(c);
+        }
     }
 
     public DataTable GetData()
@@ -38,9 +44,9 @@
         dt.Columns.Add("gid", Type.GetType("System.String"));
         dt.Columns.Add("update_time", Type.GetType("System.DateTime"));
         //CachedKLine[] cachedKLine = new CachedKLine[Stock.kLineCache.Count];
-        for (int i = 0; i < Stock.kLineCache.Count; i++)
+        for (int i = 0; i < Stock.kLineCacheTemp.Count; i++)
         {
-            CachedKLine c = (CachedKLine)Stock.kLineCache[i];
+            CachedKLine c = (CachedKLine)Stock.kLineCacheTemp[i];
             DataRow dr = dt.NewRow();
             dr["gid"] = c.gid.Trim();
             dr["update_time"] = c.lastUpdate;

@@ -38,6 +38,8 @@ public class Stock
 
     public static ArrayList kLineCache = new ArrayList();
 
+    public static ArrayList kLineCacheTemp = new ArrayList();
+
     public Stock()
     {
         //
@@ -412,29 +414,15 @@ public class Stock
                 totalCache[k] = cachedKLineArrOutOfCache[k - cachedKLineArrInCache.Length];
             }
         }
-        UpdateStockCache(totalCache);
+        UpdateStockCacheTemp(totalCache);
         return totalCache;
     }
 
-    public static void UpdateStockCache(CachedKLine[] cArr)
+    public static void UpdateStockCacheTemp(CachedKLine[] cArr)
     {
         for (int i = 0; i < cArr.Length; i++)
         {
-            bool exists = false;
-            for (int j = 0; j < kLineCache.Count; j++)
-            {
-                CachedKLine c = (CachedKLine)kLineCache[j];
-                if (c.gid.Trim().Equals(cArr[i].gid.Trim()) && c.type.Trim().Equals(cArr[i].type.Trim()))
-                {
-                    kLineCache[j] = cArr[i];
-                    exists = true;
-                    break;
-                }
-            }
-            if (!exists)
-            {
-                kLineCache.Add(cArr[i]);
-            }
+            kLineCacheTemp.Add(cArr[i]);
         }
     }
 
