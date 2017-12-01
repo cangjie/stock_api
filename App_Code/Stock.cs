@@ -5,6 +5,7 @@ using System.Web;
 using System.Data;
 using System.Text.RegularExpressions;
 using System.Collections;
+using System.Threading;
 /// <summary>
 /// Summary description for Stock
 /// </summary>
@@ -438,7 +439,18 @@ public class Stock
             string subSql = " select * from " + gidArr[i].Trim() + "_k_line where [type] = '" + type.Trim() + "' ";
             sql = sql + (sql.Trim().Equals("") ? "" : " union ") + subSql;
         }
-        DataTable dt = DBHelper.GetDataTable(sql);
+        DataTable dt = new DataTable();
+        for (int i = 0; dt.Columns.Count == 0 && i < 10; i++)
+        {
+            try
+            {
+                dt = DBHelper.GetDataTable(sql);
+            }
+            catch
+            {
+                Thread.Sleep(1000);
+            }
+        }
         for (int i = 0; i < gidArr.Length; i++)
         {
             cArr[i] = new CachedKLine();
@@ -479,7 +491,19 @@ public class Stock
                     sql = sql + (sql.Trim().Equals("") ? "" : " union ") + subSql;
                 }
             }
-            DataTable dt = DBHelper.GetDataTable(sql);
+            DataTable dt = new DataTable();
+            for(int i = 0; i < 10 && dt.Columns.Count == 0; i++)
+            {
+                try
+                {
+                    dt = DBHelper.GetDataTable(sql);
+                }
+                catch
+                {
+                    Thread.Sleep(1000);
+                }
+            }
+            
             for (int i = 0; i < cachedKLineArr.Length; i++)
             {
                 CachedKLine c = cachedKLineArr[i];
