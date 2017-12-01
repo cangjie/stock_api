@@ -509,6 +509,7 @@ public class Stock
                 CachedKLine c = cachedKLineArr[i];
                 c.kLine = MergeSortedDataRowsToKLineArray(dt.Select(" gid = '" + c.gid.Trim() + "' ", " start_date "), c.kLine);
                 c.lastUpdate = DateTime.Now;
+                cachedKLineArr[i] = c;
             }
         }
     }
