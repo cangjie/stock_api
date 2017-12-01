@@ -13,8 +13,10 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        if ((t.ThreadState == ThreadState.Stopped) || (t.ThreadState == ThreadState.Unstarted))
+        if (t.ThreadState != ThreadState.Running)
         {
+            //t.Abort();
+            t = new Thread(ts);
             t.Start();
         }
         if (!IsPostBack)
