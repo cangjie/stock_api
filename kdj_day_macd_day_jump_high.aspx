@@ -290,7 +290,7 @@
             gidArr[i] = dtOri.Rows[i]["gid"].ToString().Trim();
         }
 
-        Stock.GetKLineSetArray(gidArr, "day", 50);
+        //Stock.GetKLineSetArray(gidArr, "day", 50);
 
 
         foreach (DataRow drOri in dtOri.Rows)
@@ -520,12 +520,12 @@
 
     public static void PageWatcher()
     {
-        if (Util.IsTransacDay(Util.GetDay(DateTime.Now)) && DateTime.Now.Hour >= 9 && DateTime.Now.Minute >= 30  )
+        if (Util.IsTransacDay(Util.GetDay(DateTime.Now)) && DateTime.Now.Hour >= 9)// && DateTime.Now.Minute >= 30  )
         {
             string[] gidArr = Util.GetAllGids();
             
 
-            Stock.GetKLineSetArray(gidArr, "day", 50);
+            //Stock.GetKLineSetArray(gidArr, "day", 1000);
             foreach (string gid in gidArr)
             {
                 Stock stock = new Stock(gid);

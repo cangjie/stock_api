@@ -319,7 +319,7 @@
             gidArr[i] = dtOri.Rows[i]["gid"].ToString().Trim();
         }
 
-        Stock.GetKLineSetArray(gidArr, "day", 50);
+        //Stock.GetKLineSetArray(gidArr, "day", 50);
         /*
         foreach (DataRow drOri in dtOri.Rows)
         {
