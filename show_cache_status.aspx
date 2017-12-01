@@ -7,7 +7,12 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
+        if (!IsPostBack)
+        {
+            dg.DataSource = GetData();
+            dg.DataBind();
 
+        }
     }
 
     public DataTable GetData()
