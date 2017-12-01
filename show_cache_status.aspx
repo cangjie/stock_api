@@ -5,14 +5,31 @@
 
 <script runat="server">
 
+    public static ThreadStart ts = new ThreadStart(LoadAllKLineToCache);
+
+    public static Thread t = new Thread(ts);
+
+    public int count = 0;
+
     protected void Page_Load(object sender, EventArgs e)
     {
+        if ((t.ThreadState == ThreadState.Stopped) || (t.ThreadState == ThreadState.Unstarted))
+        {
+            t.Start();
+        }
         if (!IsPostBack)
         {
             dg.DataSource = GetData();
             dg.DataBind();
 
         }
+    }
+
+
+    public static void LoadAllKLineToCache()
+    {
+        string[] gidArr = Util.GetAllGids();
+        Stock.GetKLineSetArray(gidArr, "day", 10);
     }
 
     public DataTable GetData()
@@ -41,9 +58,7 @@
             j++;
         }
         dt.Dispose();
-        DataRow drTotal = dtNew.NewRow();
-        drTotal["gid"] = "总计：" + j.ToString();
-        dtNew.Rows.Add(drTotal);
+        count = j;
         return dtNew;
     }
 
@@ -56,6 +71,7 @@
 </head>
 <body>
     <form id="form1" runat="server">
+        <%=count %>
     <div>
         <asp:DataGrid ID="dg" runat="server" Width="100%" BackColor="White" BorderColor="#999999" BorderStyle="None" BorderWidth="1px" CellPadding="3" GridLines="Vertical" >
             <AlternatingItemStyle BackColor="#DCDCDC" />
