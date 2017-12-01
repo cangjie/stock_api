@@ -46,9 +46,16 @@
         dt.Columns.Add("gid", Type.GetType("System.String"));
         dt.Columns.Add("update_time", Type.GetType("System.DateTime"));
         //CachedKLine[] cachedKLine = new CachedKLine[Stock.kLineCache.Count];
-        for (int i = 0; i < Stock.kLineCacheTemp.Count; i++)
+
+        ArrayList arr = Stock.kLineCache;
+        if (Util.GetSafeRequestValue(Request, "tmp", "0").Trim().Equals("1"))
         {
-            CachedKLine c = (CachedKLine)Stock.kLineCacheTemp[i];
+            arr = Stock.kLineCacheTemp;
+        }
+
+        for (int i = 0; i < arr.Count; i++)
+        {
+            CachedKLine c = (CachedKLine)arr[i];
             DataRow dr = dt.NewRow();
             dr["gid"] = c.gid.Trim();
             dr["update_time"] = c.lastUpdate;
