@@ -750,6 +750,7 @@ public class StockWatcher
             kArr[i].volume = int.Parse(line[6].Trim());
             kArr[i].amount = double.Parse(line[7].Trim());
         }
+        c.kLine = kArr;
         c.lastUpdate = DateTime.Now;
         c.type = "day";
         return c;
