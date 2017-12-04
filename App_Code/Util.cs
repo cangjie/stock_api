@@ -321,22 +321,7 @@ public class Util
                         
                     }
                     
-
                     
-                    /*
-
-                    DataRow dr = dt.NewRow();
-                    double price_3_3_yesterday = Util.Compute_3_3_Price(kArr, kArr[kArr.Length - 2].startDateTime);
-                    double price_3_3_today = Util.Compute_3_3_Price(kArr, kArr[kArr.Length - 1].startDateTime);
-                    dr["date"] = day;
-                    dr["gid"] = stock.Key.Trim();
-                    dr["name"] = stock.Value.Trim();
-                    dr["settlement"] = kArr[kArr.Length - 2].endPrice;
-                    dr["avg3_yesterday"] = Compute_3_3_Price(kArr, kArr[kArr.Length - 2].startDateTime);
-                    dr["avg3_today"] = Compute_3_3_Price(kArr, kArr[kArr.Length - 1].startDateTime);
-                    dr["open"] = kArr[kArr.Length - 1].startPrice;
-                    dt.Rows.Add(dr);
-                    */
                 }
             }
         }
@@ -346,11 +331,6 @@ public class Util
     public static KLine[] IsSuggest(DateTime day, string stockCode)
     {
         Stock stock = new Stock(stockCode);
-        /*
-        Stock stock = new Stock();
-        stock.gid = stockCode;
-        stock.kArr = KLine.GetKLine("day", stockCode, day.AddMonths(-3), day);
-        */
         if (stock.IsCross3X3(day))
             return stock.kArr;
         else

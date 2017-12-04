@@ -5,7 +5,7 @@
 
 <script runat="server">
 
-    public static ThreadStart ts = new ThreadStart(LoadAllKLineToCache);
+    public static ThreadStart ts = new ThreadStart(StockWatcher.WriteAllKLineToFileCache);
 
     public static Thread t = new Thread(ts);
 
@@ -15,7 +15,7 @@
     {
         if (t.ThreadState != ThreadState.Running)
         {
-            //t.Abort();
+            t.Abort();
             t = new Thread(ts);
             t.Start();
         }

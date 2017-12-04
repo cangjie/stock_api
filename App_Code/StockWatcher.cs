@@ -517,7 +517,7 @@ public class StockWatcher
         }
     }
 
-    public static void WriteKLineToFileCache(string gid, KLine[] kArr)
+    public static string GetMarketType(string gid)
     {
         string marketType = "6";
         if (gid.StartsWith("sh6"))
@@ -536,6 +536,21 @@ public class StockWatcher
         {
             marketType = "000";
         }
+        return marketType.Trim();
+    }
+
+    public static void WriteAllKLineToFileCache()
+    {
+        string[] gidArr = Util.GetAllGids();
+        foreach (string gid in gidArr)
+        {
+            WriteKLineToFileCache(gid, Stock.LoadLocalKLineFromDB(gid, "day"));
+        }
+    }
+
+    public static void WriteKLineToFileCache(string gid, KLine[] kArr)
+    {
+        string marketType = GetMarketType(gid);     
         string rootPath = Util.physicalPath;
         if (!Directory.Exists(rootPath+@"\cache"))
         {
@@ -549,7 +564,6 @@ public class StockWatcher
         {
             Directory.CreateDirectory(rootPath + @"\cache\k_line_day\" + marketType.Trim());
         }
-
         string fileName = rootPath + @"\cache\k_line_day\" + marketType.Trim() + @"\" + gid.Trim() + ".txt";
         string content = "";
         foreach (KLine k in kArr)
@@ -569,10 +583,20 @@ public class StockWatcher
         }
         catch
         {
-
+            
         }
-        
-        
+    }
+
+
+
+
+
+    public static void ReadKLineFromFileCache(string gid)
+    {
+        string marketType = GetMarketType(gid);
+        string fileName = Util.physicalPath + @"\cache\k_line_day\" + marketType.Trim() + @"\" + gid.Trim() + ".txt";
+        var lines = File.ReadLines(fileName);
+
     }
 
 }

@@ -6,10 +6,7 @@
 <script runat="server">
     protected void Page_Load(object sender, EventArgs e)
     {
-        Stock s = new Stock("sh600031");
-        s.LoadKLineDay();
-        StockWatcher.WriteKLineToFileCache(s.gid, s.kLineDay);
-
+        //StockWatcher.ReadKLineFromFileCache("sh600031");
         //string[] gidArr = Util.GetAllGids();
         /*
         string[] gidArrNew = new string[3000];
