@@ -6,6 +6,9 @@
 <script runat="server">
     protected void Page_Load(object sender, EventArgs e)
     {
+        StockWatcher.LoadAllKLineToMemory();
+        //KLine.RefreshKLine("sh6000Line.LoadTodaysKLine();
+        //StockWatcher.LoadAllKLineToMemory();
         //StockWatcher.ReadKLineFromFileCache("sh600031");
         //string[] gidArr = Util.GetAllGids();
         /*

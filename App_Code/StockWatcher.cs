@@ -548,6 +548,213 @@ public class StockWatcher
         }
     }
 
+    public static void LoadAllKLineToMemory()
+    {
+        string rootPath = Util.physicalPath + @"\cache\k_line_day";
+        if (!Directory.Exists(rootPath + @"\6"))
+            return;
+        if (!Directory.Exists(rootPath + @"\000"))
+            return;
+        if (!Directory.Exists(rootPath + @"\002"))
+            return;
+        if (!Directory.Exists(rootPath + @"\300"))
+            return;
+
+        DataTable dt = DBHelper.GetDataTable(" select * from cache_k_line_day where start_date >  '" + DateTime.Now.ToShortDateString() + "'  ");
+
+        ArrayList arr = new ArrayList();
+        foreach (string filePath in Directory.GetFiles(rootPath + @"\6"))
+        {
+            CachedKLine c = LoadOneKLineToMemory(filePath);
+            DataRow[] drArr = dt.Select(" gid = '" + c.gid.Trim() + "' ");
+            if (drArr.Length > 0)
+            {
+                KLine lastKLine = c.kLine[c.kLine.Length - 1];
+                if (lastKLine.startDateTime.ToShortDateString().Equals(DateTime.Parse(drArr[0]["start_date"].ToString().Trim()).ToShortDateString()))
+                {
+                    lastKLine.startPrice = double.Parse(drArr[0]["open"].ToString().Trim());
+                    lastKLine.endPrice = double.Parse(drArr[0]["settle"].ToString().Trim());
+                    lastKLine.highestPrice = double.Parse(drArr[0]["highest"].ToString().Trim());
+                    lastKLine.lowestPrice = double.Parse(drArr[0]["lowest"].ToString().Trim());
+                    lastKLine.volume = int.Parse(drArr[0]["volume"].ToString().Trim());
+                    lastKLine.amount = double.Parse(drArr[0]["amount"].ToString().Trim());
+                    c.kLine[c.kLine.Length - 1] = lastKLine;
+                }
+                else
+                {
+                    lastKLine = new KLine();
+                    lastKLine.startPrice = double.Parse(drArr[0]["open"].ToString().Trim());
+                    lastKLine.endPrice = double.Parse(drArr[0]["settle"].ToString().Trim());
+                    lastKLine.highestPrice = double.Parse(drArr[0]["highest"].ToString().Trim());
+                    lastKLine.lowestPrice = double.Parse(drArr[0]["lowest"].ToString().Trim());
+                    lastKLine.volume = int.Parse(drArr[0]["volume"].ToString().Trim());
+                    lastKLine.amount = double.Parse(drArr[0]["amount"].ToString().Trim());
+                    lastKLine.gid = c.gid;
+                    lastKLine.type = "day";
+
+                    KLine[] kArrNew = new KLine[c.kLine.Length + 1];
+                    for (int i = 0; i < c.kLine.Length; i++)
+                    {
+                        kArrNew[i] = c.kLine[i];
+                    }
+                    kArrNew[kArrNew.Length - 1] = lastKLine;
+                    c.kLine = kArrNew;
+                }
+            }
+            arr.Add(c);
+        }
+        foreach (string filePath in Directory.GetFiles(rootPath + @"\000"))
+        {
+            CachedKLine c = LoadOneKLineToMemory(filePath);
+            DataRow[] drArr = dt.Select(" gid = '" + c.gid.Trim() + "' ");
+            if (drArr.Length > 0)
+            {
+                KLine lastKLine = c.kLine[c.kLine.Length - 1];
+                if (lastKLine.startDateTime.ToShortDateString().Equals(DateTime.Parse(drArr[0]["start_date"].ToString().Trim()).ToShortDateString()))
+                {
+                    lastKLine.startPrice = double.Parse(drArr[0]["open"].ToString().Trim());
+                    lastKLine.endPrice = double.Parse(drArr[0]["settle"].ToString().Trim());
+                    lastKLine.highestPrice = double.Parse(drArr[0]["highest"].ToString().Trim());
+                    lastKLine.lowestPrice = double.Parse(drArr[0]["lowest"].ToString().Trim());
+                    lastKLine.volume = int.Parse(drArr[0]["volume"].ToString().Trim());
+                    lastKLine.amount = double.Parse(drArr[0]["amount"].ToString().Trim());
+                    c.kLine[c.kLine.Length - 1] = lastKLine;
+                }
+                else
+                {
+                    lastKLine = new KLine();
+                    lastKLine.startPrice = double.Parse(drArr[0]["open"].ToString().Trim());
+                    lastKLine.endPrice = double.Parse(drArr[0]["settle"].ToString().Trim());
+                    lastKLine.highestPrice = double.Parse(drArr[0]["highest"].ToString().Trim());
+                    lastKLine.lowestPrice = double.Parse(drArr[0]["lowest"].ToString().Trim());
+                    lastKLine.volume = int.Parse(drArr[0]["volume"].ToString().Trim());
+                    lastKLine.amount = double.Parse(drArr[0]["amount"].ToString().Trim());
+                    lastKLine.gid = c.gid;
+                    lastKLine.type = "day";
+
+                    KLine[] kArrNew = new KLine[c.kLine.Length + 1];
+                    for (int i = 0; i < c.kLine.Length; i++)
+                    {
+                        kArrNew[i] = c.kLine[i];
+                    }
+                    kArrNew[kArrNew.Length - 1] = lastKLine;
+                    c.kLine = kArrNew;
+                }
+            }
+            arr.Add(c);
+        }
+        foreach (string filePath in Directory.GetFiles(rootPath + @"\002"))
+        {
+            CachedKLine c = LoadOneKLineToMemory(filePath);
+            DataRow[] drArr = dt.Select(" gid = '" + c.gid.Trim() + "' ");
+            if (drArr.Length > 0)
+            {
+                KLine lastKLine = c.kLine[c.kLine.Length - 1];
+                if (lastKLine.startDateTime.ToShortDateString().Equals(DateTime.Parse(drArr[0]["start_date"].ToString().Trim()).ToShortDateString()))
+                {
+                    lastKLine.startPrice = double.Parse(drArr[0]["open"].ToString().Trim());
+                    lastKLine.endPrice = double.Parse(drArr[0]["settle"].ToString().Trim());
+                    lastKLine.highestPrice = double.Parse(drArr[0]["highest"].ToString().Trim());
+                    lastKLine.lowestPrice = double.Parse(drArr[0]["lowest"].ToString().Trim());
+                    lastKLine.volume = int.Parse(drArr[0]["volume"].ToString().Trim());
+                    lastKLine.amount = double.Parse(drArr[0]["amount"].ToString().Trim());
+                    c.kLine[c.kLine.Length - 1] = lastKLine;
+                }
+                else
+                {
+                    lastKLine = new KLine();
+                    lastKLine.startPrice = double.Parse(drArr[0]["open"].ToString().Trim());
+                    lastKLine.endPrice = double.Parse(drArr[0]["settle"].ToString().Trim());
+                    lastKLine.highestPrice = double.Parse(drArr[0]["highest"].ToString().Trim());
+                    lastKLine.lowestPrice = double.Parse(drArr[0]["lowest"].ToString().Trim());
+                    lastKLine.volume = int.Parse(drArr[0]["volume"].ToString().Trim());
+                    lastKLine.amount = double.Parse(drArr[0]["amount"].ToString().Trim());
+                    lastKLine.gid = c.gid;
+                    lastKLine.type = "day";
+
+                    KLine[] kArrNew = new KLine[c.kLine.Length + 1];
+                    for (int i = 0; i < c.kLine.Length; i++)
+                    {
+                        kArrNew[i] = c.kLine[i];
+                    }
+                    kArrNew[kArrNew.Length - 1] = lastKLine;
+                    c.kLine = kArrNew;
+                }
+            }
+            arr.Add(c);
+        }
+        foreach (string filePath in Directory.GetFiles(rootPath + @"\300"))
+        {
+            CachedKLine c = LoadOneKLineToMemory(filePath);
+            DataRow[] drArr = dt.Select(" gid = '" + c.gid.Trim() + "' ");
+            if (drArr.Length > 0)
+            {
+                KLine lastKLine = c.kLine[c.kLine.Length - 1];
+                if (lastKLine.startDateTime.ToShortDateString().Equals(DateTime.Parse(drArr[0]["start_date"].ToString().Trim()).ToShortDateString()))
+                {
+                    lastKLine.startPrice = double.Parse(drArr[0]["open"].ToString().Trim());
+                    lastKLine.endPrice = double.Parse(drArr[0]["settle"].ToString().Trim());
+                    lastKLine.highestPrice = double.Parse(drArr[0]["highest"].ToString().Trim());
+                    lastKLine.lowestPrice = double.Parse(drArr[0]["lowest"].ToString().Trim());
+                    lastKLine.volume = int.Parse(drArr[0]["volume"].ToString().Trim());
+                    lastKLine.amount = double.Parse(drArr[0]["amount"].ToString().Trim());
+                    c.kLine[c.kLine.Length - 1] = lastKLine;
+                }
+                else
+                {
+                    lastKLine = new KLine();
+                    lastKLine.startPrice = double.Parse(drArr[0]["open"].ToString().Trim());
+                    lastKLine.endPrice = double.Parse(drArr[0]["settle"].ToString().Trim());
+                    lastKLine.highestPrice = double.Parse(drArr[0]["highest"].ToString().Trim());
+                    lastKLine.lowestPrice = double.Parse(drArr[0]["lowest"].ToString().Trim());
+                    lastKLine.volume = int.Parse(drArr[0]["volume"].ToString().Trim());
+                    lastKLine.amount = double.Parse(drArr[0]["amount"].ToString().Trim());
+                    lastKLine.gid = c.gid;
+                    lastKLine.type = "day";
+
+                    KLine[] kArrNew = new KLine[c.kLine.Length + 1];
+                    for (int i = 0; i < c.kLine.Length; i++)
+                    {
+                        kArrNew[i] = c.kLine[i];
+                    }
+                    kArrNew[kArrNew.Length - 1] = lastKLine;
+                    c.kLine = kArrNew;
+                }
+            }
+            arr.Add(c);
+        }
+        Stock.kLineCache = arr;
+    }
+
+    public static CachedKLine LoadOneKLineToMemory(string path)
+    {
+        string[] pathArr = path.Split('\\');
+        string gid = pathArr[pathArr.Length - 1].Replace(".txt", "");
+        CachedKLine c = new CachedKLine();
+        c.gid = gid;
+        string[] content = File.ReadAllText(path).Split('\r');
+        KLine[] kArr = new KLine[content.Length];
+        for (int i = 0; i < kArr.Length; i++)
+        {
+            if (content[i].Trim().Equals(""))
+                continue;
+            string[] line = content[i].Trim().Split(',');
+            kArr[i] = new KLine();
+            kArr[i].gid = gid;
+            kArr[i].type = "day";
+            kArr[i].startDateTime = DateTime.Parse(line[0].Trim());
+            kArr[i].startPrice = double.Parse(line[2].Trim());
+            kArr[i].endPrice = double.Parse(line[3].Trim());
+            kArr[i].highestPrice = double.Parse(line[4].Trim());
+            kArr[i].lowestPrice = double.Parse(line[5].Trim());
+            kArr[i].volume = int.Parse(line[6].Trim());
+            kArr[i].amount = double.Parse(line[7].Trim());
+        }
+        c.lastUpdate = DateTime.Now;
+        c.type = "day";
+        return c;
+    }
+
     public static void WriteKLineToFileCache(string gid, KLine[] kArr)
     {
         string marketType = GetMarketType(gid);     

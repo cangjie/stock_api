@@ -120,6 +120,29 @@ public class KLine
         dt.Dispose();
     }
 
+    public void SaveCache()
+    {
+        DBHelper.DeleteData("cache_k_line_day", new string[,] { { "gid", "varchar", gid.Trim() }, { "start_date", "datetime", startDateTime.ToString() } }, Util.conStr);
+        try
+        {
+            DBHelper.InsertData("cache_k_line_day", new string[,] {
+                { "gid", "varchar", gid.Trim()},
+                { "start_date", "datetime", startDateTime.ToString() },
+                { "[open]", "float", startPrice.ToString()},
+                { "settle", "float", endPrice.ToString()},
+                { "highest", "float", highestPrice.ToString()},
+                { "lowest", "float", lowestPrice.ToString()},
+                { "volume", "int", volume.ToString()},
+                { "amount", "float", amount.ToString()}
+            });
+
+        }
+        catch(Exception err)
+        {
+
+        }
+    }
+
     public bool IsPositive
     {
         get
@@ -679,6 +702,40 @@ public class KLine
         return kArr;
     }
 
+    public static KLine GetTodayLocalKLine(string gid, string type)
+    {
+        DataTable dt = DBHelper.GetDataTable(" select top 1 * from " + gid.Trim() + "_k_line where type = '" 
+            + type + "' and  start_date > '" + DateTime.Now.ToShortDateString() + "' ");
+        KLine k = new KLine();
+        for (int i = 0; i < dt.Rows.Count; i++)
+        {
+            k.gid = gid.Trim();
+            k.type = type.Trim();
+            k.startPrice = double.Parse(dt.Rows[i]["open"].ToString().Trim());
+            k.endPrice = double.Parse(dt.Rows[i]["settle"].ToString().Trim());
+            k.highestPrice = double.Parse(dt.Rows[i]["highest"].ToString().Trim());
+            k.lowestPrice = double.Parse(dt.Rows[i]["lowest"].ToString().Trim());
+            k.volume = int.Parse(dt.Rows[i]["volume"].ToString().Trim());
+            k.amount = double.Parse(dt.Rows[i]["amount"].ToString().Trim());
+            k.startDateTime = DateTime.Parse(dt.Rows[i]["start_date"].ToString().Trim());
+        }
+        return k;
+    }
+
+    public static KLine[] LoadTodaysKLine()
+    {
+        string[] gidArr = Util.GetAllGids();
+        string sql = "";
+        foreach (string gid in gidArr)
+        {
+            string subSql = " select top 1 * from  " + gid + "_k_line where type = 'day' and start_date > '" + DateTime.Now.ToShortDateString() + "' ";
+            sql = sql + (sql.Trim().Equals("") ? "" : " union ") + subSql;
+        }
+        DataTable dt = DBHelper.GetDataTable(sql);
+        KLine[] currentKLineArray = new KLine[dt.Rows.Count];
+        return currentKLineArray;
+    }
+
     public static void RefreshKLine(string gid, DateTime currentDate)
     {
         KLine.CreateKLineTable(gid);
@@ -687,6 +744,14 @@ public class KLine
         foreach (KLine k in kArr)
         {
             k.Save();
+            try
+            {
+                k.SaveCache();
+            }
+            catch
+            {
+                
+            }
         }
         
 
