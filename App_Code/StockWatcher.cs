@@ -520,19 +520,19 @@ public class StockWatcher
     public static void WriteKLineToFileCache(string gid, KLine[] kArr)
     {
         string marketType = "6";
-        if (gid.StartsWith("6"))
+        if (gid.StartsWith("sh6"))
         {
             marketType = "6";
         }
-        else if (gid.StartsWith("002"))
+        else if (gid.StartsWith("sz002"))
         {
             marketType = "002";
         }
-        else if (gid.StartsWith("300"))
+        else if (gid.StartsWith("sz300"))
         {
             marketType = "300";
         }
-        else if (gid.StartsWith("000"))
+        else
         {
             marketType = "000";
         }
