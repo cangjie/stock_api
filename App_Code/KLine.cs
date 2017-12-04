@@ -688,6 +688,14 @@ public class KLine
         {
             k.Save();
         }
+        try
+        {
+            StockWatcher.WriteKLineToFileCache(gid, kArr);
+        }
+        catch
+        {
+
+        }
         kArr = TimeLine.AssembKLine("1hr", kArr1Min);
         foreach (KLine k in kArr)
         {

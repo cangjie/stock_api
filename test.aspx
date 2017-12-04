@@ -6,7 +6,11 @@
 <script runat="server">
     protected void Page_Load(object sender, EventArgs e)
     {
-        string[] gidArr = Util.GetAllGids();
+        Stock s = new Stock("sh600031");
+        s.LoadKLineDay();
+        StockWatcher.WriteKLineToFileCache(s.gid, s.kLineDay);
+
+        //string[] gidArr = Util.GetAllGids();
         /*
         string[] gidArrNew = new string[3000];
         for (int i = 0; i < gidArrNew.Length; i++)
@@ -14,7 +18,7 @@
             gidArrNew[i] = gidArr[i];
         }
         */
-        CachedKLine[] clArr = Stock.GetKLineSetArray(gidArr, "day", 500);
+        //CachedKLine[] clArr = Stock.GetKLineSetArray(gidArr, "day", 500);
     }
 
 </script>

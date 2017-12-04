@@ -45,14 +45,11 @@
         DataTable dt = new DataTable();
         dt.Columns.Add("gid", Type.GetType("System.String"));
         dt.Columns.Add("update_time", Type.GetType("System.DateTime"));
-        //CachedKLine[] cachedKLine = new CachedKLine[Stock.kLineCache.Count];
-
         ArrayList arr = Stock.kLineCache;
         if (Util.GetSafeRequestValue(Request, "tmp", "0").Trim().Equals("1"))
         {
             arr = Stock.kLineCacheTemp;
         }
-
         for (int i = 0; i < arr.Count; i++)
         {
             CachedKLine c = (CachedKLine)arr[i];
@@ -61,7 +58,6 @@
             dr["update_time"] = c.lastUpdate;
             dt.Rows.Add(dr);
         }
-
         DataTable dtNew = dt.Clone();
         int j = 0;
         foreach (DataRow dr in dt.Select("", "update_time"))

@@ -4,14 +4,15 @@
 
     void Application_Start(object sender, EventArgs e) 
     {
-        // Code that runs on application startup
-        //StockWatcher.thread.Start();
+        Util.physicalPath = Server.MapPath("//");
+
+        
         StockWatcher.tKLineRefresher.Start();
-        //StockWatcher.tKDJMACD.Start();
-        //StockWatcher.tSearchBottomBreak3Line.Start();
         StockWatcher.tWatchEachStock.Start();
         StockWatcher.tLogQuota.Start();
         StockWatcher.tRefreshUpdatedKLine.Start();
+        
+
     }
     
     void Application_End(object sender, EventArgs e) 

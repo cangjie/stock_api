@@ -517,5 +517,62 @@ public class StockWatcher
         }
     }
 
+    public static void WriteKLineToFileCache(string gid, KLine[] kArr)
+    {
+        string marketType = "6";
+        if (gid.StartsWith("6"))
+        {
+            marketType = "6";
+        }
+        else if (gid.StartsWith("002"))
+        {
+            marketType = "002";
+        }
+        else if (gid.StartsWith("300"))
+        {
+            marketType = "300";
+        }
+        else if (gid.StartsWith("000"))
+        {
+            marketType = "000";
+        }
+        string rootPath = Util.physicalPath;
+        if (!Directory.Exists(rootPath+@"\cache"))
+        {
+            Directory.CreateDirectory(rootPath + @"\cache");
+        }
+        if (!Directory.Exists(rootPath + @"\cache\k_line_day"))
+        {
+            Directory.CreateDirectory(rootPath + @"\cache\k_line_day");
+        }
+        if (!Directory.Exists(rootPath + @"\cache\k_line_day\" + marketType.Trim()))
+        {
+            Directory.CreateDirectory(rootPath + @"\cache\k_line_day\" + marketType.Trim());
+        }
+
+        string fileName = rootPath + @"\cache\k_line_day\" + marketType.Trim() + @"\" + gid.Trim() + ".txt";
+        string content = "";
+        foreach (KLine k in kArr)
+        {
+            content = content + (content.Trim().Equals("") ? "" : "\r\n") + k.startDateTime.ToString() + ","
+                + k.endDateTime.ToString() + "," + k.startPrice.ToString() + "," + k.endPrice.ToString() + ","
+                + k.highestPrice.ToString() + "," + k.lowestPrice.ToString() + "," + k.volume.ToString() + ","
+                + k.amount.ToString();
+        }
+        try
+        {
+            if (File.Exists(fileName))
+            {
+                File.Delete(fileName);
+            }
+            File.AppendAllText(fileName, content);
+        }
+        catch
+        {
+
+        }
+        
+        
+    }
 
 }
