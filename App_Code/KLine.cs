@@ -753,10 +753,6 @@ public class KLine
                 
             }
         }
-        
-
-
-
         kArr = TimeLine.AssembKLine("1hr", kArr1Min);
         foreach (KLine k in kArr)
         {
