@@ -52,9 +52,17 @@ public class StockWatcher
             if (!KLine.cacheStatus.Trim().Equals("busy"))
             {
                 KLine.cacheStatus = "busy";
-                DataTable newCacheTable = DBHelper.GetDataTable(" select * from cache_k_line_day where start_date >  '"    + DateTime.Now.ToShortDateString() + "'  ");
+                try
+                {
+                    DataTable newCacheTable = DBHelper.GetDataTable(" select * from cache_k_line_day where start_date >  '" + DateTime.Now.ToShortDateString() + "'  ");
+                    KLine.currentKLineTable = newCacheTable;
+                }
+                catch
+                {
+
+                }
                 KLine.cacheStatus = "idle";
-                KLine.currentKLineTable = newCacheTable;
+                
             }
             Thread.Sleep(60000);
         }
