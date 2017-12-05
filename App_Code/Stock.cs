@@ -598,35 +598,38 @@ public class Stock
                     Thread.Sleep(10);
                 }
 
-                KLine.cacheStatus = "busy";
+                DataTable dt = KLine.currentKLineTable;
 
-
-                DataTable dt = DBHelper.GetDataTable(" select * from cache_k_line_day where start_date >  '" 
-                    + DateTime.Now.ToShortDateString() + "' and gid = '" + gid.Trim() + "' ");
-
-                KLine.cacheStatus = "idle";
-                if (dt.Rows.Count > 0)
+                if (dt.Rows.Count == 0)
+                {
+                    KLine.cacheStatus = "busy";
+                    dt = DBHelper.GetDataTable(" select * from cache_k_line_day where start_date >  '"
+                        + DateTime.Now.ToShortDateString() + "' and gid = '" + gid.Trim() + "' ");
+                    KLine.cacheStatus = "idle";
+                }
+                DataRow[] drArr = dt.Select("  start_date > '" + DateTime.Now.ToShortDateString() + "' and gid = '" + gid.Trim() + "' ");
+                if (drArr.Length > 0)
                 {
                     KLine lastKLine = c.kLine[c.kLine.Length - 1];
                     if (lastKLine.startDateTime.ToShortDateString().Equals(DateTime.Parse(dt.Rows[0]["start_date"].ToString().Trim()).ToShortDateString()))
                     {
-                        lastKLine.startPrice = double.Parse(dt.Rows[0]["open"].ToString().Trim());
-                        lastKLine.endPrice = double.Parse(dt.Rows[0]["settle"].ToString().Trim());
-                        lastKLine.highestPrice = double.Parse(dt.Rows[0]["highest"].ToString().Trim());
-                        lastKLine.lowestPrice = double.Parse(dt.Rows[0]["lowest"].ToString().Trim());
-                        lastKLine.volume = int.Parse(dt.Rows[0]["volume"].ToString().Trim());
-                        lastKLine.amount = double.Parse(dt.Rows[0]["amount"].ToString().Trim());
+                        lastKLine.startPrice = double.Parse(drArr[0]["open"].ToString().Trim());
+                        lastKLine.endPrice = double.Parse(drArr[0]["settle"].ToString().Trim());
+                        lastKLine.highestPrice = double.Parse(drArr[0]["highest"].ToString().Trim());
+                        lastKLine.lowestPrice = double.Parse(drArr[0]["lowest"].ToString().Trim());
+                        lastKLine.volume = int.Parse(drArr[0]["volume"].ToString().Trim());
+                        lastKLine.amount = double.Parse(drArr[0]["amount"].ToString().Trim());
                         c.kLine[c.kLine.Length - 1] = lastKLine;
                     }
                     else
                     {
                         lastKLine = new KLine();
-                        lastKLine.startPrice = double.Parse(dt.Rows[0]["open"].ToString().Trim());
-                        lastKLine.endPrice = double.Parse(dt.Rows[0]["settle"].ToString().Trim());
-                        lastKLine.highestPrice = double.Parse(dt.Rows[0]["highest"].ToString().Trim());
-                        lastKLine.lowestPrice = double.Parse(dt.Rows[0]["lowest"].ToString().Trim());
-                        lastKLine.volume = int.Parse(dt.Rows[0]["volume"].ToString().Trim());
-                        lastKLine.amount = double.Parse(dt.Rows[0]["amount"].ToString().Trim());
+                        lastKLine.startPrice = double.Parse(drArr[0]["open"].ToString().Trim());
+                        lastKLine.endPrice = double.Parse(drArr[0]["settle"].ToString().Trim());
+                        lastKLine.highestPrice = double.Parse(drArr[0]["highest"].ToString().Trim());
+                        lastKLine.lowestPrice = double.Parse(drArr[0]["lowest"].ToString().Trim());
+                        lastKLine.volume = int.Parse(drArr[0]["volume"].ToString().Trim());
+                        lastKLine.amount = double.Parse(drArr[0]["amount"].ToString().Trim());
                         lastKLine.gid = c.gid;
                         lastKLine.type = "day";
                         lastKLine.startDateTime = DateTime.Parse(DateTime.Now.ToShortDateString() + " 9:30");

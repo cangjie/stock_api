@@ -39,6 +39,9 @@ public class KLine
     public double macd = 0;
     //public double typ = 0;
     public double cci = 0;
+
+    public static DataTable currentKLineTable = new DataTable();
+
     //public double ma = 0;
 
     public KLine()

@@ -31,9 +31,33 @@ public class StockWatcher
 
     public static Thread tRefreshUpdatedKLine = new Thread(tsRefreshUpdatedKLine);
 
+    public static ThreadStart tsLoadCurrentKLineToCache = new ThreadStart(LoadCurrentKLineToCache);
+
+    public static Thread tLoadCurrentKLineToCache = new Thread(tsLoadCurrentKLineToCache);
+
     public StockWatcher()
     {
       
+    }
+
+    public static void LoadCurrentKLineToCache()
+    {
+        for (; true;)
+        {
+            int i = 0;
+            for (; i < 100 && KLine.cacheStatus.Trim().Equals("busy"); i++)
+            {
+                Thread.Sleep(10);
+            }
+            if (!KLine.cacheStatus.Trim().Equals("busy"))
+            {
+                KLine.cacheStatus = "busy";
+                DataTable newCacheTable = DBHelper.GetDataTable(" select * from cache_k_line_day where start_date >  '"    + DateTime.Now.ToShortDateString() + "'  ");
+                KLine.cacheStatus = "idle";
+                KLine.currentKLineTable = newCacheTable;
+            }
+            Thread.Sleep(60000);
+        }
     }
 
     public static void WatchEachStock()
@@ -564,9 +588,17 @@ public class StockWatcher
             Thread.Sleep(10);
         }
 
-        KLine.cacheStatus = "busy";
-        DataTable dt = DBHelper.GetDataTable(" select * from cache_k_line_day where start_date >  '" + DateTime.Now.ToShortDateString() + "'  ");
-        KLine.cacheStatus = "idle";
+        
+        DataTable dt = KLine.currentKLineTable;
+        if (dt.Rows.Count == 0)
+        {
+            KLine.cacheStatus = "busy";
+            dt = DBHelper.GetDataTable(" select * from cache_k_line_day where start_date >  '" + DateTime.Now.ToShortDateString() + "'  ");
+            KLine.cacheStatus = "idle";
+            KLine.currentKLineTable = dt;
+        }
+        
+        
         ArrayList arr = new ArrayList();
         foreach (string filePath in Directory.GetFiles(rootPath + @"\6"))
         {

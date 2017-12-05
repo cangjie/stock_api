@@ -6,6 +6,7 @@
 <script runat="server">
     protected void Page_Load(object sender, EventArgs e)
     {
+        StockWatcher.LoadCurrentKLineToCache();
         Stock s = new Stock("sz000606");
         s.LoadKLineDay();
         StockWatcher.LoadAllKLineToMemory();
