@@ -16,6 +16,18 @@
 
     public static Thread tQ = new Thread(tsQ);
 
+
+    public static void RunData()
+    {
+        if (Util.IsTransacDay(DateTime.Now.Date) && DateTime.Now.Hour == 16)
+        {
+            for (int i = 10; i >= 5; i--)
+            {
+                LogAbove3LineForDays(DateTime.Now.Date, i);
+            }
+        }
+    }
+
     protected void Page_Load(object sender, EventArgs e)
     {
         /*
@@ -33,8 +45,11 @@
         Response.End();
         */
 
+        ThreadStart ts = new ThreadStart(RunData);
+        Thread t = new Thread(ts);
+        t.Start();
 
-
+    
         sort = Util.GetSafeRequestValue(Request, "sort", "3线日,日均涨幅 desc");
         if (!IsPostBack)
         {
@@ -454,12 +469,12 @@
                 dr["信号"] = "🔥";
             }
             highestPrice = KLine.GetHighestPrice(stock.kLineDay, currentIndex - 1, 40);
-            if (kdjDays >= 0 && macdDays >= 0 && todayRaise < 0 && Math.Abs(todayRaise)/avgRaiseRate < 0.34 && kdjDays <= 4 && macdDays <= 4 && kdjDays <= macdDays 
+            if (kdjDays >= 0 && macdDays >= 0 && todayRaise < 0 && Math.Abs(todayRaise)/avgRaiseRate < 0.34 && kdjDays <= 4 && macdDays <= 4 && kdjDays <= macdDays
                 && stock.kLineDay[currentIndex].endDateTime.Date == currentDate.Date)
             {
                 dr["信号"] = dr["信号"].ToString() + "📈";
             }
-            
+
             //if (totalScore !=0 && (stock.kLineDay[currentIndex].highestPrice - settlePrice) / settlePrice < 0.07 )
             dt.Rows.Add(dr);
         }
