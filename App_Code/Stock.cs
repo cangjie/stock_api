@@ -592,8 +592,19 @@ public class Stock
                 {
                     return c.kLine;
                 }
+
+                for (int i = 0; i < 100 && KLine.cacheStatus.Trim().Equals("busy"); i++)
+                {
+                    Thread.Sleep(10);
+                }
+
+                KLine.cacheStatus = "busy";
+
+
                 DataTable dt = DBHelper.GetDataTable(" select * from cache_k_line_day where start_date >  '" 
                     + DateTime.Now.ToShortDateString() + "' and gid = '" + gid.Trim() + "' ");
+
+                KLine.cacheStatus = "idle";
                 if (dt.Rows.Count > 0)
                 {
                     KLine lastKLine = c.kLine[c.kLine.Length - 1];

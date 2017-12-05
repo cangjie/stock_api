@@ -120,11 +120,26 @@ public class KLine
         dt.Dispose();
     }
 
+    public static string cacheStatus = "idle";
+
     public void SaveCache()
     {
+        int i = 0;
+        for (; cacheStatus.Trim().Equals("busy") && i < 100; i++)
+        {
+            System.Threading.Thread.Sleep(10);
+        }
+        if (i >= 100 && cacheStatus.Trim().Equals("buys"))
+        {
+            throw (new Exception("Database is busy"));
+            return;
+        }
+
+        cacheStatus = "busy";
         DBHelper.DeleteData("cache_k_line_day", new string[,] { { "gid", "varchar", gid.Trim() }, { "start_date", "datetime", startDateTime.ToString() } }, Util.conStr);
         try
         {
+            
             DBHelper.InsertData("cache_k_line_day", new string[,] {
                 { "gid", "varchar", gid.Trim()},
                 { "start_date", "datetime", startDateTime.ToString() },
@@ -135,12 +150,13 @@ public class KLine
                 { "volume", "int", volume.ToString()},
                 { "amount", "float", amount.ToString()}
             });
-
+            
         }
         catch(Exception err)
         {
 
         }
+        cacheStatus = "idle";
     }
 
     public bool IsPositive

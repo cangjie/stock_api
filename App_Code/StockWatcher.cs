@@ -559,9 +559,14 @@ public class StockWatcher
             return;
         if (!Directory.Exists(rootPath + @"\300"))
             return;
+        for (int i = 0; i < 100 && KLine.cacheStatus.Trim().Equals("busy"); i++)
+        {
+            Thread.Sleep(10);
+        }
 
+        KLine.cacheStatus = "busy";
         DataTable dt = DBHelper.GetDataTable(" select * from cache_k_line_day where start_date >  '" + DateTime.Now.ToShortDateString() + "'  ");
-
+        KLine.cacheStatus = "idle";
         ArrayList arr = new ArrayList();
         foreach (string filePath in Directory.GetFiles(rootPath + @"\6"))
         {
