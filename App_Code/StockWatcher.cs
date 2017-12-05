@@ -591,7 +591,7 @@ public class StockWatcher
                     lastKLine.amount = double.Parse(drArr[0]["amount"].ToString().Trim());
                     lastKLine.gid = c.gid;
                     lastKLine.type = "day";
-
+                    lastKLine.startDateTime = DateTime.Parse(DateTime.Now.ToShortDateString() + " 9:30");
                     KLine[] kArrNew = new KLine[c.kLine.Length + 1];
                     for (int i = 0; i < c.kLine.Length; i++)
                     {
