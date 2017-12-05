@@ -51,9 +51,11 @@ public class Stock
     public Stock(string gid)
     {
         this.gid = gid;
+        /*
         DataTable dt = DBHelper.GetDataTable(" select top 1 * from " + gid.Trim() + "_timeline where trade > 0   order by ticktime desc ");
         if (dt.Rows.Count > 0)
             drLastTimeline = dt.Rows[0];
+            */
     }
 
     public void LoadKLineDay()

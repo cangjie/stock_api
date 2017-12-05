@@ -305,7 +305,7 @@ public class StockWatcher
 
                 }
             }
-            Thread.Sleep(1000);
+            Thread.Sleep(60000);
         }
     }
 
@@ -321,7 +321,7 @@ public class StockWatcher
                 {
                     gidNeedUpdateKLine.Enqueue(dr["gid"].ToString().Trim());
                 }
-                Thread.Sleep(1000);
+                Thread.Sleep(60000);
             }
             else
             {
