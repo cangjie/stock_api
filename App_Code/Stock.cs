@@ -1188,7 +1188,21 @@ public class Stock
             return ret;
         }
     }
+
+
     public static double[] GetVolumeAndAmount(string gid, DateTime currentDate)
+    {
+        Stock s = new Stock(gid);
+        s.LoadKLineDay();
+        int currentIndex = s.GetItemIndex(currentDate);
+        if (currentIndex < 0)
+        {
+            return new double[] { 0, 0 };
+        }
+        return new double[] { s.kLineDay[currentIndex].volume, s.kLineDay[currentIndex].amount };
+    }
+
+    public static double[] GetVolumeAndAmount1(string gid, DateTime currentDate)
     {
         if (currentDate.ToShortTimeString().Equals("0:00"))
         {
