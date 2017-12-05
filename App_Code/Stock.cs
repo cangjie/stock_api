@@ -585,34 +585,59 @@ public class Stock
             KLine[] kArr = cachedKLine.kLine;
             if (cachedKLine.gid.Trim().Equals(""))
             {
-                kArr = LoadLocalKLineFromDB(gid, type);
-                SaveLocalKLineToCache(gid, type, kArr);
-            }
-            /*
-            else
-            {
-                if ((Util.IsTransacDay(cachedKLine.lastUpdate) && Util.IsTransacTime(cachedKLine.lastUpdate)) || DateTime.Now - cachedKLine.lastUpdate > new TimeSpan(1, 0, 0, 0))
+                string rootPath = Util.physicalPath + @"\cache\k_line_day\"
+                    + StockWatcher.GetMarketType(gid) + @"\" + gid + ".txt";
+                CachedKLine c = StockWatcher.LoadOneKLineToMemory(rootPath);
+                if (c.kLine == null)
                 {
-                    KLine[] kArrLatest = LoadLocalKLineFromDB(gid, type, kArr[kArr.Length - 1].startDateTime);
-                    KLine[] kArrNew = new KLine[kArr.Length + kArrLatest.Length - 1];
-                    for (int i = 0; i < kArr.Length; i++)
-                    {
-                        kArrNew[i] = kArr[i];
-                    }
-                    for (int i = 0; i < kArrLatest.Length; i++)
-                    {
-                        kArrNew[i + kArr.Length - 1] = kArrLatest[i];
-                    }
-                    kArr = kArrNew;
-                    SaveLocalKLineToCache(gid, type, kArr);
+                    return c.kLine;
                 }
+                DataTable dt = DBHelper.GetDataTable(" select * from cache_k_line_day where start_date >  '" 
+                    + DateTime.Now.ToShortDateString() + "' and gid = '" + gid.Trim() + "' ");
+                if (dt.Rows.Count > 0)
+                {
+                    KLine lastKLine = c.kLine[c.kLine.Length - 1];
+                    if (lastKLine.startDateTime.ToShortDateString().Equals(DateTime.Parse(dt.Rows[0]["start_date"].ToString().Trim()).ToShortDateString()))
+                    {
+                        lastKLine.startPrice = double.Parse(dt.Rows[0]["open"].ToString().Trim());
+                        lastKLine.endPrice = double.Parse(dt.Rows[0]["settle"].ToString().Trim());
+                        lastKLine.highestPrice = double.Parse(dt.Rows[0]["highest"].ToString().Trim());
+                        lastKLine.lowestPrice = double.Parse(dt.Rows[0]["lowest"].ToString().Trim());
+                        lastKLine.volume = int.Parse(dt.Rows[0]["volume"].ToString().Trim());
+                        lastKLine.amount = double.Parse(dt.Rows[0]["amount"].ToString().Trim());
+                        c.kLine[c.kLine.Length - 1] = lastKLine;
+                    }
+                    else
+                    {
+                        lastKLine = new KLine();
+                        lastKLine.startPrice = double.Parse(dt.Rows[0]["open"].ToString().Trim());
+                        lastKLine.endPrice = double.Parse(dt.Rows[0]["settle"].ToString().Trim());
+                        lastKLine.highestPrice = double.Parse(dt.Rows[0]["highest"].ToString().Trim());
+                        lastKLine.lowestPrice = double.Parse(dt.Rows[0]["lowest"].ToString().Trim());
+                        lastKLine.volume = int.Parse(dt.Rows[0]["volume"].ToString().Trim());
+                        lastKLine.amount = double.Parse(dt.Rows[0]["amount"].ToString().Trim());
+                        lastKLine.gid = c.gid;
+                        lastKLine.type = "day";
+
+                        KLine[] kArrNew = new KLine[c.kLine.Length + 1];
+                        for (int i = 0; i < c.kLine.Length; i++)
+                        {
+                            kArrNew[i] = c.kLine[i];
+                        }
+                        kArrNew[kArrNew.Length - 1] = lastKLine;
+                        c.kLine = kArrNew;
+                    }
+                }
+                kArr = c.kLine;
+                //kArr = LoadLocalKLineFromDB(gid, type);
+                //SaveLocalKLineToCache(gid, type, kArr);
             }
-            */
             return kArr;
         }
         catch(Exception err)
         {
-            return LoadLocalKLineFromDB(gid, type);
+            //return LoadLocalKLineFromDB(gid, type);
+            return new KLine[0];
         }
         
     }

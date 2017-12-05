@@ -523,13 +523,26 @@
         if (Util.IsTransacDay(Util.GetDay(DateTime.Now)) && DateTime.Now.Hour >= 9)// && DateTime.Now.Minute >= 30  )
         {
             string[] gidArr = Util.GetAllGids();
-            
+
 
             //Stock.GetKLineSetArray(gidArr, "day", 1000);
             foreach (string gid in gidArr)
             {
                 Stock stock = new Stock(gid);
                 stock.LoadKLineDay();
+                bool onErr = false;
+                foreach (KLine k in stock.kLineDay)
+                {
+                    if (k == null)
+                    {
+                        onErr = true;
+                        break;
+                    }
+                }
+                if (onErr)
+                {
+                    continue;
+                }
                 KLine.ComputeMACD(stock.kLineDay);
                 KLine.ComputeRSV(stock.kLineDay);
                 KLine.ComputeKDJ(stock.kLineDay);
