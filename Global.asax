@@ -6,11 +6,13 @@
     {
         Util.physicalPath = Server.MapPath("//");
 
+        StockWatcher.tKLineRefresher.Start();
+
+        //StockWatcher.tRefreshUpdatedKLine.Start();
         StockWatcher.tLoadCurrentKLineToCache.Start();
-        //StockWatcher.tKLineRefresher.Start();
         StockWatcher.tWatchEachStock.Start();
         StockWatcher.tLogQuota.Start();
-        StockWatcher.tRefreshUpdatedKLine.Start();
+        
         
 
     }

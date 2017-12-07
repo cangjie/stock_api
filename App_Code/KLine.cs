@@ -100,7 +100,8 @@ public class KLine
                 { "lowest", "float", lowestPrice.ToString()},
                 { "volume", "int", volume.ToString()},
                 { "amount", "float", amount.ToString()},
-                { "ext_data", "varchar", ""}
+                { "ext_data", "varchar", ""},
+                { "create_date", "datetime", DateTime.Now.ToString()}
             });
         }
         else
@@ -777,6 +778,8 @@ public class KLine
         {
             k.Save();
         }
+
+        /*
         kArr = TimeLine.AssembKLine("30min", kArr1Min);
         foreach (KLine k in kArr)
         {
@@ -787,6 +790,7 @@ public class KLine
         {
             k.Save();
         }
+        */
     }
 
     public static void SearchKDJAlert(string gid, string type, DateTime currentDate)

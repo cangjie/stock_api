@@ -313,16 +313,47 @@ public class StockWatcher
     {
         for (; Util.IsTransacDay(DateTime.Now.Date) && Util.IsTransacTime(DateTime.Now);)
         {
-            DataTable dt = DBHelper.GetDataTable(" select top 1 * from timeline_update where deal = 0 and update_date = '" + DateTime.Now.ToShortDateString() + "' ");
-            foreach (DataRow dr in dt.Rows)
+            DataTable dt = DBHelper.GetDataTable(" select gid from timeline_update where deal = 0 and update_date = '" + DateTime.Now.ToShortDateString() + "' ");
+            string ids = "";
+            for(int i = 0; i < dt.Rows.Count; i++)
             {
-                gidNeedUpdateKLine.Enqueue(dr["gid"].ToString().Trim());
+                //RefreshUpdatedKLineForSingleStock(dt.Rows[i]["gid"].ToString().Trim());
+                try
+                {
+                    KLine.RefreshKLine(dt.Rows[i]["gid"].ToString().Trim(), DateTime.Parse(DateTime.Now.ToShortDateString()));
+                    ids = ids + ((ids.Trim().Equals("") ? "" : ", ") + " '" + dt.Rows[i]["gid"].ToString().Trim()) + "' ";
+                }
+                catch
+                {
+
+
+                }
+                if (i % 100 == 0)
+                {
+                    System.Data.SqlClient.SqlConnection conn = new System.Data.SqlClient.SqlConnection(Util.conStr.Trim());
+                    System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand(" update timeline_update set deal = 1 where deal = 0 and update_date = '"
+                        + DateTime.Now.ToShortDateString() + "' and gid in (" + ids.Trim() + " )", conn);
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                    conn.Close();
+                    cmd.Dispose();
+                    conn.Dispose();
+                    ids = "";
+                }
             }
-            RefreshUpdatedKLineForSingleStock();
-            Thread.Sleep(100);
-            
-            
+            if (!ids.Trim().Equals(""))
+            {
+                System.Data.SqlClient.SqlConnection conn = new System.Data.SqlClient.SqlConnection(Util.conStr.Trim());
+                System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand(" update timeline_update set deal = 1 where deal = 0 and update_date = '"
+                    + DateTime.Now.ToShortDateString() + "' and gid in (" + ids.Trim() + " )", conn);
+                conn.Open();
+                cmd.ExecuteNonQuery();
+                conn.Close();
+                cmd.Dispose();
+                conn.Dispose();
+            }
         }
+        Thread.Sleep(60000);
     }
 
     public static void RefreshUpdatedKLineForSingleStock()
@@ -334,6 +365,20 @@ public class StockWatcher
                 new string[,] { { "gid", "varchar", gid.Trim() }, { "update_date", "datetime", DateTime.Now.ToShortDateString() } }, Util.conStr);
             KLine.RefreshKLine(gid, DateTime.Parse(DateTime.Now.ToShortDateString()));
 
+        }
+        catch
+        {
+
+        }
+    }
+
+    public static void RefreshUpdatedKLineForSingleStock(string gid)
+    {
+        try
+        {
+            DBHelper.UpdateData(" timeline_update ", new string[,] { { "deal", "int", "1" } },
+                new string[,] { { "gid", "varchar", gid.Trim() }, { "update_date", "datetime", DateTime.Now.ToShortDateString() } }, Util.conStr);
+            KLine.RefreshKLine(gid, DateTime.Parse(DateTime.Now.ToShortDateString()));
         }
         catch
         {
