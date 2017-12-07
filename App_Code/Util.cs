@@ -337,7 +337,7 @@ public class Util
             return new KLine[0];
     }
 
-
+    public static int currentKLineIndex = 0;
 
     public static void  RefreshTodayKLine()
     {
@@ -347,6 +347,7 @@ public class Util
             try
             {
                 KLine.RefreshKLine(gidArr[i], DateTime.Parse(DateTime.Now.ToShortDateString()));
+                currentKLineIndex = i;
             }
             catch
             {

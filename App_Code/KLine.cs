@@ -42,6 +42,7 @@ public class KLine
 
     public static DataTable currentKLineTable = new DataTable();
 
+
     //public double ma = 0;
 
     public KLine()

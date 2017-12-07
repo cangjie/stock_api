@@ -6,8 +6,9 @@
 <script runat="server">
     protected void Page_Load(object sender, EventArgs e)
     {
+        Response.Write(Util.currentKLineIndex.ToString());
         //StockWatcher.LoadAllKLineToMemory();
-        StockWatcher.RefreshUpdatedKLine();
+        //StockWatcher.RefreshUpdatedKLine();
 
 
         //StockWatcher.LoadCurrentKLineToCache();
