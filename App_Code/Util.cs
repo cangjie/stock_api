@@ -251,7 +251,7 @@ public class Util
         DateTime dateRef = DateTime.Parse(date.ToShortDateString());
         bool ret = false;
         if ((date >= DateTime.Parse(dateRef.ToShortDateString() + " 9:30") && date <= DateTime.Parse(dateRef.ToShortDateString() + " 12:00"))
-            || (date >= DateTime.Parse(dateRef.ToShortDateString() + " 13:00") && date <= DateTime.Parse(dateRef.ToShortDateString() + " 17:30")))
+            || (date >= DateTime.Parse(dateRef.ToShortDateString() + " 13:00") && date <= DateTime.Parse(dateRef.ToShortDateString() + " 18:30")))
             ret = true;
         return ret && IsTransacDay(dateRef);
     }
@@ -402,14 +402,23 @@ public class Util
 
     public static string[] GetAllGids()
     {
-        DataTable dt = DBHelper.GetDataTable(" select [name]  from dbo.sysobjects where OBJECTPROPERTY(id, N'IsUserTable') = 1 and name like '%timeline'");
-        string[] gidArr = new string[dt.Rows.Count];
-        for (int i = 0; i < dt.Rows.Count; i++)
+        if (KLineCache.allGid.Length == 0)
         {
-            gidArr[i] = dt.Rows[i][0].ToString().Replace("_timeline", "");
+            DataTable dt = DBHelper.GetDataTable(" select [name]  from dbo.sysobjects where OBJECTPROPERTY(id, N'IsUserTable') = 1 and name like '%timeline'");
+            string[] gidArr = new string[dt.Rows.Count];
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                gidArr[i] = dt.Rows[i][0].ToString().Replace("_timeline", "");
+            }
+            dt.Dispose();
+            KLineCache.allGid = gidArr;
+            return gidArr;
         }
-        dt.Dispose();
-        return gidArr;
+        else
+        {
+            return KLineCache.allGid;
+        }
+
     }
 
     public static DateTime GetDay(DateTime dateTime)

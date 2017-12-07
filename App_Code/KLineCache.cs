@@ -8,7 +8,7 @@ using System.Web;
 /// </summary>
 public class KLineCache
 {
-    public static string[] allGid = Util.GetAllGids();
+    public static string[] allGid = new string[0];
 
     public static CachedKLine[] kLineDayCache = new CachedKLine[allGid.Length];
 

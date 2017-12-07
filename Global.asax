@@ -2,45 +2,51 @@
 
 <script runat="server">
 
-    void Application_Start(object sender, EventArgs e) 
+    void Application_Start(object sender, EventArgs e)
     {
         Util.physicalPath = Server.MapPath("//");
+        for (int i = 0; KLineCache.allGid.Length == 0 && i < 100; i++)
+        {
+            Util.GetAllGids();
+        }
+
+        KLineCache.kLineDayCache = new CachedKLine[Util.GetAllGids().Length];
 
         StockWatcher.tKLineRefresher.Start();
         StockWatcher.tRefreshUpdatedKLine.Start();
 
 
-        /*
-        StockWatcher.tLoadCurrentKLineToCache.Start();
+        
+        //StockWatcher.tLoadCurrentKLineToCache.Start();
         StockWatcher.tWatchEachStock.Start();
         StockWatcher.tLogQuota.Start();
-        */
+        
 
         //StockWatcher.tRefreshUpdatedKLine.Start();
-        
-        
+
+
 
     }
-    
-    void Application_End(object sender, EventArgs e) 
+
+    void Application_End(object sender, EventArgs e)
     {
         //  Code that runs on application shutdown
 
     }
-        
-    void Application_Error(object sender, EventArgs e) 
-    { 
+
+    void Application_Error(object sender, EventArgs e)
+    {
         // Code that runs when an unhandled error occurs
 
     }
 
-    void Session_Start(object sender, EventArgs e) 
+    void Session_Start(object sender, EventArgs e)
     {
         // Code that runs when a new session is started
 
     }
 
-    void Session_End(object sender, EventArgs e) 
+    void Session_End(object sender, EventArgs e)
     {
         // Code that runs when a session ends. 
         // Note: The Session_End event is raised only when the sessionstate mode
@@ -48,5 +54,5 @@
         // or SQLServer, the event is not raised.
 
     }
-       
+
 </script>

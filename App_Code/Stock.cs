@@ -581,8 +581,34 @@ public class Stock
         }
     }
 
-
     public static KLine[] LoadLocalKLine(string gid, string type)
+    {
+        if (type.Trim().Equals("day"))
+        {
+            CachedKLine c = KLineCache.GetKLineCache(gid);
+            if (c.gid == null || c.gid.Trim().Equals(""))
+            {
+                CachedKLine cNew = new CachedKLine();
+                cNew.gid = gid.Trim();
+                cNew.type = "day";
+                cNew.kLine = LoadLocalKLineFromDB(gid, type);
+                cNew.lastUpdate = DateTime.Now;
+                KLineCache.UpdateKLineInCache(c);
+                return cNew.kLine;
+            }
+            else
+            {
+                return c.kLine;
+            }
+        }
+        else
+        {
+            return LoadLocalKLineFromDB(gid, type);
+        }
+    }
+
+
+    public static KLine[] LoadLocalKLine1(string gid, string type)
     {
         try
         {
