@@ -344,6 +344,23 @@ public class StockWatcher
                                 c.kLine[c.kLine.Length - 1] = lastKLine;
                                 KLineCache.UpdateKLineInCache(c);
                             }
+                            else
+                            {
+                                lastKLine = new KLine();
+                                lastKLine.startDateTime = DateTime.Parse(DateTime.Now.ToShortDateString() + " 9:30");
+                                lastKLine.startPrice = double.Parse(dt.Rows[i]["price"].ToString());
+                                lastKLine.endPrice = lastKLine.startPrice;
+                                lastKLine.volume = volume;
+                                lastKLine.amount = amount;
+                                KLine[] kArrNew = new KLine[c.kLine.Length + 1];
+                                for (int j = 0; j < c.kLine.Length; j++)
+                                {
+                                    kArrNew[j] = c.kLine[j];
+                                }
+                                kArrNew[c.kLine.Length] = lastKLine;
+                                c.kLine = kArrNew;
+                                KLineCache.UpdateKLineInCache(c);
+                            }
 
                         }
                         ids = ids + ((ids.Trim().Equals("") ? "" : ", ") + " '" + dt.Rows[i]["gid"].ToString().Trim()) + "' ";
