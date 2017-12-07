@@ -313,14 +313,37 @@ public class StockWatcher
     {
         for (; Util.IsTransacDay(DateTime.Now.Date) && Util.IsTransacTime(DateTime.Now);)
         {
-            DataTable dt = DBHelper.GetDataTable(" select gid from timeline_update where deal = 0 and update_date = '" + DateTime.Now.ToShortDateString() + "' ");
+            DataTable dt = DBHelper.GetDataTable(" select * from timeline_update where deal = 0 and update_date = '" + DateTime.Now.ToShortDateString() + "' ");
             string ids = "";
             for(int i = 0; i < dt.Rows.Count; i++)
             {
-                //RefreshUpdatedKLineForSingleStock(dt.Rows[i]["gid"].ToString().Trim());
                 try
                 {
-                    KLine.RefreshKLine(dt.Rows[i]["gid"].ToString().Trim(), DateTime.Parse(DateTime.Now.ToShortDateString()));
+                    string gid = dt.Rows[i]["gid"].ToString().Trim();
+                    CachedKLine c = KLineCache.GetKLineCache(gid);
+                    if (c.gid == null || c.gid.Trim().Equals(""))
+                    {
+                        c.gid = gid;
+                        c.type = "day";
+                        c.kLine = Stock.LoadLocalKLineFromDB(gid, "day");
+                        c.lastUpdate = DateTime.Parse(dt.Rows[i]["detail_time"].ToString().Trim());
+                    }
+                    if (c.lastUpdate <= DateTime.Parse(dt.Rows[i]["detail_time"].ToString().Trim()))
+                    {
+                        KLine lastKLine = c.kLine[c.kLine.Length - 1];
+                        int volume = int.Parse(dt.Rows[i]["volume"].ToString());
+                        double amount = double.Parse(dt.Rows[i]["amount"].ToString());
+
+                        if (lastKLine.startDateTime.Date == DateTime.Now.Date && lastKLine.volume <= volume)
+                        {
+                            lastKLine.endPrice = double.Parse(dt.Rows[i]["price"].ToString());
+                            lastKLine.volume = Math.Max(lastKLine.volume, volume);
+                            lastKLine.amount = Math.Max(lastKLine.amount, amount);
+                            c.kLine[c.kLine.Length - 1] = lastKLine;
+                            KLineCache.UpdateKLineInCache(c);
+                        }
+                        
+                    }
                     ids = ids + ((ids.Trim().Equals("") ? "" : ", ") + " '" + dt.Rows[i]["gid"].ToString().Trim()) + "' ";
                 }
                 catch
@@ -353,7 +376,7 @@ public class StockWatcher
                 conn.Dispose();
             }
         }
-        Thread.Sleep(60000);
+        Thread.Sleep(10000);
     }
 
     public static void RefreshUpdatedKLineForSingleStock()

@@ -6,9 +6,13 @@
 <script runat="server">
     protected void Page_Load(object sender, EventArgs e)
     {
+        //StockWatcher.RefreshUpdatedKLine();
+
+
+
         Response.Write(KLineCache.GetLoadedItemsCount().ToString());
 
-       
+
         //Response.Write(cNew.gid.Trim());
 
 
@@ -19,7 +23,7 @@
         //StockWatcher.LoadCurrentKLineToCache();
         //Stock s = new Stock("sz000606");
         //s.LoadKLineDay();
-        
+
         //s.LoadKLineDay();
         //KLine.RefreshKLine("sh6000Line.LoadTodaysKLine();
         //StockWatcher.LoadAllKLineToMemory();
