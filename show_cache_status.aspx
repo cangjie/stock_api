@@ -63,7 +63,7 @@
 </head>
 <body>
     <form id="form1" runat="server">
-        <%=count %> <%=t.ThreadState.ToString() %>
+        <%=count %>
     <div>
         <asp:DataGrid ID="dg" runat="server" Width="100%" BackColor="White" BorderColor="#999999" BorderStyle="None" BorderWidth="1px" CellPadding="3" GridLines="Vertical" >
             <AlternatingItemStyle BackColor="#DCDCDC" />
