@@ -347,24 +347,25 @@ public class StockWatcher
 
                         }
                         ids = ids + ((ids.Trim().Equals("") ? "" : ", ") + " '" + dt.Rows[i]["gid"].ToString().Trim()) + "' ";
+                        if (i % 100 == 0)
+                        {
+                            System.Data.SqlClient.SqlConnection conn = new System.Data.SqlClient.SqlConnection(Util.conStr.Trim());
+                            System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand(" update timeline_update set deal = 1 where deal = 0 and update_date = '"
+                                + DateTime.Now.ToShortDateString() + "' and gid in (" + ids.Trim() + " )", conn);
+                            conn.Open();
+                            cmd.ExecuteNonQuery();
+                            conn.Close();
+                            cmd.Dispose();
+                            conn.Dispose();
+                            ids = "";
+                        }
                     }
                     catch
                     {
 
 
                     }
-                    if (i % 100 == 0)
-                    {
-                        System.Data.SqlClient.SqlConnection conn = new System.Data.SqlClient.SqlConnection(Util.conStr.Trim());
-                        System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand(" update timeline_update set deal = 1 where deal = 0 and update_date = '"
-                            + DateTime.Now.ToShortDateString() + "' and gid in (" + ids.Trim() + " )", conn);
-                        conn.Open();
-                        cmd.ExecuteNonQuery();
-                        conn.Close();
-                        cmd.Dispose();
-                        conn.Dispose();
-                        ids = "";
-                    }
+                    
                 }
                 if (!ids.Trim().Equals(""))
                 {
