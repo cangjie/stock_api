@@ -62,4 +62,17 @@ public class KLineCache
         }
         return c;
     }
+
+    public static int GetLoadedItemsCount()
+    {
+        int count = 0;
+        foreach (CachedKLine c in kLineDayCache)
+        {
+            if (c.gid != null)
+            {
+                count++;
+            }
+        }
+        return count;
+    }
 }

@@ -6,16 +6,10 @@
 <script runat="server">
     protected void Page_Load(object sender, EventArgs e)
     {
-        Response.Write(KLineCache.kLineDayCache.Length.ToString());
+        Response.Write(KLineCache.GetLoadedItemsCount().ToString());
 
-        CachedKLine c = new CachedKLine();
-        c.gid = "sh600031";
-        c.type = "day";
-        c.kLine = Stock.LoadLocalKLineFromDB("sh600031", "day");
-        c.lastUpdate = DateTime.Now;
-        KLineCache.UpdateKLineInCache(c);
-        CachedKLine cNew = KLineCache.GetKLineCache("sh600031");
-        Response.Write(cNew.gid.Trim());
+       
+        //Response.Write(cNew.gid.Trim());
 
 
         //StockWatcher.LoadAllKLineToMemory();
