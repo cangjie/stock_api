@@ -765,14 +765,6 @@ public class KLine
         foreach (KLine k in kArr)
         {
             k.Save();
-            try
-            {
-                k.SaveCache();
-            }
-            catch
-            {
-                
-            }
         }
         kArr = TimeLine.AssembKLine("1hr", kArr1Min);
         foreach (KLine k in kArr)
