@@ -315,20 +315,21 @@ public class StockWatcher
         {
             if (gidNeedUpdateKLine.Count == 0)
             {
-                Thread.Sleep(60000);
-                DataTable dt = DBHelper.GetDataTable(" select * from timeline_update where deal = 0 and update_date = '" + DateTime.Now.ToShortDateString() + "' ");
+                
+                DataTable dt = DBHelper.GetDataTable(" select top 1 * from timeline_update where deal = 0 and update_date = '" + DateTime.Now.ToShortDateString() + "' ");
                 foreach (DataRow dr in dt.Rows)
                 {
                     gidNeedUpdateKLine.Enqueue(dr["gid"].ToString().Trim());
                 }
-                
+                RefreshUpdatedKLineForSingleStock();
+                Thread.Sleep(100);
             }
             else
             {
-                ThreadStart tsRefreshUpdatedKLineForSingleStock = new ThreadStart(RefreshUpdatedKLineForSingleStock);
-                Thread tRefreshUpdatedKLineForSingleStock = new Thread(tsRefreshUpdatedKLineForSingleStock);
-                tRefreshUpdatedKLineForSingleStock.Start();
-                Thread.Sleep(100);
+                //ThreadStart tsRefreshUpdatedKLineForSingleStock = new ThreadStart(RefreshUpdatedKLineForSingleStock);
+                //Thread tRefreshUpdatedKLineForSingleStock = new Thread(tsRefreshUpdatedKLineForSingleStock);
+                //tRefreshUpdatedKLineForSingleStock.Start();
+                //Thread.Sleep(100);
             }
             
         }
