@@ -27,25 +27,27 @@
         DataTable dt = new DataTable();
         dt.Columns.Add("gid", Type.GetType("System.String"));
         dt.Columns.Add("update_time", Type.GetType("System.DateTime"));
-
+        dt.Columns.Add("last_K_line", Type.GetType("System.DateTime"));
         for (int i = 0; i < KLineCache.kLineDayCache.Length; i++)
         {
             CachedKLine c = (CachedKLine)KLineCache.kLineDayCache[i];
-            if (c.gid != null && !c.gid.Trim().Equals(""))
+            if (c.gid != null && !c.gid.Trim().Equals("") && c.kLine.Length > 0)
             {
                 DataRow dr = dt.NewRow();
                 dr["gid"] = c.gid.Trim();
                 dr["update_time"] = c.lastUpdate;
+                dr["last_K_line"] = c.kLine[c.kLine.Length - 1].startDateTime ;
                 dt.Rows.Add(dr);
             }
         }
         DataTable dtNew = dt.Clone();
         int j = 0;
-        foreach (DataRow dr in dt.Select("", "update_time"))
+        foreach (DataRow dr in dt.Select("", "last_K_line desc"))
         {
             DataRow drNew = dtNew.NewRow();
             drNew["gid"] = dr["gid"].ToString();
             drNew["update_time"] = dr["update_time"];
+            drNew["last_K_line"] = dr["last_K_line"];
             dtNew.Rows.Add(drNew);
             j++;
         }
