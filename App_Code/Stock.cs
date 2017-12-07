@@ -41,6 +41,9 @@ public class Stock
 
     public static ArrayList kLineCacheTemp = new ArrayList();
 
+    public static string[] allGid = Util.GetAllGids();
+
+
     public Stock()
     {
         //
@@ -1321,6 +1324,8 @@ public class Stock
         }
         return 0;
     }
+
+
 
 
 }

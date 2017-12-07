@@ -8,10 +8,13 @@
 
         StockWatcher.tKLineRefresher.Start();
 
-        //StockWatcher.tRefreshUpdatedKLine.Start();
+        /*
         StockWatcher.tLoadCurrentKLineToCache.Start();
         StockWatcher.tWatchEachStock.Start();
         StockWatcher.tLogQuota.Start();
+        */
+
+        //StockWatcher.tRefreshUpdatedKLine.Start();
         
         
 

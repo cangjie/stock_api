@@ -347,6 +347,15 @@ public class Util
             try
             {
                 KLine.RefreshKLine(gidArr[i], DateTime.Parse(DateTime.Now.ToShortDateString()));
+
+                CachedKLine c = new CachedKLine();
+                c.gid = gidArr[i];
+                c.type = "day";
+                c.kLine = Stock.LoadLocalKLineFromDB(c.gid, "day");
+                c.lastUpdate = DateTime.Now;
+                KLineCache.UpdateKLineInCache(c);
+
+
                 currentKLineIndex = i;
             }
             catch
