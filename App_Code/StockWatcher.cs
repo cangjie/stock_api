@@ -313,24 +313,14 @@ public class StockWatcher
     {
         for (; Util.IsTransacDay(DateTime.Now.Date) && Util.IsTransacTime(DateTime.Now);)
         {
-            if (gidNeedUpdateKLine.Count == 0)
+            DataTable dt = DBHelper.GetDataTable(" select top 1 * from timeline_update where deal = 0 and update_date = '" + DateTime.Now.ToShortDateString() + "' ");
+            foreach (DataRow dr in dt.Rows)
             {
-                
-                DataTable dt = DBHelper.GetDataTable(" select top 1 * from timeline_update where deal = 0 and update_date = '" + DateTime.Now.ToShortDateString() + "' ");
-                foreach (DataRow dr in dt.Rows)
-                {
-                    gidNeedUpdateKLine.Enqueue(dr["gid"].ToString().Trim());
-                }
-                RefreshUpdatedKLineForSingleStock();
-                Thread.Sleep(100);
+                gidNeedUpdateKLine.Enqueue(dr["gid"].ToString().Trim());
             }
-            else
-            {
-                //ThreadStart tsRefreshUpdatedKLineForSingleStock = new ThreadStart(RefreshUpdatedKLineForSingleStock);
-                //Thread tRefreshUpdatedKLineForSingleStock = new Thread(tsRefreshUpdatedKLineForSingleStock);
-                //tRefreshUpdatedKLineForSingleStock.Start();
-                //Thread.Sleep(100);
-            }
+            RefreshUpdatedKLineForSingleStock();
+            Thread.Sleep(100);
+            
             
         }
     }
