@@ -368,10 +368,10 @@
             /*
             if (previous3LineIndex == 0)
                 continue;
-
+                */
             if (previous3LinePrice > current3LinePrice)
                 continue;
-                */
+            
             double settlePrice = stock.kLineDay[currentIndex - 1].endPrice;
             double openPrice = stock.kLineDay[currentIndex].startPrice;
             double currentPrice = stock.kLineDay[currentIndex].endPrice;
