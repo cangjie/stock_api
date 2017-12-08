@@ -294,16 +294,14 @@ public class StockWatcher
     {
         for (; true;)
         {
-            if (Util.IsTransacDay(DateTime.Now.Date) && Util.IsTransacTime(DateTime.Now))
+           
+            try
             {
-                try
-                {
-                    Util.RefreshTodayKLine();
-                }
-                catch
-                {
+                Util.RefreshTodayKLine();
+            }
+            catch
+            {
 
-                }
             }
             Thread.Sleep(60000);
         }
