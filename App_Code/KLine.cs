@@ -960,6 +960,10 @@ public class KLine
         for (int i = index - 1; i >= index - days; i--)
         {
             ret = ret || IsCross3Line(kArr, i);
+            if (ret)
+            {
+                break;
+            }
         }
         return ret && IsCross3Line(kArr, index);
 
