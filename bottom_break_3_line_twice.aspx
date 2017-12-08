@@ -328,13 +328,10 @@
         }
         */
 
-        foreach (DataRow drOri in dtOri.Rows)
+        foreach (DataRow drOri in dtOri.Select(" gid = 'sz300101'"))
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
-            if (stock.gid.Trim().Equals("sz002046"))
-            {
-                string aa = "aa";
-            }
+
             stock.LoadKLineDay();
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
@@ -346,18 +343,26 @@
                 continue;
             double current3LinePrice = stock.GetAverageSettlePrice(currentIndex, 3, 3);
             double previous3LinePrice = 0;
-            double previous3LineIndex = 0;
+            //double previous3LineIndex = 0;
+            int adjustDays = 0;
             for (int i = currentIndex - 1; i >= 0; i--)
             {
+                if (stock.kLineDay[i].endPrice < stock.GetAverageSettlePrice(i, 3, 3))
+                {
+                    adjustDays++;
+                }
+                /*
                 if (previous3LineIndex == 0)
                 {
                     double line3PriceTemp = stock.GetAverageSettlePrice(i, 3, 3);
-                    if (stock.kLineDay[i].startPrice >= line3PriceTemp && stock.kLineDay[i].endPrice < line3PriceTemp)
-                        previous3LineIndex = i;
+                    if (stock.kLineDay[i].endPrice  < line3PriceTemp)
+                        previous3LineIndex++;
+
                     if (Math.Min(stock.kLineDay[i].startPrice, stock.kLineDay[i].endPrice) > line3PriceTemp &&
                         stock.kLineDay[i + 1].startPrice < stock.GetAverageSettlePrice(i + 1, 3, 3))
                         previous3LineIndex = i + 1;
                 }
+                */
                 if (KLine.IsCross3Line(stock.kLineDay, i))
                 {
                     previous3LinePrice = stock.GetAverageSettlePrice(i, 3, 3);
@@ -371,7 +376,7 @@
                 */
             if (previous3LinePrice > current3LinePrice)
                 continue;
-            
+
             double settlePrice = stock.kLineDay[currentIndex - 1].endPrice;
             double openPrice = stock.kLineDay[currentIndex].startPrice;
             double currentPrice = stock.kLineDay[currentIndex].endPrice;
@@ -435,7 +440,7 @@
             dr["放量"] = currentVolume / lastDayVolume;
             dr["3线"] = line3Price;
             dr["低点"] = lowestPrice;
-            dr["调整日"] = currentIndex - previous3LineIndex;
+            dr["调整日"] = adjustDays.ToString();// currentIndex - previous3LineIndex;
             dr["F1"] = f1;
             dr["F3"] = f3;
             dr["F5"] = f5;
