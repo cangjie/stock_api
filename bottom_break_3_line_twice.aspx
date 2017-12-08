@@ -327,8 +327,8 @@
                 + currentDate.ToShortDateString() + " 9:30' ";
         }
         */
-
-        foreach (DataRow drOri in dtOri.Rows)
+        foreach (DataRow drOri in dtOri.Select(" gid = 'sz300101'  "))
+        //foreach (DataRow drOri in dtOri.Rows)
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
 
@@ -375,6 +375,9 @@
                 continue;
                 */
             if (previous3LinePrice > current3LinePrice)
+                continue;
+
+            if (adjustDays > 5)
                 continue;
 
             double settlePrice = stock.kLineDay[currentIndex - 1].endPrice;

@@ -8,9 +8,10 @@
     {
         //StockWatcher.RefreshUpdatedKLine();
 
+        Stock s = new Stock(Util.GetSafeRequestValue(Request, "gid", "sz002138"));
+        s.LoadKLineDay();
 
-
-        Response.Write(KLineCache.GetLoadedItemsCount().ToString());
+        Response.Write(s.GetAverageSettlePrice(s.GetItemIndex(DateTime.Now), 3, 3).ToString());
 
 
         //Response.Write(cNew.gid.Trim());
