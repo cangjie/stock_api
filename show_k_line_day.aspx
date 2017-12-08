@@ -6,7 +6,7 @@
 
     //public string jsonData = "";
 
-    public string gid = "sh600031";
+    public string gid = "sz300101";
     public string name = "";
     public double avg3LinePrice = 0;
     public string[] gidArr = new string[] { };
@@ -19,9 +19,10 @@
     protected void Page_Load(object sender, EventArgs e)
     {
         //jsonData = Util.GetWebContent("api/get_k_line.aspx?gid=" + Util.GetSafeRequestValue(Request, "gid", "sh600031"));
-        gid = Util.GetSafeRequestValue(Request, "gid", "sh600031");
+        gid = Util.GetSafeRequestValue(Request, "gid", "sz300101");
         name = Util.GetSafeRequestValue(Request, "name", "");
         gidArr = Util.GetSafeRequestValue(Request, "gids", "").Split(',');
+
         Stock s = new Stock(gid);
         s.LoadKLineDay();
         if (s.kLineDay[s.kLineDay.Length - 1].startDateTime.ToShortDateString().Equals(DateTime.Now.ToShortDateString()))
