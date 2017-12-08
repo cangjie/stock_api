@@ -327,8 +327,8 @@
                 + currentDate.ToShortDateString() + " 9:30' ";
         }
         */
-        foreach (DataRow drOri in dtOri.Select(" gid = 'sz300101'  "))
-        //foreach (DataRow drOri in dtOri.Rows)
+        //foreach (DataRow drOri in dtOri.Select(" gid = 'sz300101'  "))
+        foreach (DataRow drOri in dtOri.Rows)
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
 
