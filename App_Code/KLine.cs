@@ -164,6 +164,23 @@ public class KLine
         cacheStatus = "idle";
     }
 
+    public DateTime HighestTime
+    {
+        get
+        {
+            DataTable dtHighest = DBHelper.GetDataTable(" select max(trade) from  " + gid.Trim() + "_timeline where ticktime >= '" + startDateTime.ToShortDateString()
+                + "'  and ticktime < '" + startDateTime.ToShortDateString() + " 23:59:59' ");
+            if (dtHighest.Rows.Count == 0)
+                return DateTime.MinValue;
+            double highestPrice = double.Parse(dtHighest.Rows[0][0].ToString());
+            dtHighest = DBHelper.GetDataTable(" select top 1 ticktime from " + gid.Trim() + "_timeline where trade = " + highestPrice.ToString() + " and ticktime >= '"
+                + startDateTime.ToShortDateString() + "'  and ticktime < '" + startDateTime.ToShortDateString() + " 23:59:59' order by ticktime ");
+            if (dtHighest.Rows.Count == 0)
+                return DateTime.MinValue;
+            return DateTime.Parse(dtHighest.Rows[0][0].ToString());
+        }
+    }
+
     public bool IsPositive
     {
         get

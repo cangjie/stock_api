@@ -7,6 +7,13 @@
     protected void Page_Load(object sender, EventArgs e)
     {
         //StockWatcher.RefreshUpdatedKLine();
+        DateTime currentDate = DateTime.Parse("2017-12-8");
+
+        DateTime lastTransactDate = Util.GetLastTransactDate(currentDate, 1);
+        DateTime limitUpEndDate = Util.GetLastTransactDate(lastTransactDate, 1);
+        DateTime limitUpStartDate = Util.GetLastTransactDate(limitUpEndDate, 4);
+
+
 
         Stock s = new Stock(Util.GetSafeRequestValue(Request, "gid", "sz002138"));
         s.LoadKLineDay();
