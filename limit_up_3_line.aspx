@@ -237,7 +237,7 @@
         }
 
 
-        
+
         DataRow drTotal = dt.NewRow();
         drTotal["信号"] = "总计";
         drTotal["MACD日"] = totalCount.ToString();
@@ -272,7 +272,7 @@
         dt.Rows.Add(drFire);
         dt.Rows.Add(drStar);
 
-        
+
     }
 
     public static DataTable GetData(DateTime currentDate)
@@ -331,7 +331,7 @@
                 continue;
 
             int limitUpIndex = stock.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
-    
+
 
             int highIndex = 0;
             double lowest = GetFirstLowestPrice(stock.kLineDay, limitUpIndex); ;
@@ -351,6 +351,13 @@
             double line3Price = KLine.GetAverageSettlePrice(stock.kLineDay, currentIndex, 3, 3);
             double currentPrice = stock.kLineDay[currentIndex].endPrice;
             double buyPrice = 0;
+
+
+            if (lowest == 0 || line3Price == 0)
+            {
+                continue;
+            }
+
             if (currentIndex == highIndex)
             {
                 DateTime highestTime = stock.kLineDay[highIndex].HighestTime;
