@@ -332,6 +332,10 @@
 
             int limitUpIndex = stock.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
 
+            if (limitUpIndex == -1)
+            {
+                continue;
+            }
 
             int highIndex = 0;
             double lowest = GetFirstLowestPrice(stock.kLineDay, limitUpIndex); ;

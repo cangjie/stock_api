@@ -622,7 +622,7 @@ public class Stock
                         kArrNew[c.kLine.Length - 1 + i].amount = double.Parse(dt.Rows[i]["amount"].ToString().Trim());
                         kArrNew[c.kLine.Length - 1 + i].gid = c.gid;
                         kArrNew[c.kLine.Length - 1 + i].type = "day";
-                        kArrNew[c.kLine.Length - 1 + i].startDateTime = DateTime.Parse(DateTime.Now.ToShortDateString() + " 9:30");
+                        kArrNew[c.kLine.Length - 1 + i].startDateTime = DateTime.Parse(dt.Rows[i]["start_date"].ToString());
                     }
                     return kArrNew;
                 }
