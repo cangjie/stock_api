@@ -590,10 +590,21 @@ public class Stock
             {
                 string rootPath = Util.physicalPath + @"\cache\k_line_day\"
                     + StockWatcher.GetMarketType(gid) + @"\" + gid + ".txt";
-                c = StockWatcher.LoadOneKLineToMemory(rootPath);
+                if (!rootPath.Trim().Equals("") && System.IO.File.Exists(rootPath))
+                {
+                    try
+                    {
+                        c = StockWatcher.LoadOneKLineToMemory(rootPath);
+                    }
+                    catch
+                    {
+
+                    }
+                }
+                
                 if (c.gid == null || c.gid.Trim().Equals(""))
                 {
-                    StockWatcher.LoadOneKLineToMemory("");
+                    //StockWatcher.LoadOneKLineToMemory("");
                     CachedKLine cNew = new CachedKLine();
                     cNew.gid = gid.Trim();
                     cNew.type = "day";
