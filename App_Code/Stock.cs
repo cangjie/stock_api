@@ -588,13 +588,44 @@ public class Stock
             CachedKLine c = KLineCache.GetKLineCache(gid);
             if (c.gid == null || c.gid.Trim().Equals(""))
             {
-                CachedKLine cNew = new CachedKLine();
-                cNew.gid = gid.Trim();
-                cNew.type = "day";
-                cNew.kLine = LoadLocalKLineFromDB(gid, type);
-                cNew.lastUpdate = DateTime.Now;
-                KLineCache.UpdateKLineInCache(c);
-                return cNew.kLine;
+                string rootPath = Util.physicalPath + @"\cache\k_line_day\"
+                    + StockWatcher.GetMarketType(gid) + @"\" + gid + ".txt";
+                c = StockWatcher.LoadOneKLineToMemory(rootPath);
+                if (c.gid == null || c.gid.Trim().Equals(""))
+                {
+                    StockWatcher.LoadOneKLineToMemory("");
+                    CachedKLine cNew = new CachedKLine();
+                    cNew.gid = gid.Trim();
+                    cNew.type = "day";
+                    cNew.kLine = LoadLocalKLineFromDB(gid, type);
+                    cNew.lastUpdate = DateTime.Now;
+                    KLineCache.UpdateKLineInCache(c);
+                    return cNew.kLine;
+                }
+                else
+                {
+                    KLine lastKLine = c.kLine[c.kLine.Length - 1];
+                    DataTable dt = DBHelper.GetDataTable(" select * from  " + gid + "_k_line where type = 'day' and start_date >= '" + lastKLine.startDateTime.ToString() + "' ");
+                    KLine[] kArrNew = new KLine[c.kLine.Length + dt.Rows.Count - 1];
+                    for (int i = 0; i < c.kLine.Length - 1; i++)
+                    {
+                        kArrNew[i] = c.kLine[i];
+                    }
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        kArrNew[c.kLine.Length - 1 + i] = new KLine();
+                        kArrNew[c.kLine.Length - 1 + i].startPrice = double.Parse(dt.Rows[i]["open"].ToString().Trim());
+                        kArrNew[c.kLine.Length - 1 + i].endPrice = double.Parse(dt.Rows[i]["settle"].ToString().Trim());
+                        kArrNew[c.kLine.Length - 1 + i].highestPrice = double.Parse(dt.Rows[i]["highest"].ToString().Trim());
+                        kArrNew[c.kLine.Length - 1 + i].lowestPrice = double.Parse(dt.Rows[i]["lowest"].ToString().Trim());
+                        kArrNew[c.kLine.Length - 1 + i].volume = int.Parse(dt.Rows[i]["volume"].ToString().Trim());
+                        kArrNew[c.kLine.Length - 1 + i].amount = double.Parse(dt.Rows[i]["amount"].ToString().Trim());
+                        kArrNew[c.kLine.Length - 1 + i].gid = c.gid;
+                        kArrNew[c.kLine.Length - 1 + i].type = "day";
+                        kArrNew[c.kLine.Length - 1 + i].startDateTime = DateTime.Parse(DateTime.Now.ToShortDateString() + " 9:30");
+                    }
+                    return kArrNew;
+                }
             }
             else
             {
