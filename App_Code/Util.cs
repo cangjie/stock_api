@@ -346,7 +346,7 @@ public class Util
         {
             try
             {
-                KLine.RefreshKLine(gidArr[i], DateTime.Parse(DateTime.Now.ToShortDateString()));
+                //KLine.RefreshKLine(gidArr[i], DateTime.Parse(DateTime.Now.ToShortDateString()));
                 CachedKLine c = new CachedKLine();
                 c.gid = gidArr[i];
                 c.type = "day";
