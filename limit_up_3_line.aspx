@@ -371,7 +371,14 @@
                         + "' and ticktime < '" + stock.kLineDay[currentIndex].startDateTime.ToShortDateString() + " 23:59:59' and ticktime > '" + highestTime.ToString() + "' ");
                     if (dtLowestAfterHighest.Rows.Count > 0)
                     {
-                        buyPrice = Math.Max(f3 * 1.005 , double.Parse(dtLowestAfterHighest.Rows[0][0].ToString()));
+                        try
+                        {
+                            buyPrice = Math.Max(f3 * 1.005, double.Parse(dtLowestAfterHighest.Rows[0][0].ToString()));
+                        }
+                        catch
+                        {
+
+                        }
                     }
                 }
             }
