@@ -13,7 +13,7 @@ public class KLine
 {
     public string type = "day";
     public DateTime startDateTime;
-    
+
     public double startPrice = 0;
     public double endPrice = 0;
     public double highestPrice = 0;
@@ -52,7 +52,7 @@ public class KLine
         //
     }
 
-    
+
 
     public DateTime endDateTime
     {
@@ -87,7 +87,7 @@ public class KLine
 
     public void Save()
     {
-        DataTable dt = DBHelper.GetDataTable(" select * from " + gid.Trim() + "_k_line  where type = '" + type.Trim() 
+        DataTable dt = DBHelper.GetDataTable(" select * from " + gid.Trim() + "_k_line  where type = '" + type.Trim()
             + "'  and  start_date = '" + startDateTime.ToString() + "'  ");
         if (dt.Rows.Count == 0)
         {
@@ -144,7 +144,7 @@ public class KLine
         DBHelper.DeleteData("cache_k_line_day", new string[,] { { "gid", "varchar", gid.Trim() }, { "start_date", "datetime", startDateTime.ToString() } }, Util.conStr);
         try
         {
-            
+
             DBHelper.InsertData("cache_k_line_day", new string[,] {
                 { "gid", "varchar", gid.Trim()},
                 { "start_date", "datetime", startDateTime.ToString() },
@@ -155,9 +155,9 @@ public class KLine
                 { "volume", "int", volume.ToString()},
                 { "amount", "float", amount.ToString()}
             });
-            
+
         }
-        catch(Exception err)
+        catch (Exception err)
         {
 
         }
@@ -172,12 +172,19 @@ public class KLine
                 + "'  and ticktime < '" + startDateTime.ToShortDateString() + " 23:59:59' ");
             if (dtHighest.Rows.Count == 0)
                 return DateTime.MinValue;
-            double highestPrice = double.Parse(dtHighest.Rows[0][0].ToString());
-            dtHighest = DBHelper.GetDataTable(" select top 1 ticktime from " + gid.Trim() + "_timeline where trade = " + highestPrice.ToString() + " and ticktime >= '"
-                + startDateTime.ToShortDateString() + "'  and ticktime < '" + startDateTime.ToShortDateString() + " 23:59:59' order by ticktime ");
-            if (dtHighest.Rows.Count == 0)
+            try
+            {
+                double highestPrice = double.Parse(dtHighest.Rows[0][0].ToString());
+                dtHighest = DBHelper.GetDataTable(" select top 1 ticktime from " + gid.Trim() + "_timeline where trade = " + highestPrice.ToString() + " and ticktime >= '"
+                    + startDateTime.ToShortDateString() + "'  and ticktime < '" + startDateTime.ToShortDateString() + " 23:59:59' order by ticktime ");
+                if (dtHighest.Rows.Count == 0)
+                    return DateTime.MinValue;
+                return DateTime.Parse(dtHighest.Rows[0][0].ToString());
+            }
+            catch
+            {
                 return DateTime.MinValue;
-            return DateTime.Parse(dtHighest.Rows[0][0].ToString());
+            }
         }
     }
 
@@ -203,7 +210,7 @@ public class KLine
             return false;
         }
     }
-    
+
     public double EntityHighPrice
     {
         get
@@ -263,12 +270,12 @@ public class KLine
         string code = gid.Replace("sh", "cn_").Replace("sz", "cn_");
         if (code.StartsWith("3"))
             code = "cn_" + code;
-        string startDateStr = startDate.Year.ToString() + startDate.Month.ToString().PadLeft(2, '0') 
+        string startDateStr = startDate.Year.ToString() + startDate.Month.ToString().PadLeft(2, '0')
             + startDate.Day.ToString().PadLeft(2, '0');
         //endDate = endDate.AddDays(1);
         string endDateStr = endDate.Year.ToString() + endDate.Month.ToString().PadLeft(2, '0')
             + endDate.Day.ToString().PadLeft(2, '0');
-        string urlStr = "http://q.stock.sohu.com/hisHq?code=" + code + "&start=" + startDateStr + "&end=" + endDateStr;       
+        string urlStr = "http://q.stock.sohu.com/hisHq?code=" + code + "&start=" + startDateStr + "&end=" + endDateStr;
         return Util.GetWebContent(urlStr);
     }
 
@@ -287,7 +294,7 @@ public class KLine
         }
         object[] oArr = Util.GetArrayFromJsonByKey(kLineJsonStr, "hq");
         KLine[] kLineArr = new KLine[oArr.Length];
-        for (int i = 0; i < oArr.Length; i++ )
+        for (int i = 0; i < oArr.Length; i++)
         {
             object[] kLineData = (object[])oArr[i];
             KLine kLine = new KLine();
@@ -303,11 +310,11 @@ public class KLine
             kLine.change = double.Parse(kLineData[9].ToString().Replace("%", ""));
             kLineArr[oArr.Length - 1 - i] = kLine;
         }
-        if (endDate == DateTime.Parse(DateTime.Now.ToShortDateString()) && Util.IsTransacDay(endDate) 
+        if (endDate == DateTime.Parse(DateTime.Now.ToShortDateString()) && Util.IsTransacDay(endDate)
             && kLineArr[kLineArr.Length - 1].startDateTime < endDate)
         {
             KLine k = GetTodayKLine(gid);
-            if (k!=null)
+            if (k != null)
             {
                 KLine[] kLineArrNew = new KLine[kLineArr.Length + 1];
 
@@ -318,7 +325,7 @@ public class KLine
                 kLineArrNew[kLineArr.Length] = k;
                 return kLineArrNew;
             }
-            
+
         }
         return kLineArr;
     }
@@ -340,7 +347,7 @@ public class KLine
                 k.highestPrice = double.Parse(dt.Rows[0]["high"].ToString());
                 k.lowestPrice = double.Parse(dt.Rows[0]["low"].ToString());
                 k.endPrice = double.Parse(dt.Rows[0]["buy"].ToString());
-                if (k.endPrice==0)
+                if (k.endPrice == 0)
                     k.endPrice = double.Parse(dt.Rows[0]["sell"].ToString());
                 k.gid = stockCode;
                 return k;
@@ -421,10 +428,10 @@ public class KLine
             return -100;
         if (kArr.Length <= index)
             return -100;
-        
+
         int minMacdIndex = index;
         double minMacd = kArr[index].macd;
-        for (int i = index - 1; kArr[i].macd < 0 && i >= 0; i-- )
+        for (int i = index - 1; kArr[i].macd < 0 && i >= 0; i--)
         {
             if (minMacd >= kArr[i].macd)
             {
@@ -445,10 +452,10 @@ public class KLine
         double minJ = kArr[index].j;
         int minJIndex = index;
         int crossTimes = 0;
-        for (int i = index - 1;  crossTimes <= 1 && i >= 0 ; i-- )
+        for (int i = index - 1; crossTimes <= 1 && i >= 0; i--)
         {
-            if ((kArr[i].d > kArr[i].k && kArr[i].k > kArr[i].j && kArr[i+1] .j > kArr[i + 1].k && kArr[i + 1].k > kArr[i + 1].d)
-                || (kArr[i].d < kArr[i].k && kArr[i].k < kArr[i].j && kArr[i + 1].j < kArr[i + 1].k && kArr[i + 1].k < kArr[i + 1].d) )
+            if ((kArr[i].d > kArr[i].k && kArr[i].k > kArr[i].j && kArr[i + 1].j > kArr[i + 1].k && kArr[i + 1].k > kArr[i + 1].d)
+                || (kArr[i].d < kArr[i].k && kArr[i].k < kArr[i].j && kArr[i + 1].j < kArr[i + 1].k && kArr[i + 1].k < kArr[i + 1].d))
             {
                 crossTimes++;
             }
@@ -475,7 +482,7 @@ public class KLine
         {
             return -1;
         }
-        for (int i = index - 1; i >= 0  && s.kLineDay[i].endPrice > s.GetAverageSettlePrice(index, 3, 3) ; i--)
+        for (int i = index - 1; i >= 0 && s.kLineDay[i].endPrice > s.GetAverageSettlePrice(index, 3, 3); i--)
         {
             days++;
         }
@@ -493,7 +500,7 @@ public class KLine
         }
         return subArr;
     }
-    
+
 
     public static void ComputeRSV(KLine[] kArr)
     {
@@ -505,10 +512,10 @@ public class KLine
             double hiPrice = GetHighestPrice(rsvArr);
             kArr[i].rsv = 100 * (kArr[i].endPrice - lowPrice) / (hiPrice - lowPrice);
         }
-       
+
     }
 
-    public static  void ComputeKDJ(KLine[] kArr)
+    public static void ComputeKDJ(KLine[] kArr)
     {
         int valueM1 = 3;
         int valueM2 = 3;
@@ -527,7 +534,7 @@ public class KLine
     }
 
 
-    
+
 
     public static double ema(double[] xArr, int currentIndex, int n)
     {
@@ -579,12 +586,12 @@ public class KLine
             return 0;
         double settle = kArrNew[index].endPrice;
         double folkPrice = 0;
-        for (kArrNew[index].endPrice = kArrNew[index].lowestPrice; 
-             kArrNew[index].endPrice <= kArrNew[index].highestPrice; 
-             kArrNew[index].endPrice = kArrNew[index].endPrice + 0.01 )
+        for (kArrNew[index].endPrice = kArrNew[index].lowestPrice;
+             kArrNew[index].endPrice <= kArrNew[index].highestPrice;
+             kArrNew[index].endPrice = kArrNew[index].endPrice + 0.01)
         {
             KLine.ComputeMACD(kArrNew);
-            if (kArrNew[index-1].macd < 0 && kArrNew[index].macd >=0)
+            if (kArrNew[index - 1].macd < 0 && kArrNew[index].macd >= 0)
             {
                 folkPrice = kArrNew[index].endPrice;
                 break;
@@ -607,7 +614,7 @@ public class KLine
         int n = 14;
         if (kArr.Length < n)
             return;
-        for (int i = kArr.Length - 1; i >= n ; i--)
+        for (int i = kArr.Length - 1; i >= n; i--)
         {
             KLine k = kArr[i];
             //k.typ = (k.highestPrice + k.lowestPrice + k.endPrice) / 3;
@@ -622,10 +629,10 @@ public class KLine
 
             for (int j = i; j > i - n && j >= 0; j--)
             {
-                aveDevValue = aveDevValue + Math.Abs(kArr[j].TYP - avgNTyp); 
+                aveDevValue = aveDevValue + Math.Abs(kArr[j].TYP - avgNTyp);
             }
             aveDevValue = aveDevValue / n;
-            kArr[i].cci = (kArr[i].TYP - avgNTyp) / (0.015* aveDevValue); 
+            kArr[i].cci = (kArr[i].TYP - avgNTyp) / (0.015 * aveDevValue);
         }
 
     }
@@ -633,7 +640,7 @@ public class KLine
     public static void SearchMACDAlert(KLine[] kArr)
     {
         SearchMACDAlert(kArr, 0);
-        
+
     }
 
 
@@ -645,14 +652,14 @@ public class KLine
             {
                 try
                 {
-                    StockWatcher.LogMacd(kArr[i].gid.Trim(), "day", kArr[i].endDateTime, 
+                    StockWatcher.LogMacd(kArr[i].gid.Trim(), "day", kArr[i].endDateTime,
                         KLine.GetMACDFolkPrice(kArr, startIndex), kArr[i].dif, kArr[i].dea, kArr[i].macd);
                 }
                 catch
                 {
 
                 }
-                
+
             }
         }
     }
@@ -742,7 +749,7 @@ public class KLine
 
     public static KLine GetTodayLocalKLine(string gid, string type)
     {
-        DataTable dt = DBHelper.GetDataTable(" select top 1 * from " + gid.Trim() + "_k_line where type = '" 
+        DataTable dt = DBHelper.GetDataTable(" select top 1 * from " + gid.Trim() + "_k_line where type = '"
             + type + "' and  start_date > '" + DateTime.Now.ToShortDateString() + "' ");
         KLine k = new KLine();
         for (int i = 0; i < dt.Rows.Count; i++)
@@ -821,7 +828,7 @@ public class KLine
             if (kArr[i - 1].endPrice >= kArr[i].endPrice)
             {
                 ret++;
-                
+
             }
             else
             {
@@ -933,7 +940,7 @@ public class KLine
                             countQ.Add(j);
                             retValue = "+" + count.ToString();
                         }
-                        else if (count >= 12  && kArr[j].endPrice >= kArr[j - 2].highestPrice)
+                        else if (count >= 12 && kArr[j].endPrice >= kArr[j - 2].highestPrice)
                         {
                             if (kArr[j].highestPrice >= kArr[(int)countQ[8]].endPrice)
                             {
@@ -1012,5 +1019,5 @@ public class KLine
         }
         return highestPrice;
     }
-   
+
 }
