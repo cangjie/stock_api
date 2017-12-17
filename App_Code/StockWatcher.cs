@@ -307,7 +307,7 @@ public class StockWatcher
         }
     }
 
-    public static void RefrshUpdatedKLine()
+    public static void RefreshUpdatedKLine()
     {
         for (; Util.IsTransacDay(DateTime.Now.Date) && Util.IsTransacTime(DateTime.Now);)
         {
