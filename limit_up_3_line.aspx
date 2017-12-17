@@ -384,7 +384,7 @@
                         }
                         catch
                         {
-                            buyPrice = f3 * 1.005;
+                            buyPrice = stock.kLineDay[currentIndex].lowestPrice;
                         }
                     }
                 }
