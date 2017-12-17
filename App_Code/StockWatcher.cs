@@ -307,7 +307,63 @@ public class StockWatcher
         }
     }
 
-    public static void RefreshUpdatedKLine()
+    public static void RefrshUpdatedKLine()
+    {
+        for (; Util.IsTransacDay(DateTime.Now.Date) && Util.IsTransacTime(DateTime.Now);)
+        {
+            try
+            {
+                DataTable dt = DBHelper.GetDataTable(" select * from timeline_update where deal = 0 and update_date = '" + DateTime.Now.ToShortDateString() + "' ");
+                string ids = "";
+                for (int i = 0; i < dt.Rows.Count; i++)
+                {
+                    try
+                    {
+                        string gid = dt.Rows[i]["gid"].ToString().Trim();
+                        CachedKLine c = KLineCache.GetKLineCache(gid);
+                        if (c.gid != null && !c.gid.Trim().Equals(""))
+                        {
+                            KLine lastKLine = c.kLine[c.kLine.Length - 1];
+                            if (lastKLine.startDateTime.Date == DateTime.Now.Date && lastKLine.volume <= int.Parse(dt.Rows[i]["volume"].ToString())
+                                && lastKLine.amount <= double.Parse(dt.Rows[i]["amount"].ToString()) )
+                            {
+                                double currentPrice = double.Parse(dt.Rows[i]["price"].ToString().Trim());
+                                lastKLine.endPrice = currentPrice;
+                                lastKLine.lowestPrice = ((lastKLine.lowestPrice < currentPrice) ? lastKLine.lowestPrice : currentPrice);
+                                lastKLine.highestPrice = ((lastKLine.highestPrice > currentPrice) ? lastKLine.highestPrice : currentPrice);
+                                lastKLine.volume = int.Parse(dt.Rows[i]["volume"].ToString());
+                                lastKLine.amount = double.Parse(dt.Rows[i]["amount"].ToString());
+                            }
+                            c.kLine[c.kLine.Length - 1] = lastKLine;
+                            KLineCache.UpdateKLineInCache(c);
+                        }
+                    }
+                    catch
+                    {
+
+
+                    }
+                    ids = ids + ((ids.Trim().Equals("") ? "" : ", ") + " '" + dt.Rows[i]["gid"].ToString().Trim()) + "' ";
+                }
+                System.Data.SqlClient.SqlConnection conn = new System.Data.SqlClient.SqlConnection(Util.conStr.Trim());
+                System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand(" update timeline_update set deal = 1 where deal = 0 and update_date = '"
+                    + DateTime.Now.ToShortDateString() + "' and gid in (" + ids.Trim() + " )", conn);
+                conn.Open();
+                cmd.ExecuteNonQuery();
+                conn.Close();
+                cmd.Dispose();
+                conn.Dispose();
+            }
+            catch
+            {
+
+            }
+            Thread.Sleep(60000);
+        }
+    }
+
+
+    public static void RefreshUpdatedKLine1()
     {
         for (; Util.IsTransacDay(DateTime.Now.Date) && Util.IsTransacTime(DateTime.Now);)
         {
