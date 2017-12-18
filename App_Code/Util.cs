@@ -352,37 +352,44 @@ public class Util
                 string rootPath = Util.physicalPath + @"\cache\k_line_day\"
                     + StockWatcher.GetMarketType(c.gid) + @"\" + c.gid + ".txt";
                 CachedKLine cTmp = StockWatcher.LoadOneKLineToMemory(rootPath);
-                if (cTmp.kLine[cTmp.kLine.Length - 1].startDateTime.Date == Util.GetLastTransactDate(DateTime.Now.Date, 1).Date 
-                    && Stock.todayKLineArr != null)
+                try
                 {
-                    for (int j = 0; j < Stock.todayKLineArr.Length; j++)
+                    if (cTmp.kLine != null && cTmp.kLine.Length > 0 && cTmp.kLine[cTmp.kLine.Length - 1] != null && cTmp.kLine[cTmp.kLine.Length - 1].startDateTime.Date == Util.GetLastTransactDate(DateTime.Now.Date, 1).Date
+                        && Stock.todayKLineArr != null)
                     {
-                        KLine k = Stock.todayKLineArr[j];
-                        if (k.gid.Trim().Equals(c.gid.Trim()))
+                        for (int j = 0; j < Stock.todayKLineArr.Length; j++)
                         {
-                            KLine[] kArrNew = new KLine[cTmp.kLine.Length + 1];
-                            for (int m = 0; m < cTmp.kLine.Length ; m++)
+                            KLine k = Stock.todayKLineArr[j];
+                            if (k.gid.Trim().Equals(c.gid.Trim()))
                             {
-                                kArrNew[m] = cTmp.kLine[m];
+                                KLine[] kArrNew = new KLine[cTmp.kLine.Length + 1];
+                                for (int m = 0; m < cTmp.kLine.Length; m++)
+                                {
+                                    kArrNew[m] = cTmp.kLine[m];
+                                }
+                                kArrNew[kArrNew.Length - 1] = k;
+                                c.kLine = kArrNew;
+                                break;
                             }
-                            kArrNew[kArrNew.Length - 1] = k;
-                            c.kLine = kArrNew;
-                            break;
                         }
                     }
-                }
-                else
-                {
+                    else
+                    {
 
-                    c.kLine = Stock.LoadLocalKLineFromDB(c.gid, "day");
-                    c.lastUpdate = DateTime.Now;
-                    KLineCache.UpdateKLineInCache(c);
-                    currentKLineIndex = i;
+                        c.kLine = Stock.LoadLocalKLineFromDB(c.gid, "day");
+                        c.lastUpdate = DateTime.Now;
+                        KLineCache.UpdateKLineInCache(c);
+                        currentKLineIndex = i;
+                    }
+                }
+                catch(Exception errMsg)
+                {
+                    Console.WriteLine(errMsg.ToString());
                 }
             }
-            catch
+            catch(Exception err)
             {
-
+                Console.WriteLine(err.ToString());
             }
         }
     }
