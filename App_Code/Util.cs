@@ -357,6 +357,7 @@ public class Util
                     if (cTmp.kLine != null && cTmp.kLine.Length > 0 && cTmp.kLine[cTmp.kLine.Length - 1] != null && cTmp.kLine[cTmp.kLine.Length - 1].startDateTime.Date == Util.GetLastTransactDate(DateTime.Now.Date, 1).Date
                         && Stock.todayKLineArr != null)
                     {
+                        bool done = false;
                         for (int j = 0; j < Stock.todayKLineArr.Length; j++)
                         {
                             KLine k = Stock.todayKLineArr[j];
@@ -371,9 +372,17 @@ public class Util
                                 c.kLine = kArrNew;
                                 c.lastUpdate = DateTime.Now;
                                 KLineCache.UpdateKLineInCache(c);
+                                done = true;
                                 break;
                             }
                         }
+                        if (!done)
+                        {
+                            c.kLine = Stock.LoadLocalKLineFromDB(c.gid, "day");
+                            c.lastUpdate = DateTime.Now;
+                            KLineCache.UpdateKLineInCache(c);
+                        }
+                        currentKLineIndex = i;
                     }
                     else
                     {
