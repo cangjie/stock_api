@@ -369,6 +369,7 @@ public class Util
                                 }
                                 kArrNew[kArrNew.Length - 1] = k;
                                 c.kLine = kArrNew;
+                                c.lastUpdate = DateTime.Now;
                                 KLineCache.UpdateKLineInCache(c);
                                 break;
                             }
