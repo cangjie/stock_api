@@ -348,7 +348,7 @@ public class StockWatcher
                 System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand(" update timeline_update set deal = 1 where deal = 0 and update_date = '"
                     + DateTime.Now.ToShortDateString() + "' and gid in (" + ids.Trim() + " )", conn);
                 conn.Open();
-                //cmd.ExecuteNonQuery();
+                cmd.ExecuteNonQuery();
                 conn.Close();
                 cmd.Dispose();
                 conn.Dispose();
