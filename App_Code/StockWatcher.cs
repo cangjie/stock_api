@@ -309,7 +309,7 @@ public class StockWatcher
 
     public static void RefreshUpdatedKLine()
     {
-        for (; Util.IsTransacDay(DateTime.Now.Date) && Util.IsTransacTime(DateTime.Now);)
+        for (; Util.IsTransacDay(DateTime.Now.Date) && !Util.IsTransacTime(DateTime.Now);)
         {
             try
             {
@@ -324,8 +324,7 @@ public class StockWatcher
                         if (c.gid != null && !c.gid.Trim().Equals(""))
                         {
                             KLine lastKLine = c.kLine[c.kLine.Length - 1];
-                            if (lastKLine.startDateTime.Date == DateTime.Now.Date && lastKLine.volume <= int.Parse(dt.Rows[i]["volume"].ToString())
-                                && lastKLine.amount <= double.Parse(dt.Rows[i]["amount"].ToString()) )
+                            if (lastKLine.startDateTime.Date == DateTime.Now.Date)
                             {
                                 double currentPrice = double.Parse(dt.Rows[i]["price"].ToString().Trim());
                                 lastKLine.endPrice = currentPrice;
@@ -349,7 +348,7 @@ public class StockWatcher
                 System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand(" update timeline_update set deal = 1 where deal = 0 and update_date = '"
                     + DateTime.Now.ToShortDateString() + "' and gid in (" + ids.Trim() + " )", conn);
                 conn.Open();
-                cmd.ExecuteNonQuery();
+                //cmd.ExecuteNonQuery();
                 conn.Close();
                 cmd.Dispose();
                 conn.Dispose();
@@ -358,8 +357,9 @@ public class StockWatcher
             {
 
             }
-            Thread.Sleep(60000);
+            
         }
+        Thread.Sleep(60000);
     }
 
 

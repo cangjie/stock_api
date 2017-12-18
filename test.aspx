@@ -6,7 +6,12 @@
 <script runat="server">
     protected void Page_Load(object sender, EventArgs e)
     {
+
+        StockWatcher.RefreshUpdatedKLine();
+
         //StockWatcher.RefreshUpdatedKLine();
+
+        /*
         DateTime currentDate = DateTime.Parse("2017-12-8");
 
         DateTime lastTransactDate = Util.GetLastTransactDate(currentDate, 1);
@@ -19,7 +24,7 @@
         s.LoadKLineDay();
 
         Response.Write(s.GetAverageSettlePrice(s.GetItemIndex(DateTime.Now), 3, 3).ToString());
-
+        */
 
         //Response.Write(cNew.gid.Trim());
 

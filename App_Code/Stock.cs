@@ -1266,7 +1266,7 @@ public class Stock
     }
 
 
-    public static double[] GetVolumeAndAmount(string gid, DateTime currentDate)
+    public static double[] GetVolumeAndAmount1(string gid, DateTime currentDate)
     {
         Stock s = new Stock(gid);
         s.LoadKLineDay();
@@ -1278,14 +1278,15 @@ public class Stock
         return new double[] { s.kLineDay[currentIndex].volume, s.kLineDay[currentIndex].amount };
     }
 
-    public static double[] GetVolumeAndAmount1(string gid, DateTime currentDate)
+    public static double[] GetVolumeAndAmount(string gid, DateTime currentDate)
     {
         if (currentDate.ToShortTimeString().Equals("0:00"))
         {
             currentDate = currentDate.AddHours(16);
         }
 
-        DataTable dtTimeline = DBHelper.GetDataTable(" select top 1 * from  " + gid.Trim() + "_timeline where ticktime <= '" + currentDate.ToString() + "' order by ticktime desc ");
+        //DataTable dtTimeline = DBHelper.GetDataTable(" select top 1 * from  " + gid.Trim() + "_timeline where ticktime <= '" + currentDate.ToString() + "' order by ticktime desc ");
+        DataTable dtTimeline = new DataTable();
         DataTable dtNormal = DBHelper.GetDataTable(" select top 1 * from  " + gid + " where convert(datetime, date + ' ' + time )  <= '" + currentDate.ToString() + "'  order by convert(datetime, date + ' ' + time ) desc   ");
         double volmue = 0;
         double amount = 0;
