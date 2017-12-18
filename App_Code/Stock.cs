@@ -39,6 +39,8 @@ public class Stock
 
     public static ArrayList kLineCache = new ArrayList();
 
+    public static KLine[] todayKLineArr;
+
     public static ArrayList kLineCacheTemp = new ArrayList();
 
     public static string[] allGid = Util.GetAllGids();

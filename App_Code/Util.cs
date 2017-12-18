@@ -346,14 +346,39 @@ public class Util
         {
             try
             {
-                //KLine.RefreshKLine(gidArr[i], DateTime.Parse(DateTime.Now.ToShortDateString()));
                 CachedKLine c = new CachedKLine();
                 c.gid = gidArr[i];
                 c.type = "day";
-                c.kLine = Stock.LoadLocalKLineFromDB(c.gid, "day");
-                c.lastUpdate = DateTime.Now;
-                KLineCache.UpdateKLineInCache(c);
-                currentKLineIndex = i;
+                string rootPath = Util.physicalPath + @"\cache\k_line_day\"
+                    + StockWatcher.GetMarketType(c.gid) + @"\" + c.gid + ".txt";
+                CachedKLine cTmp = StockWatcher.LoadOneKLineToMemory(rootPath);
+                if (cTmp.kLine[cTmp.kLine.Length - 1].startDateTime.Date == Util.GetLastTransactDate(DateTime.Now.Date, 1).Date 
+                    && Stock.todayKLineArr != null)
+                {
+                    for (int j = 0; j < Stock.todayKLineArr.Length; j++)
+                    {
+                        KLine k = Stock.todayKLineArr[j];
+                        if (k.gid.Trim().Equals(c.gid.Trim()))
+                        {
+                            KLine[] kArrNew = new KLine[cTmp.kLine.Length + 1];
+                            for (int m = 0; m < cTmp.kLine.Length ; m++)
+                            {
+                                kArrNew[m] = cTmp.kLine[m];
+                            }
+                            kArrNew[kArrNew.Length - 1] = k;
+                            c.kLine = kArrNew;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+
+                    c.kLine = Stock.LoadLocalKLineFromDB(c.gid, "day");
+                    c.lastUpdate = DateTime.Now;
+                    KLineCache.UpdateKLineInCache(c);
+                    currentKLineIndex = i;
+                }
             }
             catch
             {

@@ -31,15 +31,19 @@ public class StockWatcher
 
     public static Thread tRefreshUpdatedKLine = new Thread(tsRefreshUpdatedKLine);
 
-    public static ThreadStart tsLoadCurrentKLineToCache = new ThreadStart(LoadCurrentKLineToCache);
+    //public static ThreadStart tsLoadCurrentKLineToCache = new ThreadStart(LoadCurrentKLineToCache);
 
-    public static Thread tLoadCurrentKLineToCache = new Thread(tsLoadCurrentKLineToCache);
+    //public static Thread tLoadCurrentKLineToCache = new Thread(tsLoadCurrentKLineToCache);
+
+    public static ThreadStart tsLoadTodayKLine = new ThreadStart(LoadTodayKLine);
+
+    public static Thread tLoadTodayKLine = new Thread(tsLoadTodayKLine);
 
     public StockWatcher()
     {
       
     }
-
+    /*
     public static void LoadCurrentKLineToCache()
     {
         for (; true;)
@@ -63,6 +67,47 @@ public class StockWatcher
                 }
                 KLine.cacheStatus = "idle";
                 
+            }
+            Thread.Sleep(60000);
+        }
+    }
+
+*/
+    public static void LoadTodayKLine()
+    {
+        for (; true;)
+        {
+            if (Util.IsTransacDay(DateTime.Now.Date) && Util.IsTransacTime(DateTime.Now))
+            {
+                try
+                {
+                    DataTable dt = DBHelper.GetDataTable(" select * from cache_k_line_day where start_date >= '" + DateTime.Now.ToShortDateString() + "' ");
+                    KLine[] kArr = new KLine[dt.Rows.Count];
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        try
+                        {
+                            kArr[i] = new KLine();
+                            kArr[i].gid = dt.Rows[i]["gid"].ToString().Trim();
+                            kArr[i].startDateTime = DateTime.Parse(dt.Rows[i]["start_date"].ToString().Trim());
+                            kArr[i].highestPrice = double.Parse(dt.Rows[i]["highest"].ToString().Trim());
+                            kArr[i].lowestPrice = double.Parse(dt.Rows[i]["lowest"].ToString().Trim());
+                            kArr[i].startPrice = double.Parse(dt.Rows[i]["open"].ToString().Trim());
+                            kArr[i].endPrice = double.Parse(dt.Rows[i]["settle"].ToString().Trim());
+                            kArr[i].volume = int.Parse(dt.Rows[i]["volume"].ToString().Trim());
+                            kArr[i].amount = double.Parse(dt.Rows[i]["amount"].ToString().Trim());
+                        }
+                        catch
+                        {
+
+                        }
+                    }
+                    Stock.todayKLineArr = kArr;
+                }
+                catch
+                {
+
+                }
             }
             Thread.Sleep(60000);
         }

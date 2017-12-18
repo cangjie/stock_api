@@ -7,7 +7,9 @@
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        StockWatcher.RefreshUpdatedKLine();
+        Util.RefreshTodayKLine();
+
+        //StockWatcher.RefreshUpdatedKLine();
 
         //StockWatcher.RefreshUpdatedKLine();
 
