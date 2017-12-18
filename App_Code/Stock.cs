@@ -1290,8 +1290,8 @@ public class Stock
         DataTable dtNormal = DBHelper.GetDataTable(" select top 1 * from  " + gid + " where convert(datetime, date + ' ' + time )  <= '" + currentDate.ToString() + "'  order by convert(datetime, date + ' ' + time ) desc   ");
         double volmue = 0;
         double amount = 0;
-        DateTime timeLineTick = DateTime.Parse(DateTime.Now.ToShortDateString());
-        DateTime normalTick = DateTime.Parse(DateTime.Now.ToShortDateString());
+        DateTime timeLineTick = DateTime.MinValue;
+        DateTime normalTick = DateTime.MinValue;
         if (dtTimeline.Rows.Count > 0)
         {
             //volmue = double.Parse(dtTimeline.Rows[0]["volume"].ToString());
