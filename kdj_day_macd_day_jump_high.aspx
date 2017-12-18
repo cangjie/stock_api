@@ -522,53 +522,63 @@
     {
         if (Util.IsTransacDay(Util.GetDay(DateTime.Now)) && DateTime.Now.Hour >= 9)// && DateTime.Now.Minute >= 30  )
         {
-            string[] gidArr = Util.GetAllGids();
-
-
-            //Stock.GetKLineSetArray(gidArr, "day", 1000);
-            foreach (string gid in gidArr)
+            try
             {
-                Stock stock = new Stock(gid);
-                stock.LoadKLineDay();
-                bool onErr = false;
-                foreach (KLine k in stock.kLineDay)
+
+
+                string[] gidArr = Util.GetAllGids();
+                //Stock.GetKLineSetArray(gidArr, "day", 1000);
+                foreach (string gid in gidArr)
                 {
-                    if (k == null)
+                    Stock stock = new Stock(gid);
+                    stock.LoadKLineDay();
+                    bool onErr = false;
+                    foreach (KLine k in stock.kLineDay)
                     {
-                        onErr = true;
-                        break;
-                    }
-                }
-                if (onErr)
-                {
-                    continue;
-                }
-                KLine.ComputeMACD(stock.kLineDay);
-                KLine.ComputeRSV(stock.kLineDay);
-                KLine.ComputeKDJ(stock.kLineDay);
-                if (stock.kLineDay.Length > 0 && stock.kLineDay[stock.kLineDay.Length - 1].startDateTime.ToShortDateString().Equals(DateTime.Now.ToShortDateString()))
-                {
-                    int j = stock.kLineDay.Length - 1;
-                    if (KLine.IsJumpHigh(stock.kLineDay, j))
-                    {
-                        int macdDays = stock.macdDays(j);
-                        int kdjDays = stock.kdjDays(j);
-                        try
+                        if (k == null)
                         {
-                            DBHelper.InsertData("alert_jump_high", new string[,] { {"gid", "varhcar", stock.gid },
+                            onErr = true;
+                            break;
+                        }
+                    }
+                    if (onErr)
+                    {
+                        continue;
+                    }
+                    KLine.ComputeMACD(stock.kLineDay);
+                    KLine.ComputeRSV(stock.kLineDay);
+                    KLine.ComputeKDJ(stock.kLineDay);
+                    if (stock.kLineDay.Length > 0 && stock.kLineDay[stock.kLineDay.Length - 1].startDateTime.ToShortDateString().Equals(DateTime.Now.ToShortDateString()))
+                    {
+                        int j = stock.kLineDay.Length - 1;
+                        if (KLine.IsJumpHigh(stock.kLineDay, j))
+                        {
+                            int macdDays = stock.macdDays(j);
+                            int kdjDays = stock.kdjDays(j);
+                            try
+                            {
+                                DBHelper.InsertData("alert_jump_high", new string[,] { {"gid", "varhcar", stock.gid },
                                 {"alert_time", "datetime", Util.GetDay(stock.kLineDay[j].endDateTime).ToShortDateString() },
                                 {"alert_price", "float", stock.kLineDay[j].startPrice.ToString() },
                                 {"settle", "float", stock.kLineDay[j - 1].endPrice.ToString() },
                                 {"macd_days", "int", macdDays.ToString() },
                                 {"kdj_days", "int", kdjDays.ToString() } });
-                        }
-                        catch
-                        {
+                            }
+                            catch
+                            {
 
+                            }
                         }
                     }
                 }
+
+
             }
+            catch
+            {
+
+            }
+
         }
     }
 
