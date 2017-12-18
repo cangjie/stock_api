@@ -1287,8 +1287,8 @@ public class Stock
             currentDate = currentDate.AddHours(16);
         }
 
-        //DataTable dtTimeline = DBHelper.GetDataTable(" select top 1 * from  " + gid.Trim() + "_timeline where ticktime <= '" + currentDate.ToString() + "' order by ticktime desc ");
-        DataTable dtTimeline = new DataTable();
+        DataTable dtTimeline = DBHelper.GetDataTable(" select top 1 * from  " + gid.Trim() + "_timeline where ticktime <= '" + currentDate.ToString() + "' order by ticktime desc ");
+        //DataTable dtTimeline = new DataTable();
         DataTable dtNormal = DBHelper.GetDataTable(" select top 1 * from  " + gid + " where convert(datetime, date + ' ' + time )  <= '" + currentDate.ToString() + "'  order by convert(datetime, date + ' ' + time ) desc   ");
         double volmue = 0;
         double amount = 0;
