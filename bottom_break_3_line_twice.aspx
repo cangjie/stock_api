@@ -30,7 +30,7 @@
                     tQ.Abort();
                     tsQ = new ThreadStart(StockWatcher.LogQuota);
                     tQ = new Thread(tsQ);
-                    tQ.Start();
+                    //tQ.Start();
                 }
             }
             catch(Exception err)
@@ -44,7 +44,7 @@
                 {
                     t.Abort();
                     t = new Thread(ts);
-                    t.Start();
+                    //t.Start();
 
                 }
             }
