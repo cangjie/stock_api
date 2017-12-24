@@ -20,9 +20,6 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-
-        Response.Redirect("limit_up_3_line_confirmed_f3_f5.aspx", true);
-
         sort = Util.GetSafeRequestValue(Request, "sort", "调整,MACD日,KDJ日");
         if (!IsPostBack)
         {
@@ -345,7 +342,7 @@
             int highIndex = 0;
             double lowest = GetFirstLowestPrice(stock.kLineDay, limitUpIndex); ;
             double highest = 0;
-            for (int i = limitUpIndex; i <= currentIndex; i++)
+            for (int i = limitUpIndex; i < currentIndex; i++)
             {
                 if (highest < stock.kLineDay[i].highestPrice)
                 {
