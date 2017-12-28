@@ -1029,7 +1029,7 @@ public class Stock
         if (index > 1)
         {
             if ((kLineDay[index].endPrice - kLineDay[index - 1].endPrice )/ kLineDay[index - 1].endPrice >= 0.0995
-                && kLineDay[index - 1].endPrice == kLineDay[index - 1].highestPrice)
+                && kLineDay[index].endPrice == kLineDay[index].highestPrice)
             {
                 return true;
             }
