@@ -368,7 +368,7 @@
             {
                 continue;
             }
-
+            /*
             if (currentIndex == highIndex)
             {
                 DateTime highestTime = stock.kLineDay[highIndex].HighestTime;
@@ -391,10 +391,12 @@
             }
             else
             {
-                if (stock.kLineDay[currentIndex].startPrice > f3 * 0.995 && stock.kLineDay[currentIndex].lowestPrice < f3 * 1.005 )
-                {
+                
+            }
+            */
+            if (stock.kLineDay[currentIndex].startPrice > f3 * 0.995 && stock.kLineDay[currentIndex].lowestPrice < f3 * 1.005 )
+            {
                     buyPrice = f3 * 1.005 ;
-                }
             }
             if (buyPrice == 0)
             {
@@ -460,19 +462,18 @@
                 DataTable dt = GetData(currentDate);
                 foreach(DataRow dr in dt.Rows)
                 {
-                    if (dr["信号"].ToString().IndexOf("🛍️") >= 0
-                        && (dr["信号"].ToString().IndexOf("📈") >= 0 || dr["信号"].ToString().IndexOf("🔥") >= 0 || dr["信号"].ToString().IndexOf("🌟") >= 0))
+                    if ((dr["信号"].ToString().IndexOf("📈") >= 0 || dr["信号"].ToString().IndexOf("🔥") >= 0 || dr["信号"].ToString().IndexOf("🌟") >= 0))
                     {
                         string message = dr["信号"].ToString().Trim() + " " + dr["代码"].ToString() + " " + dr["名称"].ToString();
                         double price = Math.Round(double.Parse(dr["买入"].ToString()), 2);
                         if (StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()),
                                 dr["代码"].ToString().Trim(),
-                                "break_3_line_twice",
+                                "limit_up_box_f3",
                                 dr["名称"].ToString().Trim(),
                                 "买入价：" + price.ToString() + " " + message.Trim()))
                         {
                             StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(),
-                                dr["名称"].ToString() + " " + message, price, "break_3_line_twice");
+                                dr["名称"].ToString() + " " + message, price, "limit_up_box_f3");
                         }
 
                     }
