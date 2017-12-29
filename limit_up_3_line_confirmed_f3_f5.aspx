@@ -408,7 +408,7 @@
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
             dr["信号"] = (buyPrice == f3 * 1.005) ? "📈" : "";
-            if (Math.Abs(currentPrice - buyPrice) / buyPrice < 0.005)
+            if (Math.Abs(currentPrice - buyPrice) / buyPrice < 0.005  && dr["信号"].ToString().IndexOf("📈") >= 0 )
             {
                 dr["信号"] = dr["信号"] + "🛍️";
             }
