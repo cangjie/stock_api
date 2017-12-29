@@ -542,7 +542,7 @@
                 <SelectedItemStyle BackColor="#008A8C" Font-Bold="True" ForeColor="White" />
                 </asp:DataGrid></td>
             </tr>
- 
+            <tr><td><%=t.ThreadState.ToString() %></td></tr>
         </table>
     </div>
     </form>
