@@ -6,7 +6,7 @@
 <script runat="server">
     protected void Page_Load(object sender, EventArgs e)
     {
-        //KLine.RefreshKLine("sz002655", DateTime.Parse(DateTime.Now.ToShortDateString()));
+        KLine.RefreshKLine("sh603860", DateTime.Parse(DateTime.Now.ToShortDateString()));
         //Util.RefreshTodayKLine();
 
         //StockWatcher.RefreshUpdatedKLine();

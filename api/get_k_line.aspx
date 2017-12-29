@@ -3,13 +3,13 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        string gid = Util.GetSafeRequestValue(Request, "gid", "sh600031");
+        string gid = Util.GetSafeRequestValue(Request, "gid", "sh603396");
 
         DateTime endDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "end", DateTime.Now.ToShortDateString()));
         DateTime startDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "start", DateTime.Now.AddYears(-1).ToShortDateString()));
         Stock stock = new Stock(gid);
         stock.LoadKLineDay();
-        KLine[] kArr = KLine.GetKLine("day", gid, startDate, endDate);
+        KLine[] kArr = stock.kLineDay;
         ArrayList kLineArr = new ArrayList();
         for (DateTime i = startDate; i <= endDate; i = i.AddDays(1))
         {
