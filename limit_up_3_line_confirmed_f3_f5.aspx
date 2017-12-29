@@ -396,7 +396,7 @@
             */
             if (stock.kLineDay[currentIndex].startPrice > f3 * 0.995 && stock.kLineDay[currentIndex].lowestPrice < f3 * 1.005 )
             {
-                    buyPrice = f3 * 1.005 ;
+                buyPrice = f3 * 1.005 ;
             }
             if (buyPrice == 0)
             {
@@ -408,6 +408,10 @@
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
             dr["信号"] = (buyPrice == f3 * 1.005) ? "📈" : "";
+            if (Math.Abs(currentPrice - buyPrice) / buyPrice < 0.005)
+            {
+                dr["信号"] = dr["信号"] + "🛍️";
+            }
             dr["调整"] = currentIndex - limitUpIndex;
             dr["缩量"] = volumeReduce;
             dr["现高"] = highest;
@@ -462,7 +466,8 @@
                 DataTable dt = GetData(currentDate);
                 foreach(DataRow dr in dt.Rows)
                 {
-                    if ((dr["信号"].ToString().IndexOf("📈") >= 0 || dr["信号"].ToString().IndexOf("🔥") >= 0 || dr["信号"].ToString().IndexOf("🌟") >= 0))
+                    if (  dr["信号"].ToString().IndexOf("🛍️") >= 0  &&  
+                        (dr["信号"].ToString().IndexOf("📈") >= 0 || dr["信号"].ToString().IndexOf("🔥") >= 0 || dr["信号"].ToString().IndexOf("🌟") >= 0))
                     {
                         string message = dr["信号"].ToString().Trim() + " " + dr["代码"].ToString() + " " + dr["名称"].ToString();
                         double price = Math.Round(double.Parse(dr["买入"].ToString()), 2);
