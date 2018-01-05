@@ -91,7 +91,7 @@
         DateTime currentDate = calendar.SelectedDate;
         if (currentDate.Year < 2000)
             currentDate = DateTime.Now;
-        DataTable dtOri = GetData(currentDate, Util.GetSafeRequestValue(Request, "days", "5,6,7,8,9,10"));
+        DataTable dtOri = GetData(currentDate, Util.GetSafeRequestValue(Request, "days", "8,9,10"));
         DataRow[] drOriArr = dtOri.Select(Util.GetSafeRequestValue(Request, "whereclause", "   ").Trim(), sort);
         return RenderHtml(drOriArr);
     }
