@@ -476,7 +476,7 @@
 
     public static void LogAbove3LineForDays(DateTime currentDate, int days)
     {
-        DateTime  break3LineDate = Util.GetLastTransactDate(currentDate, days-1);
+        DateTime  break3LineDate = Util.GetLastTransactDate(currentDate, days);
         DataTable dtOri = new DataTable();
         SqlDataAdapter da = new SqlDataAdapter(" select * from bottom_break_cross_3_line where suggest_date = '" + break3LineDate.ToShortDateString() + "' " , Util.conStr);
         da.Fill(dtOri);
@@ -484,8 +484,8 @@
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock s = new Stock(drOri["gid"].ToString().Trim());
-            s.LoadKLineDay();
-
+            s.kLineDay = Stock.LoadLocalKLineFromDB(s.gid, "day");
+            s.kArr = s.kLineDay;
             int currentIndex = s.GetItemIndex(currentDate);
             int break3LineIndex = s.GetItemIndex(break3LineDate);
             if (currentIndex - break3LineIndex != days-1)
