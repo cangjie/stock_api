@@ -6,7 +6,30 @@
 <script runat="server">
     protected void Page_Load(object sender, EventArgs e)
     {
-        KLine.RefreshKLine("sh603860", DateTime.Parse(DateTime.Now.ToShortDateString()));
+        string[] gidArr = Util.GetAllGids();
+        for (int i = 0; i < gidArr.Length; i++)
+        {
+            for (DateTime j = DateTime.Parse("2017-12-20"); j <= DateTime.Parse("2018-1-9"); j = j.AddDays(1))
+            {
+                if (Util.IsTransacDay(j))
+                {
+                    KLine.RefreshKLine(gidArr[i], j);
+                }
+            }
+        }
+
+
+        /*
+        Stock s = new Stock("sh600846");
+        s.kLineDay = Stock.LoadLocalKLineFromDB(s.gid, "day");
+        s.kArr = s.kLineDay;
+        s.IsLimitUp(s.kLineDay.Length - 5);
+        */
+
+
+
+
+        //KLine.RefreshKLine("sh603860", DateTime.Parse(DateTime.Now.ToShortDateString()));
         //Util.RefreshTodayKLine();
 
         //StockWatcher.RefreshUpdatedKLine();
