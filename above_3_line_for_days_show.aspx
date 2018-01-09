@@ -50,7 +50,7 @@
         t.Start();
 
     
-        sort = Util.GetSafeRequestValue(Request, "sort", "3线日,日均涨幅 desc");
+        sort = Util.GetSafeRequestValue(Request, "sort", "KDJ,放量");
         if (!IsPostBack)
         {
             try
