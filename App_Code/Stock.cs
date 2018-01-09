@@ -618,6 +618,8 @@ public class Stock
                 else
                 {
                     KLine lastKLine = c.kLine[c.kLine.Length - 1];
+                    if (lastKLine == null)
+                        return LoadLocalKLineFromDB(gid, type);
                     DataTable dt = DBHelper.GetDataTable(" select * from  " + gid + "_k_line where type = 'day' and start_date >= '" + lastKLine.startDateTime.ToString() + "' ");
                     KLine[] kArrNew = new KLine[c.kLine.Length + dt.Rows.Count - 1];
                     for (int i = 0; i < c.kLine.Length - 1; i++)
