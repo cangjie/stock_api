@@ -19,7 +19,7 @@
     protected void Page_Load(object sender, EventArgs e)
     {
         
-        for (DateTime startDate = DateTime.Parse("2018-1-9"); startDate >= DateTime.Parse("2018-1-9"); startDate = startDate.AddDays(-1))
+        for (DateTime startDate = DateTime.Parse("2018-1-10"); startDate >= DateTime.Parse("2018-1-10"); startDate = startDate.AddDays(-1))
         {
             if (Util.IsTransacDay(startDate))
             {
