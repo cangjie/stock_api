@@ -45,9 +45,9 @@
         Response.End();
         */
 
-        ThreadStart ts = new ThreadStart(RunData);
-        Thread t = new Thread(ts);
-        t.Start();
+        //ThreadStart ts = new ThreadStart(RunData);
+        //Thread t = new Thread(ts);
+        //t.Start();
 
     
         sort = Util.GetSafeRequestValue(Request, "sort", "KDJ,MACD,放量,3线日");
