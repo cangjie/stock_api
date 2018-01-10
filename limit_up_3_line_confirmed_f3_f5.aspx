@@ -485,6 +485,8 @@
                                 dr["名称"].ToString() + " " + message, price, "limit_up_box_f3");
                             StockWatcher.SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", dr["代码"].ToString().Trim(),
                                 dr["名称"].ToString() + " " + message, price, "limit_up_box_f3");
+                            StockWatcher.SendAlertMessage("oqrMvt2RxLEM7B8a3H6BYD5tXEiY", dr["代码"].ToString().Trim(),
+                                dr["名称"].ToString() + " " + message, price, "limit_up_box_f3");
 
                         }
 
@@ -507,6 +509,10 @@
                                 dr["名称"].ToString() + " " + message, price, "limit_up_box_f5");
                             StockWatcher.SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", dr["代码"].ToString().Trim(),
                                 dr["名称"].ToString() + " " + message, price, "limit_up_box_f5");
+                            StockWatcher.SendAlertMessage("oqrMvt2RxLEM7B8a3H6BYD5tXEiY", dr["代码"].ToString().Trim(),
+                                dr["名称"].ToString() + " " + message, price, "limit_up_box_f5");
+                            
+
 
                         }
 
