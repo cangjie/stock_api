@@ -16,7 +16,7 @@
             Stock s = new Stock(gidArr[i].Trim());
             s.kLineDay = Stock.LoadLocalKLineFromDB(s.gid.Trim(), "day");
             s.kArr = s.kLineDay;
-            for (int j = 0; j < 5; j++)
+            for (int j = 0; j < 1; j++)
             {
                 try
                 {
