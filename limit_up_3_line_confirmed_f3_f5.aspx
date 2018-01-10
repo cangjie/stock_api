@@ -321,7 +321,6 @@
             {
                 continue;
             }
-
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
             stock.LoadKLineDay();
             KLine.ComputeMACD(stock.kLineDay);
@@ -394,9 +393,9 @@
                 
             }
             */
-            if (stock.kLineDay[currentIndex].startPrice > f3 * 0.995 && stock.kLineDay[currentIndex].lowestPrice < f3 * 1.005 )
+            if (stock.kLineDay[currentIndex].startPrice > f3 * 0.99 && stock.kLineDay[currentIndex].lowestPrice < f3 * 1.01 )
             {
-                buyPrice = f3 * 1.005 ;
+                buyPrice = f3 * 1.01 ;
             }
             if (buyPrice == 0)
             {

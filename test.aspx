@@ -6,17 +6,27 @@
 <script runat="server">
     protected void Page_Load(object sender, EventArgs e)
     {
-        string[] gidArr = Util.GetAllGids();
-        for (int i = 0; i < gidArr.Length; i++)
+
+        Stock s = new Stock("sz000926");
+        s.kLineDay = Stock.LoadLocalKLineFromDB(s.gid.Trim(), "day");
+        s.kArr = s.kLineDay;
+        for (int j = 0; j < 1; j++)
         {
-            for (DateTime j = DateTime.Parse("2017-12-20"); j <= DateTime.Parse("2018-1-9"); j = j.AddDays(1))
+            try
             {
-                if (Util.IsTransacDay(j))
+                if (s.IsLimitUp(s.kLineDay.Length - 1 - j))
                 {
-                    KLine.RefreshKLine(gidArr[i], j);
+                    LimitUp.SaveLimitUp(s.gid.Trim(), DateTime.Parse(s.kLineDay[s.kLineDay.Length - 1 - j].startDateTime.ToShortDateString()),
+                            s.kLineDay[s.kLineDay.Length - 1 - j - 1].endPrice, s.kLineDay[s.kLineDay.Length - 1 - j].startPrice,
+                            s.kLineDay[s.kLineDay.Length - 1 - j].highestPrice, s.kLineDay[s.kLineDay.Length - 1 - j].volume);
                 }
             }
+            catch
+            {
+
+            }
         }
+        
 
 
         /*

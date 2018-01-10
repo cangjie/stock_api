@@ -64,7 +64,7 @@ public class TimeLine
         DataTable dtNormal = DBHelper.GetDataTable(" select * from " + gid + "  where convert(datetime, [date] + ' ' + [time]) >='"
             + start.ToString() + "'  and  convert(datetime, [date] + ' ' + [time]) < '" + end.ToString() + "'  and 1 = 0 order by convert(datetime, [date] + ' ' + [time]) ");
         int timeLineCount = Math.Max(dtTimeline.Rows.Count, dtNormal.Rows.Count);
-        TimeLine[] timeLineArray = new TimeLine[timeLineCount*2];
+        TimeLine[] timeLineArray = new TimeLine[timeLineCount * 2];
         int j = 0;
         for (int i = 0; i < timeLineCount; i++)
         {
@@ -204,7 +204,7 @@ public class TimeLine
                 }
                 else
                 {
-                    if (currentDateTimeNormal < currentDateTimeLine )
+                    if (currentDateTimeNormal < currentDateTimeLine)
                     {
                         if (currentDateTimeNormal != DateTime.Parse("2000-1-1"))
                         {
@@ -316,7 +316,7 @@ public class TimeLine
             default:
                 break;
         }
-        int kLineNum = ((kArr.Length  / span) * span == kArr.Length) ?  ( kArr.Length / span) : (1 + kArr.Length / span);
+        int kLineNum = ((kArr.Length / span) * span == kArr.Length) ? (kArr.Length / span) : (1 + kArr.Length / span);
         KLine[] newKArr = new KLine[kLineNum];
         for (int i = 0; i < kLineNum; i++)
         {
@@ -330,25 +330,56 @@ public class TimeLine
             newKArr[i].lowestPrice = double.MaxValue;
             newKArr[i].volume = 0;
             newKArr[i].amount = 0;
+
             for (int j = 0; j < span && (i * span + j) < kArr.Length; j++)
             {
                 if (j == 0)
                 {
                     newKArr[i].startDateTime = kArr[i * span + j].startDateTime;
                     newKArr[i].startPrice = kArr[i * span + j].startPrice;
-                    
+
                 }
-                newKArr[i].highestPrice = Math.Max(newKArr[i].highestPrice, kArr[i * span + j].highestPrice);
-                newKArr[i].lowestPrice = Math.Min(newKArr[i].lowestPrice, kArr[i * span + j].lowestPrice);
-                newKArr[i].volume = newKArr[i].volume + kArr[i * span + j].volume;
-                newKArr[i].amount = newKArr[i].amount + kArr[i * span + j].amount;
+                if (type.Trim().Equals("day"))
+                {
+                    double[] data = GetHigestAndLowestPriceVolumeAmountForDay(newKArr[i].gid.Trim(), newKArr[i].startDateTime.Date);
+                    newKArr[i].highestPrice = data[0];
+                    newKArr[i].lowestPrice = data[1];
+                    newKArr[i].volume = (int)data[2];
+                    newKArr[i].amount = data[3];
+                }
+                else
+                {
+                    newKArr[i].highestPrice = Math.Max(newKArr[i].highestPrice, kArr[i * span + j].highestPrice);
+                    newKArr[i].lowestPrice = Math.Min(newKArr[i].lowestPrice, kArr[i * span + j].lowestPrice);
+                    newKArr[i].volume = newKArr[i].volume + kArr[i * span + j].volume;
+                    newKArr[i].amount = newKArr[i].amount + kArr[i * span + j].amount;
+                }
                 if (j == span - 1 || i * span + j == kArr.Length - 1)
                 {
                     newKArr[i].endPrice = kArr[i * span + j].endPrice;
                 }
             }
+
         }
         return newKArr;
+    }
+
+    public static double[] GetHigestAndLowestPriceVolumeAmountForDay(string gid, DateTime date)
+    {
+        double[] ret = new double[4] { 0, 0, 0, 0 };
+        if (date == date.Date)
+        {
+            date = date.AddHours(15).AddMinutes(30);
+        }
+        DataTable dt = DBHelper.GetDataTable(" select top 1  * from " + gid + "_timeline where ticktime <= '" + date.ToString() + "'  order by ticktime desc ");
+        if (dt.Rows.Count == 1)
+        {
+            ret[0] = double.Parse(dt.Rows[0]["high"].ToString());
+            ret[1] = double.Parse(dt.Rows[0]["low"].ToString());
+            ret[2] = double.Parse(dt.Rows[0]["volume"].ToString());
+            ret[3] = double.Parse(dt.Rows[0]["amount"].ToString());
+        }
+        return ret;
     }
 
 
@@ -374,9 +405,9 @@ public class TimeLine
         }
         KLine[] kLineArr = new KLine[4 * 60];
         int j = 0;
-        for (DateTime i = DateTime.Parse(date.ToShortDateString() + " 9:30"); 
+        for (DateTime i = DateTime.Parse(date.ToShortDateString() + " 9:30");
             (i < DateTime.Parse(date.ToShortDateString() + " 15:00") && DateTime.Parse(i.ToShortDateString()) < DateTime.Parse(DateTime.Now.ToShortDateString()))
-            || (DateTime.Parse(i.ToShortDateString()) == DateTime.Parse(DateTime.Now.ToShortDateString()) && i < DateTime.Parse(date.ToShortDateString() + " 15:00") && i < DateTime.Now) ; 
+            || (DateTime.Parse(i.ToShortDateString()) == DateTime.Parse(DateTime.Now.ToShortDateString()) && i < DateTime.Parse(date.ToShortDateString() + " 15:00") && i < DateTime.Now);
             i = i.AddMinutes(1))
         {
             if (i >= DateTime.Parse(i.ToShortDateString() + " 11:30") && i < DateTime.Parse(i.ToShortDateString() + " 13:00"))
@@ -390,8 +421,8 @@ public class TimeLine
             if (j == 0)
             {
                 drTimelineArr = dtTimeLine.Select(" ticktime < '" + i.AddMinutes(1).ToString() + "'");
-                drNormalArr = dtNormal.Select(" time < '" + i.AddMinutes(1).Hour.ToString().PadLeft(2, '0') 
-                    + ":" + i.AddMinutes(1).Minute.ToString().PadLeft(2, '0') 
+                drNormalArr = dtNormal.Select(" time < '" + i.AddMinutes(1).Hour.ToString().PadLeft(2, '0')
+                    + ":" + i.AddMinutes(1).Minute.ToString().PadLeft(2, '0')
                     + ":" + i.AddMinutes(1).Second.ToString().PadLeft(2, '0') + "' ");
             }
             else
@@ -489,7 +520,7 @@ public class TimeLine
             foreach (DataRow drDel in drTimelineArr)
                 dtTimeLine.Rows.Remove(drDel);
             foreach (DataRow drDel in drNormalArr)
-                dtNormal.Rows.Remove(drDel); 
+                dtNormal.Rows.Remove(drDel);
         }
         if (j < 240)
         {
