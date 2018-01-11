@@ -110,7 +110,7 @@
     {
         DateTime startDate = DateTime.Parse("2017-9-19");
         DataTable dtOri = DBHelper.GetDataTable(" select * from stock_alert_message where alert_date >= '" + startDate.ToShortDateString()
-            + "' and alert_type = 'bottom_break_cross_3_line' order by alert_date desc, create_date desc ");
+            + "' and alert_type = 'break_3_line_twice' order by alert_date desc, create_date desc ");
 
         DataTable dt = new DataTable();
         dt.Columns.Add("日期");
