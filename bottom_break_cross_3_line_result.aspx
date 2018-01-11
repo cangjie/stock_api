@@ -108,7 +108,7 @@
 
     public static DataTable GetData()
     {
-        DateTime startDate = DateTime.Parse("2017-9-19");
+        DateTime startDate = DateTime.Parse("2018-1-1");
         DataTable dtOri = DBHelper.GetDataTable(" select * from stock_alert_message where alert_date >= '" + startDate.ToShortDateString()
             + "' and alert_type = 'break_3_line_twice' order by alert_date desc, create_date desc ");
 
