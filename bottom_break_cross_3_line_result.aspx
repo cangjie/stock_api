@@ -108,7 +108,7 @@
 
     public static DataTable GetData()
     {
-        DateTime startDate = DateTime.Parse("2018-1-1");
+        DateTime startDate = DateTime.Parse("2017-12-1");
         DataTable dtOri = DBHelper.GetDataTable(" select * from stock_alert_message where alert_date >= '" + startDate.ToShortDateString()
             + "' and alert_type = 'break_3_line_twice' order by alert_date desc, create_date desc ");
 
@@ -164,8 +164,8 @@
                 continue;
             dr["价格"] = buyPrice;
             double volume = GetVolumePercent(dtOri.Rows[i]["message"].ToString().Trim());
-            if (volume <= 150)
-                continue;
+            //if (volume <= 150)
+            //    continue;
             dr["放量"] = volume;
             stock.LoadKLineDay();
             int currentIndex = stock.GetItemIndex(DateTime.Parse(dtOri.Rows[i]["alert_date"].ToString().Trim()));

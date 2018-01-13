@@ -441,16 +441,22 @@
 
     public static double GetFirstLowestPrice(KLine[] kArr, int index)
     {
-        double ret = 0;
+        double ret = double.MaxValue;
         bool find = false;
         for (int i = index - 1; i > 0 && !find; i--)
         {
             double line3Pirce = KLine.GetAverageSettlePrice(kArr, i, 3, 3);
-            if (kArr[i].lowestPrice < kArr[i + 1].lowestPrice && kArr[i].lowestPrice < kArr[i - 1].lowestPrice && kArr[i].lowestPrice < line3Pirce)
+            if (kArr[i].lowestPrice < line3Pirce)
             {
-                ret = kArr[i].lowestPrice;
                 find = true;
+                ret = Math.Min(ret, kArr[i].lowestPrice);
             }
+            if (kArr[i].lowestPrice >= line3Pirce && find)
+            {
+                break;
+            }
+
+
         }
         return ret;
     }
@@ -482,14 +488,14 @@
                         {
                             StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(),
                                 dr["名称"].ToString() + " " + message, price, "limit_up_box_f3");
-                            
+
                             StockWatcher.SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", dr["代码"].ToString().Trim(),
                                 dr["名称"].ToString() + " " + message, price, "limit_up_box_f3");
                             StockWatcher.SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", dr["代码"].ToString().Trim(),
                                 dr["名称"].ToString() + " " + message, price, "limit_up_box_f3");
                             StockWatcher.SendAlertMessage("oqrMvt2RxLEM7B8a3H6BYD5tXEiY", dr["代码"].ToString().Trim(),
                                 dr["名称"].ToString() + " " + message, price, "limit_up_box_f3");
-                                
+
 
                         }
 
