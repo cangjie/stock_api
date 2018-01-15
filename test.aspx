@@ -6,6 +6,8 @@
 <script runat="server">
     protected void Page_Load(object sender, EventArgs e)
     {
+        KLine.RefreshKLine("sz000021", DateTime.Parse("2018-1-10"));
+        Response.End();
 
         Stock s = new Stock("sz000926");
         s.kLineDay = Stock.LoadLocalKLineFromDB(s.gid.Trim(), "day");

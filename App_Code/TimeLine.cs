@@ -346,6 +346,7 @@ public class TimeLine
                     newKArr[i].lowestPrice = data[1];
                     newKArr[i].volume = (int)data[2];
                     newKArr[i].amount = data[3];
+                    newKArr[i].startPrice = data[4];
                 }
                 else
                 {
@@ -366,7 +367,7 @@ public class TimeLine
 
     public static double[] GetHigestAndLowestPriceVolumeAmountForDay(string gid, DateTime date)
     {
-        double[] ret = new double[4] { 0, 0, 0, 0 };
+        double[] ret = new double[5] { 0, 0, 0, 0, 0 };
         if (date == date.Date)
         {
             date = date.AddHours(15).AddMinutes(30);
@@ -378,6 +379,7 @@ public class TimeLine
             ret[1] = double.Parse(dt.Rows[0]["low"].ToString());
             ret[2] = double.Parse(dt.Rows[0]["volume"].ToString());
             ret[3] = double.Parse(dt.Rows[0]["amount"].ToString());
+            ret[4] = double.Parse(dt.Rows[0]["open"].ToString());
         }
         return ret;
     }
