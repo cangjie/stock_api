@@ -446,7 +446,7 @@
         for (int i = index - 1; i > 0 && !find; i--)
         {
             double line3Pirce = KLine.GetAverageSettlePrice(kArr, i, 3, 3);
-            if (kArr[i].lowestPrice < line3Pirce)
+            if (kArr[i].endPrice < line3Pirce)
             {
                 find = true;
                 ret = Math.Min(ret, kArr[i].lowestPrice);
