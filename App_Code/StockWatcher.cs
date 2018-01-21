@@ -31,15 +31,19 @@ public class StockWatcher
 
     public static Thread tRefreshUpdatedKLine = new Thread(tsRefreshUpdatedKLine);
 
-    public static ThreadStart tsLoadCurrentKLineToCache = new ThreadStart(LoadCurrentKLineToCache);
+    //public static ThreadStart tsLoadCurrentKLineToCache = new ThreadStart(LoadCurrentKLineToCache);
 
-    public static Thread tLoadCurrentKLineToCache = new Thread(tsLoadCurrentKLineToCache);
+    //public static Thread tLoadCurrentKLineToCache = new Thread(tsLoadCurrentKLineToCache);
+
+    public static ThreadStart tsLoadTodayKLine = new ThreadStart(LoadTodayKLine);
+
+    public static Thread tLoadTodayKLine = new Thread(tsLoadTodayKLine);
 
     public StockWatcher()
     {
       
     }
-
+    /*
     public static void LoadCurrentKLineToCache()
     {
         for (; true;)
@@ -68,6 +72,47 @@ public class StockWatcher
         }
     }
 
+*/
+    public static void LoadTodayKLine()
+    {
+        for (; true;)
+        {
+            if (Util.IsTransacDay(DateTime.Now.Date) && Util.IsTransacTime(DateTime.Now))
+            {
+                try
+                {
+                    DataTable dt = DBHelper.GetDataTable(" select * from cache_k_line_day where start_date >= '" + DateTime.Now.ToShortDateString() + "' ");
+                    KLine[] kArr = new KLine[dt.Rows.Count];
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        try
+                        {
+                            kArr[i] = new KLine();
+                            kArr[i].gid = dt.Rows[i]["gid"].ToString().Trim();
+                            kArr[i].startDateTime = DateTime.Parse(dt.Rows[i]["start_date"].ToString().Trim());
+                            kArr[i].highestPrice = double.Parse(dt.Rows[i]["highest"].ToString().Trim());
+                            kArr[i].lowestPrice = double.Parse(dt.Rows[i]["lowest"].ToString().Trim());
+                            kArr[i].startPrice = double.Parse(dt.Rows[i]["open"].ToString().Trim());
+                            kArr[i].endPrice = double.Parse(dt.Rows[i]["settle"].ToString().Trim());
+                            kArr[i].volume = int.Parse(dt.Rows[i]["volume"].ToString().Trim());
+                            kArr[i].amount = double.Parse(dt.Rows[i]["amount"].ToString().Trim());
+                        }
+                        catch
+                        {
+
+                        }
+                    }
+                    Stock.todayKLineArr = kArr;
+                }
+                catch
+                {
+
+                }
+            }
+            Thread.Sleep(60000);
+        }
+    }
+
     public static void WatchEachStock()
     {
         for (; true;)
@@ -80,7 +125,7 @@ public class StockWatcher
                     //Stock.GetKLineSetArray(gidArr, "day", 100);
                     for (int i = 0; i < gidArr.Length; i++)
                     {
-                        //KLine.RefreshKLine(gidArr[i], DateTime.Parse(DateTime.Now.ToShortDateString()));
+                        KLine.RefreshKLine(gidArr[i], DateTime.Parse(DateTime.Now.ToShortDateString()));
                         Stock stock = new Stock(gidArr[i].Trim());
                         stock.LoadKLineDay();
                         int currentIndex = stock.GetItemIndex(DateTime.Parse(DateTime.Now.ToShortDateString()));
@@ -309,6 +354,65 @@ public class StockWatcher
 
     public static void RefreshUpdatedKLine()
     {
+        for (; true;)
+        {
+            try
+            {
+                if (Util.IsTransacDay(DateTime.Now.Date) && Util.IsTransacTime(DateTime.Now))
+                {
+                    DataTable dt = DBHelper.GetDataTable(" select * from timeline_update where deal = 0 and update_date = '" + DateTime.Now.ToShortDateString() + "' ");
+                    string ids = "";
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        try
+                        {
+                            string gid = dt.Rows[i]["gid"].ToString().Trim();
+                            CachedKLine c = KLineCache.GetKLineCache(gid);
+                            if (c.gid != null && !c.gid.Trim().Equals(""))
+                            {
+                                KLine lastKLine = c.kLine[c.kLine.Length - 1];
+                                if (lastKLine.startDateTime.Date == DateTime.Now.Date)
+                                {
+                                    double currentPrice = double.Parse(dt.Rows[i]["price"].ToString().Trim());
+                                    lastKLine.endPrice = currentPrice;
+                                    lastKLine.lowestPrice = ((lastKLine.lowestPrice < currentPrice) ? lastKLine.lowestPrice : currentPrice);
+                                    lastKLine.highestPrice = ((lastKLine.highestPrice > currentPrice) ? lastKLine.highestPrice : currentPrice);
+                                    lastKLine.volume = int.Parse(dt.Rows[i]["volume"].ToString());
+                                    lastKLine.amount = double.Parse(dt.Rows[i]["amount"].ToString());
+                                }
+                                c.kLine[c.kLine.Length - 1] = lastKLine;
+                                KLineCache.UpdateKLineInCache(c);
+                            }
+                        }
+                        catch
+                        {
+
+
+                        }
+                        ids = ids + ((ids.Trim().Equals("") ? "" : ", ") + " '" + dt.Rows[i]["gid"].ToString().Trim()) + "' ";
+                    }
+                    System.Data.SqlClient.SqlConnection conn = new System.Data.SqlClient.SqlConnection(Util.conStr.Trim());
+                    System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand(" update timeline_update set deal = 1 where deal = 0 and update_date = '"
+                        + DateTime.Now.ToShortDateString() + "' and gid in (" + ids.Trim() + " )", conn);
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                    conn.Close();
+                    cmd.Dispose();
+                    conn.Dispose();
+                }
+            }
+            catch
+            {
+
+            }
+            Thread.Sleep(60000);
+        }
+        
+    }
+
+
+    public static void RefreshUpdatedKLine1()
+    {
         for (; Util.IsTransacDay(DateTime.Now.Date) && Util.IsTransacTime(DateTime.Now);)
         {
             try
@@ -461,6 +565,7 @@ public class StockWatcher
             default:
                 type = type.Replace("top", "压力位").Replace("bottom", "支撑位").Replace("wave", "波段").Replace("low", "低位").Replace("high", "高位").Trim().Replace("over3line", "突破三线").Replace("volumeincrease", "放量");
                 type = type.Replace("volumedecrease", "缩量调整后上涨超3%").Replace("3_line", "底部突破3线").Replace("macd", "MACD金叉").Replace("break_3_line_twice", "双穿三线").Replace("above_3_line_for_days", "三线上多日");
+                type = type.Replace("limit_up_box_f3", "涨停后F3支撑").Replace("limit_up_box_f5", "涨停后F5支撑");
                 first = type;
                 keyword1 = "[" + gid.Trim() + "]" + name.Trim();
                 keyword2 = price.ToString();

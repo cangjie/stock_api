@@ -241,7 +241,7 @@ public class Util
         {
             ret = false;
         }
-        if (Util.GetDay(date) >= DateTime.Parse("2017-10-1") && Util.GetDay(date) <= DateTime.Parse("2017-10-8"))
+        if (Util.GetDay(date) >= DateTime.Parse("2017-10-1") && Util.GetDay(date) <= DateTime.Parse("2017-10-8") && Util.GetDay(date) == DateTime.Parse("2018-1-1"))
             ret = false;
         return ret;
     }
@@ -346,18 +346,61 @@ public class Util
         {
             try
             {
-                KLine.RefreshKLine(gidArr[i], DateTime.Parse(DateTime.Now.ToShortDateString()));
                 CachedKLine c = new CachedKLine();
                 c.gid = gidArr[i];
                 c.type = "day";
-                c.kLine = Stock.LoadLocalKLineFromDB(c.gid, "day");
-                c.lastUpdate = DateTime.Now;
-                KLineCache.UpdateKLineInCache(c);
-                currentKLineIndex = i;
-            }
-            catch
-            {
+                string rootPath = Util.physicalPath + @"\cache\k_line_day\"
+                    + StockWatcher.GetMarketType(c.gid) + @"\" + c.gid + ".txt";
+                CachedKLine cTmp = StockWatcher.LoadOneKLineToMemory(rootPath);
+                try
+                {
+                    if (cTmp.kLine != null && cTmp.kLine.Length > 0 && cTmp.kLine[cTmp.kLine.Length - 1] != null && cTmp.kLine[cTmp.kLine.Length - 1].startDateTime.Date == Util.GetLastTransactDate(DateTime.Now.Date, 1).Date
+                        && Stock.todayKLineArr != null)
+                    {
+                        bool done = false;
+                        for (int j = 0; j < Stock.todayKLineArr.Length; j++)
+                        {
+                            KLine k = Stock.todayKLineArr[j];
+                            if (k.gid.Trim().Equals(c.gid.Trim()))
+                            {
+                                KLine[] kArrNew = new KLine[cTmp.kLine.Length + 1];
+                                for (int m = 0; m < cTmp.kLine.Length; m++)
+                                {
+                                    kArrNew[m] = cTmp.kLine[m];
+                                }
+                                kArrNew[kArrNew.Length - 1] = k;
+                                c.kLine = kArrNew;
+                                c.lastUpdate = DateTime.Now;
+                                KLineCache.UpdateKLineInCache(c);
+                                done = true;
+                                break;
+                            }
+                        }
+                        if (!done)
+                        {
+                            c.kLine = Stock.LoadLocalKLineFromDB(c.gid, "day");
+                            c.lastUpdate = DateTime.Now;
+                            KLineCache.UpdateKLineInCache(c);
+                        }
+                        currentKLineIndex = i;
+                    }
+                    else
+                    {
 
+                        c.kLine = Stock.LoadLocalKLineFromDB(c.gid, "day");
+                        c.lastUpdate = DateTime.Now;
+                        KLineCache.UpdateKLineInCache(c);
+                        currentKLineIndex = i;
+                    }
+                }
+                catch(Exception errMsg)
+                {
+                    Console.WriteLine(errMsg.ToString());
+                }
+            }
+            catch(Exception err)
+            {
+                Console.WriteLine(err.ToString());
             }
         }
     }

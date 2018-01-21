@@ -129,18 +129,7 @@ public class KLine
 
     public void SaveCache()
     {
-        int i = 0;
-        for (; cacheStatus.Trim().Equals("busy") && i < 100; i++)
-        {
-            System.Threading.Thread.Sleep(10);
-        }
-        if (i >= 100 && cacheStatus.Trim().Equals("buys"))
-        {
-            throw (new Exception("Database is busy"));
-            return;
-        }
-
-        cacheStatus = "busy";
+        //cacheStatus = "busy";
         DBHelper.DeleteData("cache_k_line_day", new string[,] { { "gid", "varchar", gid.Trim() }, { "start_date", "datetime", startDateTime.ToString() } }, Util.conStr);
         try
         {
@@ -161,7 +150,7 @@ public class KLine
         {
 
         }
-        cacheStatus = "idle";
+        //cacheStatus = "idle";
     }
 
     public DateTime HighestTime
@@ -789,6 +778,7 @@ public class KLine
         foreach (KLine k in kArr)
         {
             k.Save();
+            k.SaveCache();
         }
         kArr = TimeLine.AssembKLine("1hr", kArr1Min);
         foreach (KLine k in kArr)

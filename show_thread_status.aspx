@@ -6,11 +6,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (StockWatcher.tRefreshUpdatedKLine.ThreadState == System.Threading.ThreadState.Stopped)
-        {
-            StockWatcher.tRefreshUpdatedKLine = new Thread(StockWatcher.tsRefreshUpdatedKLine);
-            StockWatcher.tRefreshUpdatedKLine.Start();
-        }
+        
     }
 </script>
 
@@ -21,7 +17,11 @@
 <body>
     <form id="form1" runat="server">
     <div>
-        tRefreshUpdatedKLine:<%=StockWatcher.tRefreshUpdatedKLine.ThreadState.ToString() %>
+        tKLineRefresher:<%=StockWatcher.tKLineRefresher.ThreadState.ToString() %><br />
+        tRefreshUpdatedKLine:<%=StockWatcher.tRefreshUpdatedKLine.ThreadState.ToString() %><br />
+        tLoadTodayKLine:<%=StockWatcher.tLoadTodayKLine.ThreadState.ToString() %><br />
+        tWatchEachStock:<%=StockWatcher.tWatchEachStock.ThreadState.ToString() %><br />
+        tLogQuota:<%=StockWatcher.tLogQuota.ThreadState.ToString() %><br />
     </div>
     </form>
 </body>

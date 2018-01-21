@@ -20,7 +20,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "MACD日,KDJ日,综指 desc");
+        sort = Util.GetSafeRequestValue(Request, "sort", "调整,MACD日,KDJ日");
         if (!IsPostBack)
         {
             try
@@ -69,7 +69,7 @@
         else
             currentDate = Util.GetDay(calendar.SelectedDate);
         DataTable dtOri = GetData(currentDate);
-        return RenderHtml(dtOri.Select("", sort));
+        return RenderHtml(dtOri.Select(" 信号 like '%📈%' ", sort));
     }
 
     protected void calendar_SelectionChanged(object sender, EventArgs e)
@@ -109,8 +109,8 @@
         foreach (DataRow drOri in drArr)
         {
             DataRow dr = dt.NewRow();
-            double settle = Math.Round((double)drOri["昨收"], 2);
-            double currentPrice = Math.Round((double)drOri["今收"], 2);
+            //double settle = Math.Round((double)drOri["昨收"], 2);
+            double currentPrice = Math.Round((double)drOri["现价"], 2);
             for (int i = 0; i < drArr[0].Table.Columns.Count; i++)
             {
 
@@ -129,16 +129,12 @@
                             dr[i] = "<font color=\"" + ((buyPrice > currentPrice) ? "red" : ((buyPrice==currentPrice)? "gray" : "green")) + "\" >" + Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2).ToString() + "</font>";
                             break;
                         case "今开":
-                        case "今收":
-                            double todayPrice = (double)drOri[i];
-                            dr[i] = "<font color=\"" + (todayPrice > settle ? "red" : (todayPrice == settle ? "gray" : "green")) + "\"  >"
-                                + Math.Round(todayPrice, 2).ToString() + "</font>";
-                            break;
-                        case "低点":
+                        case "现价":
+                        case "前低":
                         case "F1":
                         case "F3":
                         case "F5":
-                        case "高点":
+                        case "现高":
                         case "3线":
                             double currentValuePrice = (double)drOri[i];
                             dr[i] = "<font color=\"" + (currentValuePrice > currentPrice ? "red" : (currentValuePrice == currentPrice ? "gray" : "green")) + "\"  >"
@@ -239,24 +235,27 @@
                 shitCount++;
             }
         }
+
+
+
         DataRow drTotal = dt.NewRow();
-        drTotal["名称"] = "总计";
-        drTotal["昨收"] = totalCount.ToString();
+        drTotal["信号"] = "总计";
+        drTotal["MACD日"] = totalCount.ToString();
 
         DataRow drShit = dt.NewRow();
         drShit["信号"] = "💩";
-        drShit["昨收"] = shitCount.ToString();
-        drShit["今开"] = Math.Round(100 * (double)shitCount / (double)drOriArr.Length, 2).ToString() + "%";
+        drShit["MACD日"] = shitCount.ToString();
+        drShit["KDJ日"] = Math.Round(100 * (double)shitCount / (double)drOriArr.Length, 2).ToString() + "%";
 
         DataRow drRaise = dt.NewRow();
         drRaise["信号"] = "📈";
-        drRaise["昨收"] = raiseCount.ToString();
+        drRaise["MACD日"] = raiseCount.ToString();
         DataRow drFire = dt.NewRow();
         drFire["信号"] = "🔥";
-        drFire["昨收"] = fireCount.ToString();
+        drFire["MACD日"] = fireCount.ToString();
         DataRow drStar = dt.NewRow();
         drStar["信号"] = "🌟";
-        drStar["昨收"] = starCount.ToString();
+        drStar["MACD日"] = starCount.ToString();
 
         for (int i = 1; i < 7; i++)
         {
@@ -272,192 +271,158 @@
         dt.Rows.Add(drRaise);
         dt.Rows.Add(drFire);
         dt.Rows.Add(drStar);
+
+
     }
 
     public static DataTable GetData(DateTime currentDate)
     {
         currentDate = Util.GetDay(currentDate);
-        DataTable dtOri = DBHelper.GetDataTable(" select * from bottom_break_cross_3_line  a where suggest_date = '" + currentDate.ToShortDateString() + "' "
-            + " and exists ( select 'a' from bottom_break_cross_3_line b where suggest_date < '" + currentDate.ToShortDateString() + "' and   suggest_date >= '"
-            + currentDate.AddDays(-15).ToShortDateString() + "' and a.gid = b.gid  )   ");
         DataTable dt = new DataTable();
         dt.Columns.Add("代码", Type.GetType("System.String"));
         dt.Columns.Add("名称", Type.GetType("System.String"));
         dt.Columns.Add("信号", Type.GetType("System.String"));
-        dt.Columns.Add("昨收", Type.GetType("System.Double"));
-        dt.Columns.Add("今开", Type.GetType("System.Double"));
-        dt.Columns.Add("今收", Type.GetType("System.Double"));
-        dt.Columns.Add("今涨", Type.GetType("System.Double"));
-        dt.Columns.Add("放量", Type.GetType("System.Double"));
-        dt.Columns.Add("TD", Type.GetType("System.Int32"));
-        dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
-        dt.Columns.Add("KDJ率", Type.GetType("System.Double"));
-        dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
-        dt.Columns.Add("MACD率", Type.GetType("System.Double"));
-        dt.Columns.Add("调整日", Type.GetType("System.Int32"));
-        dt.Columns.Add("3线", Type.GetType("System.Double"));
-        dt.Columns.Add("低点", Type.GetType("System.Double"));
-        dt.Columns.Add("F1", Type.GetType("System.Double"));
+        dt.Columns.Add("缩量", Type.GetType("System.Double"));
+        dt.Columns.Add("调整", Type.GetType("System.Int32"));
+        dt.Columns.Add("现高", Type.GetType("System.Double"));
         dt.Columns.Add("F3", Type.GetType("System.Double"));
         dt.Columns.Add("F5", Type.GetType("System.Double"));
-        dt.Columns.Add("高点", Type.GetType("System.Double"));
+        dt.Columns.Add("前低", Type.GetType("System.Double"));
+        dt.Columns.Add("3线", Type.GetType("System.Double"));
+        dt.Columns.Add("现价", Type.GetType("System.Double"));
+        dt.Columns.Add("距F3", Type.GetType("System.Double"));
         dt.Columns.Add("买入", Type.GetType("System.Double"));
-        dt.Columns.Add("涨幅", Type.GetType("System.Double"));
-        dt.Columns.Add("跌幅", Type.GetType("System.Double"));
-        dt.Columns.Add("震幅", Type.GetType("System.Double"));
-        dt.Columns.Add("综指", Type.GetType("System.Double"));
+        dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
+        dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
+
         for (int i = 1; i <= 5; i++)
         {
             dt.Columns.Add(i.ToString() + "日", Type.GetType("System.Double"));
         }
         dt.Columns.Add("总计", Type.GetType("System.Double"));
-
-        string sqlUnion = "";
-        string[] gidArr = new string[dtOri.Rows.Count];
-        for (int i = 0; i < gidArr.Length; i++)
+        if (!Util.IsTransacDay(currentDate))
         {
-            gidArr[i] = dtOri.Rows[i]["gid"].ToString().Trim();
+            return dt;
         }
 
-        //Stock.GetKLineSetArray(gidArr, "day", 50);
-        /*
+        DateTime lastTransactDate = Util.GetLastTransactDate(currentDate, 1);
+        DateTime limitUpStartDate = Util.GetLastTransactDate(lastTransactDate, 4);
+
+
+
+        DataTable dtOri = DBHelper.GetDataTable(" select gid, alert_date from limit_up where alert_date >= '" + limitUpStartDate.ToShortDateString()
+            + "' and alert_date <= '" + lastTransactDate.ToShortDateString() + "' order by alert_date desc ");
+
         foreach (DataRow drOri in dtOri.Rows)
         {
-            sqlUnion = sqlUnion + (sqlUnion.Trim().Equals("") ? " " : " union ") + "  select  * from " + drOri["gid"].ToString().Trim() + "_k_line where type = 'day' and start_date = '"
-                + currentDate.ToShortDateString() + " 9:30' ";
-        }
-        */
-        //foreach (DataRow drOri in dtOri.Select(" gid = 'sz300101'  "))
-        foreach (DataRow drOri in dtOri.Rows)
-        {
+            DateTime alertDate = DateTime.Parse(drOri["alert_date"].ToString().Trim());
+            DataRow[] drArrExists = dtOri.Select(" gid = '" + drOri["gid"].ToString() + "' and alert_date > '" + alertDate.ToShortDateString() + "'  ");
+            if (drArrExists.Length > 0)
+            {
+                continue;
+            }
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
-
             stock.LoadKLineDay();
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
+
             int currentIndex = stock.GetItemIndex(currentDate);
-            if (currentIndex < 1)
+            if (currentIndex < 0)
                 continue;
-            if (!KLine.IsCros3LineTwice(stock.kLineDay, currentIndex, 5))
-                continue;
-            double current3LinePrice = stock.GetAverageSettlePrice(currentIndex, 3, 3);
-            double previous3LinePrice = 0;
-            //double previous3LineIndex = 0;
-            int adjustDays = 0;
-            for (int i = currentIndex - 1; i >= 0; i--)
-            {
-                if (stock.kLineDay[i].endPrice < stock.GetAverageSettlePrice(i, 3, 3))
-                {
-                    adjustDays++;
-                }
-                /*
-                if (previous3LineIndex == 0)
-                {
-                    double line3PriceTemp = stock.GetAverageSettlePrice(i, 3, 3);
-                    if (stock.kLineDay[i].endPrice  < line3PriceTemp)
-                        previous3LineIndex++;
 
-                    if (Math.Min(stock.kLineDay[i].startPrice, stock.kLineDay[i].endPrice) > line3PriceTemp &&
-                        stock.kLineDay[i + 1].startPrice < stock.GetAverageSettlePrice(i + 1, 3, 3))
-                        previous3LineIndex = i + 1;
-                }
-                */
-                if (KLine.IsCross3Line(stock.kLineDay, i))
-                {
-                    previous3LinePrice = stock.GetAverageSettlePrice(i, 3, 3);
-                    break;
-                }
+            int limitUpIndex = stock.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
+
+            if (limitUpIndex == -1)
+            {
+                continue;
             }
 
-            /*
-            if (previous3LineIndex == 0)
+            int highIndex = 0;
+            double lowest = GetFirstLowestPrice(stock.kLineDay, limitUpIndex); ;
+            double highest = 0;
+            for (int i = limitUpIndex; i < currentIndex; i++)
+            {
+                if (highest < stock.kLineDay[i].highestPrice)
+                {
+                    highest = stock.kLineDay[i].highestPrice;
+                    highIndex = i;
+                }
+            }
+            double f3 = highest - (highest - lowest) * 0.382;
+            if (stock.kLineDay[currentIndex].startPrice < f3)
                 continue;
-                */
-            if (previous3LinePrice > current3LinePrice)
-                continue;
-
-            if (adjustDays > 5)
-                continue;
-
-            double settlePrice = stock.kLineDay[currentIndex - 1].endPrice;
-            double openPrice = stock.kLineDay[currentIndex].startPrice;
+            double f5 = highest - (highest - lowest) * 0.618;
+            double line3Price = KLine.GetAverageSettlePrice(stock.kLineDay, currentIndex, 3, 3);
             double currentPrice = stock.kLineDay[currentIndex].endPrice;
-            double line3Price = stock.GetAverageSettlePrice(currentIndex, 3, 3);
-            DateTime lastDate = DateTime.Parse(stock.kLineDay[currentIndex - 1].startDateTime.ToShortDateString());
-            double lastDayVolume = Stock.GetVolumeAndAmount(stock.gid, lastDate)[0];
-            double currentVolume = Stock.GetVolumeAndAmount(stock.gid, currentDate)[0];
-            int kdjDays = stock.kdjDays(currentIndex);
-            double lowestPrice = stock.LowestPrice(currentDate, 20);
-            double highestPrice = stock.HighestPrice(currentDate, 40);
-            double f1 = lowestPrice + (highestPrice - lowestPrice) * 0.236;
-            double f3 = lowestPrice + (highestPrice - lowestPrice) * 0.382;
-            double f5 = lowestPrice + (highestPrice - lowestPrice) * 0.618;
-            double buyPrice = currentPrice;
-            double macdPrice = KLine.GetMACDFolkPrice(stock.kLineDay, currentIndex);
-            double macdDegree = KLine.ComputeMacdDegree(stock.kLineDay, currentIndex)*1000;
-            double kdjDegree = KLine.ComputeKdjDegree(stock.kLineDay, currentIndex);
-            double upSpace = 0;
-            double downSpace = 0;
-            buyPrice = Math.Max(macdPrice, line3Price);
-            buyPrice = Math.Max(stock.kLineDay[currentIndex].startPrice, buyPrice);
-            if (buyPrice <= lowestPrice)
+            double buyPrice = 0;
+            double f3Distance = 0.382 - (highest - stock.kLineDay[currentIndex].lowestPrice) / (highest - lowest);
+
+            double volumeToday = Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(currentDate.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
+            double volumeYesterday = Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(stock.kLineDay[limitUpIndex].startDateTime.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
+
+            double volumeReduce = volumeToday / volumeYesterday;
+
+            if (lowest == 0 || line3Price == 0)
             {
-                downSpace = 0.1;
-                upSpace = (lowestPrice - buyPrice) / buyPrice;
+                continue;
             }
-            else if (buyPrice <= f1)
+            /*
+            if (currentIndex == highIndex)
             {
-                downSpace = (buyPrice - lowestPrice) / buyPrice;
-                upSpace = (f1 - buyPrice) / buyPrice;
-            }
-            else if (buyPrice <= f3)
-            {
-                downSpace = (buyPrice - f1) / buyPrice;
-                upSpace = (f3 - buyPrice) / buyPrice;
-            }
-            else if (buyPrice <= f5)
-            {
-                downSpace = (buyPrice - f3) / buyPrice;
-                upSpace = (f5 - buyPrice) / buyPrice;
-            }
-            else if (buyPrice <= highestPrice)
-            {
-                downSpace = (buyPrice - f5) / buyPrice;
-                upSpace = (highestPrice - buyPrice) / buyPrice;
+                DateTime highestTime = stock.kLineDay[highIndex].HighestTime;
+                if (highestTime > DateTime.MinValue)
+                {
+                    DataTable dtLowestAfterHighest = DBHelper.GetDataTable(" select min(trade) from " + stock.gid + "_timeline where ticktime >= '" + stock.kLineDay[currentIndex].startDateTime.ToShortDateString()
+                        + "' and ticktime < '" + stock.kLineDay[currentIndex].startDateTime.ToShortDateString() + " 23:59:59' and ticktime > '" + highestTime.ToString() + "' ");
+                    if (dtLowestAfterHighest.Rows.Count > 0)
+                    {
+                        try
+                        {
+                            buyPrice = Math.Max(f3 * 1.005, double.Parse(dtLowestAfterHighest.Rows[0][0].ToString()));
+                        }
+                        catch
+                        {
+                            buyPrice = stock.kLineDay[currentIndex].lowestPrice;
+                        }
+                    }
+                }
             }
             else
             {
-                upSpace = 0.1;
-                downSpace = (buyPrice - highestPrice) / buyPrice;
+                
+            }
+            */
+            if (stock.kLineDay[currentIndex].startPrice > f3 * 0.99 && stock.kLineDay[currentIndex].lowestPrice < f3 * 1.01 )
+            {
+                buyPrice = f3 * 1.01 ;
+            }
+            if (buyPrice == 0)
+            {
+                buyPrice = stock.kLineDay[currentIndex].endPrice;
             }
 
 
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
-            dr["昨收"] = settlePrice;
-            dr["今开"] = openPrice;
-            dr["今收"] = currentPrice;
-            dr["今涨"] = (stock.kLineDay[currentIndex].highestPrice - settlePrice) / settlePrice;
-            dr["放量"] = currentVolume / lastDayVolume;
-            dr["3线"] = line3Price;
-            dr["低点"] = lowestPrice;
-            dr["调整日"] = adjustDays.ToString();// currentIndex - previous3LineIndex;
-            dr["F1"] = f1;
+            dr["信号"] = (buyPrice == f3 * 1.01) ? "📈" : "";
+            if (Math.Abs(currentPrice - buyPrice) / buyPrice < 0.01  && dr["信号"].ToString().IndexOf("📈") >= 0 )
+            {
+                dr["信号"] = dr["信号"] + "🛍️";
+            }
+            dr["调整"] = currentIndex - limitUpIndex;
+            dr["缩量"] = volumeReduce;
+            dr["现高"] = highest;
             dr["F3"] = f3;
             dr["F5"] = f5;
-            dr["高点"] = highestPrice;
+            dr["前低"] = lowest;
+            dr["3线"] = line3Price;
+            dr["现价"] = currentPrice;
+            dr["距F3"] = f3Distance;
             dr["买入"] = buyPrice;
-            dr["KDJ日"] = kdjDays;
+            dr["KDJ日"] = stock.kdjDays(currentIndex);
             dr["MACD日"] = stock.macdDays(currentIndex);
-            dr["MACD率"] = macdDegree;
-            dr["KDJ率"] = kdjDegree;
-            dr["涨幅"] = upSpace;
-            dr["跌幅"] = downSpace;
-            dr["震幅"] = upSpace + downSpace;
-            dr["综指"] = macdDegree + kdjDegree;
-            dr["TD"] = KLine.GetLastDeMarkBuyPointIndex(stock.kLineDay, currentIndex);
             double maxPrice = 0;
             for (int i = 1; i <= 5; i++)
             {
@@ -468,36 +433,32 @@
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
             }
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
-            if (currentPrice < line3Price || kdjDays == -1)
-            {
-                //dr["信号"] = "💩";
-            }
-            if (currentVolume / lastDayVolume >= 0.75 && currentVolume / lastDayVolume <= 1.5 && (upSpace <= 0.005 || (upSpace >= downSpace * 2 && upSpace + downSpace >= 0.04)))
-            {
-                //dr["信号"] = dr["信号"].ToString() + "📈";
-            }
-            if (((kdjDays == 0 && (int)dr["MACD日"] == 0) || ((int)dr["MACD日"] > 0 && kdjDays == -1)) && currentVolume / lastDayVolume >= 0.85)
-            {
-                dr["信号"] = dr["信号"].ToString() + "📈";
-            }
-
-            /*
-            if ((int)dr["MACD时"] >= 0 && (int)dr["KDJ日"] >= 0 && currentPrice <= f5 && currentPrice >= f1 && currentVolume / lastDayVolume >= 0.85)
-            {
-                dr["信号"] = dr["信号"].ToString() + "🔥";
-            }
-            */
-            if (stock.kLineDay[currentIndex].lowestPrice > stock.kLineDay[currentIndex - 1].highestPrice && (double)dr["今涨"] <= 0.095 )
-            {
-                dr["信号"] = dr["信号"].ToString() + "🌟";
-            }
-            if (currentPrice <= buyPrice * 1.005 && currentPrice >= buyPrice)
-            {
-                dr["信号"] = dr["信号"].ToString() + "🛍️";
-            }
             dt.Rows.Add(dr);
+
         }
         return dt;
+    }
+
+    public static double GetFirstLowestPrice(KLine[] kArr, int index)
+    {
+        double ret = double.MaxValue;
+        bool find = false;
+        for (int i = index - 1; i > 0 && !find; i--)
+        {
+            double line3Pirce = KLine.GetAverageSettlePrice(kArr, i, 3, 3);
+            if (kArr[i].endPrice < line3Pirce)
+            {
+                find = true;
+                ret = Math.Min(ret, kArr[i].lowestPrice);
+            }
+            if (kArr[i].lowestPrice >= line3Pirce && find)
+            {
+                break;
+            }
+
+
+        }
+        return ret;
     }
 
     public static void PageWatcher()
@@ -510,26 +471,71 @@
                 DataTable dt = GetData(currentDate);
                 foreach(DataRow dr in dt.Rows)
                 {
-                    if (dr["信号"].ToString().IndexOf("🛍️") >= 0
-                        && (dr["信号"].ToString().IndexOf("📈") >= 0 || dr["信号"].ToString().IndexOf("🔥") >= 0 || dr["信号"].ToString().IndexOf("🌟") >= 0)
-                        && (   (dr["MACD日"].ToString().Equals("0") &&  dr["KDJ日"].ToString().Equals("0")) || (dr["KDJ日"].ToString().Equals("-1") && int.Parse(dr["MACD日"].ToString()) > 0 )  ))
+                    if (dr["信号"].ToString().IndexOf("🛍️") >= 0 &&
+                        (dr["信号"].ToString().IndexOf("📈") >= 0 || dr["信号"].ToString().IndexOf("🔥") >= 0 || dr["信号"].ToString().IndexOf("🌟") >= 0))
                     {
-                        string message = dr["信号"].ToString().Trim() + " " + dr["代码"].ToString() + " " + dr["名称"].ToString();
+                        double high = Math.Round(double.Parse(dr["现高"].ToString()), 2);
+                        double low = Math.Round(double.Parse(dr["前低"].ToString()), 2);
+                        double f3 = Math.Round(double.Parse(dr["F3"].ToString()), 2);
+                        double line3 = Math.Round(double.Parse(dr["3线"].ToString()), 2);
+                        //string message = "F3:" + f3.ToString() + " " + ((f3 >= line3) ? "🐂高于" : "🐻低于") + "3线：" + line3.ToString() + " 现高：" + high.ToString() + " 前低：" + low.ToString();
+                        string message = ((f3 >= line3) ? "🐂高于3线" : "");
                         double price = Math.Round(double.Parse(dr["买入"].ToString()), 2);
                         if (StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()),
                                 dr["代码"].ToString().Trim(),
-                                "break_3_line_twice",
+                                "limit_up_box_f3",
                                 dr["名称"].ToString().Trim(),
                                 "买入价：" + price.ToString() + " " + message.Trim()))
                         {
                             StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(),
-                                dr["名称"].ToString() + " " + message, price, "break_3_line_twice");
+                                dr["名称"].ToString() + " " + message, f3, "limit_up_box_f3");
+                            StockWatcher.SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", dr["代码"].ToString().Trim(),
+                                dr["名称"].ToString() + " " + message, f3, "limit_up_box_f3");
+                            StockWatcher.SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", dr["代码"].ToString().Trim(),
+                                dr["名称"].ToString() + " " + message, f3, "limit_up_box_f3");
+                            StockWatcher.SendAlertMessage("oqrMvt2RxLEM7B8a3H6BYD5tXEiY", dr["代码"].ToString().Trim(),
+                                dr["名称"].ToString() + " " + message, f3, "limit_up_box_f3");
+                            StockWatcher.SendAlertMessage("oqrMvt1-mTlYx0c9qr7EM9ryA6-I", dr["代码"].ToString().Trim(),
+                                dr["名称"].ToString() + " " + message, f3, "limit_up_box_f3");
+                            StockWatcher.SendAlertMessage("oqrMvtxeGio8mZcm3U69TtcDu9XY", dr["代码"].ToString().Trim(),
+                                dr["名称"].ToString() + " " + message, f3, "limit_up_box_f3");
+
+                        }
+                    }
+                    else
+                    {
+                        double high = Math.Round(double.Parse(dr["现高"].ToString()), 2);
+                        double low = Math.Round(double.Parse(dr["前低"].ToString()), 2);
+                        double f5 = Math.Round(double.Parse(dr["F5"].ToString()), 2);
+                        double line3 = Math.Round(double.Parse(dr["3线"].ToString()), 2);
+                        string message = "F5:" + f5.ToString() + " " + ((f5 >= line3) ? "🐂高于" : "🐻低于") + "3线：" + line3.ToString() + " 现高：" + high.ToString() + " 前低：" + low.ToString();
+                        double price = Math.Round(double.Parse(dr["买入"].ToString()), 2);
+                        if (StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()),
+                                dr["代码"].ToString().Trim(),
+                                "limit_up_box_f5",
+                                dr["名称"].ToString().Trim(),
+                                "买入价：" + price.ToString() + " " + message.Trim()))
+                        {
+                            /*
+                            StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(),
+                                dr["名称"].ToString() + " " + message, price, "limit_up_box_f5");
+                            
+                            StockWatcher.SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", dr["代码"].ToString().Trim(),
+                                dr["名称"].ToString() + " " + message, price, "limit_up_box_f5");
+                            StockWatcher.SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", dr["代码"].ToString().Trim(),
+                                dr["名称"].ToString() + " " + message, price, "limit_up_box_f5");
+                            StockWatcher.SendAlertMessage("oqrMvt2RxLEM7B8a3H6BYD5tXEiY", dr["代码"].ToString().Trim(),
+                                dr["名称"].ToString() + " " + message, price, "limit_up_box_f5");
+                            
+                            */
+
                         }
 
                     }
+
                 }
             }
-            Thread.Sleep(600000);
+            Thread.Sleep(30000);
         }
     }
 
@@ -561,23 +567,17 @@
                     <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号" SortExpression="信号|desc" ></asp:BoundColumn>
-					<asp:BoundColumn DataField="综指" HeaderText="综指" SortExpression="综指|desc" ></asp:BoundColumn>
-                    <asp:BoundColumn DataField="昨收" HeaderText="昨收"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="今开" HeaderText="今开"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="今收" HeaderText="今收"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="今涨" HeaderText="今涨" SortExpression="今涨|desc"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="放量" HeaderText="放量" SortExpression="放量|desc"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="缩量" HeaderText="缩量"></asp:BoundColumn>
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD日|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="调整日" HeaderText="调整日" SortExpression="调整日|asc"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="KDJ率" HeaderText="KDJ率" SortExpression="KDJ率|asc"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="MACD率" HeaderText="MACD率" SortExpression="MACD率|asc"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="调整" HeaderText="调整" SortExpression="调整|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="低点" HeaderText="低点"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="F1" HeaderText="F1"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="现高" HeaderText="现高"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F5" HeaderText="F5"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="高点" HeaderText="高点"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="前低" HeaderText="前低"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="现价" HeaderText="现价"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="距F3" HeaderText="距F3"></asp:BoundColumn>
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日" SortExpression="1日|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="2日" HeaderText="2日"></asp:BoundColumn>
@@ -593,7 +593,7 @@
                 <SelectedItemStyle BackColor="#008A8C" Font-Bold="True" ForeColor="White" />
                 </asp:DataGrid></td>
             </tr>
- 
+            <tr><td><%=t.ThreadState.ToString() %></td></tr>
         </table>
     </div>
     </form>

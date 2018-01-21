@@ -18,17 +18,20 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        
-        for (DateTime startDate = DateTime.Parse("2017-12-5"); startDate >= DateTime.Parse("2017-11-27"); startDate = startDate.AddDays(-1))
+
+        //for (DateTime startDate = DateTime.Parse("2018-1-10"); startDate >= DateTime.Parse("2018-1-10"); startDate = startDate.AddDays(-1))
+        //{
+        DateTime startDate = DateTime.Now.Date;
+        if (!Util.IsTransacDay(startDate))
+            Response.End();
+        if (Util.IsTransacDay(startDate))
         {
-            if (Util.IsTransacDay(startDate))
+            for (int i = 10; i >= 3; i--)
             {
-                for (int i = 7; i >= 3; i--)
-                {
-                    LogAbove3LineForDays(startDate, i);
-                }
+                LogAbove3LineForDays(startDate, i);
             }
         }
+        //}
 
         Response.End();
 
@@ -262,7 +265,7 @@
     {
         DateTime  break3LineDate = Util.GetLastTransactDate(currentDate, days);
         DataTable dtOri = new DataTable();
-        SqlDataAdapter da = new SqlDataAdapter(" select *  from alert_above_3_line_for_days where alert_date = '" + currentDate.ToShortDateString() 
+        SqlDataAdapter da = new SqlDataAdapter(" select *  from alert_above_3_line_for_days where alert_date = '" + currentDate.ToShortDateString()
             + "' and above_3_line_days >= 10 ", Util.conStr);
         da.Fill(dtOri);
 
@@ -303,7 +306,7 @@
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
             stock.LoadKLineDay();
             int currentIndex = stock.GetItemIndex(currentDate);
-          
+
 
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
@@ -313,7 +316,7 @@
 
             if (currentIndex < 1)
                 continue;
-            
+
 
             DataRow dr = dt.NewRow();
 
@@ -329,7 +332,7 @@
             dr["MACD"] = macdDays;
             dr["TD"] = currentIndex - KLine.GetLastDeMarkBuyPointIndex(stock.kLineDay, currentIndex);
             dr["今涨"] = (stock.kLineDay[currentIndex].startPrice - settlePrice) / settlePrice;
-   
+
             DateTime lastDate = DateTime.Parse(stock.kLineDay[currentIndex - 1].startDateTime.ToShortDateString());
             double lastDayVolume = Stock.GetVolumeAndAmount(stock.gid, lastDate)[0];
             double currentVolume = Stock.GetVolumeAndAmount(stock.gid, currentDate)[0];
@@ -337,7 +340,7 @@
             dr["放量"] = currentVolume / lastDayVolume;
             int kdjDays = stock.kdjDays(currentIndex);
             dr["kdj"] = kdjDays.ToString();
-       
+
             int days3Line = KLine.Above3LineDays(stock, currentIndex);
             dr["3线日"] = int.Parse(drOri["above_3_line_days"].ToString());
             dr["3线"] = stock.GetAverageSettlePrice(currentIndex, 3, 3);
@@ -476,7 +479,7 @@
 
     public static void LogAbove3LineForDays(DateTime currentDate, int days)
     {
-        DateTime  break3LineDate = Util.GetLastTransactDate(currentDate, days-1);
+        DateTime  break3LineDate = Util.GetLastTransactDate(currentDate, days);
         DataTable dtOri = new DataTable();
         SqlDataAdapter da = new SqlDataAdapter(" select * from bottom_break_cross_3_line where suggest_date = '" + break3LineDate.ToShortDateString() + "' " , Util.conStr);
         da.Fill(dtOri);
@@ -484,8 +487,8 @@
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock s = new Stock(drOri["gid"].ToString().Trim());
-            s.LoadKLineDay();
-
+            s.kLineDay = Stock.LoadLocalKLineFromDB(s.gid, "day");
+            s.kArr = s.kLineDay;
             int currentIndex = s.GetItemIndex(currentDate);
             int break3LineIndex = s.GetItemIndex(break3LineDate);
             if (currentIndex - break3LineIndex != days-1)

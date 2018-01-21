@@ -45,12 +45,12 @@
         Response.End();
         */
 
-        ThreadStart ts = new ThreadStart(RunData);
-        Thread t = new Thread(ts);
-        t.Start();
+        //ThreadStart ts = new ThreadStart(RunData);
+        //Thread t = new Thread(ts);
+        //t.Start();
 
     
-        sort = Util.GetSafeRequestValue(Request, "sort", "3线日,日均涨幅 desc");
+        sort = Util.GetSafeRequestValue(Request, "sort", "KDJ,MACD,放量,3线日");
         if (!IsPostBack)
         {
             try
@@ -91,7 +91,7 @@
         DateTime currentDate = calendar.SelectedDate;
         if (currentDate.Year < 2000)
             currentDate = DateTime.Now;
-        DataTable dtOri = GetData(currentDate, Util.GetSafeRequestValue(Request, "days", "5,6,7,8,9,10"));
+        DataTable dtOri = GetData(currentDate, Util.GetSafeRequestValue(Request, "days", "8,9,10"));
         DataRow[] drOriArr = dtOri.Select(Util.GetSafeRequestValue(Request, "whereclause", "   ").Trim(), sort);
         return RenderHtml(drOriArr);
     }

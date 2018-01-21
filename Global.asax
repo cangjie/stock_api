@@ -7,14 +7,19 @@
         Util.physicalPath = Server.MapPath("//");
         for (int i = 0; KLineCache.allGid.Length == 0 && i < 100; i++)
         {
-            Util.GetAllGids();
+            KLineCache.allGid = Util.GetAllGids();
         }
+
+        //Stock.todayKLineArr = new KLine[KLineCache.allGid.Length];
+
+        
 
         KLineCache.kLineDayCache = new CachedKLine[Util.GetAllGids().Length];
 
         StockWatcher.tKLineRefresher.Start();
         StockWatcher.tRefreshUpdatedKLine.Start();
-
+        StockWatcher.tLoadTodayKLine.Start();
+        
 
         
         //StockWatcher.tLoadCurrentKLineToCache.Start();

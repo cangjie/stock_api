@@ -20,6 +20,9 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
+
+        Response.Redirect("limit_up_3_line_confirmed_f3_f5.aspx", true);
+
         sort = Util.GetSafeRequestValue(Request, "sort", "调整,MACD日,KDJ日");
         if (!IsPostBack)
         {
@@ -384,7 +387,7 @@
                         }
                         catch
                         {
-                            buyPrice = f3 * 1.005;
+                            buyPrice = stock.kLineDay[currentIndex].lowestPrice;
                         }
                     }
                 }

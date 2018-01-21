@@ -39,6 +39,8 @@ public class Stock
 
     public static ArrayList kLineCache = new ArrayList();
 
+    public static KLine[] todayKLineArr;
+
     public static ArrayList kLineCacheTemp = new ArrayList();
 
     public static string[] allGid = Util.GetAllGids();
@@ -616,6 +618,8 @@ public class Stock
                 else
                 {
                     KLine lastKLine = c.kLine[c.kLine.Length - 1];
+                    if (lastKLine == null)
+                        return LoadLocalKLineFromDB(gid, type);
                     DataTable dt = DBHelper.GetDataTable(" select * from  " + gid + "_k_line where type = 'day' and start_date >= '" + lastKLine.startDateTime.ToString() + "' ");
                     KLine[] kArrNew = new KLine[c.kLine.Length + dt.Rows.Count - 1];
                     for (int i = 0; i < c.kLine.Length - 1; i++)
@@ -1026,8 +1030,8 @@ public class Stock
     {
         if (index > 1)
         {
-            if ((kLineDay[index].endPrice - kLineDay[index - 1].endPrice )/ kLineDay[index - 1].endPrice > 0.0995
-                && kLineDay[index - 1].endPrice == kLineDay[index - 1].highestPrice)
+            if ((kLineDay[index].endPrice - kLineDay[index - 1].endPrice )/ kLineDay[index - 1].endPrice >= 0.0995
+                && kLineDay[index].endPrice == kLineDay[index].highestPrice)
             {
                 return true;
             }
@@ -1266,7 +1270,7 @@ public class Stock
     }
 
 
-    public static double[] GetVolumeAndAmount(string gid, DateTime currentDate)
+    public static double[] GetVolumeAndAmount1(string gid, DateTime currentDate)
     {
         Stock s = new Stock(gid);
         s.LoadKLineDay();
@@ -1278,7 +1282,7 @@ public class Stock
         return new double[] { s.kLineDay[currentIndex].volume, s.kLineDay[currentIndex].amount };
     }
 
-    public static double[] GetVolumeAndAmount1(string gid, DateTime currentDate)
+    public static double[] GetVolumeAndAmount(string gid, DateTime currentDate)
     {
         if (currentDate.ToShortTimeString().Equals("0:00"))
         {
@@ -1286,11 +1290,12 @@ public class Stock
         }
 
         DataTable dtTimeline = DBHelper.GetDataTable(" select top 1 * from  " + gid.Trim() + "_timeline where ticktime <= '" + currentDate.ToString() + "' order by ticktime desc ");
+        //DataTable dtTimeline = new DataTable();
         DataTable dtNormal = DBHelper.GetDataTable(" select top 1 * from  " + gid + " where convert(datetime, date + ' ' + time )  <= '" + currentDate.ToString() + "'  order by convert(datetime, date + ' ' + time ) desc   ");
         double volmue = 0;
         double amount = 0;
-        DateTime timeLineTick = DateTime.Parse(DateTime.Now.ToShortDateString());
-        DateTime normalTick = DateTime.Parse(DateTime.Now.ToShortDateString());
+        DateTime timeLineTick = DateTime.MinValue;
+        DateTime normalTick = DateTime.MinValue;
         if (dtTimeline.Rows.Count > 0)
         {
             //volmue = double.Parse(dtTimeline.Rows[0]["volume"].ToString());
