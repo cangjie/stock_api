@@ -125,7 +125,7 @@ public class StockWatcher
                     //Stock.GetKLineSetArray(gidArr, "day", 100);
                     for (int i = 0; i < gidArr.Length; i++)
                     {
-                        KLine.RefreshKLine(gidArr[i], DateTime.Parse(DateTime.Now.ToShortDateString()));
+                        //KLine.RefreshKLine(gidArr[i], DateTime.Parse(DateTime.Now.ToShortDateString()));
                         Stock stock = new Stock(gidArr[i].Trim());
                         stock.LoadKLineDay();
                         int currentIndex = stock.GetItemIndex(DateTime.Parse(DateTime.Now.ToShortDateString()));

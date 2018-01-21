@@ -36,7 +36,7 @@
         {
             string[] data = items[i].Split(',');
             int j = InsertTimeline(data);
-            if (j == 0)
+            if (j == 1)
             {
                 UpdateKLineDB(data);
                 UpdateKLinCache(data);
