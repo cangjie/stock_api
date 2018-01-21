@@ -34,12 +34,19 @@
         string[] items = postedStr.Split(';');
         for (int i = 0; i < items.Length; i++)
         {
-            string[] data = items[i].Split(',');
-            int j = InsertTimeline(data);
-            if (j == 1)
+            try
             {
-                UpdateKLineDB(data);
-                UpdateKLinCache(data);
+                string[] data = items[i].Split(',');
+                int j = InsertTimeline(data);
+                if (j == 1)
+                {
+                    UpdateKLineDB(data);
+                    UpdateKLinCache(data);
+                }
+            }
+            catch
+            {
+
             }
             System.Diagnostics.Debug.WriteLine("Deal " + i.ToString() + " items.");
         }
@@ -84,8 +91,8 @@
         int i = 0;
         if (exists)
         {
-           cmd.CommandText = "update " + gid.Trim() + "_k_line set settle = " + data[3].Trim() + ", highest = " + data[4].Trim() + ", lowest = " + data[5].Trim()
-                + ", volume = " + data[6].Trim() + ", amount = " + data[7].Trim() + " where [type] = 'day' and start_date >= '" + tickTime.ToShortDateString() + "' ";
+            cmd.CommandText = "update " + gid.Trim() + "_k_line set settle = " + data[3].Trim() + ", highest = " + data[4].Trim() + ", lowest = " + data[5].Trim()
+                 + ", volume = " + data[6].Trim() + ", amount = " + data[7].Trim() + " where [type] = 'day' and start_date >= '" + tickTime.ToShortDateString() + "' ";
         }
         else
         {
@@ -119,7 +126,7 @@
             lastKLine.amount = double.Parse(data[7].Trim());
             lastKLine.volume = int.Parse(data[6].Trim());
             kArr[kArr.Length - 1] = lastKLine;
-            
+
         }
         else
         {
