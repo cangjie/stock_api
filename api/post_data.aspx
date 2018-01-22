@@ -14,7 +14,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        //postedStr = (new System.IO.StreamReader(Request.InputStream)).ReadToEnd();
+        postedStr = (new System.IO.StreamReader(Request.InputStream)).ReadToEnd();
         string[] itemArr = postedStr.Split(';');
 
         ThreadStart ts = new ThreadStart(DealData);
