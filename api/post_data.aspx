@@ -10,8 +10,8 @@
 
     public static Queue postStrQueue = new Queue();
 
-    public static SqlConnection conn = new SqlConnection();
-    public static SqlCommand cmd = new SqlCommand("", conn);
+   // public static SqlConnection conn = new SqlConnection();
+   // public static SqlCommand cmd = new SqlCommand("", conn);
 
 
     protected void Page_Load(object sender, EventArgs e)
@@ -34,7 +34,9 @@
 
     public static void DealData()
     {
-        conn.ConnectionString = System.Configuration.ConfigurationSettings.AppSettings["constr"].Trim();
+
+        SqlConnection conn = new SqlConnection(System.Configuration.ConfigurationSettings.AppSettings["constr"].Trim());
+        SqlCommand cmd = new SqlCommand("", conn);
         conn.Open();
         string postedStr = "";
         try
@@ -55,9 +57,9 @@
             try
             {
                 string[] data = items[i].Split(',');
-                int j = InsertTimeline(data);
+                int j = InsertTimeline(data, cmd);
 
-                UpdateKLineDB(data);
+                UpdateKLineDB(data, cmd);
                 UpdateKLinCache(data);
 
 
@@ -69,10 +71,11 @@
             System.Diagnostics.Debug.WriteLine("Deal " + i.ToString() + " items.");
         }
         conn.Close();
+        cmd.Dispose();
         conn.Dispose();
     }
 
-    public static int InsertTimeline(string[] data)
+    public static int InsertTimeline(string[] data, SqlCommand cmd)
     {
         bool exsists = false;
         cmd.CommandText = "select 'a' from " + data[0].Trim() + "_timeline where ticktime = '" + data[8].Trim() + "' ";
@@ -94,7 +97,7 @@
         return ret;
     }
 
-    public static void UpdateKLineDB(string[] data)
+    public static void UpdateKLineDB(string[] data, SqlCommand cmd)
     {
         string gid = data[0].Trim();
         DateTime tickTime = DateTime.Parse(data[8].Trim());
