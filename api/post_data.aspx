@@ -34,7 +34,7 @@
 
     public static void DealData()
     {
-        conn.ConnectionString = Util.conStr;
+        conn.ConnectionString = System.Configuration.ConfigurationSettings.AppSettings["constr"].Trim();
         conn.Open();
         string postedStr = "";
         try
