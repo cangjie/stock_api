@@ -119,7 +119,7 @@ public class StockWatcher
         {
             try
             {
-                if (Util.IsTransacDay(DateTime.Parse(DateTime.Now.ToShortDateString())) && DateTime.Now.Hour >= 9 && DateTime.Now.Hour <= 15)
+                if (Util.IsTransacDay(DateTime.Parse(DateTime.Now.ToShortDateString())) && DateTime.Now.Hour >= 9 && DateTime.Now.Hour <= 18)
                 {
                     string[] gidArr = Util.GetAllGids();
                     //Stock.GetKLineSetArray(gidArr, "day", 100);
@@ -138,7 +138,7 @@ public class StockWatcher
 
                         }
                         
-                        if (DateTime.Now.Hour == 15 && stock.IsLimitUp(currentIndex))
+                        if (DateTime.Now.Hour == 18 && stock.IsLimitUp(currentIndex))
                         {
                             LimitUp.SaveLimitUp(stock.gid.Trim(), DateTime.Parse(stock.kLineDay[currentIndex].startDateTime.ToShortDateString()),
                                 stock.kLineDay[currentIndex - 1].endPrice, stock.kLineDay[currentIndex].startPrice, stock.kLineDay[currentIndex].endPrice, 
