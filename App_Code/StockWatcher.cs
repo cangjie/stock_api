@@ -552,7 +552,7 @@ public class StockWatcher
         string keyword2 = "";
         string keyword3 = "";
         //string url = "http://stocks.sina.cn/" + gid.Substring(0,2) + "/levle2?code=" + gid+"&vt=4";
-        string url = "http://54.223.116.146:8848/show_k_line_day.aspx?gid=" + gid;
+        string url = "http://52.80.17.211:8848/show_k_line_day.aspx?gid=" + gid;
         switch (type)
         {
             case "star":
