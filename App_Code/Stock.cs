@@ -1289,6 +1289,7 @@ public class Stock
         double amount = 0;
         Stock s = new Stock(gid.Trim());
         s.kLineDay = Stock.LoadLocalKLine(gid, "day");
+        s.kArr = s.kLineDay;
         if (s.kLineDay.Length == 0)
         {
             return new double[] { 0, 0 };
