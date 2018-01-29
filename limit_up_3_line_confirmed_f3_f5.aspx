@@ -20,7 +20,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "调整,MACD日,KDJ日");
+        sort = Util.GetSafeRequestValue(Request, "sort", "调整, 缩量, MACD日, KDJ日");
         if (!IsPostBack)
         {
             try
@@ -339,7 +339,8 @@
             }
 
             int highIndex = 0;
-            double lowest = GetFirstLowestPrice(stock.kLineDay, limitUpIndex); ;
+            int lowestIndex = 0;
+            double lowest = GetFirstLowestPrice(stock.kLineDay, limitUpIndex, out lowestIndex);
             double highest = 0;
             for (int i = limitUpIndex; i < currentIndex; i++)
             {
@@ -358,8 +359,13 @@
             double buyPrice = 0;
             double f3Distance = 0.382 - (highest - stock.kLineDay[currentIndex].lowestPrice) / (highest - lowest);
 
-            double volumeToday = Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(currentDate.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
-            double volumeYesterday = Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(stock.kLineDay[limitUpIndex].startDateTime.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
+            double volumeToday = stock.kLineDay[currentIndex].volume;  //Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(currentDate.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
+            double volumeYesterday = 0;// Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(stock.kLineDay[limitUpIndex].startDateTime.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
+
+            for (int j = lowestIndex; j < currentIndex; j++)
+            {
+                volumeYesterday = Math.Max(volumeYesterday, stock.kLineDay[j].volume);
+            }
 
             double volumeReduce = volumeToday / volumeYesterday;
 
@@ -367,32 +373,7 @@
             {
                 continue;
             }
-            /*
-            if (currentIndex == highIndex)
-            {
-                DateTime highestTime = stock.kLineDay[highIndex].HighestTime;
-                if (highestTime > DateTime.MinValue)
-                {
-                    DataTable dtLowestAfterHighest = DBHelper.GetDataTable(" select min(trade) from " + stock.gid + "_timeline where ticktime >= '" + stock.kLineDay[currentIndex].startDateTime.ToShortDateString()
-                        + "' and ticktime < '" + stock.kLineDay[currentIndex].startDateTime.ToShortDateString() + " 23:59:59' and ticktime > '" + highestTime.ToString() + "' ");
-                    if (dtLowestAfterHighest.Rows.Count > 0)
-                    {
-                        try
-                        {
-                            buyPrice = Math.Max(f3 * 1.005, double.Parse(dtLowestAfterHighest.Rows[0][0].ToString()));
-                        }
-                        catch
-                        {
-                            buyPrice = stock.kLineDay[currentIndex].lowestPrice;
-                        }
-                    }
-                }
-            }
-            else
-            {
-                
-            }
-            */
+
             if (stock.kLineDay[currentIndex].startPrice > f3 * 0.99 && stock.kLineDay[currentIndex].lowestPrice < f3 * 1.01 )
             {
                 buyPrice = f3 * 1.01 ;
@@ -439,10 +420,11 @@
         return dt;
     }
 
-    public static double GetFirstLowestPrice(KLine[] kArr, int index)
+    public static double GetFirstLowestPrice(KLine[] kArr, int index, out int lowestIndex)
     {
         double ret = double.MaxValue;
         bool find = false;
+        lowestIndex = 0;
         for (int i = index - 1; i > 0 && !find; i--)
         {
             double line3Pirce = KLine.GetAverageSettlePrice(kArr, i, 3, 3);
@@ -450,6 +432,10 @@
             {
                 find = true;
                 ret = Math.Min(ret, kArr[i].lowestPrice);
+                if (ret == kArr[i].lowestPrice)
+                {
+                    lowestIndex = i;
+                }
             }
             if (kArr[i].lowestPrice >= line3Pirce && find)
             {
