@@ -1285,6 +1285,20 @@ public class Stock
 
     public static double[] GetVolumeAndAmount(string gid, DateTime currentDate)
     {
+        double volume = 0;
+        double amount = 0;
+        Stock s = new Stock(gid.Trim());
+        s.kLineDay = Stock.LoadLocalKLine(gid, "day");
+        int index = s.GetItemIndex(currentDate);
+        if (index >= 0)
+        {
+            volume = s.kLineDay[index].volume;
+            amount = s.kLineDay[index].amount;
+        }
+
+
+        /*
+
         if (currentDate.ToShortTimeString().Equals("0:00"))
         {
             currentDate = currentDate.AddHours(16);
@@ -1323,9 +1337,9 @@ public class Stock
                 amount = double.Parse(dtTimeline.Rows[0]["amount"].ToString());
             }
         }
+        */
 
-
-        return new double[] { volmue, amount };
+        return new double[] { volume, amount };
     }
 
     public double HighestPrice(DateTime currentDate, int days)
