@@ -478,11 +478,14 @@
 
     public static void LogAbove3LineForDays(DateTime currentDate, int days)
     {
+        
+        DateTime  break3LineDate = Util.GetLastTransactDate(currentDate, days);
         if (DateTime.Now.Hour >= 16)
         {
             currentDate = currentDate.AddDays(1);
+            break3LineDate = Util.GetLastTransactDate(currentDate, days);
         }
-        DateTime  break3LineDate = Util.GetLastTransactDate(currentDate, days);
+        currentDate = currentDate.AddDays(-1);
         DataTable dtOri = new DataTable();
         SqlDataAdapter da = new SqlDataAdapter(" select * from bottom_break_cross_3_line where suggest_date = '" + break3LineDate.ToShortDateString() + "' " , Util.conStr);
         da.Fill(dtOri);
