@@ -509,8 +509,8 @@ public class Util
     {
         DateTime nowDate = currentDate;
         int i = 0;
-        if (!Util.IsTransacDay(nowDate))
-            i--;
+        //if (!Util.IsTransacDay(nowDate))
+        //    i--;
         for (; i < days; i++)
         {
             nowDate = nowDate.AddDays(-1);
