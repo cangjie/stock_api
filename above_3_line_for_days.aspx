@@ -489,10 +489,9 @@
             Stock s = new Stock(drOri["gid"].ToString().Trim());
             s.kLineDay = Stock.LoadLocalKLineFromDB(s.gid, "day");
             s.kArr = s.kLineDay;
-            int currentIndex = s.GetItemIndex(currentDate);
+            int currentIndex = s.GetItemIndex(currentDate) -1;
             int break3LineIndex = s.GetItemIndex(break3LineDate);
-            if (currentIndex - break3LineIndex != days-1)
-                continue;
+   
             bool isAlwaysAbove3Line = true;
             for (int i = 0; i < days; i++)
             {
