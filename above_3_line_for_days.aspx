@@ -21,7 +21,7 @@
 
         //for (DateTime startDate = DateTime.Parse("2018-1-10"); startDate >= DateTime.Parse("2018-1-10"); startDate = startDate.AddDays(-1))
         //{
-        DateTime startDate = DateTime.Now.Date;
+        DateTime startDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "date", DateTime.Now.ToShortDateString()));
         if (!Util.IsTransacDay(startDate))
             Response.End();
         if (Util.IsTransacDay(startDate))
