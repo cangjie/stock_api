@@ -57,7 +57,7 @@
             try
             {
                 string[] data = items[i].Split(',');
-                int j = InsertTimeline(data, cmd);
+                //int j = InsertTimeline(data, cmd);
 
                 UpdateKLineDB(data, cmd);
                 UpdateKLinCache(data);
