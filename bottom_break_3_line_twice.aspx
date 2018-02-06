@@ -385,8 +385,8 @@
             double currentPrice = stock.kLineDay[currentIndex].endPrice;
             double line3Price = stock.GetAverageSettlePrice(currentIndex, 3, 3);
             DateTime lastDate = DateTime.Parse(stock.kLineDay[currentIndex - 1].startDateTime.ToShortDateString());
-            double lastDayVolume = Stock.GetVolumeAndAmount(stock.gid, lastDate)[0];
-            double currentVolume = Stock.GetVolumeAndAmount(stock.gid, currentDate)[0];
+            double lastDayVolume = stock.kLineDay[currentIndex - 1].VirtualVolume;//Stock.GetVolumeAndAmount(stock.gid, lastDate)[0];
+            double currentVolume = stock.kLineDay[currentIndex].VirtualVolume;//Stock.GetVolumeAndAmount(stock.gid, currentDate)[0];
             int kdjDays = stock.kdjDays(currentIndex);
             double lowestPrice = stock.LowestPrice(currentDate, 20);
             double highestPrice = stock.HighestPrice(currentDate, 40);
