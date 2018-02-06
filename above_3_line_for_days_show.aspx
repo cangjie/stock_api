@@ -362,8 +362,8 @@
             dr["今涨"] = todayRaise;
 
             DateTime lastDate = DateTime.Parse(stock.kLineDay[currentIndex - 1].startDateTime.ToShortDateString());
-            double lastDayVolume = Stock.GetVolumeAndAmount(stock.gid, lastDate)[0];
-            double currentVolume = Stock.GetVolumeAndAmount(stock.gid, currentDate)[0];
+            double lastDayVolume = stock.kLineDay[currentIndex-1].VirtualVolume;//Stock.GetVolumeAndAmount(stock.gid, lastDate)[0];
+            double currentVolume = stock.kLineDay[currentIndex].VirtualVolume;//Stock.GetVolumeAndAmount(stock.gid, currentDate)[0];
             double volumeIncrease = (currentVolume - lastDayVolume) / lastDayVolume;
             dr["放量"] = currentVolume / lastDayVolume;
             int kdjDays = stock.kdjDays(currentIndex);
