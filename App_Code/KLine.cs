@@ -85,6 +85,38 @@ public class KLine
         }
     }
 
+    public double VirtualVolume
+    {
+        get
+        {
+            double virtualVolume = volume;
+            if (DateTime.Now.Date == startDateTime.Date)
+            {
+                TimeSpan totalTranTime = new TimeSpan(4, 0, 0);
+                TimeSpan currentTimeSpan;
+                if (DateTime.Now <= DateTime.Parse(DateTime.Now.ToShortDateString() + " 9:30"))
+                {
+                    virtualVolume = 0;
+                }
+                else if (DateTime.Now <= DateTime.Parse(DateTime.Now.ToShortDateString() + " 11:30"))
+                {
+                    currentTimeSpan = DateTime.Now - DateTime.Parse(DateTime.Now.ToShortDateString() + " 9:30");
+                    virtualVolume = volume / ((double)currentTimeSpan.Minutes / (double)totalTranTime.Minutes);
+                }
+                else if (DateTime.Now <= DateTime.Parse(DateTime.Now.ToShortDateString() + " 13:00"))
+                {
+                    virtualVolume = volume * 2;
+                }
+                else if (DateTime.Now <= DateTime.Parse(DateTime.Now.ToShortDateString() + " 15:00"))
+                {
+                    currentTimeSpan = new TimeSpan(2, 0, 0) + (DateTime.Now - DateTime.Parse(DateTime.Now.ToShortDateString() + " 13:00"));
+                    virtualVolume = volume / ((double)currentTimeSpan.Minutes / (double)totalTranTime.Minutes);
+                }
+            }
+            return virtualVolume;
+        }
+    }
+
     public void Save()
     {
         DataTable dt = DBHelper.GetDataTable(" select * from " + gid.Trim() + "_k_line  where type = '" + type.Trim()
