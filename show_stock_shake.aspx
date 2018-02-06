@@ -55,14 +55,15 @@
         dt.Columns.Add("最低涨幅");
         dt.Columns.Add("振幅");
 
-        Stock s = new Stock(Util.GetSafeRequestValue(Request, "gid", "sh601111"));
-        s.kArr = KLine.GetKLine("day", s.gid, DateTime.Parse(Util.GetSafeRequestValue(Request, "start", "2017-1-1")),
-            DateTime.Parse(DateTime.Now.ToShortDateString()));
+        Stock s = new Stock(Util.GetSafeRequestValue(Request, "gid", "sz002912"));
+        //s.kArr = KLine.GetKLine("day", s.gid, DateTime.Parse(Util.GetSafeRequestValue(Request, "start", "2018-1-1")),
+        //    DateTime.Parse(DateTime.Now.ToShortDateString()));
+        s.LoadKLineDay();
         s.ComputeIncreasement();
 
         //double totalShake = 0;
 
-        for (int i = 1; i < s.kArr.Length; i++)
+        for (int i = s.kArr.Length - 1; i >= s.kArr.Length - 60 && i >= 0; i--)
         {
             DataRow dr = dt.NewRow();
             dr["日期"] = s.kArr[i].startDateTime.ToShortDateString();
