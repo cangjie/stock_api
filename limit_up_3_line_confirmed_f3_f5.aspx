@@ -44,7 +44,7 @@
                 {
                     t.Abort();
                     t = new Thread(ts);
-                    t.Start();
+                    //t.Start();
 
                 }
             }
@@ -315,6 +315,12 @@
 
         foreach (DataRow drOri in dtOri.Rows)
         {
+            /*
+            if (!drOri["gid"].ToString().Trim().Equals("sz300604"))
+            {
+                continue;
+            }
+            */
             DateTime alertDate = DateTime.Parse(drOri["alert_date"].ToString().Trim());
             DataRow[] drArrExists = dtOri.Select(" gid = '" + drOri["gid"].ToString() + "' and alert_date > '" + alertDate.ToShortDateString() + "'  ");
             if (drArrExists.Length > 0)
@@ -360,7 +366,7 @@
             double f3Distance = 0.382 - (highest - stock.kLineDay[currentIndex].lowestPrice) / (highest - lowest);
 
             double volumeToday = stock.kLineDay[currentIndex].volume;  //Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(currentDate.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
-            
+
             double volumeYesterday = 0;// Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(stock.kLineDay[limitUpIndex].startDateTime.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
 
             for (int j = lowestIndex; j < currentIndex; j++)
@@ -374,6 +380,8 @@
             {
                 continue;
             }
+            //buyPrice = f3 * 1.01 ;
+
 
             if (stock.kLineDay[currentIndex].startPrice > f3 * 0.99 && stock.kLineDay[currentIndex].lowestPrice < f3 * 1.01 )
             {
@@ -389,6 +397,11 @@
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
             dr["信号"] = (buyPrice == f3 * 1.01) ? "📈" : "";
+            if (dr["信号"].ToString().Trim().Equals("") && StockWatcher.HaveAlerted(stock.gid.Trim(), "limit_up_box_f3", currentDate))
+            {
+                dr["信号"] = "📈";
+            }
+
             if (Math.Abs(currentPrice - buyPrice) / buyPrice < 0.01  && dr["信号"].ToString().IndexOf("📈") >= 0 )
             {
                 dr["信号"] = dr["信号"] + "🛍️";
@@ -424,26 +437,24 @@
     public static double GetFirstLowestPrice(KLine[] kArr, int index, out int lowestIndex)
     {
         double ret = double.MaxValue;
-        bool find = false;
+        int find = 0;
         lowestIndex = 0;
-        for (int i = index - 1; i > 0 && !find; i--)
+        for (int i = index - 1; i > 0 && find < 2; i--)
         {
             double line3Pirce = KLine.GetAverageSettlePrice(kArr, i, 3, 3);
+            ret = Math.Min(ret, kArr[i].lowestPrice);
+            if (ret == kArr[i].lowestPrice)
+            {
+                lowestIndex = i;
+            }
             if (kArr[i].endPrice < line3Pirce)
             {
-                find = true;
-                ret = Math.Min(ret, kArr[i].lowestPrice);
-                if (ret == kArr[i].lowestPrice)
-                {
-                    lowestIndex = i;
-                }
+                find = 1;
             }
-            if (kArr[i].lowestPrice >= line3Pirce && find)
+            if (kArr[i].lowestPrice >= line3Pirce && find == 1)
             {
-                break;
+                find = 2;
             }
-
-
         }
         return ret;
     }

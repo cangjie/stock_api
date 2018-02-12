@@ -1035,7 +1035,18 @@ public class StockWatcher
     }
 
 
-
+    public static bool HaveAlerted(string gid, string type, DateTime currentDate)
+    {
+        DataTable dt = DBHelper.GetDataTable(" select 'a'  from stock_alert_message where gid = '" + gid.Trim() + "' and alert_type = '" + type.Trim()
+            + "'  and  alert_date = '" + currentDate.ToShortDateString() + "'  ");
+        bool ret = false;
+        if (dt.Rows.Count >= 1)
+        {
+            ret = true;
+        }
+        dt.Dispose();
+        return ret;
+    }
 
 
     public static void ReadKLineFromFileCache(string gid)
