@@ -315,12 +315,12 @@
 
         foreach (DataRow drOri in dtOri.Rows)
         {
-            
+            /*
             if (!drOri["gid"].ToString().Trim().Equals("sz300604"))
             {
                 continue;
             }
-            
+            */
             DateTime alertDate = DateTime.Parse(drOri["alert_date"].ToString().Trim());
             DataRow[] drArrExists = dtOri.Select(" gid = '" + drOri["gid"].ToString() + "' and alert_date > '" + alertDate.ToShortDateString() + "'  ");
             if (drArrExists.Length > 0)
