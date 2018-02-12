@@ -315,12 +315,12 @@
 
         foreach (DataRow drOri in dtOri.Rows)
         {
-            /*
+            
             if (!drOri["gid"].ToString().Trim().Equals("sz300604"))
             {
                 continue;
             }
-            */
+            
             DateTime alertDate = DateTime.Parse(drOri["alert_date"].ToString().Trim());
             DataRow[] drArrExists = dtOri.Select(" gid = '" + drOri["gid"].ToString() + "' and alert_date > '" + alertDate.ToShortDateString() + "'  ");
             if (drArrExists.Length > 0)
@@ -380,9 +380,9 @@
             {
                 continue;
             }
-            //buyPrice = f3 * 1.01 ;
+            buyPrice = f3;
 
-
+            /*
             if (stock.kLineDay[currentIndex].startPrice > f3 * 0.99 && stock.kLineDay[currentIndex].lowestPrice < f3 * 1.01 )
             {
                 buyPrice = f3 * 1.01 ;
@@ -391,12 +391,12 @@
             {
                 buyPrice = stock.kLineDay[currentIndex].endPrice;
             }
-
+            */
 
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
-            dr["信号"] = (buyPrice == f3 * 1.01) ? "📈" : "";
+            dr["信号"] = (stock.kLineDay[currentIndex].endPrice <= f3 * 1.01) ? "📈" : "";
             if (dr["信号"].ToString().Trim().Equals("") && StockWatcher.HaveAlerted(stock.gid.Trim(), "limit_up_box_f3", currentDate))
             {
                 dr["信号"] = "📈";
