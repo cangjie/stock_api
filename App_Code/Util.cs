@@ -241,7 +241,8 @@ public class Util
         {
             ret = false;
         }
-        if (Util.GetDay(date) >= DateTime.Parse("2017-10-1") && Util.GetDay(date) <= DateTime.Parse("2017-10-8") && Util.GetDay(date) == DateTime.Parse("2018-1-1"))
+        if ((Util.GetDay(date) >= DateTime.Parse("2017-10-1") && Util.GetDay(date) <= DateTime.Parse("2017-10-8") ) || Util.GetDay(date) == DateTime.Parse("2018-1-1")
+            || (Util.GetDay(date) >= DateTime.Parse("2018-2-15") && Util.GetDay(date) <= DateTime.Parse("2018-2-21")) )
             ret = false;
         return ret;
     }

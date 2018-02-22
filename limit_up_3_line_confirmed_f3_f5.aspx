@@ -44,7 +44,7 @@
                 {
                     t.Abort();
                     t = new Thread(ts);
-                    t.Start();
+                    //t.Start();
 
                 }
             }
@@ -478,6 +478,8 @@
                         double line3 = Math.Round(double.Parse(dr["3线"].ToString()), 2);
                         //string message = "F3:" + f3.ToString() + " " + ((f3 >= line3) ? "🐂高于" : "🐻低于") + "3线：" + line3.ToString() + " 现高：" + high.ToString() + " 前低：" + low.ToString();
                         string message = ((f3 >= line3) ? "🐂高于3线" : "");
+                        message = message.Trim() + "  " + ((int.Parse(dr["KDJ日"].ToString()) >= 0) ? "👑KDJ" : "");
+                        message = message.Trim() + "  幅度：" + Math.Round(100 * (high - low) / low, 2).ToString() + "%";
                         double price = Math.Round(double.Parse(dr["买入"].ToString()), 2);
                         if (StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()),
                                 dr["代码"].ToString().Trim(),
