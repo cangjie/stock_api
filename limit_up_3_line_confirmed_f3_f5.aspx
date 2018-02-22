@@ -288,6 +288,7 @@
         dt.Columns.Add("F3", Type.GetType("System.Double"));
         dt.Columns.Add("F5", Type.GetType("System.Double"));
         dt.Columns.Add("前低", Type.GetType("System.Double"));
+        dt.Columns.Add("幅度", Type.GetType("System.String"));
         dt.Columns.Add("3线", Type.GetType("System.Double"));
         dt.Columns.Add("现价", Type.GetType("System.Double"));
         dt.Columns.Add("距F3", Type.GetType("System.Double"));
@@ -412,6 +413,7 @@
             dr["F3"] = f3;
             dr["F5"] = f5;
             dr["前低"] = lowest;
+            dr["幅度"] = Math.Round(100 * (highest - lowest) / lowest, 2).ToString() + "%";
             dr["3线"] = line3Price;
             dr["现价"] = currentPrice;
             dr["距F3"] = f3Distance;
@@ -576,6 +578,7 @@
                     <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F5" HeaderText="F5"></asp:BoundColumn>
                     <asp:BoundColumn DataField="前低" HeaderText="前低"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="幅度" HeaderText="幅度"></asp:BoundColumn>
                     <asp:BoundColumn DataField="现价" HeaderText="现价"></asp:BoundColumn>
                     <asp:BoundColumn DataField="距F3" HeaderText="距F3"></asp:BoundColumn>
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
