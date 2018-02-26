@@ -17,6 +17,8 @@ public class LimitUp
         //
     }
 
+
+
     public static int SaveLimitUp(string gid, DateTime date, double lastSettlePrice, double openPrice, double limitPrice, double volume)
     {
         try
