@@ -314,6 +314,7 @@
         DataTable dtOri = DBHelper.GetDataTable(" select gid, alert_date from limit_up where alert_date >= '" + limitUpStartDate.ToShortDateString()
             + "' and alert_date <= '" + lastTransactDate.ToShortDateString() + "' order by alert_date desc ");
 
+        Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
         foreach (DataRow drOri in dtOri.Rows)
         {
             /*
@@ -329,7 +330,7 @@
                 continue;
             }
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
-            stock.LoadKLineDay();
+            stock.LoadKLineDay(rc);
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
@@ -433,6 +434,7 @@
             dt.Rows.Add(dr);
 
         }
+        rc.Dispose();
         return dt;
     }
 

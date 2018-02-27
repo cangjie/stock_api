@@ -65,9 +65,14 @@ public class Stock
 
     public void LoadKLineDay()
     {
-        //kLineDay = LoadLocalKLine(gid, "day");
-        //kArr = kLineDay;
-        kLineDay = LoadRedisKLine(gid, "day");
+        kLineDay = LoadLocalKLine(gid, "day");
+        kArr = kLineDay;
+        
+    }
+
+    public void LoadKLineDay(Core.RedisClient rc)
+    {
+        kLineDay = LoadRedisKLine(gid, "day", rc);
         kArr = kLineDay;
     }
 
@@ -202,18 +207,6 @@ public class Stock
                 }
             }
             return ret;
-
-
-
-
-            /*
-            if (drLastTimeline != null)
-            {
-                return double.Parse(drLastTimeline["trade"].ToString().Trim());
-            }
-            else
-                return 0;
-                */
         }
     }
 
@@ -586,9 +579,9 @@ public class Stock
     }
 
 
-    public static KLine[] LoadRedisKLine(string gid, string type)
+    public static KLine[] LoadRedisKLine(string gid, string type, Core.RedisClient rc)
     {
-        Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+        //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
         string key = gid + "_kline_" + type;
         StackExchange.Redis.RedisValue[] rvArr = rc.redisDb.SortedSetRangeByScore((StackExchange.Redis.RedisKey)key);
         KLine[] kArr = new KLine[rvArr.Length];
@@ -606,7 +599,7 @@ public class Stock
             kArr[i].volume = int.Parse(rvItems[6].Trim());
             kArr[i].amount = double.Parse(rvItems[7].Trim());
         }
-        rc.Dispose();
+        //rc.Dispose();
         return kArr;
     }
 
