@@ -317,7 +317,7 @@
         foreach (DataRow drOri in dtOri.Rows)
         {
             /*
-            if (!drOri["gid"].ToString().Trim().Equals("sz300604"))
+            if (!drOri["gid"].ToString().Trim().Equals("sz002681"))
             {
                 continue;
             }
@@ -482,12 +482,12 @@
                         string message = ((f3 >= line3) ? "🐂高于3线" : "");
                         message = message.Trim() + "  " + ((int.Parse(dr["KDJ日"].ToString()) >= 0) ? "👑KDJ" : "");
                         message = message.Trim() + "  幅度：" + Math.Round(100 * (high - low) / low, 2).ToString() + "%";
-                        double price = Math.Round(double.Parse(dr["买入"].ToString()), 2);
+                        double price = Math.Round(double.Parse(dr["现价"].ToString()), 2);
                         if (StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()),
                                 dr["代码"].ToString().Trim(),
                                 "limit_up_box_f3",
                                 dr["名称"].ToString().Trim(),
-                                "买入价：" + price.ToString() + " " + message.Trim()))
+                                "现价价：" + price.ToString() + " " + message.Trim()))
                         {
                             StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(),
                                 dr["名称"].ToString() + " " + message, f3, "limit_up_box_f3");
