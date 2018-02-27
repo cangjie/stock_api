@@ -7,18 +7,8 @@
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        string[] gidArr = Util.GetAllGids();
-        foreach (string gid in gidArr)
-        {
-            for (DateTime i = DateTime.Parse("2018-1-1"); i <= DateTime.Parse("2018-1-19"); i = i.AddDays(1))
-            {
-                if (Util.IsTransacDay(i))
-                {
-                    KLine.RefreshKLine(gid, i);
-                }
-            }
-        }
-        //KLine.RefreshKLine("sz000021", DateTime.Parse("2018-1-10"));
+        Stock ss = new Stock("sh600031");
+        ss.LoadKLineDay();
         Response.End();
 
         Stock s = new Stock("sz000926");

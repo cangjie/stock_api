@@ -16,6 +16,7 @@ public class Util
 {
     public static string conStr = System.Configuration.ConfigurationSettings.AppSettings["constr"].Trim();
 
+
     public static string physicalPath = "";
 
     public Util()
