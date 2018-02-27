@@ -487,7 +487,7 @@
                                 dr["代码"].ToString().Trim(),
                                 "limit_up_box_f3",
                                 dr["名称"].ToString().Trim(),
-                                "现价价：" + price.ToString() + " " + message.Trim()))
+                                "现价：" + price.ToString() + " " + message.Trim()))
                         {
                             StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(),
                                 dr["名称"].ToString() + " " + message, f3, "limit_up_box_f3");
