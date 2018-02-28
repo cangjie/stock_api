@@ -329,7 +329,7 @@
             {
                 continue;
             }
-            Stock stock = new Stock(drOri["gid"].ToString().Trim());
+            Stock stock = new Stock(drOri["gid"].ToString().Trim(), rc);
             stock.LoadKLineDay(rc);
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);

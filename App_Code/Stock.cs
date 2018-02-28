@@ -45,6 +45,7 @@ public class Stock
 
     public static string[] allGid = Util.GetAllGids();
 
+    public string name = "";
 
     public Stock()
     {
@@ -61,6 +62,12 @@ public class Stock
         if (dt.Rows.Count > 0)
             drLastTimeline = dt.Rows[0];
             */
+    }
+
+    public Stock(string gid, Core.RedisClient rc)
+    {
+        this.gid = gid;
+        this.name = rc.redisDb.HashGet("gid_name", gid.Trim()).ToString() ;
     }
 
     public void LoadKLineDay()
@@ -80,14 +87,21 @@ public class Stock
     {
         get
         {
-            string ret = "";
-            DataTable dt = DBHelper.GetDataTable(" select top 1 [name] from " + gid.Trim() + "_timeline ");
-            if (dt.Rows.Count > 0)
+            if (this.name.Trim().Equals(""))
             {
-                ret = dt.Rows[0][0].ToString().Trim();
+                string ret = "";
+                DataTable dt = DBHelper.GetDataTable(" select top 1 [name] from " + gid.Trim() + "_timeline orer by ticktime desc ");
+                if (dt.Rows.Count > 0)
+                {
+                    ret = dt.Rows[0][0].ToString().Trim();
+                }
+                dt.Dispose();
+                return ret;
             }
-            dt.Dispose();
-            return ret;
+            else
+            {
+                return this.name;
+            }
         }
     }
 
