@@ -90,7 +90,7 @@ public class Stock
             if (this.name.Trim().Equals(""))
             {
                 string ret = "";
-                DataTable dt = DBHelper.GetDataTable(" select top 1 [name] from " + gid.Trim() + "_timeline orer by ticktime desc ");
+                DataTable dt = DBHelper.GetDataTable(" select top 1 [name] from " + gid.Trim() + "_timeline order by ticktime desc ");
                 if (dt.Rows.Count > 0)
                 {
                     ret = dt.Rows[0][0].ToString().Trim();
