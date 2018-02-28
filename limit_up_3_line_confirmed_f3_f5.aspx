@@ -20,7 +20,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "调整, 缩量, MACD日, KDJ日");
+        sort = Util.GetSafeRequestValue(Request, "sort", "KDJ日, 调整, 幅度 desc");
         if (!IsPostBack)
         {
             try
