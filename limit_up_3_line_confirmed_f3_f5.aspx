@@ -318,7 +318,8 @@
         foreach (DataRow drOri in dtOri.Rows)
         {
             /*
-            if (!drOri["gid"].ToString().Trim().Equals("sz002681"))
+              
+            if (!drOri["gid"].ToString().Trim().Equals("sz300426"))
             {
                 continue;
             }
