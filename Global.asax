@@ -5,6 +5,9 @@
     void Application_Start(object sender, EventArgs e)
     {
         Util.physicalPath = Server.MapPath("//");
+
+        Core.Util.conStr = Util.conStr;
+
         for (int i = 0; KLineCache.allGid.Length == 0 && i < 100; i++)
         {
             KLineCache.allGid = Util.GetAllGids();
@@ -12,24 +15,26 @@
 
         //Stock.todayKLineArr = new KLine[KLineCache.allGid.Length];
 
-        
+
 
         KLineCache.kLineDayCache = new CachedKLine[Util.GetAllGids().Length];
 
         StockWatcher.tKLineRefresher.Start();
         //StockWatcher.tRefreshUpdatedKLine.Start();
         //StockWatcher.tLoadTodayKLine.Start();
-        
 
-        
+
+
         //StockWatcher.tLoadCurrentKLineToCache.Start();
         StockWatcher.tWatchEachStock.Start();
         StockWatcher.tLogQuota.Start();
-        
+
 
         //StockWatcher.tRefreshUpdatedKLine.Start();
 
         //Core.RedisClient 
+
+
 
     }
 

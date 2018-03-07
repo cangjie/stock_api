@@ -291,7 +291,7 @@
         dt.Columns.Add("幅度", Type.GetType("System.String"));
         dt.Columns.Add("3线", Type.GetType("System.Double"));
         dt.Columns.Add("现价", Type.GetType("System.Double"));
-        dt.Columns.Add("距F3", Type.GetType("System.Double"));
+        dt.Columns.Add("评级", Type.GetType("System.String"));
         dt.Columns.Add("买入", Type.GetType("System.Double"));
         dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
@@ -366,7 +366,7 @@
             double line3Price = KLine.GetAverageSettlePrice(stock.kLineDay, currentIndex, 3, 3);
             double currentPrice = stock.kLineDay[currentIndex].endPrice;
             double buyPrice = 0;
-            double f3Distance = 0.382 - (highest - stock.kLineDay[currentIndex].lowestPrice) / (highest - lowest);
+            //double f3Distance = 0.382 - (highest - stock.kLineDay[currentIndex].lowestPrice) / (highest - lowest);
 
             double volumeToday = stock.kLineDay[currentIndex].volume;  //Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(currentDate.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
 
@@ -384,6 +384,53 @@
                 continue;
             }
             buyPrice = f3;
+            string memo = "";
+
+            Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
+            if (timelineArray.Length == 0)
+            {
+                timelineArray = Core.Timeline.LoadTimelineArrayFromSqlServer(stock.gid, currentDate);
+            }
+            DateTime todayLowestTime = Core.Timeline.GetLowestTime(timelineArray);
+            TimeSpan todayLowestTimeSpan;
+
+
+            if (DateTime.Now.Date == currentDate.Date && DateTime.Now.Hour < 15)
+            {
+                todayLowestTimeSpan = DateTime.Now - todayLowestTime;
+                if (todayLowestTime.Hour < 13)
+                {
+                    if (DateTime.Now.Hour < 13)
+                    {
+                        todayLowestTimeSpan = todayLowestTimeSpan - (DateTime.Now - DateTime.Now.Date.AddHours(11).AddMinutes(30));
+                    }
+                    else
+                    {
+                        todayLowestTimeSpan = todayLowestTimeSpan - (DateTime.Now.AddHours(13) - DateTime.Now.Date.AddHours(11).AddMinutes(30));
+                    }
+                }
+            }
+            else
+            {
+                todayLowestTimeSpan = todayLowestTime.Date.AddHours(15) - todayLowestTime;
+                if (todayLowestTime.Hour < 13)
+                {
+                    todayLowestTimeSpan = todayLowestTimeSpan - (currentDate.Date.AddHours(13) - currentDate.Date.AddHours(11).AddMinutes(30));
+                }
+            }
+
+            memo = todayLowestTimeSpan.Hours.ToString() + "小时" + todayLowestTimeSpan.Minutes.ToString() + "分钟";
+
+
+            if (f3 >= line3Price)
+            {
+                memo = memo + "<br/>F3在3线之上";
+            }
+
+            if (stock.kLineDay[currentIndex].lowestPrice >= f3 * 0.995)
+            {
+                memo = memo + "<br/>折返在F3之上";
+            }
 
             /*
             if (stock.kLineDay[currentIndex].startPrice > f3 * 0.99 && stock.kLineDay[currentIndex].lowestPrice < f3 * 1.01 )
@@ -409,16 +456,55 @@
             {
                 dr["信号"] = dr["信号"] + "🛍️";
             }
+
+            if (f3 >= line3Price)
+            {
+                dr["信号"] = dr["信号"] + "<a title=\"F3在3线之上\" >🌟</a>";
+            }
+
+            if (stock.kLineDay[currentIndex].lowestPrice >= f3 * 0.995)
+            {
+                dr["信号"] = dr["信号"] + "<a title=\"折返在F3之上\" >🌟</a>";
+            }
+            else
+            {
+                int overF3Times = 0;
+                for (int i = 1; i < timelineArray.Length; i++)
+                {
+                    if (timelineArray[i - 1].tickTime >= todayLowestTime)
+                    {
+                        if (timelineArray[i - 1].todayEndPrice <= f3 && timelineArray[i].todayEndPrice >= f3)
+                        {
+                            overF3Times++;
+                        }
+                    }
+                }
+                if (overF3Times == 1)
+                {
+                    dr["信号"] = dr["信号"] + "<a title=\"穿越F3仅1次\" >🌟</a>";
+                    memo = memo + "<br/>穿越F3仅1次";
+                }
+            }
+
+            double width = Math.Round(100 * (highest - lowest) / lowest, 2);
+
+            if (width >= 30)
+            {
+                dr["信号"] = dr["信号"] + "<a title=\"幅度超过30%\" >🌟</a>";
+            }
+
             dr["调整"] = currentIndex - limitUpIndex;
             dr["缩量"] = volumeReduce;
             dr["现高"] = highest;
             dr["F3"] = f3;
             dr["F5"] = f5;
             dr["前低"] = lowest;
-            dr["幅度"] = Math.Round(100 * (highest - lowest) / lowest, 2).ToString() + "%";
+            dr["幅度"] = width.ToString() + "%";
+
             dr["3线"] = line3Price;
             dr["现价"] = currentPrice;
-            dr["距F3"] = f3Distance;
+
+            dr["评级"] = memo;
             dr["买入"] = buyPrice;
             dr["KDJ日"] = stock.kdjDays(currentIndex);
             dr["MACD日"] = stock.macdDays(currentIndex);
@@ -586,7 +672,7 @@
                     <asp:BoundColumn DataField="前低" HeaderText="前低"></asp:BoundColumn>
                     <asp:BoundColumn DataField="幅度" HeaderText="幅度"></asp:BoundColumn>
                     <asp:BoundColumn DataField="现价" HeaderText="现价"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="距F3" HeaderText="距F3"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="评级" HeaderText="评级"></asp:BoundColumn>
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日" SortExpression="1日|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="2日" HeaderText="2日"></asp:BoundColumn>
