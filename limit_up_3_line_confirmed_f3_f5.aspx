@@ -486,6 +486,11 @@
                 }
             }
 
+            if ((stock.kLineDay[currentIndex].startPrice - stock.kLineDay[currentIndex].lowestPrice) / stock.kLineDay[currentIndex].lowestPrice >= 0.01)
+            {
+                dr["信号"] = dr["信号"] + "<a title=\"高开\" >🌟</a>";
+            }
+
             double width = Math.Round(100 * (highest - lowest) / lowest, 2);
 
             if (width >= 30)
