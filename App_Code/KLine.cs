@@ -101,7 +101,7 @@ public class KLine
                 else if (DateTime.Now <= DateTime.Parse(DateTime.Now.ToShortDateString() + " 11:30"))
                 {
                     currentTimeSpan = DateTime.Now - DateTime.Parse(DateTime.Now.ToShortDateString() + " 9:30");
-                    virtualVolume = volume / ((double)currentTimeSpan.Minutes / (double)totalTranTime.Minutes);
+                    virtualVolume = volume / ((double)currentTimeSpan.TotalMinutes / (double)totalTranTime.TotalMinutes);
                 }
                 else if (DateTime.Now <= DateTime.Parse(DateTime.Now.ToShortDateString() + " 13:00"))
                 {
@@ -110,7 +110,7 @@ public class KLine
                 else if (DateTime.Now <= DateTime.Parse(DateTime.Now.ToShortDateString() + " 15:00"))
                 {
                     currentTimeSpan = new TimeSpan(2, 0, 0) + (DateTime.Now - DateTime.Parse(DateTime.Now.ToShortDateString() + " 13:00"));
-                    virtualVolume = volume / ((double)currentTimeSpan.Minutes / (double)totalTranTime.Minutes);
+                    virtualVolume = volume / ((double)currentTimeSpan.TotalMinutes / (double)totalTranTime.TotalMinutes);
                 }
             }
             return virtualVolume;
