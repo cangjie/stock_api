@@ -317,13 +317,14 @@
         Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
         foreach (DataRow drOri in dtOri.Rows)
         {
+
             /*
-              
-            if (!drOri["gid"].ToString().Trim().Equals("sz300426"))
+            if (!drOri["gid"].ToString().Trim().Equals("sh600610"))
             {
                 continue;
             }
             */
+
             DateTime alertDate = DateTime.Parse(drOri["alert_date"].ToString().Trim());
             DataRow[] drArrExists = dtOri.Select(" gid = '" + drOri["gid"].ToString() + "' and alert_date > '" + alertDate.ToShortDateString() + "'  ");
             if (drArrExists.Length > 0)
@@ -392,6 +393,10 @@
                 timelineArray = Core.Timeline.LoadTimelineArrayFromSqlServer(stock.gid, currentDate);
             }
             DateTime todayLowestTime = Core.Timeline.GetLowestTime(timelineArray);
+            if (todayLowestTime.Hour == 9 && todayLowestTime.Minute < 30)
+            {
+                todayLowestTime = todayLowestTime.Date.AddHours(9).AddMinutes(30);
+            }
             TimeSpan todayLowestTimeSpan;
 
 
@@ -462,10 +467,10 @@
                             dr["信号"] = dr["信号"] + "<a title=\"F3在3线之上\" >🌟</a>";
                         }
                         */
-            if (stock.kLineDay[currentIndex].lowestPrice >= f3 - 0.05)
+            if (stock.kLineDay[currentIndex].lowestPrice >= f3 - 0.05 && todayLowestTime > DateTime.MinValue)
             {
                 dr["信号"] = dr["信号"] + "<a title=\"折返在F3之上\" >🌟</a>";
-                for (int starCount = 0; starCount < todayLowestTimeSpan.TotalHours; starCount++)
+                for (int starCount = 0; starCount < (int)todayLowestTimeSpan.TotalHours; starCount++)
                 {
                     dr["信号"] = dr["信号"] + "<a title=\"折返" + (starCount+1).ToString() + "小时\"  >🌟</a>";
                 }
