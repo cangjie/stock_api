@@ -456,16 +456,21 @@
             {
                 dr["信号"] = dr["信号"] + "🛍️";
             }
-
-            if (f3 >= line3Price)
-            {
-                dr["信号"] = dr["信号"] + "<a title=\"F3在3线之上\" >🌟</a>";
-            }
-
-            if (stock.kLineDay[currentIndex].lowestPrice >= f3 * 0.995)
+            /*
+                        if (f3 >= line3Price)
+                        {
+                            dr["信号"] = dr["信号"] + "<a title=\"F3在3线之上\" >🌟</a>";
+                        }
+                        */
+            if (stock.kLineDay[currentIndex].lowestPrice >= f3 - 0.05)
             {
                 dr["信号"] = dr["信号"] + "<a title=\"折返在F3之上\" >🌟</a>";
+                for (int starCount = 0; starCount < todayLowestTimeSpan.TotalHours; starCount++)
+                {
+                    dr["信号"] = dr["信号"] + "<a title=\"折返" + (starCount+1).ToString() + "小时\"  >🌟</a>";
+                }
             }
+            /*
             else
             {
                 int overF3Times = 0;
@@ -484,18 +489,24 @@
                     dr["信号"] = dr["信号"] + "<a title=\"穿越F3仅1次\" >🌟</a>";
                     memo = memo + "<br/>穿越F3仅1次";
                 }
-            }
-
+            }*/
+            /*
             if ((stock.kLineDay[currentIndex].startPrice - stock.kLineDay[currentIndex].lowestPrice) / stock.kLineDay[currentIndex].lowestPrice >= 0.01)
             {
                 dr["信号"] = dr["信号"] + "<a title=\"高开\" >🌟</a>";
             }
-
+            */
             double width = Math.Round(100 * (highest - lowest) / lowest, 2);
 
             if (width >= 30)
             {
-                dr["信号"] = dr["信号"] + "<a title=\"幅度超过30%\" >🌟</a>";
+                dr["信号"] = dr["信号"] + "<a title=\"幅度超过30%\" >🔥</a>";
+            }
+
+            if (Math.Min(stock.kLineDay[currentIndex].startPrice, stock.kLineDay[currentIndex].endPrice) - stock.kLineDay[currentIndex].lowestPrice
+                 > Math.Abs(stock.kLineDay[currentIndex].startPrice - stock.kLineDay[currentIndex].endPrice))
+            {
+                dr["信号"] = dr["信号"] + "<a title=\"长下影线\" >🔺</a>";
             }
 
             dr["调整"] = currentIndex - limitUpIndex;
