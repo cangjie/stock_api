@@ -295,6 +295,8 @@
         dt.Columns.Add("买入", Type.GetType("System.Double"));
         dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
+        dt.Columns.Add("F3折返", Type.GetType("System.Double"));
+
 
         for (int i = 1; i <= 5; i++)
         {
@@ -529,6 +531,8 @@
             dr["前低"] = lowest;
             dr["幅度"] = width.ToString() + "%";
 
+            dr["F3折返"] = (stock.kLineDay[currentIndex].lowestPrice - f3) / f3;
+
             dr["3线"] = line3Price;
             dr["现价"] = currentPrice;
 
@@ -552,6 +556,27 @@
         rc.Dispose();
         return dt;
     }
+
+
+    public static double GetFirstLowestPrice1(KLine[] kArr, int index, out int lowestIndex)
+    {
+        double ret = double.MaxValue;
+        lowestIndex = 0;
+        for (int i = index; i > 0 ; i--)
+        {
+            if (i < kArr.Length - 1)
+            {
+                if (kArr[i].lowestPrice <= kArr[i + 1].lowestPrice && kArr[i].lowestPrice <= kArr[i - 1].lowestPrice)
+                {
+                    ret = kArr[i].lowestPrice;
+                    lowestIndex = i;
+                    break;
+                }
+            }
+        }
+        return ret;
+    }
+
 
     public static double GetFirstLowestPrice(KLine[] kArr, int index, out int lowestIndex)
     {
@@ -698,6 +723,7 @@
                     <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F5" HeaderText="F5"></asp:BoundColumn>
                     <asp:BoundColumn DataField="前低" HeaderText="前低"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="F3折返" HeaderText="F3折返"></asp:BoundColumn>
                     <asp:BoundColumn DataField="幅度" HeaderText="幅度"></asp:BoundColumn>
                     <asp:BoundColumn DataField="现价" HeaderText="现价"></asp:BoundColumn>
                 
