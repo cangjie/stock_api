@@ -318,12 +318,12 @@
         foreach (DataRow drOri in dtOri.Rows)
         {
 
-            /*
-            if (!drOri["gid"].ToString().Trim().Equals("sh600610"))
+
+            if (!drOri["gid"].ToString().Trim().Equals("sz002549"))
             {
                 continue;
             }
-            */
+
 
             DateTime alertDate = DateTime.Parse(drOri["alert_date"].ToString().Trim());
             DataRow[] drArrExists = dtOri.Select(" gid = '" + drOri["gid"].ToString() + "' and alert_date > '" + alertDate.ToShortDateString() + "'  ");
@@ -475,6 +475,12 @@
                     dr["信号"] = dr["信号"] + "<a title=\"折返" + (starCount+1).ToString() + "小时\"  >🌟</a>";
                 }
             }
+
+            if (f3 >= line3Price)
+            {
+                dr["信号"] = dr["信号"] + "<a title=\"3线上\"  >👑</a>";
+            }
+
             /*
             else
             {
