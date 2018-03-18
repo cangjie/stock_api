@@ -458,7 +458,8 @@
 
             double openRaise =  (stock.kLineDay[currentIndex].startPrice - stock.kLineDay[limitUpIndex].endPrice) / stock.kLineDay[limitUpIndex].endPrice;
             
-            if (volumeReduce < 1.25 && stock.kLineDay[currentIndex].lowestPrice >= highest )
+            if (volumeReduce < 1.25 && stock.kLineDay[currentIndex].lowestPrice >= highest 
+                && stock.kLineDay[currentIndex].startPrice != stock.kLineDay[currentIndex].endPrice)
             {
                 dr["信号"] = "📈";
             }
