@@ -374,12 +374,19 @@
 
             double volumeToday = stock.kLineDay[currentIndex].volume;  //Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(currentDate.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
 
-            double volumeYesterday = 0;// Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(stock.kLineDay[limitUpIndex].startDateTime.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
-
+            double volumeYesterday = stock.kLineDay[limitUpIndex].VirtualVolume;
+            if (DateTime.Now.Date != currentDate.Date || (DateTime.Now.Hour >= 15))
+            {
+                volumeYesterday = stock.kLineDay[limitUpIndex].volume;
+            }
+            // Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(stock.kLineDay[limitUpIndex].startDateTime.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
+            /*
             for (int j = lowestIndex; j < currentIndex; j++)
             {
                 volumeYesterday = Math.Max(volumeYesterday, stock.kLineDay[j].VirtualVolume);
             }
+            */
+
 
             double volumeReduce = volumeToday / volumeYesterday;
 
