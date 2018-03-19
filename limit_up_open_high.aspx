@@ -457,13 +457,18 @@
             dr["缩量"] = volumeReduce;
 
             double openRaise =  (stock.kLineDay[currentIndex].startPrice - stock.kLineDay[limitUpIndex].endPrice) / stock.kLineDay[limitUpIndex].endPrice;
-            
-            if (volumeReduce < 1.25 && stock.kLineDay[currentIndex].lowestPrice >= highest 
+
+            if (volumeReduce < 1.25 && stock.kLineDay[currentIndex].lowestPrice >= highest
                 && stock.kLineDay[currentIndex].startPrice != stock.kLineDay[currentIndex].endPrice)
             {
                 dr["信号"] = "📈";
+                if (stock.kLineDay[currentIndex].startPrice >= stock.kLineDay[currentIndex].endPrice
+                    && stock.kLineDay[currentIndex].endPrice > stock.kLineDay[currentIndex].lowestPrice)
+                {
+                    dr["信号"] = "📈🛍️";
+                }
             }
-            
+
             dr["现高"] = highest;
             dr["F3"] = f3;
             dr["F5"] = f5;
