@@ -558,12 +558,19 @@
     {
         string ret = "9:30";
         double lowest = double.MaxValue;
+        int i = 0;
         foreach (Core.Timeline t in timelineArr)
         {
             if (lowest > t.todayLowestPrice)
             {
                 lowest = t.todayLowestPrice;
                 ret = t.tickTime.Hour.ToString() + ":" + t.tickTime.Minute.ToString();
+                if (i > 0)
+                {
+                    break;
+                }
+                i++;
+
             }
         }
         return ret;
