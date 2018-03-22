@@ -285,6 +285,7 @@
         dt.Columns.Add("信号", Type.GetType("System.String"));
         dt.Columns.Add("缩量", Type.GetType("System.Double"));
         dt.Columns.Add("高开", Type.GetType("System.Double"));
+        dt.Columns.Add("今涨", Type.GetType("System.Double"));
         dt.Columns.Add("今开", Type.GetType("System.Double"));
         dt.Columns.Add("无影", Type.GetType("System.Double"));
         dt.Columns.Add("最低时间", Type.GetType("System.String"));
@@ -464,7 +465,7 @@
                 dr["代码"] = stock.gid.Trim();
                 dr["名称"] = stock.Name.Trim();
 
-
+                dr["今涨"] = (stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
 
 
                 double width = Math.Round(100 * (highest - lowest) / lowest, 2);
@@ -498,12 +499,12 @@
                 {
                     dr["信号"] = dr["信号"].ToString() + "👑";
                 }
-
-                if (timelineArr[0].todayLowestPrice - highest > 0 && (timelineArr[0].todayLowestPrice - highest) / highest <= 0.005)
-                {
-                    dr["信号"] = dr["信号"].ToString() + "💎";
-                }
-
+                /*
+                                if (timelineArr[0].todayLowestPrice - highest > 0 && (timelineArr[0].todayLowestPrice - highest) / highest <= 0.005)
+                                {
+                                    dr["信号"] = dr["信号"].ToString() + "💎";
+                                }
+                                */
                 dr["现高"] = highest;
                 dr["F3"] = f3;
                 dr["F5"] = f5;
@@ -730,7 +731,7 @@
                     <asp:BoundColumn DataField="最低时间" HeaderText="最低时间"></asp:BoundColumn>
                     <asp:BoundColumn DataField="无影" HeaderText="无影"></asp:BoundColumn>
                     <asp:BoundColumn DataField="今开" HeaderText="今开"></asp:BoundColumn>
-                    
+                    <asp:BoundColumn DataField="今涨" HeaderText="今涨"></asp:BoundColumn>
                     <asp:BoundColumn DataField="现高" HeaderText="现高"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F5" HeaderText="F5"></asp:BoundColumn>
