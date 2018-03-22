@@ -484,7 +484,7 @@
                 }
             }
 
-            if ((timelineArr[0].todayStartPrice - timelineArr[0].todayLowestPrice) / timelineArr[0].todayLowestPrice > 0.03 
+            if ((timelineArr[0].todayStartPrice - timelineArr[0].todayLowestPrice) / timelineArr[0].todayLowestPrice > 0.02
                 && timelineArr[0].todayLowestPrice > stock.kLineDay[limitUpIndex].highestPrice
               )//  && timelineArr[0].todayLowestPrice <= stock.kLineDay[currentIndex].lowestPrice)
             {
