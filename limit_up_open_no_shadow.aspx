@@ -484,7 +484,7 @@
                 }
             }
 
-            if ((timelineArr[0].todayStartPrice - timelineArr[0].todayLowestPrice) / timelineArr[0].todayLowestPrice > 0.04
+            if ((timelineArr[0].todayStartPrice - timelineArr[0].todayLowestPrice) / timelineArr[0].todayLowestPrice > 0.03
               )//  && timelineArr[0].todayLowestPrice <= stock.kLineDay[currentIndex].lowestPrice)
             {
                 dr["信号"] = dr["信号"].ToString() + "❗️";
