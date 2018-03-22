@@ -136,6 +136,7 @@
                         case "F5":
                         case "现高":
                         case "3线":
+                        case "无影":
                             double currentValuePrice = (double)drOri[i];
                             dr[i] = "<font color=\"" + (currentValuePrice > currentPrice ? "red" : (currentValuePrice == currentPrice ? "gray" : "green")) + "\"  >"
                                 + Math.Round(currentValuePrice, 2).ToString() + "</font>";
@@ -284,6 +285,8 @@
         dt.Columns.Add("信号", Type.GetType("System.String"));
         dt.Columns.Add("缩量", Type.GetType("System.Double"));
         dt.Columns.Add("高开", Type.GetType("System.Double"));
+        dt.Columns.Add("今开", Type.GetType("System.Double"));
+        dt.Columns.Add("无影", Type.GetType("System.Double"));
         dt.Columns.Add("现高", Type.GetType("System.Double"));
         dt.Columns.Add("F3", Type.GetType("System.Double"));
         dt.Columns.Add("F5", Type.GetType("System.Double"));
@@ -336,6 +339,11 @@
             }
             Stock stock = new Stock(drOri["gid"].ToString().Trim(), rc);
             stock.LoadKLineDay(rc);
+            Core.Timeline[] timelineArr = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
+            if (timelineArr.Length == 0)
+            {
+                timelineArr = Core.Timeline.LoadTimelineArrayFromSqlServer(stock.gid, currentDate);
+            }
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
@@ -476,6 +484,12 @@
                 }
             }
 
+            if ((timelineArr[0].todayStartPrice - timelineArr[0].todayLowestPrice) / timelineArr[0].todayLowestPrice > 0.01 
+                && timelineArr[0].todayLowestPrice <= stock.kLineDay[currentIndex].lowestPrice)
+            {
+                dr["信号"] = dr["信号"].ToString() + "❗️";
+            }
+
             dr["现高"] = highest;
             dr["F3"] = f3;
             dr["F5"] = f5;
@@ -486,7 +500,8 @@
 
             dr["3线"] = line3Price;
             dr["现价"] = currentPrice;
-
+            dr["今开"] = stock.kLineDay[currentIndex].startPrice;
+            dr["无影"] = timelineArr[0].todayLowestPrice;
             dr["评级"] = memo;
             dr["买入"] = buyPrice;
             dr["KDJ日"] = stock.kdjDays(currentIndex);
@@ -670,6 +685,9 @@
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD日|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="无影" HeaderText="无影"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="今开" HeaderText="今开"></asp:BoundColumn>
+                    
                     <asp:BoundColumn DataField="现高" HeaderText="现高"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F5" HeaderText="F5"></asp:BoundColumn>
