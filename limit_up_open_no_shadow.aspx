@@ -514,7 +514,7 @@
                     dr["信号"] = dr["信号"].ToString() + "👑";
                 }
 
-                if (stock.kLineDay[currentIndex].startPrice > f3 && stock.kLineDay[currentIndex].startPrice < f5 && ((double)dr["今涨"]) < 0.093)
+                if (stock.kLineDay[currentIndex].startPrice > f3 && stock.kLineDay[currentIndex].startPrice < f5 && ((double)dr["高开"]) < 0.093)
                 {
                     dr["信号"] = dr["信号"].ToString() + "📈";
                 }
