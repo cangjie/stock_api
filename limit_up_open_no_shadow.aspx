@@ -522,6 +522,7 @@
                 if (stock.kLineDay[currentIndex].endPrice > f3 && stock.kLineDay[currentIndex].endPrice < f5)
                 {
                     dr["信号"] = dr["信号"].ToString() + "🔥";
+                    buyPrice = f3;
                 }
 
 
