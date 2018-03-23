@@ -375,10 +375,10 @@
                         highIndex = i;
                     }
                 }
-                double f3 = lowest - (highest - lowest) * 1.382;
+                double f3 = lowest + (highest - lowest) * 1.382;
                 if (stock.kLineDay[currentIndex].startPrice < stock.kLineDay[limitUpIndex].endPrice)
                     continue;
-                double f5 = lowest - (highest - lowest) * 1.618;
+                double f5 = lowest + (highest - lowest) * 1.618;
                 double line3Price = KLine.GetAverageSettlePrice(stock.kLineDay, currentIndex, 3, 3);
                 double currentPrice = stock.kLineDay[currentIndex].endPrice;
                 double buyPrice = 0;
