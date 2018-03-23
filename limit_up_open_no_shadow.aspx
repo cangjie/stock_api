@@ -408,7 +408,7 @@
                 }
                 //buyPrice = Math.Max(stock.kLineDay[limitUpIndex].highestPrice, stock.kLineDay[currentIndex].lowestPrice);
 
-                buyPrice = f3;
+                buyPrice = Math.Max(f3, stock.kLineDay[currentIndex].lowestPrice);
 
                 string memo = "";
 
