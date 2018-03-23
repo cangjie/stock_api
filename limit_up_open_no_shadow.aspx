@@ -519,6 +519,12 @@
                     dr["信号"] = dr["信号"].ToString() + "📈";
                 }
 
+                if (stock.kLineDay[currentIndex].endPrice > f3 && stock.kLineDay[currentIndex].endPrice < f5)
+                {
+                    dr["信号"] = dr["信号"].ToString() + "🔥";
+                }
+
+
                 /*
                                 if (timelineArr[0].todayLowestPrice - highest > 0 && (timelineArr[0].todayLowestPrice - highest) / highest <= 0.005)
                                 {
