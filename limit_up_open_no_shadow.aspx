@@ -476,7 +476,7 @@
                 dr["缩量"] = volumeReduce;
 
                 double openRaise = (stock.kLineDay[currentIndex].startPrice - stock.kLineDay[limitUpIndex].endPrice) / stock.kLineDay[limitUpIndex].endPrice;
-
+                /*
                 if (volumeReduce < 1.25 && stock.kLineDay[currentIndex].lowestPrice >= highest
                     && stock.kLineDay[currentIndex].startPrice != stock.kLineDay[currentIndex].endPrice)
                 {
@@ -486,6 +486,12 @@
                     {
                         dr["信号"] = "📈🛍️";
                     }
+                }
+                */
+
+                if ((buyPrice - highest) / highest <= 0.005 && buyPrice >= highest )
+                {
+                    dr["信号"] = "📈";
                 }
 
                 if (timelineArr[0].todayStartPrice > timelineArr[0].todayLowestPrice
