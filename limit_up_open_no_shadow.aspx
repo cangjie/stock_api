@@ -494,12 +494,10 @@
                     dr["信号"] = "📈";
                 }
                 */
-                if ((currentPrice - buyPrice) / buyPrice <= 0.005 && ((double)dr["今涨"]) < 0.09 && currentPrice >= stock.kLineDay[limitUpIndex].highestPrice)
+                if ((currentPrice - buyPrice) / buyPrice <= 0.005 && ((double)dr["今涨"]) < 0.09 && buyPrice >= stock.kLineDay[limitUpIndex].highestPrice)
                 {
                     dr["信号"] = dr["信号"].ToString() + "🛍️";
                 }
-
-
 
                 if (timelineArr[0].todayStartPrice > timelineArr[0].todayLowestPrice
                   //&& timelineArr[0].todayLowestPrice > stock.kLineDay[limitUpIndex].highestPrice
