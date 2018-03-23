@@ -494,7 +494,7 @@
                     dr["信号"] = "📈";
                 }
                 */
-                if ((currentPrice - buyPrice) / buyPrice <= 0.005 && ((double)dr["今涨"]) < 0.09 )
+                if ((currentPrice - buyPrice) / buyPrice <= 0.005 && ((double)dr["今涨"]) < 0.09 && currentPrice >= stock.kLineDay[limitUpIndex].highestPrice)
                 {
                     dr["信号"] = dr["信号"].ToString() + "🛍️";
                 }
