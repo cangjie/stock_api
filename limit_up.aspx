@@ -744,7 +744,7 @@
     protected void dg_EditCommand(object source, DataGridCommandEventArgs e)
     {
         DataTable dt = GetData();
-        Regex reg = new Regex(@">\d+</");
+        Regex reg = new Regex(@">\d+.*\d*</");
         for (int i = 0; i < dt.Rows.Count; i++)
         {
             Match m = reg.Match(dt.Rows[i]["支撑1"].ToString().Trim());
