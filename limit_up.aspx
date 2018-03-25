@@ -290,8 +290,10 @@
         dt.Columns.Add("无影", Type.GetType("System.Double"));
         dt.Columns.Add("最低时间", Type.GetType("System.String"));
         dt.Columns.Add("现高", Type.GetType("System.Double"));
-        dt.Columns.Add("F3", Type.GetType("System.Double"));
-        dt.Columns.Add("F5", Type.GetType("System.Double"));
+        dt.Columns.Add("压力2", Type.GetType("System.Double"));
+        dt.Columns.Add("压力1", Type.GetType("System.Double"));
+        dt.Columns.Add("支撑1", Type.GetType("System.Double"));
+        dt.Columns.Add("支撑2", Type.GetType("System.Double"));
         dt.Columns.Add("前低", Type.GetType("System.Double"));
         dt.Columns.Add("幅度", Type.GetType("System.String"));
         dt.Columns.Add("3线", Type.GetType("System.Double"));
@@ -300,7 +302,6 @@
         dt.Columns.Add("买入", Type.GetType("System.Double"));
         dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
-        //dt.Columns.Add("F3折返", Type.GetType("System.Double"));
 
 
         for (int i = 1; i <= 5; i++)
@@ -517,16 +518,12 @@
                 if (stock.kLineDay[currentIndex].startPrice > f3 && stock.kLineDay[currentIndex].startPrice < f5 && openRaise < 0.093)
                 {
                     dr["信号"] = dr["信号"].ToString() + "📈";
-                    buyPrice = stock.kLineDay[currentIndex].startPrice;
                 }
-                else if (stock.kLineDay[currentIndex].endPrice > f3 && stock.kLineDay[currentIndex].endPrice < f5 && ((double)dr["今涨"]) < 0.093)
+
+                if (stock.kLineDay[currentIndex].endPrice > f3 && stock.kLineDay[currentIndex].endPrice < f5  && ((double)dr["今涨"]) < 0.093 )
                 {
                     dr["信号"] = dr["信号"].ToString() + "🔥";
                     buyPrice = f3;
-                }
-                else
-                {
-                    buyPrice = stock.kLineDay[currentIndex].startPrice;
                 }
 
 
