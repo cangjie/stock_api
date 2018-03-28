@@ -334,12 +334,12 @@
         foreach (DataRow drOri in dtOri.Rows)
         {
 
-            /*
-            if (!drOri["gid"].ToString().Trim().Equals("sz300560"))
+            
+            if (!drOri["gid"].ToString().Trim().Equals("sz300696"))
             {
                 continue;
             }
-           */
+           
 
 
             DateTime alertDate = DateTime.Parse(drOri["alert_date"].ToString().Trim());
@@ -817,13 +817,15 @@
         for (int i = highIndex - 1; i > 0; i--)
         {
             double high = 0;
+            double line3 = KLine.GetAverageSettlePrice(kArr, i, 3, 3);
             if (kArr[i].highestPrice >= kArr[i - 1].highestPrice && kArr[i].highestPrice >= kArr[i + 1].highestPrice
-                && kArr[i].highestPrice > kArr[highIndex].highestPrice && kArr[i].highestPrice >= currnetHiest)
+                && kArr[i].highestPrice > kArr[highIndex].highestPrice && kArr[i].highestPrice >= currnetHiest && kArr[i].highestPrice > line3)
             {
                 currnetHiest = kArr[i].highestPrice;
                 for (int j = Math.Max(i - 1, 1); j < lowIndex ; j++)
                 {
-                    if (kArr[j].lowestPrice <= kArr[j + 1].lowestPrice && kArr[j].lowestPrice <= kArr[j - 1].lowestPrice && kArr[j].lowestPrice < kArr[lowIndex].lowestPrice)
+                    line3 = KLine.GetAverageSettlePrice(kArr, j, 3, 3);
+                    if (kArr[j].lowestPrice <= kArr[j + 1].lowestPrice && kArr[j].lowestPrice <= kArr[j - 1].lowestPrice && kArr[j].lowestPrice < kArr[lowIndex].lowestPrice && kArr[lowIndex].lowestPrice < line3)
                     {
                         lowerIndex = j;
                         find = true;
