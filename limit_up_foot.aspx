@@ -139,6 +139,8 @@
                         case "现高":
                         case "3线":
                         case "无影":
+                        case "更高":
+                        case "更低":
                             double currentValuePrice = (double)drOri[i];
                             dr[i] = "<font color=\"" + (currentValuePrice > currentPrice ? "red" : (currentValuePrice == currentPrice ? "gray" : "green")) + "\"  >"
                                 + Math.Round(currentValuePrice, 2).ToString() + "</font>";
@@ -303,6 +305,10 @@
         dt.Columns.Add("买入", Type.GetType("System.Double"));
         dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
+        dt.Columns.Add("更高", Type.GetType("System.Double"));
+        dt.Columns.Add("更低", Type.GetType("System.Double"));
+        dt.Columns.Add("压力1", Type.GetType("System.Double"));
+        dt.Columns.Add("压力2", Type.GetType("System.Double"));
         //dt.Columns.Add("F3折返", Type.GetType("System.Double"));
 
 
@@ -329,11 +335,11 @@
         {
 
             /*
-            if (!drOri["gid"].ToString().Trim().Equals("sz002549"))
+            if (!drOri["gid"].ToString().Trim().Equals("sz300560"))
             {
                 continue;
             }
-            */
+           */
 
 
             DateTime alertDate = DateTime.Parse(drOri["alert_date"].ToString().Trim());
@@ -391,11 +397,32 @@
             double f5 = highest - (highest - lowest) * 0.618;
             double f6 = highest - (highest - lowest) * 0.809;
 
+            double moreThanHighest = highest;
+            double lessThanLowest = lowest;
+
+            int[] widerPair = FindPreviousWidePair(stock.kLineDay, limitUpIndex, lowestIndex);
+            if (widerPair.Length == 2)
+            {
+                moreThanHighest = stock.kLineDay[widerPair[0]].highestPrice;
+                lessThanLowest = stock.kLineDay[widerPair[1]].lowestPrice;
+            }
+
+            double wideF2 = lessThanLowest + (moreThanHighest - lessThanLowest) * 0.236;
+            double wideF3 = lessThanLowest + (moreThanHighest - lessThanLowest) * 0.382;
+            double wideF4 = lessThanLowest + (moreThanHighest - lessThanLowest) * 0.5;
+            double wideF5 = lessThanLowest + (moreThanHighest - lessThanLowest) * 0.618;
+            double wideF6 = lessThanLowest + (moreThanHighest - lessThanLowest) * 0.809;
+
+
 
 
             double line3Price = KLine.GetAverageSettlePrice(stock.kLineDay, currentIndex, 3, 3);
             double currentPrice = stock.kLineDay[currentIndex].endPrice;
             double buyPrice = 0;
+            double pressure1 = 0;
+            double pressure2 = 0;
+
+
             //double f3Distance = 0.382 - (highest - stock.kLineDay[currentIndex].lowestPrice) / (highest - lowest);
 
             double volumeToday = stock.kLineDay[currentIndex].volume;  //Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(currentDate.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
@@ -509,6 +536,43 @@
             }
 
             buyPrice = todayDisplayLowPrice;
+            if (buyPrice > moreThanHighest)
+            {
+                pressure1 = 1;
+                pressure2 = 1;
+            }
+            else if (buyPrice > wideF6)
+            {
+                pressure1 =  (moreThanHighest - buyPrice) / buyPrice;
+                pressure2 = 1;
+            }
+            else if (buyPrice > wideF5)
+            {
+                pressure1 = (wideF6 - buyPrice) / buyPrice;
+                pressure2 = (moreThanHighest - buyPrice) / buyPrice;
+            }
+            else if (buyPrice > wideF4)
+            {
+                pressure1 = (wideF5 - buyPrice) / buyPrice;
+                pressure2 = (wideF6 - buyPrice) / buyPrice;
+            }
+            else if (buyPrice > wideF3)
+            {
+                pressure1 = (wideF4 - buyPrice) / buyPrice;
+                pressure2 = (wideF5 - buyPrice) / buyPrice;
+            }
+            else if (buyPrice > wideF2)
+            {
+                pressure1 = (wideF3 - buyPrice) / buyPrice;
+                pressure2 = (wideF4 - buyPrice) / buyPrice;
+            }
+            else
+            {
+                pressure1 = (wideF2 - buyPrice) / buyPrice;
+                pressure2 = (wideF3 - buyPrice) / buyPrice;
+            }
+
+
 
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
@@ -542,7 +606,8 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "❗️";
             }
-
+            dr["压力1"] = pressure1;
+            dr["压力2"] = pressure2;
             dr["现高"] = highest;
             dr["F3"] = f3;
             dr["F5"] = f5;
@@ -562,6 +627,8 @@
             dr["KDJ日"] = stock.kdjDays(currentIndex);
             dr["MACD日"] = stock.macdDays(currentIndex);
             dr["高开"] = openRaise;
+            dr["更高"] = moreThanHighest;
+            dr["更低"] = lessThanLowest;
             double maxPrice = 0;
             for (int i = 1; i <= 5; i++)
             {
@@ -737,6 +804,42 @@
         return noShadow;
     }
 
+    public static int[] FindPreviousWidePair(KLine[] kArr, int highIndex, int lowIndex)
+    {
+        if (highIndex < 0 || highIndex > kArr.Length || lowIndex < 0 || lowIndex > kArr.Length)
+        {
+            return new int[0];
+        }
+        int higherIndex = 0;
+        int lowerIndex = lowIndex;
+        double currnetHiest = 0;
+        bool find = false;
+        for (int i = highIndex - 1; i > 0; i--)
+        {
+            double high = 0;
+            if (kArr[i].highestPrice >= kArr[i - 1].highestPrice && kArr[i].highestPrice >= kArr[i + 1].highestPrice
+                && kArr[i].highestPrice > kArr[highIndex].highestPrice && kArr[i].highestPrice >= currnetHiest)
+            {
+                currnetHiest = kArr[i].highestPrice;
+                for (int j = Math.Max(i - 1, 1); j < lowIndex ; j++)
+                {
+                    if (kArr[j].lowestPrice <= kArr[j + 1].lowestPrice && kArr[j].lowestPrice <= kArr[j - 1].lowestPrice && kArr[j].lowestPrice < kArr[lowIndex].lowestPrice)
+                    {
+                        lowerIndex = j;
+                        find = true;
+                        break;
+                    }
+                }
+                if ( (kArr[highIndex].highestPrice - kArr[lowIndex].lowestPrice) / (kArr[i].highestPrice - kArr[lowerIndex].lowestPrice) <= 0.618)
+                {
+                    higherIndex = i;
+                    break;
+                }
+            }
+        }
+        return new int[] { higherIndex, lowerIndex };
+    }
+
 </script>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -779,6 +882,10 @@
                     <asp:BoundColumn DataField="F5" HeaderText="F5"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F6" HeaderText="F6"></asp:BoundColumn>
                     <asp:BoundColumn DataField="前低" HeaderText="前低"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="更低" HeaderText="更低"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="压力1" HeaderText="压力1"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="压力2" HeaderText="压力2"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="更高" HeaderText="更高"></asp:BoundColumn>
                     <asp:BoundColumn DataField="高开" HeaderText="高开"></asp:BoundColumn>
                     <asp:BoundColumn DataField="幅度" HeaderText="幅度"></asp:BoundColumn>
                     <asp:BoundColumn DataField="现价" HeaderText="现价"></asp:BoundColumn>
