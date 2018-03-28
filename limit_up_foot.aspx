@@ -141,6 +141,8 @@
                         case "无影":
                         case "更高":
                         case "更低":
+                        case "压力1":
+                        case "压力2":
                             double currentValuePrice = (double)drOri[i];
                             dr[i] = "<font color=\"" + (currentValuePrice > currentPrice ? "red" : (currentValuePrice == currentPrice ? "gray" : "green")) + "\"  >"
                                 + Math.Round(currentValuePrice, 2).ToString() + "</font>";
@@ -538,38 +540,49 @@
             buyPrice = todayDisplayLowPrice;
             if (buyPrice > moreThanHighest)
             {
-                pressure1 = 1;
-                pressure2 = 1;
+                pressure1 = 0;
+                pressure2 = 0;
             }
             else if (buyPrice > wideF6)
             {
-                pressure1 =  (moreThanHighest - buyPrice) / buyPrice;
-                pressure2 = 1;
+                //pressure1 =  (moreThanHighest - buyPrice) / buyPrice;
+                pressure1 = moreThanHighest;
+                pressure2 = 0;
             }
             else if (buyPrice > wideF5)
             {
-                pressure1 = (wideF6 - buyPrice) / buyPrice;
-                pressure2 = (moreThanHighest - buyPrice) / buyPrice;
+                //pressure1 = (wideF6 - buyPrice) / buyPrice;
+                //pressure2 = (moreThanHighest - buyPrice) / buyPrice;
+                pressure1 = wideF6;
+                pressure2 = moreThanHighest;
             }
             else if (buyPrice > wideF4)
             {
-                pressure1 = (wideF5 - buyPrice) / buyPrice;
-                pressure2 = (wideF6 - buyPrice) / buyPrice;
+                //pressure1 = (wideF5 - buyPrice) / buyPrice;
+                //pressure2 = (wideF6 - buyPrice) / buyPrice;
+                pressure1 = wideF5;
+                pressure2 = wideF6;
             }
             else if (buyPrice > wideF3)
             {
-                pressure1 = (wideF4 - buyPrice) / buyPrice;
-                pressure2 = (wideF5 - buyPrice) / buyPrice;
+                //pressure1 = (wideF4 - buyPrice) / buyPrice;
+                //pressure2 = (wideF5 - buyPrice) / buyPrice;
+                pressure1 = wideF4;
+                pressure2 = wideF5;
             }
             else if (buyPrice > wideF2)
             {
-                pressure1 = (wideF3 - buyPrice) / buyPrice;
-                pressure2 = (wideF4 - buyPrice) / buyPrice;
+                //pressure1 = (wideF3 - buyPrice) / buyPrice;
+                //pressure2 = (wideF4 - buyPrice) / buyPrice;
+                pressure1 = wideF3;
+                pressure2 = wideF4;
             }
             else
             {
-                pressure1 = (wideF2 - buyPrice) / buyPrice;
-                pressure2 = (wideF3 - buyPrice) / buyPrice;
+                //pressure1 = (wideF2 - buyPrice) / buyPrice;
+                //pressure2 = (wideF3 - buyPrice) / buyPrice;
+                pressure1 = wideF2;
+                pressure2 = wideF3;
             }
 
 
