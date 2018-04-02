@@ -837,7 +837,11 @@
                 }
                 noShadow = true;
                 isRefeshLowestPrice = false;
-                break;
+
+                if ((tArr[i].tickTime.Hour == 9 && tArr[i].tickTime.Minute >= 45) || (tArr[i].tickTime.Hour > 9))
+                {
+                    break;
+                }
             }
             else
             {
