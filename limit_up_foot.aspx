@@ -625,7 +625,7 @@
                 dr["信号"] = dr["信号"].ToString() + "❗️";
             }
 
-            
+
             if (atPoint)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"最低价位于支撑位\" >🔥</a>";
@@ -819,22 +819,29 @@
         displayLowPrice = double.MaxValue;
         footTime = DateTime.MinValue;
         bool noShadow = false;
-        for (int i = 0; i < tArr.Length; i++)
+        int i = 0;
+        for (; i < tArr.Length; i++)
         {
             if (lowestPrice > tArr[i].todayLowestPrice)
             {
                 lowestPrice = tArr[i].todayLowestPrice;
+                noShadow = false;
                 //lowestTime = tArr[i].tickTime;
             }
             if (lowestPrice < tArr[i].todayStartPrice && lowestPrice < tArr[i].todayEndPrice)
             {
+                if (!noShadow)
+                {
+                    footTime = tArr[i].tickTime;
+                }
                 noShadow = true;
-                footTime = tArr[i].tickTime;
-                break;
+               
+                //break;
             }
             else
             {
                 noShadow = false;
+
 
             }
             if (displayLowPrice > Math.Min(tArr[i].todayEndPrice, tArr[i].todayStartPrice))
