@@ -293,6 +293,8 @@
         dt.Columns.Add("高开", Type.GetType("System.Double"));
         dt.Columns.Add("今开", Type.GetType("System.Double"));
         dt.Columns.Add("无影", Type.GetType("System.Double"));
+        dt.Columns.Add("无影时间", Type.GetType("System.String"));
+        dt.Columns.Add("最低时间", Type.GetType("System.String"));
         dt.Columns.Add("现高", Type.GetType("System.Double"));
         dt.Columns.Add("F2", Type.GetType("System.Double"));
         dt.Columns.Add("F3", Type.GetType("System.Double"));
@@ -457,8 +459,8 @@
             {
                 timelineArray = Core.Timeline.LoadTimelineArrayFromSqlServer(stock.gid, currentDate);
             }
-
-            if (!foot(timelineArray, out todayLowestPrice, out todayDisplayLowPrice))
+            DateTime footTime = DateTime.MinValue;
+            if (!foot(timelineArray, out todayLowestPrice, out todayDisplayLowPrice, out footTime))
             {
                 continue;
             }
@@ -619,6 +621,12 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "❗️";
             }
+
+            if (todayLowestPrice > stock.kLineDay[currentIndex].lowestPrice)
+            {
+                dr["信号"] = dr["信号"].ToString() + "🐻";
+            }
+
             dr["压力1"] = pressure1;
             dr["压力2"] = pressure2;
             dr["现高"] = highest;
@@ -626,7 +634,8 @@
             dr["F5"] = f5;
             dr["前低"] = lowest;
             dr["幅度"] = width.ToString() + "%";
-
+            dr["无影时间"] = footTime.ToShortTimeString();
+            dr["最低时间"] = todayLowestTime.ToShortTimeString();
             //dr["F3折返"] = (stock.kLineDay[currentIndex].lowestPrice - f3) / f3;
             dr["F2"] = f2;
             dr["F4"] = f4;
@@ -788,10 +797,11 @@
         }
     }
 
-    public static bool foot(Core.Timeline[] tArr, out double lowestPrice, out double displayLowPrice)
+    public static bool foot(Core.Timeline[] tArr, out double lowestPrice, out double displayLowPrice, out DateTime footTime)
     {
         lowestPrice = double.MaxValue;
         displayLowPrice = double.MaxValue;
+        footTime = DateTime.MinValue;
         bool noShadow = false;
         for (int i = 0; i < tArr.Length; i++)
         {
@@ -803,11 +813,13 @@
             if (lowestPrice < tArr[i].todayStartPrice && lowestPrice < tArr[i].todayEndPrice)
             {
                 noShadow = true;
-
+                footTime = tArr[i].tickTime;
+                break;
             }
             else
             {
                 noShadow = false;
+
             }
             if (displayLowPrice > Math.Min(tArr[i].todayEndPrice, tArr[i].todayStartPrice))
             {
@@ -888,6 +900,8 @@
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
                     <asp:BoundColumn DataField="无影" HeaderText="无影"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="无影时间" HeaderText="无影时间"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="最低时间" HeaderText="最低时间"></asp:BoundColumn>
                     <asp:BoundColumn DataField="今开" HeaderText="今开"></asp:BoundColumn>
                     
                     <asp:BoundColumn DataField="现高" HeaderText="现高"></asp:BoundColumn>
