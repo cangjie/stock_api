@@ -659,7 +659,7 @@
             dr["3线"] = line3Price;
             dr["现价"] = currentPrice;
             dr["今开"] = stock.kLineDay[currentIndex].startPrice;
-            dr["无影"] = timelineArr[0].todayLowestPrice;
+            dr["无影"] = todayLowestPrice;//timelineArr[0].todayLowestPrice;
             dr["评级"] = memo;
             dr["买入"] = buyPrice;
             dr["KDJ日"] = stock.kdjDays(currentIndex);
@@ -829,19 +829,19 @@
                 isRefeshLowestPrice = true;
                 //lowestTime = tArr[i].tickTime;
             }
-            if (lowestPrice < tArr[i].todayStartPrice && lowestPrice < tArr[i].todayEndPrice)
+            if (lowestPrice < tArr[i].todayStartPrice &&   tArr[i].todayEndPrice - lowestPrice >= 0.05)
             {
                 if (isRefeshLowestPrice)
                 {
                     footTime = tArr[i].tickTime;
+                    noShadow = true;
+                    isRefeshLowestPrice = false;
+                    if ((tArr[i].tickTime.Hour == 9 && tArr[i].tickTime.Minute >= 45) || (tArr[i].tickTime.Hour > 9))
+                    {
+                        break;
+                    }
                 }
-                noShadow = true;
-                isRefeshLowestPrice = false;
-
-                if ((tArr[i].tickTime.Hour == 9 && tArr[i].tickTime.Minute >= 45) || (tArr[i].tickTime.Hour > 9))
-                {
-                    break;
-                }
+                
             }
             else
             {
