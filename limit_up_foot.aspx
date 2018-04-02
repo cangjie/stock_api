@@ -635,7 +635,7 @@
             }
             if (atPoint)
             {
-                dr["信号"] = dr["信号"].ToString() + "🎯";
+                dr["信号"] = dr["信号"].ToString() + "🔥";
             }
 
             dr["压力1"] = pressure1;
