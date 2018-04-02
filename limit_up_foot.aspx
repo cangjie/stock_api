@@ -618,12 +618,11 @@
             }
 
 
-            /*
-            if ((timelineArr[0].todayStartPrice - timelineArr[0].todayLowestPrice) / timelineArr[0].todayLowestPrice > 0.01
-                && timelineArr[0].todayLowestPrice <= stock.kLineDay[currentIndex].lowestPrice)
+            
+            if (footTime.Hour==9 && footTime.Minute == 30)
             {
                 dr["信号"] = dr["信号"].ToString() + "❗️";
-            }*/
+            }
 
 
             if (atPoint)
