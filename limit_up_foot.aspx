@@ -819,30 +819,29 @@
         displayLowPrice = double.MaxValue;
         footTime = DateTime.MinValue;
         bool noShadow = false;
+        bool isRefeshLowestPrice = false;
         int i = 0;
         for (; i < tArr.Length; i++)
         {
             if (lowestPrice > tArr[i].todayLowestPrice)
             {
                 lowestPrice = tArr[i].todayLowestPrice;
-                noShadow = false;
+                isRefeshLowestPrice = true;
                 //lowestTime = tArr[i].tickTime;
             }
             if (lowestPrice < tArr[i].todayStartPrice && lowestPrice < tArr[i].todayEndPrice)
             {
-                if (!noShadow)
+                if (isRefeshLowestPrice)
                 {
                     footTime = tArr[i].tickTime;
                 }
                 noShadow = true;
-               
+                isRefeshLowestPrice = false;
                 //break;
             }
             else
             {
                 noShadow = false;
-
-
             }
             if (displayLowPrice > Math.Min(tArr[i].todayEndPrice, tArr[i].todayStartPrice))
             {
