@@ -837,7 +837,7 @@
                 }
                 noShadow = true;
                 isRefeshLowestPrice = false;
-                //break;
+                break;
             }
             else
             {
