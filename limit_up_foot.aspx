@@ -338,12 +338,12 @@
         foreach (DataRow drOri in dtOri.Rows)
         {
 
-            /*
-            if (!drOri["gid"].ToString().Trim().Equals("sz300696"))
+
+            if (!drOri["gid"].ToString().Trim().Equals("sz300101"))
             {
                 continue;
             }
-           */
+
 
 
             DateTime alertDate = DateTime.Parse(drOri["alert_date"].ToString().Trim());
@@ -481,7 +481,7 @@
 
             if (!atPoint)
             {
-                continue;
+                //continue;
             }
 
 
@@ -625,6 +625,10 @@
             if (todayLowestPrice > stock.kLineDay[currentIndex].lowestPrice)
             {
                 dr["信号"] = dr["信号"].ToString() + "🐻";
+            }
+            if (atPoint)
+            {
+                dr["信号"] = dr["信号"].ToString() + "🎯";
             }
 
             dr["压力1"] = pressure1;
