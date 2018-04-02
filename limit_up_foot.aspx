@@ -607,7 +607,7 @@
 
             if (volumeReduce < 1.25 && stock.kLineDay[currentIndex].startPrice != stock.kLineDay[currentIndex].highestPrice)
             {
-                dr["信号"] = dr["信号"].ToString() + "📈";
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"非一字板缩量\" >📈</a>";
                 /*
                 if (stock.kLineDay[currentIndex].startPrice >= stock.kLineDay[currentIndex].endPrice
                     && stock.kLineDay[currentIndex].endPrice > stock.kLineDay[currentIndex].lowestPrice)
@@ -617,11 +617,7 @@
                 */
             }
 
-            if ((stock.kLineDay[currentIndex].endPrice - todayDisplayLowPrice) / todayDisplayLowPrice <= 0.005)
-            {
 
-                dr["信号"] = dr["信号"].ToString() + "🛍️";
-            }
 
             if ((timelineArr[0].todayStartPrice - timelineArr[0].todayLowestPrice) / timelineArr[0].todayLowestPrice > 0.01
                 && timelineArr[0].todayLowestPrice <= stock.kLineDay[currentIndex].lowestPrice)
@@ -632,7 +628,13 @@
             
             if (atPoint)
             {
-                dr["信号"] = dr["信号"].ToString() + "🔥";
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"最低价位于支撑位\" >🔥</a>";
+            }
+
+            if ((stock.kLineDay[currentIndex].endPrice - todayDisplayLowPrice) / todayDisplayLowPrice <= 0.005)
+            {
+
+                dr["信号"] = dr["信号"].ToString() + "🛍️";
             }
 
             if (todayLowestPrice > stock.kLineDay[currentIndex].lowestPrice)
