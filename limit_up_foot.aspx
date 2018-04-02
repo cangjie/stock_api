@@ -915,7 +915,6 @@
                     <asp:BoundColumn DataField="压力1" HeaderText="压力1"></asp:BoundColumn>
                     <asp:BoundColumn DataField="压力2" HeaderText="压力2"></asp:BoundColumn>
                     <asp:BoundColumn DataField="更高" HeaderText="更高"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="高开" HeaderText="高开"></asp:BoundColumn>
                     <asp:BoundColumn DataField="幅度" HeaderText="幅度"></asp:BoundColumn>
                     <asp:BoundColumn DataField="现价" HeaderText="现价"></asp:BoundColumn>
                 
