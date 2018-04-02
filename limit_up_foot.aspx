@@ -825,7 +825,7 @@
             {
                 noShadow = true;
                 footTime = tArr[i].tickTime;
-                //break;
+                break;
             }
             else
             {
