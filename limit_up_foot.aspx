@@ -605,15 +605,22 @@
 
             double openRaise =  (stock.kLineDay[currentIndex].startPrice - stock.kLineDay[limitUpIndex].endPrice) / stock.kLineDay[limitUpIndex].endPrice;
 
-            if (volumeReduce < 1.25 && stock.kLineDay[currentIndex].lowestPrice >= highest
-                && stock.kLineDay[currentIndex].startPrice != stock.kLineDay[currentIndex].endPrice)
+            if (volumeReduce < 1.25 && stock.kLineDay[currentIndex].startPrice != stock.kLineDay[currentIndex].highestPrice)
             {
-                dr["信号"] = "📈";
+                dr["信号"] = dr["信号"].ToString() + "📈";
+                /*
                 if (stock.kLineDay[currentIndex].startPrice >= stock.kLineDay[currentIndex].endPrice
                     && stock.kLineDay[currentIndex].endPrice > stock.kLineDay[currentIndex].lowestPrice)
                 {
                     dr["信号"] = "📈🛍️";
                 }
+                */
+            }
+
+            if ((stock.kLineDay[currentIndex].endPrice - todayDisplayLowPrice) / todayDisplayLowPrice <= 0.005)
+            {
+
+                dr["信号"] = dr["信号"].ToString() + "🛍️";
             }
 
             if ((timelineArr[0].todayStartPrice - timelineArr[0].todayLowestPrice) / timelineArr[0].todayLowestPrice > 0.01
