@@ -629,14 +629,17 @@
                 dr["信号"] = dr["信号"].ToString() + "❗️";
             }
 
-            if (todayLowestPrice > stock.kLineDay[currentIndex].lowestPrice)
-            {
-                dr["信号"] = dr["信号"].ToString() + "🐻";
-            }
+            
             if (atPoint)
             {
                 dr["信号"] = dr["信号"].ToString() + "🔥";
             }
+
+            if (todayLowestPrice > stock.kLineDay[currentIndex].lowestPrice)
+            {
+                dr["信号"] = dr["信号"].ToString() + "🐻";
+            }
+
 
             dr["压力1"] = pressure1;
             dr["压力2"] = pressure2;
