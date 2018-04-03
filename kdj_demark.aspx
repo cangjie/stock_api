@@ -416,8 +416,8 @@
             */
             if ((kdjDays == 0 || kdjDays == 1) && (int)dr["TD"] <= 5 && currentIndex >= 4
                 && stock.kLineDay[currentIndex].endPrice > stock.kLineDay[currentIndex - 1].endPrice
-                && stock.kLineDay[currentIndex - 1].endPrice > stock.kLineDay[currentIndex - 2].endPrice
-                && stock.kLineDay[currentIndex - 1].endPrice <= line3PriceYesterday
+                
+               
                 && stock.kLineDay[currentIndex].endPrice >= line3Price)
             {
                 dr["信号"] = dr["信号"].ToString().Trim() + "📈";
