@@ -338,12 +338,12 @@
         foreach (DataRow drOri in dtOri.Rows)
         {
 
-            /*
-            if (!drOri["gid"].ToString().Trim().Equals("sz300101"))
+            
+            if (!drOri["gid"].ToString().Trim().Equals("sh603918"))
             {
                 continue;
             }
-            */
+            
 
 
             DateTime alertDate = DateTime.Parse(drOri["alert_date"].ToString().Trim());
@@ -720,7 +720,7 @@
         int count = 0;
         for (int i = index; i > 0; i--)
         {
-            if ((kArr[i].endPrice - kArr[i - 1].endPrice) / kArr[i - 1].endPrice >= 0.995)
+            if ((kArr[i].endPrice - kArr[i - 1].endPrice) / kArr[i - 1].endPrice >= 0.0975)
             {
                 count++;
             }
