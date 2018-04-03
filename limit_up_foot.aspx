@@ -809,7 +809,7 @@
                     footTime = tArr[i].tickTime;
                     noShadow = true;
                     isRefeshLowestPrice = false;
-                    if (tArr[i].tickTime.Hour == 9 && tArr[i].tickTime.Minute <= 35 )
+                    if (tArr[i].tickTime.Hour == 9 && tArr[i].tickTime.Minute <= 31 )
                     {
                         break;
                     }
