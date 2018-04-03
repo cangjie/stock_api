@@ -426,7 +426,7 @@
             double pressure1 = 0;
             double pressure2 = 0;
 
-            
+
             double volumeToday = stock.kLineDay[currentIndex].volume;  //Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(currentDate.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
 
             double volumeYesterday = stock.kLineDay[limitUpIndex].VirtualVolume;
@@ -521,6 +521,10 @@
             }
 
             buyPrice = todayDisplayLowPrice;
+            if (buyPrice > 100000)
+            {
+                buyPrice = stock.kLineDay[currentIndex].lowestPrice;
+            }
             if (buyPrice > moreThanHighest)
             {
                 pressure1 = 0;
@@ -592,7 +596,7 @@
             }
 
 
-            
+
             if (footTime.Hour==9 && footTime.Minute <= 40)
             {
                 dr["信号"] = dr["信号"].ToString() + "❗️";
@@ -814,7 +818,7 @@
                         break;
                     }
                 }
-                
+
             }
             else
             {
