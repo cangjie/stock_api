@@ -354,11 +354,14 @@
             }
             Stock stock = new Stock(drOri["gid"].ToString().Trim(), rc);
             stock.LoadKLineDay(rc);
+
+            /*
             Core.Timeline[] timelineArr = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
             if (timelineArr.Length == 0)
             {
                 timelineArr = Core.Timeline.LoadTimelineArrayFromSqlServer(stock.gid, currentDate);
             }
+            */
 
             double todayLowestPrice = double.MaxValue;
             double todayDisplayLowPrice = double.MaxValue;
@@ -595,9 +598,20 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"非一字板缩量\" >📈</a>";
             }
 
+            bool isFirstFoot = false;
+            for (int i = 0; i < timelineArray.Length && timelineArray[i].tickTime.Hour == 9 && timelineArray[i].tickTime.Minute <= 31; i++)
+            {
+                if (timelineArray[i].tickTime.Hour == 9 && timelineArray[i].tickTime.Minute >= 30)
+                {
+                    if (timelineArray[i].todayEndPrice - timelineArray[i].todayLowestPrice >= 0.05)
+                    {
+                        isFirstFoot = true;
+                        break;
+                    }
+                }
+            }
 
-
-            if (footTime.Hour==9 && footTime.Minute <= 40)
+            if (isFirstFoot)
             {
                 dr["信号"] = dr["信号"].ToString() + "❗️";
             }
