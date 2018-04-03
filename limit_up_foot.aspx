@@ -535,42 +535,31 @@
             }
             else if (buyPrice > wideF6)
             {
-                //pressure1 =  (moreThanHighest - buyPrice) / buyPrice;
                 pressure1 = moreThanHighest;
                 pressure2 = 0;
             }
             else if (buyPrice > wideF5)
             {
-                //pressure1 = (wideF6 - buyPrice) / buyPrice;
-                //pressure2 = (moreThanHighest - buyPrice) / buyPrice;
                 pressure1 = wideF6;
                 pressure2 = moreThanHighest;
             }
             else if (buyPrice > wideF4)
             {
-                //pressure1 = (wideF5 - buyPrice) / buyPrice;
-                //pressure2 = (wideF6 - buyPrice) / buyPrice;
                 pressure1 = wideF5;
                 pressure2 = wideF6;
             }
             else if (buyPrice > wideF3)
             {
-                //pressure1 = (wideF4 - buyPrice) / buyPrice;
-                //pressure2 = (wideF5 - buyPrice) / buyPrice;
                 pressure1 = wideF4;
                 pressure2 = wideF5;
             }
             else if (buyPrice > wideF2)
             {
-                //pressure1 = (wideF3 - buyPrice) / buyPrice;
-                //pressure2 = (wideF4 - buyPrice) / buyPrice;
                 pressure1 = wideF3;
                 pressure2 = wideF4;
             }
             else
             {
-                //pressure1 = (wideF2 - buyPrice) / buyPrice;
-                //pressure2 = (wideF3 - buyPrice) / buyPrice;
                 pressure1 = wideF2;
                 pressure2 = wideF3;
             }
@@ -631,6 +620,11 @@
             if (todayLowestPrice > stock.kLineDay[currentIndex].lowestPrice)
             {
                 dr["信号"] = dr["信号"].ToString() + "🐻";
+            }
+
+            if (GetLimitupCount(stock.kLineDay, currentIndex - 1) == 2)
+            {
+                dr["信号"] = dr["信号"].ToString() + "🌟";
             }
 
 
@@ -719,6 +713,23 @@
             }
         }
         return ret;
+    }
+
+    public static int GetLimitupCount(KLine[] kArr, int index)
+    {
+        int count = 0;
+        for (int i = index; i > 0; i--)
+        {
+            if ((kArr[i].endPrice - kArr[i - 1].endPrice) / kArr[i - 1].endPrice >= 0.995)
+            {
+                count++;
+            }
+            else
+            {
+                break;
+            }
+        }
+        return count;
     }
 
     public static void PageWatcher()
@@ -827,7 +838,7 @@
                     footTime = tArr[i].tickTime;
                     noShadow = true;
                     isRefeshLowestPrice = false;
-                    
+
                 }
 
             }
