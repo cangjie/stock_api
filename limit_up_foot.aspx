@@ -426,9 +426,7 @@
             double pressure1 = 0;
             double pressure2 = 0;
 
-
-            //double f3Distance = 0.382 - (highest - stock.kLineDay[currentIndex].lowestPrice) / (highest - lowest);
-
+            
             double volumeToday = stock.kLineDay[currentIndex].volume;  //Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(currentDate.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
 
             double volumeYesterday = stock.kLineDay[limitUpIndex].VirtualVolume;
@@ -436,13 +434,6 @@
             {
                 volumeYesterday = stock.kLineDay[limitUpIndex].volume;
             }
-            // Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(stock.kLineDay[limitUpIndex].startDateTime.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
-            /*
-            for (int j = lowestIndex; j < currentIndex; j++)
-            {
-                volumeYesterday = Math.Max(volumeYesterday, stock.kLineDay[j].VirtualVolume);
-            }
-            */
 
 
             double volumeReduce = volumeToday / volumeYesterday;
@@ -483,16 +474,6 @@
             {
                 //continue;
             }
-
-
-
-
-
-
-
-
-
-
 
             DateTime todayLowestTime = Core.Timeline.GetLowestTime(timelineArray);
             if (todayLowestTime.Hour == 9 && todayLowestTime.Minute < 30)
@@ -608,18 +589,11 @@
             if (volumeReduce < 1.25 && stock.kLineDay[currentIndex].startPrice != stock.kLineDay[currentIndex].highestPrice)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"非一字板缩量\" >📈</a>";
-                /*
-                if (stock.kLineDay[currentIndex].startPrice >= stock.kLineDay[currentIndex].endPrice
-                    && stock.kLineDay[currentIndex].endPrice > stock.kLineDay[currentIndex].lowestPrice)
-                {
-                    dr["信号"] = "📈🛍️";
-                }
-                */
             }
 
 
             
-            if (footTime.Hour==9 && footTime.Minute == 30)
+            if (footTime.Hour==9 && footTime.Minute <= 40)
             {
                 dr["信号"] = dr["信号"].ToString() + "❗️";
             }
@@ -835,7 +809,7 @@
                     footTime = tArr[i].tickTime;
                     noShadow = true;
                     isRefeshLowestPrice = false;
-                    if ((tArr[i].tickTime.Hour == 9 && tArr[i].tickTime.Minute >= 45) || (tArr[i].tickTime.Hour > 9))
+                    if (tArr[i].tickTime.Hour == 9 && tArr[i].tickTime.Minute <= 40 )
                     {
                         break;
                     }
