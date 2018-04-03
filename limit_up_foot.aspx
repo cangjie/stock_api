@@ -599,7 +599,7 @@
             }
 
             bool isFirstFoot = false;
-            for (int i = 0; i < timelineArray.Length && timelineArray[i].tickTime.Hour == 9 && timelineArray[i].tickTime.Minute <= 31; i++)
+            for (int i = 0; i < timelineArray.Length && timelineArray[i].tickTime.Hour == 9 && timelineArray[i].tickTime.Minute <= 30; i++)
             {
                 if (timelineArray[i].tickTime.Hour == 9 && timelineArray[i].tickTime.Minute >= 30)
                 {
