@@ -261,7 +261,7 @@
         dt.Columns.Add("KDJ率", Type.GetType("System.Double"));
         dt.Columns.Add("MACD", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD率", Type.GetType("System.Double"));
-	    dt.Columns.Add("TD", Type.GetType("System.Int32"));
+        dt.Columns.Add("TD", Type.GetType("System.Int32"));
         dt.Columns.Add("3线日", Type.GetType("System.Int32"));
         dt.Columns.Add("3线", Type.GetType("System.Double"));
         dt.Columns.Add("低点", Type.GetType("System.Double"));
@@ -302,7 +302,7 @@
             dr["今收"] = currentPrice;
             int macdDays = stock.macdDays(currentIndex);
             dr["MACD"] = macdDays;
-	        dr["TD"] = currentIndex - KLine.GetLastDeMarkBuyPointIndex(stock.kLineDay, currentIndex);
+            dr["TD"] = currentIndex - KLine.GetLastDeMarkBuyPointIndex(stock.kLineDay, currentIndex);
             dr["今涨"] = (stock.kLineDay[currentIndex].highestPrice - settlePrice) / settlePrice;
             DateTime lastDate = DateTime.Parse(stock.kLineDay[currentIndex - 1].startDateTime.ToShortDateString());
             double lastDayVolume = Stock.GetVolumeAndAmount(stock.gid, lastDate)[0];
@@ -313,6 +313,8 @@
             dr["kdj"] = kdjDays.ToString();
             int days3Line = KLine.Above3LineDays(stock, currentIndex);
             dr["3线日"] = days3Line;
+            double line3Price = stock.GetAverageSettlePrice(currentIndex, 3, 3);
+            double line3PriceYesterday = stock.GetAverageSettlePrice(currentIndex - 1, 3, 3);
             dr["3线"] = stock.GetAverageSettlePrice(currentIndex, 3, 3);
             //double buyPrice = stock.kLineDay[currentIndex].endPrice;
             double buyPrice = stock.kLineDay[currentIndex].endPrice;
@@ -406,16 +408,25 @@
             {
                 //dr["信号"] = dr["信号"].ToString().Trim() + "🛍️";
             }
-
+            /*
             if (kdjDays >= 0 && kdjDays <= 1 && (int)dr["TD"] <= 4)
             {
                 dr["信号"] = dr["信号"].ToString().Trim() + "📈";
             }
+            */
+            if ((kdjDays == 0 || kdjDays == 1) && (int)dr["TD"] <= 5 && currentIndex >= 4
+                && stock.kLineDay[currentIndex].endPrice > stock.kLineDay[currentIndex - 1].endPrice
+                && stock.kLineDay[currentIndex - 1].endPrice > stock.kLineDay[currentIndex - 2].endPrice
+                && stock.kLineDay[currentIndex - 1].endPrice <= line3PriceYesterday
+                && stock.kLineDay[currentIndex].endPrice >= line3Price)
+            {
+                dr["信号"] = dr["信号"].ToString().Trim() + "📈";
+            }
 
-	        if (kdjDays < 0)
-	        {
-	            dr["信号"] = "💩";
-	        }
+            if (kdjDays < 0)
+            {
+                dr["信号"] = "💩";
+            }
 
             //if (totalScore !=0 && (stock.kLineDay[currentIndex].highestPrice - settlePrice) / settlePrice < 0.07 )
             dt.Rows.Add(dr);
