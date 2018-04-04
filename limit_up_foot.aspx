@@ -614,7 +614,6 @@
             if ((stock.kLineDay[currentIndex].endPrice - todayDisplayLowPrice) / todayDisplayLowPrice <= 0.005 
                 && (buyPrice - stock.kLineDay[currentIndex - 1].endPrice) /  stock.kLineDay[currentIndex - 1].endPrice <= 0.09)
             {
-
                 dr["信号"] = dr["信号"].ToString() + "🛍️";
             }
 
@@ -924,12 +923,9 @@
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="高开" HeaderText="高开"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="缩量" HeaderText="缩量"></asp:BoundColumn>
-					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD日|asc"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="无影" HeaderText="无影"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="无影时间" HeaderText="无影时"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="最低时间" HeaderText="最低时"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="今开" HeaderText="今开"></asp:BoundColumn>
+
+
+					
                     
                     <asp:BoundColumn DataField="现高" HeaderText="现高"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F2" HeaderText="F2"></asp:BoundColumn>
@@ -944,7 +940,11 @@
                     <asp:BoundColumn DataField="更高" HeaderText="更高"></asp:BoundColumn>
                     <asp:BoundColumn DataField="幅度" HeaderText="幅度"></asp:BoundColumn>
                     <asp:BoundColumn DataField="现价" HeaderText="现价"></asp:BoundColumn>
-                
+                    <asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD日|asc"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="无影" HeaderText="无影"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="无影时间" HeaderText="无影时"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="最低时间" HeaderText="最低时"></asp:BoundColumn>
                     
                     <asp:BoundColumn DataField="1日" HeaderText="1日" SortExpression="1日|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="2日" HeaderText="2日"></asp:BoundColumn>
