@@ -243,7 +243,8 @@ public class Util
             ret = false;
         }
         if ((Util.GetDay(date) >= DateTime.Parse("2017-10-1") && Util.GetDay(date) <= DateTime.Parse("2017-10-8") ) || Util.GetDay(date) == DateTime.Parse("2018-1-1")
-            || (Util.GetDay(date) >= DateTime.Parse("2018-2-15") && Util.GetDay(date) <= DateTime.Parse("2018-2-21")) )
+            || (Util.GetDay(date) >= DateTime.Parse("2018-2-15") && Util.GetDay(date) <= DateTime.Parse("2018-2-21")) 
+            || (date.Date >= DateTime.Parse("2018-4-5") && date.Date <= DateTime.Parse("2018-4-8")))
             ret = false;
         return ret;
     }

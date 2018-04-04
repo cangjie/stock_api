@@ -6,6 +6,14 @@
 <script runat="server">
     protected void Page_Load(object sender, EventArgs e)
     {
+
+        Response.Write(Util.GetLastTransactDate(DateTime.Now.Date, 1).ToShortDateString() + "<br/>"
+            + Util.GetLastTransactDate(DateTime.Now.Date, 2).ToShortDateString() + "<br/>"
+            + Util.GetLastTransactDate(DateTime.Now.Date, 3).ToShortDateString() + "<br/>"
+            + Util.GetLastTransactDate(DateTime.Now.Date, 4).ToShortDateString() + "<br/>"
+            + Util.GetLastTransactDate(DateTime.Now.Date, 5).ToShortDateString() + "<br/>");
+        Response.End();
+
         string[] gidArr = Util.GetAllGids();
         int i = 0;
         foreach (string gid in gidArr)
