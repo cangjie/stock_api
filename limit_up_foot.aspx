@@ -927,6 +927,7 @@
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="无影" HeaderText="无影"></asp:BoundColumn>
                     <asp:BoundColumn DataField="无影时间" HeaderText="无影时"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="最低时间" HeaderText="最低时"></asp:BoundColumn>
                     <asp:BoundColumn DataField="今开" HeaderText="今开"></asp:BoundColumn>
                     
                     <asp:BoundColumn DataField="现高" HeaderText="现高"></asp:BoundColumn>
