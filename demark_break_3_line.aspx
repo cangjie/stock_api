@@ -333,6 +333,7 @@
                 }
             }
             double line3Price = KLine.GetAverageSettlePrice(stock.kLineDay, currentIndex, 3, 3);
+            double prevLine3Price = KLine.GetAverageSettlePrice(stock.kLineDay, currentIndex - 1, 3, 3);
             if (isPreview)
             {
                 line3Price = KLine.GetAverageSettlePrice(stock.kLineDay, currentIndex, 3, 2);
@@ -389,7 +390,7 @@
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
 
      
-            if ((raise2Day && kdjDays == 0) || (isPreview && currentPrice < line3Price && raise2Day))
+            if ((raise2Day && kdjDays == 0 && stock.kLineDay[currentIndex - 1].endPrice <= prevLine3Price) || (isPreview && currentPrice < line3Price && raise2Day))
             {
                 dr["信号"] = "📈";
             }
