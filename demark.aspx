@@ -244,8 +244,11 @@
     public static DataTable GetData(DateTime currentDate)
     {
         currentDate = Util.GetDay(currentDate);
+        DateTime startDate = Util.GetLastTransactDate(currentDate, 5);
+        DateTime endDate = Util.GetLastTransactDate(currentDate, 3);
         DataTable dtOri = new DataTable();
-        SqlDataAdapter da = new SqlDataAdapter(" select * from alert_demark where alert_type = 'day' and [value] = -9 and alert_time  > '" + currentDate.ToShortDateString() + "'and  alert_time <= '" + currentDate.ToShortDateString() + " 15:00' ", Util.conStr);
+        SqlDataAdapter da = new SqlDataAdapter(" select * from alert_demark where alert_type = 'day' and [value] = -9 and alert_time  >= '" + startDate.ToShortDateString() 
+            + "'and  alert_time <= '" + endDate.ToShortDateString() + " 15:00' ", Util.conStr);
         da.Fill(dtOri);
 
         DataTable dt = new DataTable();
