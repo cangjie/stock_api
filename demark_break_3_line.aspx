@@ -326,8 +326,8 @@
             }
             else
             {
-                if (stock.kLineDay[currentIndex - 3].endPrice <= stock.kLineDay[currentIndex - 2].endPrice
-                    && stock.kLineDay[currentIndex - 2].endPrice <= stock.kLineDay[currentIndex - 1].endPrice)
+                if (stock.kLineDay[currentIndex - 3].endPrice < stock.kLineDay[currentIndex - 2].endPrice
+                    && stock.kLineDay[currentIndex - 2].endPrice < stock.kLineDay[currentIndex - 1].endPrice)
                 {
                     raise2Day = true;
                 }
