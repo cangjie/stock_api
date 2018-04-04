@@ -247,7 +247,7 @@
         DateTime startDate = Util.GetLastTransactDate(currentDate, 5);
         DateTime endDate = Util.GetLastTransactDate(currentDate, 3);
         DataTable dtOri = new DataTable();
-        SqlDataAdapter da = new SqlDataAdapter(" select * from alert_demark where alert_type = 'day' and [value] = -9 and alert_time  >= '" + startDate.ToShortDateString() 
+        SqlDataAdapter da = new SqlDataAdapter(" select distinct gid from alert_demark where alert_type = 'day' and [value] = -9 and alert_time  >= '" + startDate.ToShortDateString() 
             + "'and  alert_time <= '" + endDate.ToShortDateString() + " 15:00' ", Util.conStr);
         da.Fill(dtOri);
 
@@ -316,9 +316,10 @@
             dr["kdj"] = kdjDays.ToString();
             int days3Line = KLine.Above3LineDays(stock, currentIndex);
             dr["3线日"] = days3Line;
-            dr["3线"] = stock.GetAverageSettlePrice(currentIndex, 3, 3);
+            double line3Price = stock.GetAverageSettlePrice(currentIndex, 3, 3);
+            dr["3线"] = line3Price;
             //double buyPrice = stock.kLineDay[currentIndex].endPrice;
-            double buyPrice = double.Parse(drOri["price"].ToString().Trim());
+            double buyPrice = line3Price; //double.Parse(drOri["price"].ToString().Trim());
             double lowestPrice = stock.LowestPrice(currentDate, 20);
             double highestPrice = stock.HighestPrice(currentDate, 40);
             double f1 = lowestPrice + (highestPrice - lowestPrice) * 0.236;
