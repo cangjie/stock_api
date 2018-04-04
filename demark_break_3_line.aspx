@@ -61,7 +61,7 @@
         DataTable dtOri = GetData(currentDate);
         if (sort.Trim().Equals(""))
         {
-            sort = Util.GetSafeRequestValue(Request, "sort", "TD");
+            sort = Util.GetSafeRequestValue(Request, "sort", "信号 desc,放量 desc,利润 desc");
         }
         DataRow[] drOriArr = dtOri.Select(Util.GetSafeRequestValue(Request, "whereclause", "").Trim(), sort + (!sort.Trim().Equals("")?",":"") + " KDJ desc  ");
         return RenderHtml(drOriArr);
@@ -389,8 +389,13 @@
             }
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
 
-     
-            if ((raise2Day && kdjDays == 0 && stock.kLineDay[currentIndex].endPrice >= line3Price && stock.kLineDay[currentIndex - 1].endPrice <= prevLine3Price) || (isPreview && currentPrice <= prevLine3Price && raise2Day))
+            if (stock.gid.Trim().Equals("sh600809"))
+            {
+                string aa = "aa";
+            }
+
+            if ((!isPreview && raise2Day && kdjDays == 0 && stock.kLineDay[currentIndex].endPrice >= line3Price && stock.kLineDay[currentIndex - 1].endPrice <= prevLine3Price)
+                || (isPreview && currentPrice <= prevLine3Price && raise2Day))
             {
                 dr["信号"] = "📈";
             }
