@@ -376,6 +376,7 @@
             dr["高点"] = highest;
             dr["买入"] = buyPrice;
             dr["利润"] = margin;
+            dr["TD"] = tdDays;
             double maxPrice = 0;
             for (int i = 1; i <= 5; i++)
             {
