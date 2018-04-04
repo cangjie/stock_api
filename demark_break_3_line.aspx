@@ -390,7 +390,7 @@
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
 
      
-            if ((raise2Day && kdjDays == 0 && stock.kLineDay[currentIndex - 1].endPrice <= prevLine3Price) || (isPreview && currentPrice < line3Price && raise2Day))
+            if ((raise2Day && kdjDays == 0 && stock.kLineDay[currentIndex].endPrice <= line3Price) || (isPreview && currentPrice < prevLine3Price && raise2Day))
             {
                 dr["信号"] = "📈";
             }
