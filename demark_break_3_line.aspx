@@ -388,6 +388,7 @@
             }
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
 
+     
             if ((raise2Day && kdjDays == 0) || (isPreview && currentPrice < line3Price && raise2Day))
             {
                 dr["信号"] = "📈";
