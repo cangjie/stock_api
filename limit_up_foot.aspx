@@ -20,7 +20,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "幅度 desc");
+        sort = Util.GetSafeRequestValue(Request, "sort", "高开 desc");
         if (!IsPostBack)
         {
             try
@@ -611,7 +611,8 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"最低价位于支撑位\" >🔥</a>";
             }
 
-            if ((stock.kLineDay[currentIndex].endPrice - todayDisplayLowPrice) / todayDisplayLowPrice <= 0.005)
+            if ((stock.kLineDay[currentIndex].endPrice - todayDisplayLowPrice) / todayDisplayLowPrice <= 0.005 
+                && (buyPrice - stock.kLineDay[currentIndex - 1].endPrice) /  stock.kLineDay[currentIndex - 1].endPrice <= 0.09)
             {
 
                 dr["信号"] = dr["信号"].ToString() + "🛍️";
