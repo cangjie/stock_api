@@ -318,8 +318,8 @@
             bool raise2Day = false;
             if (isPreview)
             {
-                if (stock.kLineDay[currentIndex - 2].endPrice <= stock.kLineDay[currentIndex - 1].endPrice
-                    && stock.kLineDay[currentIndex - 1].endPrice <= stock.kLineDay[currentIndex].endPrice)
+                if (stock.kLineDay[currentIndex - 2].endPrice < stock.kLineDay[currentIndex - 1].endPrice
+                    && stock.kLineDay[currentIndex - 1].endPrice < stock.kLineDay[currentIndex].endPrice)
                 {
                     raise2Day = true;
                 }
