@@ -389,13 +389,9 @@
             }
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
 
-            if (stock.gid.Trim().Equals("sh600809"))
-            {
-                string aa = "aa";
-            }
-
+   
             if ((!isPreview && raise2Day && kdjDays == 0 && stock.kLineDay[currentIndex].endPrice >= line3Price && stock.kLineDay[currentIndex - 1].endPrice <= prevLine3Price)
-                || (isPreview && currentPrice <= prevLine3Price && raise2Day))
+                || (isPreview && currentPrice <= line3Price && raise2Day))
             {
                 dr["信号"] = "📈";
             }
