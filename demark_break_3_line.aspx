@@ -319,7 +319,9 @@
             if (isPreview)
             {
                 if (stock.kLineDay[currentIndex - 2].endPrice < stock.kLineDay[currentIndex - 1].endPrice
-                    && stock.kLineDay[currentIndex - 1].endPrice < stock.kLineDay[currentIndex].endPrice)
+                    && stock.kLineDay[currentIndex - 1].endPrice < stock.kLineDay[currentIndex].endPrice
+                    && stock.kLineDay[currentIndex - 2].endPrice > stock.kLineDay[currentIndex - 2].startPrice
+                    && stock.kLineDay[currentIndex - 1].endPrice > stock.kLineDay[currentIndex - 1].startPrice)
                 {
                     raise2Day = true;
                 }
@@ -327,7 +329,9 @@
             else
             {
                 if (stock.kLineDay[currentIndex - 3].endPrice < stock.kLineDay[currentIndex - 2].endPrice
-                    && stock.kLineDay[currentIndex - 2].endPrice < stock.kLineDay[currentIndex - 1].endPrice)
+                    && stock.kLineDay[currentIndex - 2].endPrice < stock.kLineDay[currentIndex - 1].endPrice
+                    && stock.kLineDay[currentIndex - 3].endPrice > stock.kLineDay[currentIndex - 3].startPrice
+                    && stock.kLineDay[currentIndex - 2].endPrice > stock.kLineDay[currentIndex - 2].startPrice)
                 {
                     raise2Day = true;
                 }
