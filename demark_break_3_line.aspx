@@ -320,7 +320,8 @@
             {
                 if (stock.kLineDay[currentIndex - 2].endPrice < stock.kLineDay[currentIndex - 1].endPrice
                     && stock.kLineDay[currentIndex - 1].endPrice < stock.kLineDay[currentIndex].endPrice
-                    && stock.kLineDay[currentIndex - 1].endPrice > stock.kLineDay[currentIndex - 1].startPrice)
+                    && stock.kLineDay[currentIndex - 1].endPrice > stock.kLineDay[currentIndex - 1].startPrice
+                    && stock.kLineDay[currentIndex].endPrice > stock.kLineDay[currentIndex].startPrice)
                 {
                     raise2Day = true;
                 }
@@ -329,10 +330,15 @@
             {
                 if (stock.kLineDay[currentIndex - 3].endPrice < stock.kLineDay[currentIndex - 2].endPrice
                     && stock.kLineDay[currentIndex - 2].endPrice < stock.kLineDay[currentIndex - 1].endPrice
-                    && stock.kLineDay[currentIndex - 2].endPrice > stock.kLineDay[currentIndex - 2].startPrice)
+                    && stock.kLineDay[currentIndex - 2].endPrice > stock.kLineDay[currentIndex - 2].startPrice
+                    && stock.kLineDay[currentIndex - 1].endPrice > stock.kLineDay[currentIndex - 1].startPrice)
                 {
                     raise2Day = true;
                 }
+            }
+            if (stock.gid.Trim().Equals("sh603355"))
+            {
+                string aa = "aa";
             }
             double line3Price = KLine.GetAverageSettlePrice(stock.kLineDay, currentIndex, 3, 3);
             double prevLine3Price = KLine.GetAverageSettlePrice(stock.kLineDay, currentIndex - 1, 3, 3);
@@ -391,7 +397,8 @@
             }
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
 
-   
+
+
             if ((!isPreview && raise2Day && kdjDays == 0 && stock.kLineDay[currentIndex].endPrice >= line3Price && stock.kLineDay[currentIndex - 1].endPrice <= prevLine3Price)
                 || (isPreview && currentPrice <= line3Price && raise2Day))
             {
