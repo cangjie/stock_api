@@ -342,10 +342,7 @@
             }
             double line3Price = KLine.GetAverageSettlePrice(stock.kLineDay, currentIndex, 3, 3);
             double prevLine3Price = KLine.GetAverageSettlePrice(stock.kLineDay, currentIndex - 1, 3, 3);
-            if (isPreview)
-            {
-                line3Price = KLine.GetAverageSettlePrice(stock.kLineDay, currentIndex, 3, 2);
-            }
+            
             int kdjDays = stock.kdjDays(currentIndex);
             double lowest = 0;
             double f3 = 0;
