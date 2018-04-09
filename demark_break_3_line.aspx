@@ -342,7 +342,7 @@
             }
             double line3Price = KLine.GetAverageSettlePrice(stock.kLineDay, currentIndex, 3, 3);
             double prevLine3Price = KLine.GetAverageSettlePrice(stock.kLineDay, currentIndex - 1, 3, 3);
-            
+
             int kdjDays = stock.kdjDays(currentIndex);
             double lowest = 0;
             double f3 = 0;
@@ -393,10 +393,14 @@
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
             }
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
+/*
+            if (stock.gid.Trim().Equals("sz002102"))
+            {
+                string aa = "";
+            }
 
-
-
-            if ((!isPreview && raise2Day && kdjDays == 0 && stock.kLineDay[currentIndex].endPrice >= line3Price && stock.kLineDay[currentIndex - 1].endPrice <= prevLine3Price)
+*/
+            if ((!isPreview && raise2Day && kdjDays >= 0 && stock.kLineDay[currentIndex].endPrice >= line3Price && stock.kLineDay[currentIndex - 1].endPrice <= prevLine3Price)
                 || (isPreview && currentPrice <= line3Price && raise2Day))
             {
                 dr["信号"] = "📈";
