@@ -369,7 +369,7 @@
             int kdjDays = stock.kdjDays(currentIndex);
             if (kdjDays == -1)
                 continue;
-            if (stock.kLineDay[currentIndex].j > 45 && kdjDays <= 1)
+            if (stock.kLineDay[currentIndex].j > 60 && kdjDays <= 1)
                 continue;
             dr["kdj"] = kdjDays.ToString();
 
