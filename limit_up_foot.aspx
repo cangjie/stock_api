@@ -626,10 +626,14 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "🐻";
             }
-
-            if (GetLimitupCount(stock.kLineDay, currentIndex - 1) == 2)
+            int limitCount = GetLimitupCount(stock.kLineDay, currentIndex - 1);
+            if (limitCount == 2)
             {
                 dr["信号"] = dr["信号"].ToString() + "🌟";
+            }
+            else if (limitCount == 1)
+            {
+                 dr["信号"] = dr["信号"].ToString() + "🔺";
             }
 
 
