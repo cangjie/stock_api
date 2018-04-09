@@ -934,11 +934,6 @@
                     <asp:BoundColumn DataField="信号" HeaderText="信号" SortExpression="信号|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="高开" HeaderText="高开"  ></asp:BoundColumn>
-                    <asp:BoundColumn DataField="缩量" HeaderText="缩量"></asp:BoundColumn>
-
-
-					
-                    
                     <asp:BoundColumn DataField="现高" HeaderText="现高"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F2" HeaderText="F2"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>
@@ -947,13 +942,11 @@
                     <asp:BoundColumn DataField="F6" HeaderText="F6"></asp:BoundColumn>
                     <asp:BoundColumn DataField="前低" HeaderText="前低"></asp:BoundColumn>
                     <asp:BoundColumn DataField="更低" HeaderText="更低"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="压力1" HeaderText="压力1"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="压力2" HeaderText="压力2"></asp:BoundColumn>
                     <asp:BoundColumn DataField="更高" HeaderText="更高"></asp:BoundColumn>
                     <asp:BoundColumn DataField="幅度" HeaderText="幅度"></asp:BoundColumn>
                     <asp:BoundColumn DataField="现价" HeaderText="现价"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD日|asc"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="MACD日" HeaderText="MACD" SortExpression="MACD日|asc"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ" SortExpression="KDJ率|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="无影" HeaderText="无影"></asp:BoundColumn>
                     <asp:BoundColumn DataField="无影时间" HeaderText="无影时"></asp:BoundColumn>
                     <asp:BoundColumn DataField="最低时间" HeaderText="最低时"></asp:BoundColumn>
