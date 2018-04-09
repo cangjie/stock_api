@@ -582,6 +582,11 @@
 
             double openRaise =  (stock.kLineDay[currentIndex].startPrice - stock.kLineDay[limitUpIndex].endPrice) / stock.kLineDay[limitUpIndex].endPrice;
 
+            if (openRaise < 0)
+            {
+                continue;
+            }
+
             if (volumeReduce < 1.25 && stock.kLineDay[currentIndex].startPrice != stock.kLineDay[currentIndex].highestPrice)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"非一字板缩量\" >📈</a>";
@@ -611,7 +616,7 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"最低价位于支撑位\" >🔥</a>";
             }
 
-            if ((stock.kLineDay[currentIndex].endPrice - todayDisplayLowPrice) / todayDisplayLowPrice <= 0.005 
+            if ((stock.kLineDay[currentIndex].endPrice - todayDisplayLowPrice) / todayDisplayLowPrice <= 0.005
                 && (buyPrice - stock.kLineDay[currentIndex - 1].endPrice) /  stock.kLineDay[currentIndex - 1].endPrice <= 0.09)
             {
                 dr["信号"] = dr["信号"].ToString() + "🛍️";
