@@ -338,12 +338,12 @@
         foreach (DataRow drOri in dtOri.Rows)
         {
 
-            /*
-            if (!drOri["gid"].ToString().Trim().Equals("sz300637"))
+            
+            if (!drOri["gid"].ToString().Trim().Equals("sz002864"))
             {
                 continue;
             }
-            */
+            
 
 
             DateTime alertDate = DateTime.Parse(drOri["alert_date"].ToString().Trim());
@@ -460,7 +460,7 @@
             }
 
             bool atPoint = false;
-            if (todayDisplayLowPrice - todayLowestPrice >= 0.05 &&
+            if (
                 ((Math.Abs(todayLowestPrice - highest)/highest <= 0.005 )
                 || (Math.Abs(todayLowestPrice - f2)/highest <= 0.005 )
                 || (Math.Abs(todayLowestPrice - f3)/highest <= 0.005 )
