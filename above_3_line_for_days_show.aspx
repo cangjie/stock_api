@@ -391,7 +391,7 @@
             double macdDegree = KLine.ComputeMacdDegree(stock.kLineDay, currentIndex-macdDays)*100;
             dr["MACD率"] = macdDegree;
             double kdjDegree = KLine.ComputeKdjDegree(stock.kLineDay, currentIndex);
-            dr["KDJ率"] = kdjDegree;
+            dr["KDJ率"] = stock.kLineDay[currentIndex].j;
             double maxPrice = 0;
             for (int i = 1; i <= 10; i++)
             {
