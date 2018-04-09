@@ -369,8 +369,7 @@
             int kdjDays = stock.kdjDays(currentIndex);
             if (kdjDays == -1)
                 continue;
-            if (stock.kLineDay[currentIndex].j > 80 && kdjDays <= 1)
-                continue;
+       
             dr["kdj"] = kdjDays.ToString();
 
             int days3Line = KLine.Above3LineDays(stock, currentIndex);
