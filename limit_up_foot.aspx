@@ -313,6 +313,8 @@
         dt.Columns.Add("更低", Type.GetType("System.Double"));
         dt.Columns.Add("压力1", Type.GetType("System.Double"));
         dt.Columns.Add("压力2", Type.GetType("System.Double"));
+        dt.Columns.Add("天数", Type.GetType("System.Int32"));
+        dt.Columns.Add("均幅", Type.GetType("System.Double"));
         //dt.Columns.Add("F3折返", Type.GetType("System.Double"));
 
 
@@ -569,7 +571,8 @@
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
-
+            dr["天数"] = currentIndex - lowestIndex;
+            dr["均幅"] = stock.kLineDay[currentIndex - 1].highestPrice - stock.kLineDay[lowestIndex].lowestPrice / (stock.kLineDay[lowestIndex].lowestPrice * (currentIndex - lowestIndex));
 
 
 
@@ -954,7 +957,8 @@
                     <asp:BoundColumn DataField="无影" HeaderText="无影"></asp:BoundColumn>
                     <asp:BoundColumn DataField="无影时间" HeaderText="无影时"></asp:BoundColumn>
                     <asp:BoundColumn DataField="最低时间" HeaderText="最低时"></asp:BoundColumn>
-                    
+                    <asp:BoundColumn DataField="天数" HeaderText="天数"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="均幅" HeaderText="均幅"></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日" SortExpression="1日|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="2日" HeaderText="2日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3日" HeaderText="3日"></asp:BoundColumn>
