@@ -338,12 +338,12 @@
         foreach (DataRow drOri in dtOri.Rows)
         {
 
-            /*
-            if (!drOri["gid"].ToString().Trim().Equals("sh603918"))
+            
+            if (!drOri["gid"].ToString().Trim().Equals("sz300637"))
             {
                 continue;
             }
-            */
+            
 
 
             DateTime alertDate = DateTime.Parse(drOri["alert_date"].ToString().Trim());
@@ -828,7 +828,7 @@
         bool noShadow = false;
         bool isRefeshLowestPrice = false;
         int i = 0;
-        for (; i < tArr.Length; i++)
+        for (; i < tArr.Length && tArr[i].tickTime.Hour < 10; i++)
         {
             if (lowestPrice > tArr[i].todayLowestPrice)
             {
