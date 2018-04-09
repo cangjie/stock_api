@@ -572,7 +572,7 @@
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
             dr["天数"] = currentIndex - lowestIndex;
-            dr["均幅"] = stock.kLineDay[currentIndex - 1].highestPrice - stock.kLineDay[lowestIndex].lowestPrice / (stock.kLineDay[lowestIndex].lowestPrice * (currentIndex - lowestIndex));
+            dr["均幅"] = (stock.kLineDay[currentIndex - 1].highestPrice - stock.kLineDay[lowestIndex].lowestPrice) / (stock.kLineDay[lowestIndex].lowestPrice * (currentIndex - lowestIndex));
 
 
 
