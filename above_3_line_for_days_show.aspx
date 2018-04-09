@@ -367,6 +367,10 @@
             double volumeIncrease = (currentVolume - lastDayVolume) / lastDayVolume;
             dr["放量"] = currentVolume / lastDayVolume;
             int kdjDays = stock.kdjDays(currentIndex);
+            if (kdjDays == -1)
+                continue;
+            if (stock.kLineDay[currentIndex].j > 40 && kdjDays <= 1)
+                continue;
             dr["kdj"] = kdjDays.ToString();
 
             int days3Line = KLine.Above3LineDays(stock, currentIndex);
