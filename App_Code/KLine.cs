@@ -1003,13 +1003,20 @@ public class KLine
     public static bool IsCros3LineTwice(KLine[] kArr, int index, int days)
     {
         bool ret = false;
-        for (int i = index - 1; i >= index - days; i--)
+        try
         {
-            ret = ret || IsCross3Line(kArr, i);
-            if (ret)
+            for (int i = index - 1; i >= index - days; i--)
             {
-                break;
+                ret = ret || IsCross3Line(kArr, i);
+                if (ret)
+                {
+                    break;
+                }
             }
+        }
+        catch
+        {
+
         }
         return ret && IsCross3Line(kArr, index);
 
