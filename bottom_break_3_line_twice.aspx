@@ -437,7 +437,8 @@
                 upSpace = 0.1;
                 downSpace = (buyPrice - highestPrice) / buyPrice;
             }
-
+            if (kdjDays < 0)
+                continue;
 
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
