@@ -122,6 +122,7 @@
                         case "昨收":
                         case "MACD率":
                         case "KDJ率":
+                        case "均板":
                             dr[i] = Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2).ToString();
                             break;
                         case "买入":
@@ -143,7 +144,7 @@
                         case "更低":
                         case "压力1":
                         case "压力2":
-                        case "均板":
+                        
                             double currentValuePrice = (double)drOri[i];
                             dr[i] = "<font color=\"" + (currentValuePrice > currentPrice ? "red" : (currentValuePrice == currentPrice ? "gray" : "green")) + "\"  >"
                                 + Math.Round(currentValuePrice, 2).ToString() + "</font>";
@@ -575,7 +576,7 @@
             dr["名称"] = stock.Name.Trim();
             dr["天数"] = currentIndex - lowestIndex;
             dr["均幅"] = (stock.kLineDay[currentIndex - 1].highestPrice - stock.kLineDay[lowestIndex].lowestPrice) / (stock.kLineDay[lowestIndex].lowestPrice * (currentIndex - lowestIndex));
-            dr["均板"] = GetUncontinueLimitupCount(stock.kLineDay, lowestIndex, currentIndex) / (currentIndex - lowestIndex);
+            dr["均板"] = (double)GetUncontinueLimitupCount(stock.kLineDay, lowestIndex, currentIndex) / (double)(currentIndex - lowestIndex);
 
 
             double width = Math.Round(100 * (highest - lowest) / lowest, 2);
