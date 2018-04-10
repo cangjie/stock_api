@@ -372,7 +372,7 @@
                     break;
                 }
             }
-
+            adjustDays++;
 
 
             /*
@@ -463,7 +463,7 @@
             dr["震幅"] = upSpace + downSpace;
             dr["综指"] = macdDegree + kdjDegree;
             dr["TD"] = KLine.GetLastDeMarkBuyPointIndex(stock.kLineDay, currentIndex);
-            dr["均涨"] = (line3Price - previous3LinePrice) / adjustDays++;
+            dr["均涨"] = (line3Price - previous3LinePrice) / adjustDays;
 
             double maxPrice = 0;
             for (int i = 1; i <= 5; i++)
