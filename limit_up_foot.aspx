@@ -622,6 +622,8 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"最低价位于支撑位\" >🔥</a>";
             }
 
+            int kdjDays = stock.kdjDays(currentIndex);
+
             if ((stock.kLineDay[currentIndex].endPrice - todayDisplayLowPrice) / todayDisplayLowPrice <= 0.005
                 && (buyPrice - stock.kLineDay[currentIndex - 1].endPrice) /  stock.kLineDay[currentIndex - 1].endPrice <= 0.09)
             {
@@ -637,7 +639,7 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "🌟";
             }
-            else if (limitCount == 1)
+            else if (limitCount == 1 && kdjDays >= 0)
             {
                 dr["信号"] = dr["信号"].ToString() + "🔺";
             }
@@ -662,7 +664,7 @@
             dr["无影"] = todayLowestPrice;//timelineArr[0].todayLowestPrice;
             dr["评级"] = memo;
             dr["买入"] = buyPrice;
-            dr["KDJ日"] = stock.kdjDays(currentIndex);
+            dr["KDJ日"] = kdjDays;
             dr["MACD日"] = stock.macdDays(currentIndex);
             dr["高开"] = openRaise;
             dr["更高"] = moreThanHighest;
