@@ -277,9 +277,10 @@
     public static DataTable GetData(DateTime currentDate)
     {
         currentDate = Util.GetDay(currentDate);
+        DateTime prevDate = Util.GetLastTransactDate(currentDate, 20);
         DataTable dtOri = DBHelper.GetDataTable(" select * from bottom_break_cross_3_line  a where suggest_date = '" + currentDate.ToShortDateString() + "' "
             + " and exists ( select 'a' from bottom_break_cross_3_line b where suggest_date < '" + currentDate.ToShortDateString() + "' and   suggest_date >= '"
-            + currentDate.AddDays(-15).ToShortDateString() + "' and a.gid = b.gid  )   ");
+            + prevDate.ToShortDateString() + "' and a.gid = b.gid  )   ");
         DataTable dt = new DataTable();
         dt.Columns.Add("代码", Type.GetType("System.String"));
         dt.Columns.Add("名称", Type.GetType("System.String"));
@@ -342,7 +343,7 @@
             int currentIndex = stock.GetItemIndex(currentDate);
             if (currentIndex < 1)
                 continue;
-            if (!KLine.IsCros3LineTwice(stock.kLineDay, currentIndex, 5))
+            if (!KLine.IsCros3LineTwice(stock.kLineDay, currentIndex, 20))
                 continue;
             double current3LinePrice = stock.GetAverageSettlePrice(currentIndex, 3, 3);
             double previous3LinePrice = 0;
