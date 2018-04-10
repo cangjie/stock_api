@@ -306,6 +306,7 @@
         dt.Columns.Add("跌幅", Type.GetType("System.Double"));
         dt.Columns.Add("震幅", Type.GetType("System.Double"));
         dt.Columns.Add("综指", Type.GetType("System.Double"));
+        dt.Columns.Add("均涨", Type.GetType("System.Double"));
         for (int i = 1; i <= 5; i++)
         {
             dt.Columns.Add(i.ToString() + "日", Type.GetType("System.Double"));
@@ -372,6 +373,8 @@
                 }
             }
 
+
+
             /*
             if (previous3LineIndex == 0)
                 continue;
@@ -379,8 +382,8 @@
             if (previous3LinePrice > current3LinePrice)
                 continue;
 
-            if (adjustDays > 5)
-                continue;
+            //if (adjustDays > 5)
+            //    continue;
 
             double settlePrice = stock.kLineDay[currentIndex - 1].endPrice;
             double openPrice = stock.kLineDay[currentIndex].startPrice;
@@ -460,6 +463,8 @@
             dr["震幅"] = upSpace + downSpace;
             dr["综指"] = macdDegree + kdjDegree;
             dr["TD"] = KLine.GetLastDeMarkBuyPointIndex(stock.kLineDay, currentIndex);
+            dr["均涨"] = (line3Price - previous3LinePrice) / adjustDays;
+
             double maxPrice = 0;
             for (int i = 1; i <= 5; i++)
             {
@@ -478,7 +483,7 @@
             {
                 //dr["信号"] = dr["信号"].ToString() + "📈";
             }
-            if (((kdjDays == 0 && (int)dr["MACD日"] == 0) || ((int)dr["MACD日"] > 0 && kdjDays == 0)) && currentVolume / lastDayVolume >= 0.85)
+            if (((kdjDays == 0 && (int)dr["MACD日"] == 0) || ((int)dr["MACD日"] > 0 && kdjDays == 0)))
             {
                 dr["信号"] = dr["信号"].ToString() + "📈";
             }
@@ -571,7 +576,7 @@
                     <asp:BoundColumn DataField="放量" HeaderText="放量" SortExpression="放量|desc"></asp:BoundColumn>
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD日|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="调整日" HeaderText="调整日" SortExpression="调整日|asc"></asp:BoundColumn>
+                    
                     <asp:BoundColumn DataField="KDJ率" HeaderText="KDJ率" SortExpression="KDJ率|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="MACD率" HeaderText="MACD率" SortExpression="MACD率|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
@@ -581,6 +586,8 @@
                     <asp:BoundColumn DataField="F5" HeaderText="F5"></asp:BoundColumn>
                     <asp:BoundColumn DataField="高点" HeaderText="高点"></asp:BoundColumn>
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="均涨" HeaderText="均涨"  ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="调整日" HeaderText="调整日" SortExpression="调整日|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日" SortExpression="1日|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="2日" HeaderText="2日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3日" HeaderText="3日"></asp:BoundColumn>
