@@ -18,6 +18,7 @@
 
     public static Thread t = new Thread(ts);
 
+
     protected void Page_Load(object sender, EventArgs e)
     {
         sort = Util.GetSafeRequestValue(Request, "sort", "MACD日,KDJ日,综指 desc");

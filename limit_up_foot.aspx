@@ -18,6 +18,8 @@
 
     public static Thread t = new Thread(ts);
 
+    public DataTable dtDayCount;
+
     protected void Page_Load(object sender, EventArgs e)
     {
         sort = Util.GetSafeRequestValue(Request, "sort", "高开 desc");
@@ -144,7 +146,7 @@
                         case "更低":
                         case "压力1":
                         case "压力2":
-                        
+
                             double currentValuePrice = (double)drOri[i];
                             dr[i] = "<font color=\"" + (currentValuePrice > currentPrice ? "red" : (currentValuePrice == currentPrice ? "gray" : "green")) + "\"  >"
                                 + Math.Round(currentValuePrice, 2).ToString() + "</font>";
@@ -200,6 +202,12 @@
 
         int shitCount = 0;
 
+        dtDayCount = new DataTable();
+        dtDayCount.Columns.Add("day", Type.GetType("System.Int32"));
+        dtDayCount.Columns.Add("total", Type.GetType("System.Int32"));
+        dtDayCount.Columns.Add("gt5pcount", Type.GetType("System.Int32"));
+        dtDayCount.Columns.Add("percent", Type.GetType("System.Double"));
+
         foreach (DataRow drOri in drOriArr)
         {
             if (drOri["信号"].ToString().IndexOf("💩") < 0)
@@ -243,6 +251,46 @@
             {
                 shitCount++;
             }
+
+            int dayCount = (int)drOri["天数"];
+            double raise = 0;
+            try
+            {
+                raise = (double)drOri["1日"];
+            }
+            catch
+            {
+
+            }
+            DataRow[] drArrDayCount = dtDayCount.Select("day = " + dayCount.ToString());
+            DataRow drDayCount;
+            if (drArrDayCount.Length == 0)
+            {
+                drDayCount = dtDayCount.NewRow();
+                drDayCount["day"] = dayCount;
+                drDayCount["total"] = 1;
+                if (raise >= 0.05)
+                {
+                    drDayCount["gt5pcount"] = 1;
+                }
+                else
+                {
+                    drDayCount["gt5pcount"] = 0;
+                }
+                drDayCount["percent"] = (double)((int)drDayCount["gt5pcount"]) / (double)((int)drDayCount["total"]);
+                dtDayCount.Rows.Add(drDayCount);
+            }
+            else
+            {
+                drDayCount = drArrDayCount[0];
+                drDayCount["total"] = (int)drDayCount["total"] + 1;
+                if (raise >= 0.05)
+                {
+                    drDayCount["gt5pcount"] = (int)drDayCount["gt5pcount"] + 1;
+                }
+                drDayCount["percent"] = (double)((int)drDayCount["gt5pcount"]) / (double)((int)drDayCount["total"]);
+            }
+
         }
 
 
@@ -987,6 +1035,16 @@
             </tr>
             <tr><td><%=t.ThreadState.ToString() %></td></tr>
         </table>
+        <br />
+        <%
+            DataRow[] drArrSortedDayCount = dtDayCount.Select("", "day");
+            foreach (DataRow drSortedDayCoubnt in drArrSortedDayCount)
+            {
+                %>
+        <%=drSortedDayCoubnt["day"].ToString() %>日：<%= Math.Round(100 * (double)drSortedDayCoubnt["percent"],2).ToString() %>%<br />
+                    <%
+            }
+             %>
     </div>
     </form>
 </body>
