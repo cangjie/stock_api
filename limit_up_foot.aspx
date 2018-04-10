@@ -1040,14 +1040,21 @@
         </table>
         <br />
         <%
-            DataRow[] drArrSortedDayCount = dtDayCount.Select("", "day");
-            foreach (DataRow drSortedDayCoubnt in drArrSortedDayCount)
+            try
             {
+                DataRow[] drArrSortedDayCount = dtDayCount.Select("", "day");
+                foreach (DataRow drSortedDayCoubnt in drArrSortedDayCount)
+                {
                 %>
-        <%=drSortedDayCoubnt["day"].ToString() %>日：<%= Math.Round(100 * (double)drSortedDayCoubnt["percent"],2).ToString() %>% 
+        <%=drSortedDayCoubnt["day"].ToString() %>日：<%= Math.Round(100 * (double)drSortedDayCoubnt["percent"], 2).ToString() %>% 
         <%= Math.Round(100 * (double)((int)drSortedDayCoubnt["total"]) / (double)allCount, 2).ToString() %>%<br />
                     <%
-            }
+                            }
+                        }
+                        catch
+                        {
+
+                        }
              %>
     </div>
     </form>
