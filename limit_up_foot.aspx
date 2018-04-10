@@ -20,6 +20,8 @@
 
     public DataTable dtDayCount;
 
+    public int allCount = 0;
+
     protected void Page_Load(object sender, EventArgs e)
     {
         sort = Util.GetSafeRequestValue(Request, "sort", "高开 desc");
@@ -210,6 +212,7 @@
 
         foreach (DataRow drOri in drOriArr)
         {
+            allCount++;
             if (drOri["信号"].ToString().IndexOf("💩") < 0)
             {
                 totalCount++;
@@ -1041,7 +1044,8 @@
             foreach (DataRow drSortedDayCoubnt in drArrSortedDayCount)
             {
                 %>
-        <%=drSortedDayCoubnt["day"].ToString() %>日：<%= Math.Round(100 * (double)drSortedDayCoubnt["percent"],2).ToString() %>%<br />
+        <%=drSortedDayCoubnt["day"].ToString() %>日：<%= Math.Round(100 * (double)drSortedDayCoubnt["percent"],2).ToString() %>% 
+        <%= Math.Round(100 * (double)((int)drSortedDayCoubnt["total"]) / (double)allCount, 2).ToString() %>%<br />
                     <%
             }
              %>
