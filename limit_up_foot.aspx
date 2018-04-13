@@ -369,6 +369,7 @@
         dt.Columns.Add("天数", Type.GetType("System.Int32"));
         dt.Columns.Add("均幅", Type.GetType("System.Double"));
         dt.Columns.Add("均板", Type.GetType("System.Double"));
+        dt.Columns.Add("多日", Type.GetType("System.Int32"));
         //dt.Columns.Add("F3折返", Type.GetType("System.Double"));
 
 
@@ -430,10 +431,24 @@
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
 
+            int up20MaDays = -1;
+
+
+
             int currentIndex = stock.GetItemIndex(currentDate);
             if (currentIndex < 0)
                 continue;
-
+            for (int i = currentIndex; i > 0; i--)
+            {
+                if (stock.kLineDay[i].endPrice >= stock.GetAverageSettlePrice(currentIndex, 20, 0))
+                {
+                    up20MaDays++;
+                }
+                else
+                {
+                    break;
+                }
+            }
             int limitUpIndex = stock.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
 
             if (limitUpIndex == -1)
@@ -628,7 +643,7 @@
             dr["天数"] = currentIndex - lowestIndex;
             dr["均幅"] = (stock.kLineDay[currentIndex - 1].highestPrice - stock.kLineDay[lowestIndex].lowestPrice) / (stock.kLineDay[lowestIndex].lowestPrice * (currentIndex - lowestIndex));
             dr["均板"] = (double)GetUncontinueLimitupCount(stock.kLineDay, lowestIndex, currentIndex) / (double)(currentIndex - lowestIndex);
-
+            dr["多日"] = up20MaDays.ToString();
 
             double width = Math.Round(100 * (highest - lowest) / lowest, 2);
 
@@ -1022,6 +1037,7 @@
                     <asp:BoundColumn DataField="天数" HeaderText="天数"></asp:BoundColumn>
                     <asp:BoundColumn DataField="均幅" HeaderText="均幅"></asp:BoundColumn>
                     <asp:BoundColumn DataField="均板" HeaderText="均板"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="多日" HeaderText="多日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日" SortExpression="1日|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="2日" HeaderText="2日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3日" HeaderText="3日"></asp:BoundColumn>
