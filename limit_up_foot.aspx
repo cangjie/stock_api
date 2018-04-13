@@ -440,7 +440,7 @@
                 continue;
             for (int i = currentIndex; i > 0; i--)
             {
-                if (stock.kLineDay[i].endPrice >= stock.GetAverageSettlePrice(currentIndex, 20, 0))
+                if (stock.kLineDay[i].endPrice >= stock.GetAverageSettlePrice(i, 20, 0))
                 {
                     up20MaDays++;
                 }
