@@ -481,7 +481,7 @@
                     dr["信号"] = dr["信号"].ToString() + "👑";
                 }
             }
-            if (line3Price <= currentPrice)
+            if ( stock.kLineDay[currentIndex].endPrice >= line3Price && stock.kLineDay[currentIndex - 1].endPrice <= prevLine3Price)
             {
                 if (currentPrice >= Math.Max(ma20, ma60))
                 {
