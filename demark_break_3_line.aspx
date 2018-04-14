@@ -400,7 +400,7 @@
                         }
 
             */
-            if ((!isPreview && raise2Day && kdjDays >= 0 && stock.kLineDay[currentIndex].endPrice >= line3Price && stock.kLineDay[currentIndex - 1].endPrice <= prevLine3Price)
+            if ((!isPreview  && kdjDays >= 0 && stock.kLineDay[currentIndex].endPrice >= line3Price && stock.kLineDay[currentIndex - 1].endPrice <= prevLine3Price)
                 || (isPreview && currentPrice <= line3Price && raise2Day))
             {
                 dr["信号"] = "📈";
