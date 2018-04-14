@@ -481,8 +481,35 @@
                     dr["信号"] = dr["信号"].ToString() + "👑";
                 }
             }
+            if (line3Price <= currentPrice)
+            {
+                if (currentPrice >= Math.Max(ma20, ma60))
+                {
+                    double pressure = Math.Max(ma20, ma60);
+                    if ((currentPrice - pressure) / pressure <= 0.005)
+                    {
+                        dr["信号"] = dr["信号"] + "🛍️";
+                    }
+                }
+                else if (currentPrice < Math.Min(ma20, ma60))
+                {
+                    double pressure = Math.Min(ma20, ma60);
+                    if ((pressure - currentPrice) / currentPrice >= 0.05 && (pressure - line3Price) / line3Price <= 0.005)
+                    {
+                        dr["信号"] = dr["信号"] + "🛍️";
+                    }
+                }
+                else
+                {
+                    double pressure = Math.Max(ma20, ma60);
+                    double support = Math.Max(Math.Min(ma20, ma60), line3Price);
+                    if ((currentPrice - support) / support <= 0.005 && (pressure - currentPrice) / currentPrice >= 0.05)
+                    {
+                        dr["信号"] = dr["信号"] + "🛍️";
+                    }
+                }
+            }
 
-            
 
             dt.Rows.Add(dr);
 
