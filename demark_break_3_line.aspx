@@ -365,7 +365,7 @@
             double volumeIncrease = (currentVolume - lastDayVolume) / lastDayVolume;
             double buyPrice = Math.Max(line3Price, settlePrice);
 
-            if (kdjDays == -1)// || (kdjDays >= 0 && macdDays >= 0 && kdjDays - macdDays > 3))
+            if (kdjDays == -1 || (kdjDays >= 0 && macdDays >= 0 && kdjDays - macdDays > 4))
             {
                 continue;
             }
