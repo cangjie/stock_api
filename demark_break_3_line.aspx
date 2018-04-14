@@ -363,7 +363,7 @@
             double lastDayVolume = Stock.GetVolumeAndAmount(stock.gid, Util.GetLastTransactDate(currentDate, 1))[0];
             double currentVolume = Stock.GetVolumeAndAmount(stock.gid, currentDate)[0];
             double volumeIncrease = (currentVolume - lastDayVolume) / lastDayVolume;
-            double buyPrice = currentPrice;//Math.Max(line3Price, settlePrice);
+            double buyPrice = Math.Max(line3Price, settlePrice);
 
 
             DataRow dr = dt.NewRow();
