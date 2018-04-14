@@ -363,7 +363,7 @@
             double lastDayVolume = Stock.GetVolumeAndAmount(stock.gid, Util.GetLastTransactDate(currentDate, 1))[0];
             double currentVolume = Stock.GetVolumeAndAmount(stock.gid, currentDate)[0];
             double volumeIncrease = (currentVolume - lastDayVolume) / lastDayVolume;
-            double buyPrice = Math.Max(line3Price, settlePrice);
+            double buyPrice = currentPrice;//Math.Max(line3Price, settlePrice);
 
 
             DataRow dr = dt.NewRow();
@@ -406,6 +406,8 @@
                 dr["信号"] = "📈";
             }
 
+
+
             double ma5 = 0;
             double ma10 = 0;
             double ma20 = 0;
@@ -446,6 +448,27 @@
             if (ma5 > ma10)
             {
                 dr["信号"] = dr["信号"].ToString() + "🌟";
+            }
+
+            if (currentPrice > ma20 && currentPrice > ma60)
+            {
+                dr["信号"] = dr["信号"].ToString() + "👑";
+            }
+            else if (currentPrice > Math.Min(ma20, ma60))
+            {
+                double pressure = Math.Max(ma20, ma60);
+                if ((pressure - currentPrice) / currentPrice > 0.05)
+                {
+                    dr["信号"] = dr["信号"].ToString() + "👑";
+                }
+            }
+            else
+            {
+                double pressure = Math.Min(ma20, ma60);
+                if ((pressure - currentPrice) / currentPrice > 0.05)
+                {
+                    dr["信号"] = dr["信号"].ToString() + "👑";
+                }
             }
 
             dt.Rows.Add(dr);
