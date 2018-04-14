@@ -453,24 +453,24 @@
 
             if (ma10 > prevMa10)
             {
-                dr["信号"] = dr["信号"].ToString() + "🔺";
+                dr["信号"] = dr["信号"].ToString() + "<a title='10日均线上涨' >🔺</a>";
             }
 
             if (ma5 > ma10)
             {
-                dr["信号"] = dr["信号"].ToString() + "🌟";
+                dr["信号"] = dr["信号"].ToString() + "<a title='5日均线高于10均线' >🌟</a>";
             }
 
             if (currentPrice > ma20 && currentPrice > ma60)
             {
-                dr["信号"] = dr["信号"].ToString() + "👑";
+                dr["信号"] = dr["信号"].ToString() + "<a title='距离20或60日均线压力大于5%' >🔥</a>";
             }
             else if (currentPrice > Math.Min(ma20, ma60))
             {
                 double pressure = Math.Max(ma20, ma60);
                 if ((pressure - currentPrice) / currentPrice > 0.05)
                 {
-                    dr["信号"] = dr["信号"].ToString() + "👑";
+                    dr["信号"] = dr["信号"].ToString() + "<a title='距离20或60日均线压力大于5%' >🔥</a>";
                 }
             }
             else
@@ -478,7 +478,7 @@
                 double pressure = Math.Min(ma20, ma60);
                 if ((pressure - currentPrice) / currentPrice > 0.05)
                 {
-                    dr["信号"] = dr["信号"].ToString() + "👑";
+                    dr["信号"] = dr["信号"].ToString() + "<a title='距离20或60日均线压力大于5%' >🔥</a>";
                 }
             }
             if ( stock.kLineDay[currentIndex].endPrice >= line3Price && stock.kLineDay[currentIndex - 1].endPrice <= prevLine3Price)
