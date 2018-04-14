@@ -311,7 +311,7 @@
             {
                 tdDays++;
             }
-            if (tdDays < 3 && tdDays > 7)
+            if (tdDays > 10)
             {
                 continue;
             }
@@ -365,6 +365,10 @@
             double volumeIncrease = (currentVolume - lastDayVolume) / lastDayVolume;
             double buyPrice = Math.Max(line3Price, settlePrice);
 
+            if (kdjDays == -1)// || (kdjDays >= 0 && macdDays >= 0 && kdjDays - macdDays > 3))
+            {
+                continue;
+            }
 
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
