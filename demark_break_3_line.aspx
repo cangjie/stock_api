@@ -414,6 +414,7 @@
 
             double ma5 = 0;
             double ma10 = 0;
+            double prevMa10 = 0;
             double ma20 = 0;
             double ma60 = 0;
             try
@@ -427,6 +428,7 @@
             try
             {
                 ma10 = stock.GetAverageSettlePrice(currentIndex, 10, 0);
+                prevMa10 = stock.GetAverageSettlePrice(currentIndex - 1, 10, 0);
             }
             catch
             {
@@ -473,6 +475,11 @@
                 {
                     dr["信号"] = dr["信号"].ToString() + "👑";
                 }
+            }
+
+            if (ma10 > prevMa10)
+            {
+                dr["信号"] = dr["信号"].ToString() + "🔺";
             }
 
             dt.Rows.Add(dr);
