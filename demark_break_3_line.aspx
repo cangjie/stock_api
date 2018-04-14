@@ -393,17 +393,59 @@
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
             }
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
-/*
-            if (stock.gid.Trim().Equals("sz002102"))
-            {
-                string aa = "";
-            }
+            /*
+                        if (stock.gid.Trim().Equals("sz002102"))
+                        {
+                            string aa = "";
+                        }
 
-*/
+            */
             if ((!isPreview && raise2Day && kdjDays >= 0 && stock.kLineDay[currentIndex].endPrice >= line3Price && stock.kLineDay[currentIndex - 1].endPrice <= prevLine3Price)
                 || (isPreview && currentPrice <= line3Price && raise2Day))
             {
                 dr["信号"] = "📈";
+            }
+
+            double ma5 = 0;
+            double ma10 = 0;
+            double ma20 = 0;
+            double ma60 = 0;
+            try
+            {
+                ma5 = stock.GetAverageSettlePrice(currentIndex, 5, 0);
+            }
+            catch
+            {
+
+            }
+            try
+            {
+                ma10 = stock.GetAverageSettlePrice(currentIndex, 10, 0);
+            }
+            catch
+            {
+
+            }
+            try
+            {
+                ma20 = stock.GetAverageSettlePrice(currentIndex, 20, 0);
+            }
+            catch
+            {
+
+            }
+            try
+            {
+                ma60 = stock.GetAverageSettlePrice(currentIndex, 60, 0);
+            }
+            catch
+            {
+
+            }
+
+            if (ma5 > ma10)
+            {
+                dr["信号"] = dr["信号"].ToString() + "🌟";
             }
 
             dt.Rows.Add(dr);
