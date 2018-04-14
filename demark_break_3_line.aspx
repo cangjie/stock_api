@@ -363,7 +363,7 @@
             double lastDayVolume = Stock.GetVolumeAndAmount(stock.gid, Util.GetLastTransactDate(currentDate, 1))[0];
             double currentVolume = Stock.GetVolumeAndAmount(stock.gid, currentDate)[0];
             double volumeIncrease = (currentVolume - lastDayVolume) / lastDayVolume;
-            double buyPrice = Math.Max(line3Price, settlePrice);
+            double buyPrice = currentPrice;//Math.Max(line3Price, settlePrice);
 
             if (kdjDays == -1 || (kdjDays >= 0 && macdDays >= 0 && kdjDays - macdDays > 4))
             {
@@ -451,6 +451,11 @@
 
             }
 
+            if (ma10 > prevMa10)
+            {
+                dr["信号"] = dr["信号"].ToString() + "🔺";
+            }
+
             if (ma5 > ma10)
             {
                 dr["信号"] = dr["信号"].ToString() + "🌟";
@@ -477,10 +482,7 @@
                 }
             }
 
-            if (ma10 > prevMa10)
-            {
-                dr["信号"] = dr["信号"].ToString() + "🔺";
-            }
+            
 
             dt.Rows.Add(dr);
 
