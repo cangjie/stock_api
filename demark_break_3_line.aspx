@@ -451,10 +451,7 @@
 
             }
 
-            if (ma10 > prevMa10)
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title='10日均线上涨' >🔺</a>";
-            }
+            
 
             if (ma5 > ma10)
             {
@@ -481,6 +478,13 @@
                     dr["信号"] = dr["信号"].ToString() + "<a title='距离20或60日均线压力大于5%' >🔥</a>";
                 }
             }
+
+
+            if (ma10 > prevMa10)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title='10日均线上涨' >🔺</a>";
+            }
+
             if ( stock.kLineDay[currentIndex].endPrice >= line3Price && stock.kLineDay[currentIndex - 1].endPrice <= prevLine3Price)
             {
                 if (currentPrice >= Math.Max(ma20, ma60))
