@@ -406,14 +406,16 @@
                         }
 
             */
-            if ((!isPreview  && kdjDays >= 0 && stock.kLineDay[currentIndex].endPrice >= line3Price && stock.kLineDay[currentIndex - 1].endPrice <= prevLine3Price
-                && ((int)dr["持续放量"]) >= 1 && currentVolume / lastDayVolume >= 0.85)
+            if ((!isPreview  && kdjDays >= 0 && stock.kLineDay[currentIndex].endPrice >= line3Price && stock.kLineDay[currentIndex - 1].endPrice <= prevLine3Price)
                 || (isPreview && currentPrice <= line3Price && raise2Day))
             {
                 dr["信号"] = "📈";
             }
 
-
+            if (((int)dr["持续放量"]) >= 1 && currentVolume / lastDayVolume >= 0.85)
+            {
+                dr["信号"] = dr["信号"].ToString() + "🐂";
+            }
 
             double ma5 = 0;
             double ma10 = 0;
