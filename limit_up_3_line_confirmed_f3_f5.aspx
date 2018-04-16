@@ -542,7 +542,7 @@
                 dr["信号"] = dr["信号"] + "<a title=\"长下影线\" >🔺</a>";
             }
 
-            if (isFoot)
+            if (isFoot && footTime.Hour <= 14 && footTime.Hour >= 10)
             {
                 dr["信号"] = dr["信号"].ToString().Trim() + "<a title='无影脚' >❗️</a>";
             }
