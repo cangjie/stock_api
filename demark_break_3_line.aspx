@@ -273,6 +273,7 @@
         dt.Columns.Add("高点", Type.GetType("System.Double"));
         dt.Columns.Add("买入", Type.GetType("System.Double"));
         dt.Columns.Add("利润", Type.GetType("System.Double"));
+        dt.Columns.Add("持续放量", Type.GetType("System.Int32"));
         for (int i = 1; i <= 5; i++)
         {
             dt.Columns.Add(i.ToString() + "日", Type.GetType("System.Double"));
@@ -387,6 +388,7 @@
             dr["买入"] = buyPrice;
             dr["利润"] = margin;
             dr["TD"] = tdDays;
+            dr["持续放量"] = ContinousVolumeIncreaseDays(stock.kLineDay, currentIndex);
             double maxPrice = 0;
             for (int i = 1; i <= 5; i++)
             {
@@ -451,7 +453,7 @@
 
             }
 
-            
+
 
             if (ma5 > ma10)
             {
@@ -625,6 +627,23 @@
         return ret;
     }
 
+    public static int ContinousVolumeIncreaseDays(KLine[] kArr, int index)
+    {
+        int days = 0;
+        for (int i = index - 1; i >= 1; i--)
+        {
+            if (kArr[i].volume >= kArr[i - 1].volume)
+            {
+                days++;
+            }
+            else
+            {
+                break;
+            }
+        }
+        return days;
+    }
+
 
 
 </script>
@@ -659,6 +678,7 @@
                     <asp:BoundColumn DataField="今开" HeaderText="今开"></asp:BoundColumn>
                     <asp:BoundColumn DataField="今收" HeaderText="今收"></asp:BoundColumn>
                     <asp:BoundColumn DataField="放量" HeaderText="放量" SortExpression="放量|desc"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="持续放量" HeaderText="持续放量" SortExpression="放量|desc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ" HeaderText="KDJ" SortExpression="KDJ|desc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="MACD" HeaderText="MACD" SortExpression="MACD|desc"></asp:BoundColumn>
 					<asp:BoundColumn DataField="TD" HeaderText="TD" SortExpression="TD|desc" ></asp:BoundColumn>				
