@@ -473,9 +473,9 @@
             else
             {
                 double pressure = Math.Min(ma20, ma60);
-                if ((pressure - currentPrice) / currentPrice > 0.05)
+                if ((pressure - currentPrice) / currentPrice > 0.075)
                 {
-                    dr["信号"] = dr["信号"].ToString() + "<a title='距离20或60日均线压力大于5%' >🔥</a>";
+                    dr["信号"] = dr["信号"].ToString() + "<a title='距离20或60日均线压力大于7.5%' >🔥</a>";
                 }
             }
 
