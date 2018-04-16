@@ -407,11 +407,12 @@
             string memo = "";
 
             Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
-            bool isFoot = foot(timelineArray, out todayLowestPrice, out todayDisplayedLowestPrice, out footTime);
+            
             if (timelineArray.Length == 0)
             {
                 timelineArray = Core.Timeline.LoadTimelineArrayFromSqlServer(stock.gid, currentDate);
             }
+            bool isFoot = foot(timelineArray, out todayLowestPrice, out todayDisplayedLowestPrice, out footTime);
             DateTime todayLowestTime = Core.Timeline.GetLowestTime(timelineArray);
             if (todayLowestTime.Hour == 9 && todayLowestTime.Minute < 30)
             {
