@@ -420,7 +420,10 @@
                 dr["信号"] = "📈";
             }
 
-            
+            if (((int)dr["持续放量"]) >= 1 && currentVolume / lastDayVolume >= 0.85)
+            {
+                dr["信号"] = dr["信号"].ToString() + "🐂";
+            }
 
 
             double ma5 = 0;
@@ -496,10 +499,7 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title='10日均线上涨' >🔺</a>";
             }
 
-            if (((int)dr["持续放量"]) >= 1 && currentVolume / lastDayVolume >= 0.85)
-            {
-                dr["信号"] = dr["信号"].ToString() + "🐂";
-            }
+            
 
             if ( stock.kLineDay[currentIndex].endPrice >= line3Price && stock.kLineDay[currentIndex - 1].endPrice <= prevLine3Price)
             {
