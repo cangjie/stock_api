@@ -340,6 +340,14 @@
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
 
+            //Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
+
+            double todayLowestPrice = 0;
+            double todayDisplayedLowestPrice = 0;
+            DateTime footTime = DateTime.Now;
+
+
+
             int currentIndex = stock.GetItemIndex(currentDate);
             if (currentIndex < 0)
                 continue;
@@ -391,6 +399,7 @@
             string memo = "";
 
             Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
+            bool isFoot = foot(timelineArray, out todayLowestPrice, out todayDisplayedLowestPrice, out footTime);
             if (timelineArray.Length == 0)
             {
                 timelineArray = Core.Timeline.LoadTimelineArrayFromSqlServer(stock.gid, currentDate);
@@ -523,6 +532,11 @@
                 dr["信号"] = dr["信号"] + "<a title=\"长下影线\" >🔺</a>";
             }
 
+            if (isFoot)
+            {
+                dr["信号"] = dr["信号"].ToString().Trim() + "<a title='无影脚' >❗️</a>";
+            }
+
             dr["调整"] = currentIndex - limitUpIndex;
             dr["缩量"] = volumeReduce;
             dr["现高"] = highest;
@@ -602,6 +616,7 @@
         }
         return ret;
     }
+
 
     public static void PageWatcher()
     {
@@ -685,6 +700,46 @@
             Thread.Sleep(30000);
         }
     }
+
+    public static bool foot(Core.Timeline[] tArr, out double lowestPrice, out double displayLowPrice, out DateTime footTime)
+    {
+        lowestPrice = double.MaxValue;
+        displayLowPrice = double.MaxValue;
+        footTime = DateTime.MinValue;
+        bool noShadow = false;
+        bool isRefeshLowestPrice = false;
+        int i = 0;
+        for (; i < tArr.Length ; i++)
+        {
+            if (lowestPrice > tArr[i].todayLowestPrice)
+            {
+                lowestPrice = tArr[i].todayLowestPrice;
+                isRefeshLowestPrice = true;
+                //lowestTime = tArr[i].tickTime;
+            }
+            if (lowestPrice < tArr[i].todayStartPrice &&   tArr[i].todayEndPrice - lowestPrice >= 0.05)
+            {
+                if (isRefeshLowestPrice)
+                {
+                    footTime = tArr[i].tickTime;
+                    noShadow = true;
+                    isRefeshLowestPrice = false;
+
+                }
+
+            }
+            else
+            {
+                noShadow = false;
+            }
+            if (displayLowPrice > Math.Min(tArr[i].todayEndPrice, tArr[i].todayStartPrice))
+            {
+                displayLowPrice = Math.Min(tArr[i].todayEndPrice, tArr[i].todayStartPrice);
+            }
+        }
+        return noShadow;
+    }
+
 
 </script>
 
