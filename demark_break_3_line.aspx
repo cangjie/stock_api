@@ -274,6 +274,7 @@
         dt.Columns.Add("买入", Type.GetType("System.Double"));
         dt.Columns.Add("利润", Type.GetType("System.Double"));
         dt.Columns.Add("持续放量", Type.GetType("System.Int32"));
+        dt.Columns.Add("持续上涨", Type.GetType("System.Int32"));
         for (int i = 1; i <= 5; i++)
         {
             dt.Columns.Add(i.ToString() + "日", Type.GetType("System.Double"));
@@ -389,6 +390,7 @@
             dr["利润"] = margin;
             dr["TD"] = tdDays;
             dr["持续放量"] = ContinousVolumeIncreaseDays(stock.kLineDay, currentIndex);
+            dr["持续上涨"] = ContinousPriceRaiseDays(stock.kLineDay, currentIndex);
             double maxPrice = 0;
             for (int i = 1; i <= 5; i++)
             {
@@ -406,16 +408,20 @@
                         }
 
             */
+
+
+            
+            
+
+
             if ((!isPreview  && kdjDays >= 0 && stock.kLineDay[currentIndex].endPrice >= line3Price && stock.kLineDay[currentIndex - 1].endPrice <= prevLine3Price)
                 || (isPreview && currentPrice <= line3Price && raise2Day))
             {
                 dr["信号"] = "📈";
             }
 
-            if (((int)dr["持续放量"]) >= 1 && currentVolume / lastDayVolume >= 0.85)
-            {
-                dr["信号"] = dr["信号"].ToString() + "🐂";
-            }
+            
+
 
             double ma5 = 0;
             double ma10 = 0;
@@ -488,6 +494,11 @@
             if (ma10 > prevMa10)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title='10日均线上涨' >🔺</a>";
+            }
+
+            if (((int)dr["持续放量"]) >= 1 && currentVolume / lastDayVolume >= 0.85)
+            {
+                dr["信号"] = dr["信号"].ToString() + "🐂";
             }
 
             if ( stock.kLineDay[currentIndex].endPrice >= line3Price && stock.kLineDay[currentIndex - 1].endPrice <= prevLine3Price)
@@ -647,6 +658,22 @@
         return days;
     }
 
+    public static int ContinousPriceRaiseDays(KLine[] kArr, int index)
+    {
+        int days = 0;
+        for (int i = index - 1; i >= 1; i--)
+        {
+            if (kArr[i].endPrice > kArr[i - 1].endPrice)
+            {
+                days++;
+            }
+            else
+            {
+                break;
+            }
+        }
+        return days;
+    }
 
 
 </script>
@@ -681,7 +708,8 @@
                     <asp:BoundColumn DataField="今开" HeaderText="今开"></asp:BoundColumn>
                     <asp:BoundColumn DataField="今收" HeaderText="今收"></asp:BoundColumn>
                     <asp:BoundColumn DataField="放量" HeaderText="放量" SortExpression="放量|desc"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="持续放量" HeaderText="持续放量" SortExpression="放量|desc"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="持续放量" HeaderText="持续放量"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="持续上涨" HeaderText="持续上涨"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ" HeaderText="KDJ" SortExpression="KDJ|desc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="MACD" HeaderText="MACD" SortExpression="MACD|desc"></asp:BoundColumn>
 					<asp:BoundColumn DataField="TD" HeaderText="TD" SortExpression="TD|desc" ></asp:BoundColumn>				
@@ -690,7 +718,6 @@
                     <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F5" HeaderText="F5"></asp:BoundColumn>
                     <asp:BoundColumn DataField="高点" HeaderText="高点"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="利润" HeaderText="利润"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日" SortExpression="1日|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="2日" HeaderText="2日"></asp:BoundColumn>
