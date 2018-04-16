@@ -136,9 +136,14 @@
                         case "F5":
                         case "现高":
                         case "3线":
+                        case "无影":
                             double currentValuePrice = (double)drOri[i];
                             dr[i] = "<font color=\"" + (currentValuePrice > currentPrice ? "red" : (currentValuePrice == currentPrice ? "gray" : "green")) + "\"  >"
                                 + Math.Round(currentValuePrice, 2).ToString() + "</font>";
+                            break;
+                        case "无影时":
+                            DateTime footTime = (DateTime)drOri[i];
+                            dr[i] = footTime.Hour.ToString() + ":" + footTime.Minute.ToString();
                             break;
                         default:
                             if (System.Text.RegularExpressions.Regex.IsMatch(drArr[0].Table.Columns[i].Caption.Trim(), "\\d日")
@@ -296,7 +301,8 @@
         dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
         dt.Columns.Add("F3折返", Type.GetType("System.Double"));
-
+        dt.Columns.Add("无影时", Type.GetType("System.DateTime"));
+        dt.Columns.Add("无影", Type.GetType("System.Double"));
 
         for (int i = 1; i <= 5; i++)
         {
@@ -492,7 +498,7 @@
             {
                 dr["信号"] = dr["信号"] + "<a title=\"3线上\"  >👑</a>";
             }
-
+            
             /*
             else
             {
@@ -554,6 +560,8 @@
             dr["买入"] = buyPrice;
             dr["KDJ日"] = stock.kdjDays(currentIndex);
             dr["MACD日"] = stock.macdDays(currentIndex);
+            dr["无影时"] = footTime;
+            dr["无影"] = todayLowestPrice;
             double maxPrice = 0;
             for (int i = 1; i <= 5; i++)
             {
@@ -770,6 +778,8 @@
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号" SortExpression="信号|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="缩量" HeaderText="缩量"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="无影" HeaderText="无影"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="无影时" HeaderText="无影时"></asp:BoundColumn>
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD日|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="调整" HeaderText="调整" SortExpression="调整|asc"></asp:BoundColumn>
@@ -781,7 +791,6 @@
                     <asp:BoundColumn DataField="F3折返" HeaderText="F3折返"></asp:BoundColumn>
                     <asp:BoundColumn DataField="幅度" HeaderText="幅度"></asp:BoundColumn>
                     <asp:BoundColumn DataField="现价" HeaderText="现价"></asp:BoundColumn>
-                
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日" SortExpression="1日|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="2日" HeaderText="2日"></asp:BoundColumn>
