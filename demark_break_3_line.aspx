@@ -406,7 +406,8 @@
                         }
 
             */
-            if ((!isPreview  && kdjDays >= 0 && stock.kLineDay[currentIndex].endPrice >= line3Price && stock.kLineDay[currentIndex - 1].endPrice <= prevLine3Price)
+            if ((!isPreview  && kdjDays >= 0 && stock.kLineDay[currentIndex].endPrice >= line3Price && stock.kLineDay[currentIndex - 1].endPrice <= prevLine3Price
+                && ((int)dr["持续放量"]) >= 1 && currentVolume / lastDayVolume >= 0.85)
                 || (isPreview && currentPrice <= line3Price && raise2Day))
             {
                 dr["信号"] = "📈";
