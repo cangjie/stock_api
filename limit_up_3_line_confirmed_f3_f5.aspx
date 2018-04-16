@@ -126,7 +126,7 @@
                             break;
                         case "买入":
                             double buyPrice = Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2);
-                            dr[i] = "<font color=\"" + ((buyPrice > currentPrice) ? "red" : ((buyPrice==currentPrice)? "gray" : "green")) + "\" >" + Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2).ToString() + "</font>";
+                            dr[i] = "<font color=\"" + ((buyPrice > currentPrice) ? "red" : ((buyPrice == currentPrice) ? "gray" : "green")) + "\" >" + Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2).ToString() + "</font>";
                             break;
                         case "今开":
                         case "现价":
@@ -141,10 +141,7 @@
                             dr[i] = "<font color=\"" + (currentValuePrice > currentPrice ? "red" : (currentValuePrice == currentPrice ? "gray" : "green")) + "\"  >"
                                 + Math.Round(currentValuePrice, 2).ToString() + "</font>";
                             break;
-                        case "无影时":
-                            DateTime footTime = (DateTime)drOri[i];
-                            dr[i] = footTime.Hour.ToString() + ":" + footTime.Minute.ToString();
-                            break;
+
                         default:
                             if (System.Text.RegularExpressions.Regex.IsMatch(drArr[0].Table.Columns[i].Caption.Trim(), "\\d日")
                                 || drArr[0].Table.Columns[i].Caption.Trim().Equals("总计"))
@@ -167,6 +164,11 @@
                             }
                             break;
                     }
+                }
+                else if (drArr[0].Table.Columns[i].DataType.FullName.ToString().Equals("System.DateTime"))
+                {
+                    DateTime footTime = (DateTime)drOri[i];
+                    dr[i] = footTime.Hour.ToString() + ":" + footTime.Minute.ToString();
                 }
                 else
                 {
@@ -498,7 +500,7 @@
             {
                 dr["信号"] = dr["信号"] + "<a title=\"3线上\"  >👑</a>";
             }
-            
+
             /*
             else
             {
