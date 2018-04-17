@@ -352,6 +352,7 @@
             double highest = 0;
             int lowestIndex = 0;
             int highestIndex = 0;
+            double prevPrice = stock.kLineDay[currentIndex - 1].endPrice;
             lowest = GetFirstLowestPrice(stock.kLineDay, currentIndex, out lowestIndex);
             highest = GetFirstHighestPrice(stock.kLineDay, lowestIndex, out highestIndex);
             f3 = (highest - lowest) * 0.382 + lowest;
@@ -427,13 +428,17 @@
 
 
             double ma5 = 0;
+            double prevMa5 = 0;
             double ma10 = 0;
             double prevMa10 = 0;
             double ma20 = 0;
+            double prevMa20 = 0;
             double ma60 = 0;
+            double prevMa60 = 0;
             try
             {
                 ma5 = stock.GetAverageSettlePrice(currentIndex, 5, 0);
+                prevMa5 = stock.GetAverageSettlePrice(currentIndex - 1, 5, 0);
             }
             catch
             {
@@ -451,6 +456,7 @@
             try
             {
                 ma20 = stock.GetAverageSettlePrice(currentIndex, 20, 0);
+                prevMa20 = stock.GetAverageSettlePrice(currentIndex - 1, 20, 0);
             }
             catch
             {
@@ -459,6 +465,7 @@
             try
             {
                 ma60 = stock.GetAverageSettlePrice(currentIndex, 60, 0);
+                prevMa60 =  stock.GetAverageSettlePrice(currentIndex - 1, 60, 0);
             }
             catch
             {
@@ -466,7 +473,8 @@
             }
 
 
-            if (stock.kLineDay[currentIndex].endPrice >= Math.Max(ma20, ma60))
+            if (currentPrice >= ma20 && currentPrice >= ma60 && currentPrice >= ma10 && currentPrice >= ma5 && currentIndex >= line3Price &&
+                (prevPrice <= prevMa60 || prevPrice <= prevMa20 || prevPrice <= prevMa10 || prevPrice <= prevMa5 || prevPrice <= prevLine3Price))
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title='价格站上20或60日均线大者' >🔥</a>";
             }
