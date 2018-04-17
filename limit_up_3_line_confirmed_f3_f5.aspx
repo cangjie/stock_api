@@ -536,6 +536,7 @@
                 dr["信号"] = dr["信号"] + "<a title=\"幅度超过30%\" >🔥</a>";
             }
 
+
             if (Math.Min(stock.kLineDay[currentIndex].startPrice, stock.kLineDay[currentIndex].endPrice) - stock.kLineDay[currentIndex].lowestPrice
                  > Math.Abs(stock.kLineDay[currentIndex].startPrice - stock.kLineDay[currentIndex].endPrice))
             {
