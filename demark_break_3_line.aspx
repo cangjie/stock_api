@@ -410,8 +410,8 @@
             */
 
 
-            
-            
+
+
 
 
             if ((!isPreview  && kdjDays >= 0 && stock.kLineDay[currentIndex].endPrice >= line3Price && stock.kLineDay[currentIndex - 1].endPrice <= prevLine3Price)
@@ -466,6 +466,12 @@
             }
 
 
+            if (stock.kLineDay[currentIndex].endPrice >= Math.Max(ma20, ma60))
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title='价格站上20或60日均线大者' >🔥</a>";
+            }
+
+            /*
 
             if (ma5 > ma10)
             {
@@ -499,7 +505,7 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title='5日均线在20或60日均线之上' >🔺</a>";
             }
 
-            
+            */
 
             if ( stock.kLineDay[currentIndex].endPrice >= line3Price && stock.kLineDay[currentIndex - 1].endPrice <= prevLine3Price)
             {
