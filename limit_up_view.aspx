@@ -339,13 +339,14 @@
             }
             */
 
-
+            /*
             DateTime alertDate = DateTime.Parse(drOri["alert_date"].ToString().Trim());
             DataRow[] drArrExists = dtOri.Select(" gid = '" + drOri["gid"].ToString() + "' and alert_date > '" + alertDate.ToShortDateString() + "'  ");
             if (drArrExists.Length > 0)
             {
-                //continue;
+                continue;
             }
+            */
             Stock stock = new Stock(drOri["gid"].ToString().Trim(), rc);
             stock.LoadKLineDay(rc);
             KLine.ComputeMACD(stock.kLineDay);
@@ -361,15 +362,15 @@
 
 
             int currentIndex = stock.GetItemIndex(currentDate);
-            /*
+            
             if (currentIndex < 0)
                 continue;
-                */
+                
             int limitUpIndex = stock.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
 
             if (limitUpIndex == -1)
             {
-                //continue;
+               /continue;
             }
 
             int highIndex = 0;
