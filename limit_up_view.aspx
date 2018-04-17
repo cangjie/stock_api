@@ -211,7 +211,7 @@
                 {
                     fireCount++;
                 }
-                if (drOri["信号"].ToString().IndexOf("🌟") >= 0)
+                if (drOri["信号"].ToString().IndexOf("❗️") >= 0)
                 {
                     starCount++;
                 }
@@ -229,7 +229,7 @@
                         {
                             fireSum[i - 1]++;
                         }
-                        if (drOri["信号"].ToString().IndexOf("🌟") >= 0)
+                        if (drOri["信号"].ToString().IndexOf("❗️") >= 0)
                         {
                             starSum[i - 1]++;
                         }
@@ -261,7 +261,7 @@
         drFire["信号"] = "🔥";
         drFire["MACD日"] = fireCount.ToString();
         DataRow drStar = dt.NewRow();
-        drStar["信号"] = "🌟";
+        drStar["信号"] = "❗️";
         drStar["MACD日"] = starCount.ToString();
 
         for (int i = 1; i < 7; i++)
