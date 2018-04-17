@@ -370,7 +370,7 @@
 
             if (limitUpIndex == -1)
             {
-               /continue;
+               //continue;
             }
 
             int highIndex = 0;
