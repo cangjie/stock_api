@@ -344,7 +344,7 @@
             DataRow[] drArrExists = dtOri.Select(" gid = '" + drOri["gid"].ToString() + "' and alert_date > '" + alertDate.ToShortDateString() + "'  ");
             if (drArrExists.Length > 0)
             {
-                continue;
+                //continue;
             }
             Stock stock = new Stock(drOri["gid"].ToString().Trim(), rc);
             stock.LoadKLineDay(rc);
@@ -361,14 +361,15 @@
 
 
             int currentIndex = stock.GetItemIndex(currentDate);
+            /*
             if (currentIndex < 0)
                 continue;
-
+                */
             int limitUpIndex = stock.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
 
             if (limitUpIndex == -1)
             {
-                continue;
+                //continue;
             }
 
             int highIndex = 0;
@@ -384,8 +385,10 @@
                 }
             }
             double f3 = highest - (highest - lowest) * 0.382;
+            /*
             if (stock.kLineDay[currentIndex].startPrice < f3)
                 continue;
+                */
             double f5 = highest - (highest - lowest) * 0.618;
             double line3Price = KLine.GetAverageSettlePrice(stock.kLineDay, currentIndex, 3, 3);
             double currentPrice = stock.kLineDay[currentIndex].endPrice;
@@ -406,7 +409,7 @@
 
             if (lowest == 0 || line3Price == 0)
             {
-                continue;
+                //continue;
             }
             buyPrice = Math.Max(f3, stock.kLineDay[currentIndex].lowestPrice);
             string memo = "";
