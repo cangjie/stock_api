@@ -511,7 +511,7 @@
             double pressure = stock.GetMaPressure(currentIndex);
             buyPrice = stock.GetMaSupport(currentIndex);
             buyPrice = Math.Min(buyPrice, stock.kLineDay[currentIndex].lowestPrice);
-            if ((pressure - currentPrice) / currentPrice > 0.05)
+            if ((pressure - buyPrice) / buyPrice > 0.075)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"上无压力\" >🌟</a>";
             }
