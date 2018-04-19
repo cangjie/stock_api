@@ -500,8 +500,8 @@
                 }
             }
 
-            double pressure = stock.GetMaPressure(currentIndex);
-            buyPrice = stock.GetMaSupport(currentIndex);
+            double pressure = stock.GetMaPressure(currentIndex, currentPrice);
+            buyPrice = stock.GetMaSupport(currentIndex, currentPrice);
             buyPrice = Math.Min(buyPrice, stock.kLineDay[currentIndex].lowestPrice);
             if ((pressure - buyPrice) / buyPrice > 0.1)
             {
