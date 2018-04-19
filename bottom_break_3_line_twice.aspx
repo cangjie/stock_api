@@ -458,7 +458,7 @@
             dr["F3"] = f3;
             dr["F5"] = f5;
             dr["高点"] = highestPrice;
-            
+
             dr["KDJ日"] = kdjDays;
             dr["MACD日"] = stock.macdDays(currentIndex);
             dr["MACD率"] = macdDegree;
@@ -470,16 +470,6 @@
             dr["TD"] = KLine.GetLastDeMarkBuyPointIndex(stock.kLineDay, currentIndex);
             dr["均涨"] = (line3Price - previous3LinePrice) /previous3LinePrice / adjustDays;
 
-            double maxPrice = 0;
-            for (int i = 1; i <= 5; i++)
-            {
-                if (currentIndex + i >= stock.kLineDay.Length)
-                    break;
-                double highPrice = stock.kLineDay[currentIndex + i].highestPrice;
-                maxPrice = Math.Max(maxPrice, highPrice);
-                dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
-            }
-            dr["总计"] = (maxPrice - buyPrice) / buyPrice;
             if (currentPrice < line3Price || kdjDays == -1)
             {
                 //dr["信号"] = "💩";
@@ -538,10 +528,29 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "🛍️";
             }
-
+            if (buyPrice == 0)
+            {
+                buyPrice = currentPrice;
+            }
 
             dr["买入"] = buyPrice;
             dr["均线压力"] = pressure;
+
+
+            
+            double maxPrice = 0;
+            for (int i = 1; i <= 5; i++)
+            {
+                if (currentIndex + i >= stock.kLineDay.Length)
+                    break;
+                double highPrice = stock.kLineDay[currentIndex + i].highestPrice;
+                maxPrice = Math.Max(maxPrice, highPrice);
+                dr[i.ToString() + "日"] = (highPrice - Math.Max(buyPrice, currentPrice)) / Math.Max(buyPrice, currentPrice);
+            }
+            dr["总计"] = (maxPrice - buyPrice) / buyPrice;
+
+
+
             dt.Rows.Add(dr);
         }
         return dt;
