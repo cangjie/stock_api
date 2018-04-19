@@ -496,9 +496,9 @@
             double ma20 = stock.GetAverageSettlePrice(currentIndex, 20, 0);
             double ma60 = stock.GetAverageSettlePrice(currentIndex, 60, 0);
 
-            if (ma5 >= ma10 && ma10 >= ma20)
+            if (ma5 > ma10 + 0.05  && ma10 > ma20 + 0.05)
             {
-                if (ma20 >= ma60)
+                if (ma20 > ma60 + 0.05)
                 {
                     dr["信号"] = dr["信号"].ToString().Trim() + "<a title=\"5 10 20 60日均线多头排列\" >👨‍👩‍👧‍👦</a>";
                 }
