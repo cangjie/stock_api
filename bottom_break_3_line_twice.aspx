@@ -517,7 +517,7 @@
             KeyValuePair<DateTime, double>[] highPoints = Stock.GetHighPoints(stock.kLineDay, currentIndex);
             for (int i = 0; i < highPoints.Length; i++)
             {
-                if (highPoints[i].Value >= currentPrice)
+                if (Math.Abs(highPoints[i].Value - currentPrice) / currentPrice <= 0.005)
                 {
                     highPointPressure = highPoints[i].Value;
                     break;
