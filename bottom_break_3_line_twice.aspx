@@ -142,6 +142,7 @@
                         case "高点":
                         case "3线":
                         case "均线压力":
+                        case "均线支撑":
                             double currentValuePrice = (double)drOri[i];
                             dr[i] = "<font color=\"" + (currentValuePrice > currentPrice ? "red" : (currentValuePrice == currentPrice ? "gray" : "green")) + "\"  >"
                                 + Math.Round(currentValuePrice, 2).ToString() + "</font>";
@@ -293,6 +294,7 @@
         dt.Columns.Add("今涨", Type.GetType("System.Double"));
         dt.Columns.Add("放量", Type.GetType("System.Double"));
         dt.Columns.Add("均线压力", Type.GetType("System.Double"));
+        dt.Columns.Add("均线支撑", Type.GetType("System.Double"));
         dt.Columns.Add("TD", Type.GetType("System.Int32"));
         dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
         dt.Columns.Add("KDJ率", Type.GetType("System.Double"));
@@ -502,6 +504,7 @@
 
             double pressure = stock.GetMaPressure(currentIndex, currentPrice);
             buyPrice = stock.GetMaSupport(currentIndex, currentPrice);
+            dr["均线支撑"] = buyPrice;
             buyPrice = Math.Min(buyPrice, stock.kLineDay[currentIndex].lowestPrice);
             if ((pressure - buyPrice) / buyPrice > 0.1)
             {
@@ -537,7 +540,7 @@
             dr["均线压力"] = pressure;
 
 
-            
+
             double maxPrice = 0;
             for (int i = 1; i <= 5; i++)
             {
@@ -627,7 +630,7 @@
                     <asp:BoundColumn DataField="放量" HeaderText="放量" SortExpression="放量|desc"></asp:BoundColumn>
 
                     <asp:BoundColumn DataField="均线压力" HeaderText="均线压力"></asp:BoundColumn>
-
+                    <asp:BoundColumn DataField="均线支撑" HeaderText="均线支撑"></asp:BoundColumn>
 
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD日|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>
