@@ -491,16 +491,46 @@
                 dr["信号"] = dr["信号"].ToString() + "📈";
             }
 
+            double ma5 = stock.GetAverageSettlePrice(currentIndex, 5, 0);
+            double ma10 = stock.GetAverageSettlePrice(currentIndex, 10, 0);
+            double ma20 = stock.GetAverageSettlePrice(currentIndex, 20, 0);
+            double ma60 = stock.GetAverageSettlePrice(currentIndex, 60, 0);
+
+            if (ma5 <= ma10 && ma10 <= ma20)
+            {
+                if (ma20 <= ma60)
+                {
+                    dr["信号"] = dr["信号"].ToString().Trim() + "<a title=\"5 10 20 60日均线多头排列\" >👨‍👩‍👧‍👦</a>";
+                }
+                else
+                {
+                    dr["信号"] = dr["信号"].ToString().Trim() + "<a title=\"5 10 20日均线多头排列\" >👪</a>";
+                }
+            }
+
+            double pressure = stock.GetMaPressure(currentIndex);
+
+            if ((pressure - currentPrice) / currentPrice > 0.1)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"上无压力\" >🌟</a>";
+            }
+
+            if (stock.kLineDay[currentIndex].VirtualVolume >= Stock.GetAvarageVolume(stock.kLineDay, currentIndex, 5)
+                && stock.kLineDay[currentIndex].VirtualVolume >= Stock.GetAvarageVolume(stock.kLineDay, currentIndex, 10))
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"大于5 10日均量线\" >🔥</a>";
+            }
             /*
             if ((int)dr["MACD时"] >= 0 && (int)dr["KDJ日"] >= 0 && currentPrice <= f5 && currentPrice >= f1 && currentVolume / lastDayVolume >= 0.85)
             {
                 dr["信号"] = dr["信号"].ToString() + "🔥";
             }
-            */
+            
             if (stock.kLineDay[currentIndex].lowestPrice > stock.kLineDay[currentIndex - 1].highestPrice && (double)dr["今涨"] <= 0.095 )
             {
                 dr["信号"] = dr["信号"].ToString() + "🌟";
             }
+            */
             if (currentPrice <= buyPrice * 1.005 && currentPrice >= buyPrice)
             {
                 dr["信号"] = dr["信号"].ToString() + "🛍️";

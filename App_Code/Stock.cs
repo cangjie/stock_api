@@ -922,6 +922,17 @@ public class Stock
         return pressure;
     }
 
+    public static double GetAvarageVolume(KLine[] kArr,int index, int days)
+    {
+        double avaVolume = 0;
+        int i = 0;
+        for (; i < days && i < kArr.Length; i++)
+        {
+            avaVolume = avaVolume + kArr[i].volume;
+        }
+        return avaVolume / (double)i;
+    }
+
     public double GetMaPressure(int index)
     {
         double pressure = 0;
@@ -1034,12 +1045,13 @@ public class Stock
 
     public KeyValuePair<string, double>[] GetSortedQuota(int index)
     {
-        KeyValuePair<string, double>[] quotaArr = new KeyValuePair<string, double>[5];
+        KeyValuePair<string, double>[] quotaArr = new KeyValuePair<string, double>[6];
         quotaArr[0] = new KeyValuePair<string, double>("lowest_price", kArr[index].lowestPrice);
         quotaArr[1] = new KeyValuePair<string, double>("3_line_price", GetAverageSettlePrice(index, 3, 3));
-        quotaArr[2] = new KeyValuePair<string, double>("ma6", GetAverageSettlePrice(index, 6, 0));
-        quotaArr[3] = new KeyValuePair<string, double>("ma12", GetAverageSettlePrice(index, 12, 0));
-        quotaArr[4] = new KeyValuePair<string, double>("ma24", GetAverageSettlePrice(index, 24, 0));
+        quotaArr[2] = new KeyValuePair<string, double>("ma5", GetAverageSettlePrice(index, 5, 0));
+        quotaArr[3] = new KeyValuePair<string, double>("ma10", GetAverageSettlePrice(index, 10, 0));
+        quotaArr[4] = new KeyValuePair<string, double>("ma20", GetAverageSettlePrice(index, 20, 0));
+        quotaArr[5] = new KeyValuePair<string, double>("ma60", GetAverageSettlePrice(index, 60, 0));
         string tempKey = "";
         double tempValue = 0;
 
