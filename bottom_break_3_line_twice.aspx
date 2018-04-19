@@ -489,10 +489,7 @@
             {
                 //dr["信号"] = dr["信号"].ToString() + "📈";
             }
-            if (((kdjDays == 0 && (int)dr["MACD日"] == 0) || ((int)dr["MACD日"] > 0 && kdjDays == 0)))
-            {
-                dr["信号"] = dr["信号"].ToString() + "📈";
-            }
+            
 
             double ma5 = stock.GetAverageSettlePrice(currentIndex, 5, 0);
             double ma10 = stock.GetAverageSettlePrice(currentIndex, 10, 0);
@@ -562,6 +559,10 @@
                 dr["信号"] = dr["信号"].ToString() + "🌟";
             }
             */
+            if (((kdjDays == 0 && (int)dr["MACD日"] == 0) || ((int)dr["MACD日"] > 0 && kdjDays == 0)))
+            {
+                dr["信号"] = dr["信号"].ToString() + "📈";
+            }
             if (currentPrice <= buyPrice * 1.005 && currentPrice >= buyPrice)
             {
                 dr["信号"] = dr["信号"].ToString() + "🛍️";
