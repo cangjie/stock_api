@@ -456,7 +456,7 @@
             dr["F3"] = f3;
             dr["F5"] = f5;
             dr["高点"] = highestPrice;
-            dr["买入"] = buyPrice;
+            
             dr["KDJ日"] = kdjDays;
             dr["MACD日"] = stock.macdDays(currentIndex);
             dr["MACD率"] = macdDegree;
@@ -509,7 +509,8 @@
             }
 
             double pressure = stock.GetMaPressure(currentIndex);
-
+            buyPrice = stock.GetMaSupport(currentIndex);
+            buyPrice = Math.Min(buyPrice, stock.kLineDay[currentIndex].lowestPrice);
             if ((pressure - currentPrice) / currentPrice > 0.1)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"上无压力\" >🌟</a>";
@@ -535,6 +536,9 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "🛍️";
             }
+
+
+            dr["买入"] = buyPrice;
             dt.Rows.Add(dr);
         }
         return dt;
