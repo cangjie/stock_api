@@ -639,17 +639,12 @@
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD日|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>
                     
-                    <asp:BoundColumn DataField="KDJ率" HeaderText="KDJ率" SortExpression="KDJ率|asc"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="MACD率" HeaderText="MACD率" SortExpression="MACD率|asc"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
                     <asp:BoundColumn DataField="低点" HeaderText="低点"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="F1" HeaderText="F1"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F5" HeaderText="F5"></asp:BoundColumn>
                     <asp:BoundColumn DataField="高点" HeaderText="高点"></asp:BoundColumn>
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
-                    <asp:BoundColumn DataField="均涨" HeaderText="均涨"  ></asp:BoundColumn>
-                    <asp:BoundColumn DataField="调整日" HeaderText="调整日" SortExpression="调整日|asc"></asp:BoundColumn>
+                    
                     <asp:BoundColumn DataField="1日" HeaderText="1日" SortExpression="1日|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="2日" HeaderText="2日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3日" HeaderText="3日"></asp:BoundColumn>
