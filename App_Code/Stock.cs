@@ -935,7 +935,7 @@ public class Stock
 
     public double GetMaPressure(int index)
     {
-        double pressure = double.MaxValue;
+        double pressure = 10000;
         KeyValuePair<string, double>[] quotaArr = GetSortedQuota(index);
         double currentPrice = kLineDay[index].endPrice;
         for (int i = quotaArr.Length - 1; i >= 0; i--)
