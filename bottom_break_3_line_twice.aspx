@@ -208,7 +208,7 @@
                 {
                     raiseCount++;
                 }
-                if (drOri["信号"].ToString().IndexOf("🔥") >= 0)
+                if (drOri["信号"].ToString().IndexOf("👨‍👩‍👧‍👦👫🌟🔥") >= 0)
                 {
                     fireCount++;
                 }
@@ -256,7 +256,7 @@
         drRaise["信号"] = "📈";
         drRaise["昨收"] = raiseCount.ToString();
         DataRow drFire = dt.NewRow();
-        drFire["信号"] = "🔥";
+        drFire["信号"] = "👨‍👩‍👧‍👦👫🌟🔥";
         drFire["昨收"] = fireCount.ToString();
         DataRow drStar = dt.NewRow();
         drStar["信号"] = "🌟";
