@@ -532,7 +532,7 @@
             {
                 buyPrice = currentPrice;
             }
-
+            buyPrice = Math.Max(currentPrice, buyPrice);
             dr["买入"] = buyPrice;
             dr["均线压力"] = pressure;
 
@@ -545,7 +545,7 @@
                     break;
                 double highPrice = stock.kLineDay[currentIndex + i].highestPrice;
                 maxPrice = Math.Max(maxPrice, highPrice);
-                dr[i.ToString() + "日"] = (highPrice - Math.Max(buyPrice, currentPrice)) / Math.Max(buyPrice, currentPrice);
+                dr[i.ToString() + "日"] = (highPrice - buyPrice) /buyPrice;
             }
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
 
