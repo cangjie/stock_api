@@ -500,6 +500,10 @@
                 {
                     dr["信号"] = dr["信号"].ToString().Trim() + "<a title=\"5 10 20日均线多头排列\" >👪</a>";
                 }
+                if (line3Price < ma5)
+                {
+                    dr["信号"] = dr["信号"].ToString().Trim() + "<a title=\"3线在5日均线下\" >👫</a>";
+                }
             }
 
             double pressure = stock.GetMaPressure(currentIndex, currentPrice);
