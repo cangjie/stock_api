@@ -533,7 +533,7 @@
             buyPrice = stock.GetMaSupport(currentIndex, currentPrice);
             dr["均线支撑"] = buyPrice;
             dr["前高压力"] = highPointPressure;
-            buyPrice = Math.Min(buyPrice, stock.kLineDay[currentIndex].lowestPrice);
+            buyPrice = Math.Max(buyPrice, stock.kLineDay[currentIndex].lowestPrice);
             double totalPressure = 0;
             if (pressure > 0 && highPointPressure > 0)
             {
