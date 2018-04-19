@@ -506,7 +506,7 @@
             buyPrice = stock.GetMaSupport(currentIndex, currentPrice);
             dr["均线支撑"] = buyPrice;
             buyPrice = Math.Min(buyPrice, stock.kLineDay[currentIndex].lowestPrice);
-            if ((pressure - buyPrice) / buyPrice > 0.1)
+            if ((pressure - buyPrice) / buyPrice > 0.1 || pressure == 0)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"上无压力\" >🌟</a>";
             }
