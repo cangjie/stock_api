@@ -547,7 +547,7 @@
             {
                 buyPrice = currentPrice;
             }
-            buyPrice = Math.Max(currentPrice, buyPrice);
+            //buyPrice = Math.Max(currentPrice, buyPrice);
             if ((totalPressure - buyPrice) / buyPrice > 0.1 || totalPressure == 0)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"上无压力\" >🌟</a>";
