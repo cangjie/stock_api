@@ -525,7 +525,16 @@
             dr["均线支撑"] = buyPrice;
             dr["前高压力"] = highPointPressure;
             buyPrice = Math.Min(buyPrice, stock.kLineDay[currentIndex].lowestPrice);
-            double totalPressure = Math.Min(pressure, highPointPressure);
+            double totalPressure = 0;
+            if (pressure > 0 && highPointPressure > 0)
+            {
+                totalPressure = Math.Min(pressure, highPointPressure);
+            }
+            else
+            {
+                totalPressure = Math.Max(pressure, highPointPressure);
+            }
+
             if ((totalPressure - buyPrice) / buyPrice > 0.1 || totalPressure == 0)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"上无压力\" >🌟</a>";
