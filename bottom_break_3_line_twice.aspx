@@ -294,7 +294,9 @@
         dt.Columns.Add("今涨", Type.GetType("System.Double"));
         dt.Columns.Add("放量", Type.GetType("System.Double"));
         dt.Columns.Add("均线压力", Type.GetType("System.Double"));
+        dt.Columns.Add("前高压力", Type.GetType("System.Double"));
         dt.Columns.Add("均线支撑", Type.GetType("System.Double"));
+
         dt.Columns.Add("TD", Type.GetType("System.Int32"));
         dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
         dt.Columns.Add("KDJ率", Type.GetType("System.Double"));
@@ -507,10 +509,23 @@
             }
 
             double pressure = stock.GetMaPressure(currentIndex, currentPrice);
+            double highPointPressure = 0;
+            KeyValuePair<DateTime, double>[] highPoints = Stock.GetHighPoints(stock.kLineDay, currentIndex);
+            for (int i = 0; i < highPoints.Length; i++)
+            {
+                if (highPoints[i].Value >= currentPrice)
+                {
+                    highPointPressure = highPoints[i].Value;
+                    break;
+                }
+            }
+
             buyPrice = stock.GetMaSupport(currentIndex, currentPrice);
             dr["均线支撑"] = buyPrice;
+            dr["前高压力"] = highPointPressure;
             buyPrice = Math.Min(buyPrice, stock.kLineDay[currentIndex].lowestPrice);
-            if ((pressure - buyPrice) / buyPrice > 0.1 || pressure == 0)
+            double totalPressure = Math.Min(pressure, highPointPressure);
+            if ((totalPressure - buyPrice) / buyPrice > 0.1 || totalPressure == 0)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"上无压力\" >🌟</a>";
             }
@@ -632,7 +647,7 @@
                     <asp:BoundColumn DataField="今收" HeaderText="今收"></asp:BoundColumn>
                     <asp:BoundColumn DataField="今涨" HeaderText="今涨" SortExpression="今涨|desc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="放量" HeaderText="放量" SortExpression="放量|desc"></asp:BoundColumn>
-
+                    <asp:BoundColumn DataField="前高压力" HeaderText="前高压力"></asp:BoundColumn>
                     <asp:BoundColumn DataField="均线压力" HeaderText="均线压力"></asp:BoundColumn>
                     <asp:BoundColumn DataField="均线支撑" HeaderText="均线支撑"></asp:BoundColumn>
 

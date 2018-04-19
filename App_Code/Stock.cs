@@ -907,6 +907,26 @@ public class Stock
         }
     }
 
+    public static KeyValuePair<DateTime, double>[] GetHighPoints(KLine[] kArr, int index)
+    {
+        ArrayList retArr = new ArrayList();
+        for (int i = index - 1; i > 0; i--)
+        {
+            double line3Price = KLine.GetAverageSettlePrice(kArr, i, 3, 3);
+            if (kArr[i].endPrice > line3Price && kArr[i].highestPrice >= kArr[i + 1].highestPrice && kArr[i].highestPrice >= kArr[i - 1].highestPrice)
+            {
+                KeyValuePair<DateTime, double> v = new KeyValuePair<DateTime, double>(kArr[i].endDateTime, kArr[i].highestPrice);
+                retArr.Add(v);
+            }
+        }
+        KeyValuePair<DateTime, double>[] highPointArr = new KeyValuePair<DateTime, double>[retArr.Count];
+        for (int i = 0; i < retArr.Count; i++)
+        {
+            highPointArr[i] = (KeyValuePair<DateTime, double>)retArr[i];
+        }
+        return highPointArr;
+    }
+
     public double GetMaPressure(int index, double price)
     {
         KeyValuePair<string, double>[] quotaArr = GetSortedQuota(index);
