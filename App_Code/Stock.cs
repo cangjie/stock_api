@@ -1013,7 +1013,7 @@ public class Stock
     {
         KeyValuePair<string, double>[] quotaArr = GetSortedQuota(index);
         double support = 0;
-        for (int i = 0; i < quotaArr.Length; i++)
+        for (int i = quotaArr.Length  - 1; i >= 0 ; i--)
         {
             if (quotaArr[i].Value < price)
             {
