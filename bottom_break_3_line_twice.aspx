@@ -514,10 +514,12 @@
 
             double pressure = stock.GetMaPressure(currentIndex, currentPrice);
             double highPointPressure = 0;
+            /*
             if (stock.gid.Trim().Equals("sz000882"))
             {
                 string aa = "aa";
             }
+            */
             KeyValuePair<DateTime, double>[] highPoints = Stock.GetHighPoints(stock.kLineDay, currentIndex);
             for (int i = 0; i < highPoints.Length; i++)
             {
