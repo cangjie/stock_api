@@ -208,7 +208,7 @@
                 {
                     raiseCount++;
                 }
-                if (drOri["信号"].ToString().IndexOf("👨‍👩‍👧‍👦") >= 0 
+                if (drOri["信号"].ToString().IndexOf("👨‍👩‍👧‍👦") >= 0
                     && drOri["信号"].ToString().IndexOf("👫") >= 0
                     && drOri["信号"].ToString().IndexOf("🌟") >= 0
                     && drOri["信号"].ToString().IndexOf("🔥") >= 0)
@@ -229,7 +229,7 @@
                         {
                             raiseSum[i - 1]++;
                         }
-                        if (drOri["信号"].ToString().IndexOf("👨‍👩‍👧‍👦") >= 0 
+                        if (drOri["信号"].ToString().IndexOf("👨‍👩‍👧‍👦") >= 0
                             && drOri["信号"].ToString().IndexOf("👫") >= 0
                             && drOri["信号"].ToString().IndexOf("🌟") >= 0
                             && drOri["信号"].ToString().IndexOf("🔥") >= 0)
@@ -489,7 +489,7 @@
             {
                 //dr["信号"] = dr["信号"].ToString() + "📈";
             }
-            
+
 
             double ma5 = stock.GetAverageSettlePrice(currentIndex, 5, 0);
             double ma10 = stock.GetAverageSettlePrice(currentIndex, 10, 0);
@@ -514,6 +514,10 @@
 
             double pressure = stock.GetMaPressure(currentIndex, currentPrice);
             double highPointPressure = 0;
+            if (stock.gid.Trim().Equals("sz000882"))
+            {
+                string aa = "aa";
+            }
             KeyValuePair<DateTime, double>[] highPoints = Stock.GetHighPoints(stock.kLineDay, currentIndex);
             for (int i = 0; i < highPoints.Length; i++)
             {
@@ -537,7 +541,11 @@
             {
                 totalPressure = Math.Max(pressure, highPointPressure);
             }
-
+            if (buyPrice == 0)
+            {
+                buyPrice = currentPrice;
+            }
+            buyPrice = Math.Max(currentPrice, buyPrice);
             if ((totalPressure - buyPrice) / buyPrice > 0.1 || totalPressure == 0)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"上无压力\" >🌟</a>";
@@ -567,11 +575,7 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "🛍️";
             }
-            if (buyPrice == 0)
-            {
-                buyPrice = currentPrice;
-            }
-            buyPrice = Math.Max(currentPrice, buyPrice);
+
             dr["买入"] = buyPrice;
             dr["均线压力"] = pressure;
 
