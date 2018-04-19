@@ -208,7 +208,10 @@
                 {
                     raiseCount++;
                 }
-                if (drOri["信号"].ToString().IndexOf("👨‍👩‍👧‍👦👫🌟🔥") >= 0)
+                if (drOri["信号"].ToString().IndexOf("👨‍👩‍👧‍👦") >= 0 
+                    && drOri["信号"].ToString().IndexOf("👫") >= 0
+                    && drOri["信号"].ToString().IndexOf("🌟") >= 0
+                    && drOri["信号"].ToString().IndexOf("🔥") >= 0)
                 {
                     fireCount++;
                 }
@@ -226,7 +229,10 @@
                         {
                             raiseSum[i - 1]++;
                         }
-                        if (drOri["信号"].ToString().IndexOf("👨‍👩‍👧‍👦👫🌟🔥") >= 0)
+                        if ((drOri["信号"].ToString().IndexOf("👨‍👩‍👧‍👦") >= 0 
+                            && drOri["信号"].ToString().IndexOf("👫") >= 0
+                            && drOri["信号"].ToString().IndexOf("🌟") >= 0
+                            && drOri["信号"].ToString().IndexOf("🔥") >= 0)
                         {
                             fireSum[i - 1]++;
                         }
