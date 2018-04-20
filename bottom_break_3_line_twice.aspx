@@ -45,7 +45,7 @@
                 {
                     t.Abort();
                     t = new Thread(ts);
-                    t.Start();
+                    //t.Start();
 
                 }
             }
@@ -515,7 +515,7 @@
             double pressure = stock.GetMaPressure(currentIndex, currentPrice);
             double highPointPressure = 0;
             
-            if (stock.gid.Trim().Equals("sz000882"))
+            if (stock.gid.Trim().Equals("sz300023"))
             {
                 string aa = "aa";
             }
@@ -523,7 +523,7 @@
             KeyValuePair<DateTime, double>[] highPoints = Stock.GetHighPoints(stock.kLineDay, currentIndex);
             for (int i = 0; i < highPoints.Length; i++)
             {
-                if (Math.Abs(highPoints[i].Value - stock.kLineDay[currentIndex].highestPrice) / stock.kLineDay[currentIndex].highestPrice <= 0.005)
+                if (Math.Abs(highPoints[i].Value - stock.kLineDay[currentIndex].highestPrice) / stock.kLineDay[currentIndex].highestPrice <= 0.01)
                 {
                     highPointPressure = highPoints[i].Value;
                     break;
@@ -532,6 +532,9 @@
 
             buyPrice = stock.GetMaSupport(currentIndex, currentPrice);
             dr["均线支撑"] = buyPrice;
+
+   
+
             dr["前高压力"] = highPointPressure;
             buyPrice = Math.Max(buyPrice, stock.kLineDay[currentIndex].lowestPrice);
             double totalPressure = 0;
