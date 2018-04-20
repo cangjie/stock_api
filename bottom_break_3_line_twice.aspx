@@ -21,7 +21,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "MACD日,KDJ日,综指 desc");
+        sort = Util.GetSafeRequestValue(Request, "sort", "信号,KDJ日,MACD日");
         if (!IsPostBack)
         {
             try
@@ -588,7 +588,7 @@
             {
                 if (currentIndex + i >= stock.kLineDay.Length)
                     break;
-                double highPrice = stock.kLineDay[currentIndex + i].startPrice;
+                double highPrice = stock.kLineDay[currentIndex + i].endPrice;
                 maxPrice = Math.Max(maxPrice, highPrice);
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) /buyPrice;
             }
