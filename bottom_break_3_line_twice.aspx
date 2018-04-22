@@ -490,6 +490,11 @@
                 //dr["信号"] = dr["信号"].ToString() + "📈";
             }
 
+            if (stock.gid.Trim().Equals("sz300393"))
+            {
+                string aa = "aa";
+            }
+
 
             double ma5 = stock.GetAverageSettlePrice(currentIndex, 5, 0);
             double ma10 = stock.GetAverageSettlePrice(currentIndex, 10, 0);
@@ -515,10 +520,7 @@
             double pressure = stock.GetMaPressure(currentIndex, currentPrice);
             double highPointPressure = 0;
             
-            if (stock.gid.Trim().Equals("sz300023"))
-            {
-                string aa = "aa";
-            }
+
             
             KeyValuePair<DateTime, double>[] highPoints = Stock.GetHighPoints(stock.kLineDay, currentIndex);
             for (int i = 0; i < highPoints.Length; i++)

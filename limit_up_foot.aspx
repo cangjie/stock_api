@@ -1016,6 +1016,7 @@
                     <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号" SortExpression="信号|desc" ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="缩量" HeaderText="缩量"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="高开" HeaderText="高开"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="现高" HeaderText="现高"></asp:BoundColumn>
@@ -1034,10 +1035,7 @@
                     <asp:BoundColumn DataField="无影" HeaderText="无影"></asp:BoundColumn>
                     <asp:BoundColumn DataField="无影时间" HeaderText="无影时"></asp:BoundColumn>
                     <asp:BoundColumn DataField="最低时间" HeaderText="最低时"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="天数" HeaderText="天数"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="均幅" HeaderText="均幅"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="均板" HeaderText="均板"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="多日" HeaderText="多日"></asp:BoundColumn>
+     
                     <asp:BoundColumn DataField="1日" HeaderText="1日" SortExpression="1日|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="2日" HeaderText="2日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3日" HeaderText="3日"></asp:BoundColumn>
