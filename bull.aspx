@@ -355,8 +355,12 @@
             double ma5 = stock.GetAverageSettlePrice(currentIndex, 5, 0);
             double ma10 = stock.GetAverageSettlePrice(currentIndex, 10, 0);
             double ma20 = stock.GetAverageSettlePrice(currentIndex, 20, 0);
-            double ma60 = stock.GetAverageSettlePrice(currentIndex, 60, 0);
+            double ma30 = stock.GetAverageSettlePrice(currentIndex, 30, 0);
 
+            if (ma5 <= ma10 || ma10 <= ma20 || ma20 <= ma30)
+            {
+                continue;
+            }
 
             if (stock.kLineDay[currentIndex].highestPrice < ma5)
             {
@@ -367,7 +371,7 @@
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
 
-            
+
             //if (!KLine.IsCros3LineTwice(stock.kLineDay, currentIndex, 20))
             //    continue;
             double current3LinePrice = stock.GetAverageSettlePrice(currentIndex, 3, 3);
@@ -527,7 +531,7 @@
             }
             */
 
-            
+
 
 
 
@@ -586,9 +590,9 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"上无压力\" >🌟</a>";
             }
 
-            
 
-            
+
+
 
             /*
             if ((int)dr["MACD时"] >= 0 && (int)dr["KDJ日"] >= 0 && currentPrice <= f5 && currentPrice >= f1 && currentVolume / lastDayVolume >= 0.85)
