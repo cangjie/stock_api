@@ -345,8 +345,7 @@
 
 
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
-            if (!stock.gid.Trim().Equals("sz002077"))
-                continue;
+    
 
             stock.LoadKLineDay(rc);
             //stock.LoadKLineDay();
