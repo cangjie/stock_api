@@ -70,7 +70,7 @@
         else
             currentDate = Util.GetDay(calendar.SelectedDate);
         DataTable dtOri = GetData(currentDate);
-        return RenderHtml(dtOri.Select(" 信号 like '%📈🔥🌟%' or 信号 like '%📈🔥👫%' ", sort));
+        return RenderHtml(dtOri.Select(" 信号 like '%📈🔥%'  ", sort));
     }
 
     protected void calendar_SelectionChanged(object sender, EventArgs e)
