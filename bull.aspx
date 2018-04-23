@@ -287,7 +287,7 @@
     public static DataTable GetData(DateTime currentDate)
     {
         currentDate = Util.GetDay(currentDate);
-        DateTime prevDate = Util.GetLastTransactDate(currentDate, 20);
+        DateTime prevDate = Util.GetLastTransactDate(currentDate, 1);
         DataTable dtOri = DBHelper.GetDataTable(" select * from alert_bull where alert_date = '" + prevDate.ToShortDateString() + "' ");
         DataTable dt = new DataTable();
         dt.Columns.Add("代码", Type.GetType("System.String"));

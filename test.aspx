@@ -12,12 +12,21 @@
 
             try
             {
+                if (gidArr[i].Trim().Equals("sh600876"))
+                {
+                    string aa = "";
+                }
+                else
+                {
+                    continue;
+                }
                 Stock stock = new Stock(gidArr[i]);
                 stock.LoadKLineDay();
-                for (DateTime j = DateTime.Parse("2018-4-20"); j >= DateTime.Parse("2018-3-1"); j = j.AddDays(-1))
+                for (DateTime j = DateTime.Parse("2018-4-19"); j >= DateTime.Parse("2018-3-1"); j = j.AddDays(-1))
                 {
                     if (Util.IsTransacDay(j))
                     {
+
                         int currentIndex = stock.GetItemIndex(j);
                         double ma5 = stock.GetAverageSettlePrice(currentIndex, 5, 0);
                         double ma10 = stock.GetAverageSettlePrice(currentIndex, 10, 0);
