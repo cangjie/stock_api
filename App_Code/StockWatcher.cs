@@ -137,12 +137,9 @@ public class StockWatcher
                         {
 
                         }
-                        
-                        if (DateTime.Now.Hour == 18 && stock.IsLimitUp(currentIndex))
+
+                        if (Util.IsTransacTime(DateTime.Now) && Util.IsTransacDay(DateTime.Now))
                         {
-                            LimitUp.SaveLimitUp(stock.gid.Trim(), DateTime.Parse(stock.kLineDay[currentIndex].startDateTime.ToShortDateString()),
-                                stock.kLineDay[currentIndex - 1].endPrice, stock.kLineDay[currentIndex].startPrice, stock.kLineDay[currentIndex].endPrice, 
-                                stock.kLineDay[currentIndex].volume);
                             try
                             {
                                 double ma5 = stock.GetAverageSettlePrice(currentIndex, 5, 0);
@@ -159,6 +156,15 @@ public class StockWatcher
                             {
 
                             }
+                        }
+
+
+                        if (DateTime.Now.Hour == 18 && stock.IsLimitUp(currentIndex))
+                        {
+                            LimitUp.SaveLimitUp(stock.gid.Trim(), DateTime.Parse(stock.kLineDay[currentIndex].startDateTime.ToShortDateString()),
+                                stock.kLineDay[currentIndex - 1].endPrice, stock.kLineDay[currentIndex].startPrice, stock.kLineDay[currentIndex].endPrice, 
+                                stock.kLineDay[currentIndex].volume);
+                            
                         }
 
                         
