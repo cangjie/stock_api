@@ -527,10 +527,7 @@
             }
             */
 
-            if (currentPrice > line3Price && stock.kLineDay[currentIndex - 1].endPrice < previous3LinePrice)
-            {
-                dr["信号"] = dr["信号"].ToString().Trim() + "<a title=\"3线在5日均线下\" >👫</a>";
-            }
+            
 
 
 
@@ -570,17 +567,29 @@
             {
                 buyPrice = currentPrice;
             }
+            if (((kdjDays == 0 && (int)dr["MACD日"] == 0) || ((int)dr["MACD日"] > 0 && kdjDays == 0)))
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"趋势一级\" >📈</a>";
+            }
+            if (stock.kLineDay[currentIndex].VirtualVolume >= Stock.GetAvarageVolume(stock.kLineDay, currentIndex, 5)
+                && stock.kLineDay[currentIndex].VirtualVolume >= Stock.GetAvarageVolume(stock.kLineDay, currentIndex, 10))
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"大于5 10日均量线\" >🔥</a>";
+            }
+            if (currentPrice > line3Price && stock.kLineDay[currentIndex - 1].endPrice < previous3LinePrice)
+            {
+                dr["信号"] = dr["信号"].ToString().Trim() + "<a title=\"过3线\" >👫</a>";
+            }
             //buyPrice = Math.Max(currentPrice, buyPrice);
             if ((totalPressure - buyPrice) / buyPrice > 0.1 || totalPressure == 0)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"上无压力\" >🌟</a>";
             }
 
-            if (stock.kLineDay[currentIndex].VirtualVolume >= Stock.GetAvarageVolume(stock.kLineDay, currentIndex, 5)
-                && stock.kLineDay[currentIndex].VirtualVolume >= Stock.GetAvarageVolume(stock.kLineDay, currentIndex, 10))
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"大于5 10日均量线\" >🔥</a>";
-            }
+            
+
+            
+
             /*
             if ((int)dr["MACD时"] >= 0 && (int)dr["KDJ日"] >= 0 && currentPrice <= f5 && currentPrice >= f1 && currentVolume / lastDayVolume >= 0.85)
             {
@@ -592,10 +601,7 @@
                 dr["信号"] = dr["信号"].ToString() + "🌟";
             }
             */
-            if (((kdjDays == 0 && (int)dr["MACD日"] == 0) || ((int)dr["MACD日"] > 0 && kdjDays == 0)))
-            {
-                dr["信号"] = dr["信号"].ToString() + "📈";
-            }
+
             if (currentPrice <= buyPrice * 1.005 && currentPrice >= buyPrice)
             {
                 dr["信号"] = dr["信号"].ToString() + "🛍️";
