@@ -7,6 +7,17 @@
     protected void Page_Load(object sender, EventArgs e)
     {
         string[] gidArr = Util.GetAllGids();
+        Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+        for (int i = 0; i < gidArr.Length; i++)
+        {
+            Stock s = new Stock(gidArr[i]);
+            s.LoadKLineDay(rc);
+            KLine.ComputeMACD(s.kLineDay);
+            KLine.SearchMACDAlert(s.kLineDay);
+        }
+
+        /*
+        string[] gidArr = Util.GetAllGids();
         for (int i = 0; i < gidArr.Length; i++)
         {
 
@@ -40,7 +51,7 @@
 
 
         }
-
+        */
     }
 
 </script>

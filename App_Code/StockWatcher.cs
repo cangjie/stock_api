@@ -270,7 +270,7 @@ public class StockWatcher
         bool ret = false;
         if (index > 0)
         {
-            if (kArr[index].macd >= 0 && kArr[index - 1].macd < 0 )
+            if (kArr[index].macd > 0 && kArr[index - 1].macd < 0 )
             {
                 ret = true;
             }

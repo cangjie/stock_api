@@ -660,7 +660,7 @@ public class KLine
 
     public static void SearchMACDAlert(KLine[] kArr)
     {
-        SearchMACDAlert(kArr, 0);
+        SearchMACDAlert(kArr, 1);
 
     }
 
@@ -669,12 +669,16 @@ public class KLine
     {
         for (int i = startIndex; i < kArr.Length; i++)
         {
-            if (StockWatcher.IsMacdFolk(kArr, kArr.Length - 1))
+            if (StockWatcher.IsMacdFolk(kArr, i))
             {
                 try
                 {
-                    StockWatcher.LogMacd(kArr[i].gid.Trim(), "day", kArr[i].endDateTime,
-                        KLine.GetMACDFolkPrice(kArr, startIndex), kArr[i].dif, kArr[i].dea, kArr[i].macd);
+                    double macdPrice = KLine.GetMACDFolkPrice(kArr, i);
+                    if (macdPrice > 0)
+                    {
+                        StockWatcher.LogMacd(kArr[i].gid.Trim(), "day", kArr[i].endDateTime,
+                            macdPrice, kArr[i].dif, kArr[i].dea, kArr[i].macd);
+                    }
                 }
                 catch
                 {
