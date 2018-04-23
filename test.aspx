@@ -38,8 +38,6 @@
 
 
         }
-        DBHelper.InsertData("alert_bull", new string[,] { {"alert_date", "datetime", DateTime.Now.ToShortDateString() },
-                                    {"gid", "varchar", "sh600031"} });
 
     }
 
