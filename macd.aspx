@@ -517,7 +517,7 @@
             dr["均涨"] = (line3Price - previous3LinePrice) /previous3LinePrice / adjustDays;
             double minSupport = Math.Min(Math.Min(line3Price, maSupport), macdPrice);
             double maxSupport = Math.Max(Math.Max(line3Price, maSupport), macdPrice);
-            dr["支撑力"] = (maxSupport - minSupport) / minSupport;
+            dr["支撑力"] = Math.Abs(maSupport - macdPrice) / Math.Min(maSupport, macdPrice);
 
 
 
