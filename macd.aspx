@@ -341,7 +341,12 @@
         Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
         foreach (DataRow drOri in dtOri.Rows)
         {
+
+
+
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
+            if (!stock.gid.Trim().Equals("sz002077"))
+                continue;
 
             stock.LoadKLineDay(rc);
             //stock.LoadKLineDay();
@@ -352,6 +357,8 @@
             double ma10 = stock.GetAverageSettlePrice(currentIndex, 10, 0);
             double ma20 = stock.GetAverageSettlePrice(currentIndex, 20, 0);
             double ma30 = stock.GetAverageSettlePrice(currentIndex, 30, 0);
+
+            
 
             /*
             if (ma5 <= ma10 || ma10 <= ma20 || ma20 <= ma30)
@@ -580,7 +587,7 @@
             }
             */
             //buyPrice = Math.Max(currentPrice, buyPrice);
-            if ((totalPressure - buyPrice) / buyPrice > 0.1 || totalPressure == 0)
+            if ((pressure - buyPrice) / buyPrice > 0.1 || pressure == 0)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"上无压力\" >🌟</a>";
             }
