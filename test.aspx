@@ -7,6 +7,9 @@
     protected void Page_Load(object sender, EventArgs e)
     {
 
+        DBHelper.InsertData("alert_bull", new string[,] { {"alert_date", "datetime", DateTime.Now.ToShortDateString() },
+                                    {"gid", "varchar", "sh600031"} });
+        Response.End();
         Response.Write(Util.GetLastTransactDate(DateTime.Now.Date, 1).ToShortDateString() + "<br/>"
             + Util.GetLastTransactDate(DateTime.Now.Date, 2).ToShortDateString() + "<br/>"
             + Util.GetLastTransactDate(DateTime.Now.Date, 3).ToShortDateString() + "<br/>"

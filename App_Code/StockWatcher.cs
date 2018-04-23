@@ -143,7 +143,25 @@ public class StockWatcher
                             LimitUp.SaveLimitUp(stock.gid.Trim(), DateTime.Parse(stock.kLineDay[currentIndex].startDateTime.ToShortDateString()),
                                 stock.kLineDay[currentIndex - 1].endPrice, stock.kLineDay[currentIndex].startPrice, stock.kLineDay[currentIndex].endPrice, 
                                 stock.kLineDay[currentIndex].volume);
+                            try
+                            {
+                                double ma5 = stock.GetAverageSettlePrice(currentIndex, 5, 0);
+                                double ma10 = stock.GetAverageSettlePrice(currentIndex, 10, 0);
+                                double ma20 = stock.GetAverageSettlePrice(currentIndex, 20, 0);
+                                double ma30 = stock.GetAverageSettlePrice(currentIndex, 30, 0);
+                                if (ma5 > ma10 && ma10 > ma20 && ma20 > ma30)
+                                {
+                                    DBHelper.InsertData("alert_bull", new string[,] { {"alert_date", "datetime", DateTime.Now.ToShortDateString() },
+                                    {"gid", "varchar", stock.gid.Trim() } });
+                                }
+                            }
+                            catch
+                            {
+
+                            }
                         }
+
+                        
 
                         KLine.ComputeRSV(stock.kLineDay);
                         KLine.ComputeKDJ(stock.kLineDay);
