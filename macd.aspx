@@ -317,6 +317,7 @@
         dt.Columns.Add("跌幅", Type.GetType("System.Double"));
         dt.Columns.Add("震幅", Type.GetType("System.Double"));
         dt.Columns.Add("均涨", Type.GetType("System.Double"));
+        dt.Columns.Add("支撑力", Type.GetType("System.Double"));
         for (int i = 1; i <= 5; i++)
         {
             dt.Columns.Add(i.ToString() + "日", Type.GetType("System.Double"));
@@ -510,8 +511,9 @@
             dr["震幅"] = upSpace + downSpace;
             dr["TD"] = KLine.GetLastDeMarkBuyPointIndex(stock.kLineDay, currentIndex);
             dr["均涨"] = (line3Price - previous3LinePrice) /previous3LinePrice / adjustDays;
-
-
+            double minSupport = Math.Min(Math.Min(line3Price, maSupport), macdPrice);
+            double maxSupport = Math.Max(Math.Max(line3Price, maSupport), macdPrice);
+            dr["支撑力"] = (maxSupport - minSupport) / minSupport;
 
 
 
@@ -732,7 +734,7 @@
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
                     <asp:BoundColumn DataField="MACD价" HeaderText="MACD价"></asp:BoundColumn>
                     <asp:BoundColumn DataField="均线支撑" HeaderText="均线支撑"></asp:BoundColumn>
-
+                    <asp:BoundColumn DataField="支撑力" HeaderText="支撑力"></asp:BoundColumn>
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
                     
                     <asp:BoundColumn DataField="1日" HeaderText="1日" SortExpression="1日|desc" ></asp:BoundColumn>
