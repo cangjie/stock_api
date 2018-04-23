@@ -350,7 +350,8 @@
             stock.LoadKLineDay(rc);
             //stock.LoadKLineDay();
             int currentIndex = stock.GetItemIndex(currentDate);
-
+            if (currentIndex < 1)
+                continue;
             double ma5 = stock.GetAverageSettlePrice(currentIndex, 5, 0);
             double ma10 = stock.GetAverageSettlePrice(currentIndex, 10, 0);
             double ma20 = stock.GetAverageSettlePrice(currentIndex, 20, 0);
@@ -366,8 +367,7 @@
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
 
-            if (currentIndex < 1)
-                continue;
+            
             //if (!KLine.IsCros3LineTwice(stock.kLineDay, currentIndex, 20))
             //    continue;
             double current3LinePrice = stock.GetAverageSettlePrice(currentIndex, 3, 3);
