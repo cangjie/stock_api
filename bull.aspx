@@ -21,7 +21,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "信号,KDJ日,MACD日");
+        sort = Util.GetSafeRequestValue(Request, "sort", "信号,放量 desc");
         if (!IsPostBack)
         {
             try
@@ -70,7 +70,7 @@
         else
             currentDate = Util.GetDay(calendar.SelectedDate);
         DataTable dtOri = GetData(currentDate);
-        return RenderHtml(dtOri.Select("", sort));
+        return RenderHtml(dtOri.Select("信号 like '%📈%' ", sort));
     }
 
     protected void calendar_SelectionChanged(object sender, EventArgs e)
