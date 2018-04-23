@@ -21,7 +21,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "信号,放量 desc");
+        sort = Util.GetSafeRequestValue(Request, "sort", "放量 desc");
         if (!IsPostBack)
         {
             try
