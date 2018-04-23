@@ -346,8 +346,12 @@
 
 
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
-    
-
+            /*
+            if (!stock.gid.Trim().Equals("sh600562"))
+            {
+                continue;
+            }
+            */
             stock.LoadKLineDay(rc);
             //stock.LoadKLineDay();
             int currentIndex = stock.GetItemIndex(currentDate);
@@ -358,7 +362,7 @@
             double ma20 = stock.GetAverageSettlePrice(currentIndex, 20, 0);
             double ma30 = stock.GetAverageSettlePrice(currentIndex, 30, 0);
 
-            
+
 
             /*
             if (ma5 <= ma10 || ma10 <= ma20 || ma20 <= ma30)

@@ -1079,7 +1079,7 @@ public class Stock
         quotaArr[2] = new KeyValuePair<string, double>("ma5", GetAverageSettlePrice(index, 5, 0));
         quotaArr[3] = new KeyValuePair<string, double>("ma10", GetAverageSettlePrice(index, 10, 0));
         quotaArr[4] = new KeyValuePair<string, double>("ma20", GetAverageSettlePrice(index, 20, 0));
-        quotaArr[5] = new KeyValuePair<string, double>("ma60", GetAverageSettlePrice(index, 60, 0));
+        quotaArr[5] = new KeyValuePair<string, double>("ma30", GetAverageSettlePrice(index, 30, 0));
         string tempKey = "";
         double tempValue = 0;
 
