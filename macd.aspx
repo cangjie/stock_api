@@ -559,7 +559,7 @@
             for (int i = 0; i < highPoints.Length; i++)
             {
                 //if (Math.Abs(highPoints[i].Value - stock.kLineDay[currentIndex].highestPrice) / stock.kLineDay[currentIndex].highestPrice <= 0.01)
-                if (highPoints[i].Value >= stock.kLineDay[currentIndex].highestPrice * 0.99)
+                if (highPoints[i].Value >= buyPrice)
                 {
                     highPointPressure = highPoints[i].Value;
                     break;
