@@ -595,7 +595,10 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"上无压力\" >🌟</a>";
             }
 
-
+            if ((stock.kLineDay[currentIndex].lowestPrice - ma5) / ma5 >= 0.005)
+            {
+                continue;
+            }
 
 
 
