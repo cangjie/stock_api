@@ -333,7 +333,6 @@
         }
         dt.Columns.Add("总计", Type.GetType("System.Double"));
 
-        string sqlUnion = "";
         string[] gidArr = new string[dtOri.Rows.Count];
         for (int i = 0; i < gidArr.Length; i++)
         {
@@ -354,7 +353,7 @@
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
 
-            if (!stock.gid.Trim().Equals("sh603189"))
+            if (!stock.gid.Trim().Equals("sz300541"))
             {
                 //continue;
             }
@@ -578,7 +577,7 @@
                 buyPrice = currentPrice;
             }
             if ( (int)dr["MACD日"] >= 0  && kdjDays >= 0 && kdjDays <= 5 && ( (int)dr["MACD日"] >= kdjDays)
-                && !(stock.kLineDay[currentIndex - 1].endPrice >= prevMa5 &&  (stock.kLineDay[currentIndex].lowestPrice - ma5) / ma5 > 0.0382))
+                && !(stock.kLineDay[currentIndex - 1].endPrice >= prevMa5 && stock.kLineDay[currentIndex].lowestPrice < stock.kLineDay[currentIndex - 1].lowestPrice))
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"趋势一级\" >📈</a>";
             }
@@ -650,10 +649,7 @@
                 DataTable dt = GetData(currentDate);
                 foreach(DataRow dr in dt.Rows)
                 {
-                    //if (dr["信号"].ToString().IndexOf("🛍️") >= 0
-                    //    && (dr["信号"].ToString().IndexOf("📈") >= 0 || dr["信号"].ToString().IndexOf("🔥") >= 0 || dr["信号"].ToString().IndexOf("🌟") >= 0)
-                    //    && (   (dr["MACD日"].ToString().Equals("0") &&  dr["KDJ日"].ToString().Equals("0")) || (dr["KDJ日"].ToString().Equals("-1") && int.Parse(dr["MACD日"].ToString()) > 0 )  ))
-                    if (dr["信号"].ToString().IndexOf("🛍️") > 0 && dr["信号"].ToString().StartsWith("📈") && dr["信号"].ToString().Length >= 4)
+                    if (dr["信号"].ToString().IndexOf("🛍️") >= 0 && dr["信号"].ToString().IndexOf("📈") >= 0 && dr["信号"].ToString().IndexOf("🔥") >= 0 )
                     {
                         string message = dr["信号"].ToString().Trim() + " " + dr["代码"].ToString() + " " + dr["名称"].ToString();
                         double price = Math.Round(double.Parse(dr["买入"].ToString()), 2);
