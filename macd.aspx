@@ -617,7 +617,10 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"涨幅过6%，放量200%\" >📈</a>";
             }
 
-
+            if (buyPrice > (double)dr["高点"])
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"买入价过前高\" >🔥</a>";
+            }
 
             /*
             if ((int)dr["MACD时"] >= 0 && (int)dr["KDJ日"] >= 0 && currentPrice <= f5 && currentPrice >= f1 && currentVolume / lastDayVolume >= 0.85)
