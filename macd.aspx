@@ -617,7 +617,7 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"涨幅过6%，放量200%\" >📈</a>";
             }
 
-            if (buyPrice > (double)dr["高点"])
+            if (buyPrice > (double)dr["F5"] && (double)dr["相差"] < 0.005)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"买入价过前高\" >🔥</a>";
             }
