@@ -143,6 +143,7 @@
                         case "均线支撑":
                         case "前高压力":
                         case "MACD价":
+                        case "当日":
                             double currentValuePrice = (double)drOri[i];
                             dr[i] = "<font color=\"" + (currentValuePrice > currentPrice ? "red" : (currentValuePrice == currentPrice ? "gray" : "green")) + "\"  >"
                                 + Math.Round(currentValuePrice, 2).ToString() + "</font>";
@@ -319,6 +320,7 @@
         dt.Columns.Add("跌幅", Type.GetType("System.Double"));
         dt.Columns.Add("震幅", Type.GetType("System.Double"));
         dt.Columns.Add("均涨", Type.GetType("System.Double"));
+        dt.Columns.Add("当日", Type.GetType("System.Double"));
         //dt.Columns.Add("支撑力", Type.GetType("System.Double"));
         for (int i = 1; i <= 5; i++)
         {
@@ -517,7 +519,9 @@
             dr["震幅"] = upSpace + downSpace;
             dr["TD"] = KLine.GetLastDeMarkBuyPointIndex(stock.kLineDay, currentIndex);
             dr["均涨"] = (line3Price - previous3LinePrice) /previous3LinePrice / adjustDays;
+            
             double minSupport = Math.Min(Math.Min(line3Price, maSupport), macdPrice);
+
             double maxSupport = Math.Max(Math.Max(line3Price, maSupport), macdPrice);
             //dr["支撑力"] = Math.Abs(maSupport - macdPrice) / Math.Min(maSupport, macdPrice);
 
@@ -568,6 +572,7 @@
             dr["MACD涨幅"] = ((double)drOri["alert_price"] - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
             dr["相差"] = Math.Abs((double)dr["支撑涨幅"] - (double)dr["MACD涨幅"]);
             dr["前高压力"] = highPointPressure;
+            dr["当日"] = (currentPrice - buyPrice) / buyPrice;
             //buyPrice = Math.Max(buyPrice, stock.kLineDay[currentIndex].lowestPrice);
             double totalPressure = 0;
             if (pressure > 0 && highPointPressure > 0)
@@ -747,7 +752,7 @@
                     <asp:BoundColumn DataField="支撑涨幅" HeaderText="支撑涨幅" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="相差" HeaderText="相差"></asp:BoundColumn>
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
-                    
+                    <asp:BoundColumn DataField="当日" HeaderText="当日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日" SortExpression="1日|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="2日" HeaderText="2日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3日" HeaderText="3日"></asp:BoundColumn>
