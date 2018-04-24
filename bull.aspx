@@ -482,7 +482,7 @@
             dr["昨收"] = settlePrice;
             dr["今开"] = openPrice;
             dr["今收"] = currentPrice;
-            dr["今涨"] = (stock.kLineDay[currentIndex].highestPrice - settlePrice) / settlePrice;
+            dr["今涨"] = (stock.kLineDay[currentIndex].startPrice - settlePrice) / settlePrice;
             dr["放量"] = currentVolume / lastDayVolume;
             dr["3线"] = line3Price;
             dr["低点"] = lowestPrice;
