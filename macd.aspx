@@ -143,7 +143,6 @@
                         case "均线支撑":
                         case "前高压力":
                         case "MACD价":
-                        case "当日":
                             double currentValuePrice = (double)drOri[i];
                             dr[i] = "<font color=\"" + (currentValuePrice > currentPrice ? "red" : (currentValuePrice == currentPrice ? "gray" : "green")) + "\"  >"
                                 + Math.Round(currentValuePrice, 2).ToString() + "</font>";
