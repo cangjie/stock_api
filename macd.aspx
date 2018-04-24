@@ -21,7 +21,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "MACD涨幅 desc");
+        sort = Util.GetSafeRequestValue(Request, "sort", "相差, MACD涨幅 desc");
         if (!IsPostBack)
         {
             try
@@ -301,6 +301,8 @@
         dt.Columns.Add("前高压力", Type.GetType("System.Double"));
         dt.Columns.Add("均线支撑", Type.GetType("System.Double"));
         dt.Columns.Add("MACD涨幅", Type.GetType("System.Double"));
+        dt.Columns.Add("支撑涨幅", Type.GetType("System.Double"));
+        dt.Columns.Add("相差", Type.GetType("System.Double"));
         dt.Columns.Add("TD", Type.GetType("System.Int32"));
         dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
@@ -317,7 +319,7 @@
         dt.Columns.Add("跌幅", Type.GetType("System.Double"));
         dt.Columns.Add("震幅", Type.GetType("System.Double"));
         dt.Columns.Add("均涨", Type.GetType("System.Double"));
-        dt.Columns.Add("支撑力", Type.GetType("System.Double"));
+        //dt.Columns.Add("支撑力", Type.GetType("System.Double"));
         for (int i = 1; i <= 5; i++)
         {
             dt.Columns.Add(i.ToString() + "日", Type.GetType("System.Double"));
@@ -508,7 +510,7 @@
 
             dr["KDJ日"] = kdjDays;
             dr["MACD日"] = stock.macdDays(currentIndex);
-            dr["MACD涨幅"] = ((double)drOri["alert_price"] - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
+           
             dr["MACD价"] = (double)drOri["alert_price"];
             dr["涨幅"] = upSpace;
             dr["跌幅"] = downSpace;
@@ -517,7 +519,7 @@
             dr["均涨"] = (line3Price - previous3LinePrice) /previous3LinePrice / adjustDays;
             double minSupport = Math.Min(Math.Min(line3Price, maSupport), macdPrice);
             double maxSupport = Math.Max(Math.Max(line3Price, maSupport), macdPrice);
-            dr["支撑力"] = Math.Abs(maSupport - macdPrice) / Math.Min(maSupport, macdPrice);
+            //dr["支撑力"] = Math.Abs(maSupport - macdPrice) / Math.Min(maSupport, macdPrice);
 
 
 
@@ -562,9 +564,9 @@
 
 
             dr["均线支撑"] = maSupport;
-
-
-
+            dr["支撑涨幅"] = (maSupport - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
+            dr["MACD涨幅"] = ((double)drOri["alert_price"] - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
+            dr["相差"] = Math.Abs((double)dr["支撑涨幅"] - (double)dr["MACD涨幅"]);
             dr["前高压力"] = highPointPressure;
             //buyPrice = Math.Max(buyPrice, stock.kLineDay[currentIndex].lowestPrice);
             double totalPressure = 0;
@@ -725,7 +727,7 @@
                     <asp:BoundColumn DataField="昨收" HeaderText="昨收"></asp:BoundColumn>
                     <asp:BoundColumn DataField="今开" HeaderText="今开"></asp:BoundColumn>
                     <asp:BoundColumn DataField="今收" HeaderText="今收"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="MACD涨幅" HeaderText="MACD涨幅" ></asp:BoundColumn>
+                    
                     <asp:BoundColumn DataField="放量" HeaderText="放量" SortExpression="放量|desc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="前高压力" HeaderText="前高压力"></asp:BoundColumn>
                     <asp:BoundColumn DataField="均线压力" HeaderText="均线压力"></asp:BoundColumn>
@@ -741,7 +743,9 @@
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
                     <asp:BoundColumn DataField="MACD价" HeaderText="MACD价"></asp:BoundColumn>
                     <asp:BoundColumn DataField="均线支撑" HeaderText="均线支撑"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="支撑力" HeaderText="支撑力"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="MACD涨幅" HeaderText="MACD涨幅" ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="支撑涨幅" HeaderText="支撑涨幅" ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="相差" HeaderText="相差"></asp:BoundColumn>
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
                     
                     <asp:BoundColumn DataField="1日" HeaderText="1日" SortExpression="1日|desc" ></asp:BoundColumn>
