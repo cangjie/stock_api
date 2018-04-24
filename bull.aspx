@@ -608,7 +608,7 @@
             }
             */
 
-            if (currentPrice <= buyPrice * 1.005 && currentPrice >= buyPrice)
+            if (currentPrice <= buyPrice * 1.01 && currentPrice >= buyPrice)
             {
                 dr["信号"] = dr["信号"].ToString() + "🛍️";
             }
