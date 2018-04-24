@@ -45,7 +45,7 @@
                 {
                     t.Abort();
                     t = new Thread(ts);
-                    t.Start();
+                    //t.Start();
 
                 }
             }
@@ -70,7 +70,7 @@
         else
             currentDate = Util.GetDay(calendar.SelectedDate);
         DataTable dtOri = GetData(currentDate);
-        return RenderHtml(dtOri.Select(" 信号 like '%📈%' and 信号 like '%🔥%' and (信号 like '%👫%' or 信号 like '%🌟%' ) ", sort));
+        return RenderHtml(dtOri.Select("  ", sort));
     }
 
     protected void calendar_SelectionChanged(object sender, EventArgs e)
@@ -468,8 +468,8 @@
                 upSpace = 0.1;
                 downSpace = (buyPrice - highestPrice) / buyPrice;
             }
-            if (kdjDays < 0)
-                continue;
+            //if (kdjDays < 0)
+            //    continue;
 
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
