@@ -570,6 +570,13 @@
             dr["均线支撑"] = maSupport;
             dr["支撑涨幅"] = (maSupport - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
             dr["MACD涨幅"] = ((double)drOri["alert_price"] - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
+
+            if ((double)dr["MACD涨幅"] <= 0 || (double)dr["支撑涨幅"] <= 0)
+            {
+                continue;
+            }
+
+
             dr["相差"] = Math.Abs((double)dr["支撑涨幅"] - (double)dr["MACD涨幅"]);
             dr["前高压力"] = highPointPressure;
             dr["前高空间"] = (highPointPressure - buyPrice) / buyPrice;
