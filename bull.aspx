@@ -320,6 +320,8 @@
         dt.Columns.Add("震幅", Type.GetType("System.Double"));
         dt.Columns.Add("综指", Type.GetType("System.Double"));
         dt.Columns.Add("均涨", Type.GetType("System.Double"));
+        dt.Columns.Add("0日", Type.GetType("System.Double"));
+
         for (int i = 1; i <= 5; i++)
         {
             dt.Columns.Add(i.ToString() + "日", Type.GetType("System.Double"));
@@ -614,7 +616,7 @@
             dr["买入"] = buyPrice;
             dr["均线压力"] = pressure;
 
-
+            dr["0日"] = (currentPrice - buyPrice) / buyPrice;
 
             double maxPrice = 0;
             for (int i = 1; i <= 5; i++)
