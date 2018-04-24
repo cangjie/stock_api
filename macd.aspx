@@ -729,9 +729,7 @@
                     <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号" SortExpression="信号|desc" ></asp:BoundColumn>
-                    <asp:BoundColumn DataField="昨收" HeaderText="昨收"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="今开" HeaderText="今开"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="今收" HeaderText="今收"></asp:BoundColumn>
+             
                     
                     <asp:BoundColumn DataField="放量" HeaderText="放量" SortExpression="放量|desc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="前高压力" HeaderText="前高压力"></asp:BoundColumn>
