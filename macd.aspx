@@ -320,6 +320,7 @@
         dt.Columns.Add("震幅", Type.GetType("System.Double"));
         dt.Columns.Add("均涨", Type.GetType("System.Double"));
         dt.Columns.Add("0日", Type.GetType("System.Double"));
+        dt.Columns.Add("前高空间", Type.GetType("System.Double"));
         //dt.Columns.Add("支撑力", Type.GetType("System.Double"));
         for (int i = 1; i <= 5; i++)
         {
@@ -511,14 +512,14 @@
 
             dr["KDJ日"] = kdjDays;
             dr["MACD日"] = stock.macdDays(currentIndex);
-           
+
             dr["MACD价"] = (double)drOri["alert_price"];
             dr["涨幅"] = upSpace;
             dr["跌幅"] = downSpace;
             dr["震幅"] = upSpace + downSpace;
             dr["TD"] = KLine.GetLastDeMarkBuyPointIndex(stock.kLineDay, currentIndex);
             dr["均涨"] = (line3Price - previous3LinePrice) /previous3LinePrice / adjustDays;
-            
+
             double minSupport = Math.Min(Math.Min(line3Price, maSupport), macdPrice);
 
             double maxSupport = Math.Max(Math.Max(line3Price, maSupport), macdPrice);
@@ -571,6 +572,7 @@
             dr["MACD涨幅"] = ((double)drOri["alert_price"] - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
             dr["相差"] = Math.Abs((double)dr["支撑涨幅"] - (double)dr["MACD涨幅"]);
             dr["前高压力"] = highPointPressure;
+            dr["前高空间"] = (highPointPressure - buyPrice) / buyPrice;
             dr["0日"] = (currentPrice - buyPrice) / buyPrice;
             //buyPrice = Math.Max(buyPrice, stock.kLineDay[currentIndex].lowestPrice);
             double totalPressure = 0;
@@ -605,7 +607,7 @@
 
             if ((double)dr["MACD涨幅"] > 0.06 && (double)dr["放量"] >= 1.5 && (double)dr["放量"] <= 2.5 )
             {
-                 dr["信号"] = dr["信号"].ToString() + "<a title=\"涨幅过6%，放量200%\" >📈</a>";
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"涨幅过6%，放量200%\" >📈</a>";
             }
 
 
@@ -735,7 +737,6 @@
                     <asp:BoundColumn DataField="均线压力" HeaderText="均线压力"></asp:BoundColumn>
                     
 
-					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD日|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>
                     
                     <asp:BoundColumn DataField="低点" HeaderText="低点"></asp:BoundColumn>
@@ -745,9 +746,11 @@
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
                     <asp:BoundColumn DataField="MACD价" HeaderText="MACD价"></asp:BoundColumn>
                     <asp:BoundColumn DataField="均线支撑" HeaderText="均线支撑"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="前高空间" HeaderText="前高空间"></asp:BoundColumn>
                     <asp:BoundColumn DataField="MACD涨幅" HeaderText="MACD涨幅" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="支撑涨幅" HeaderText="支撑涨幅" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="相差" HeaderText="相差"></asp:BoundColumn>
+
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="0日" HeaderText="0日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日" SortExpression="1日|desc" ></asp:BoundColumn>
