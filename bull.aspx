@@ -366,6 +366,7 @@
             if (currentIndex < 1)
                 continue;
             double ma5 = stock.GetAverageSettlePrice(currentIndex, 5, 0);
+            double prevMa5 = stock.GetAverageSettlePrice(currentIndex - 1, 5, 0);
             double ma10 = stock.GetAverageSettlePrice(currentIndex, 10, 0);
             double ma20 = stock.GetAverageSettlePrice(currentIndex, 20, 0);
             double ma30 = stock.GetAverageSettlePrice(currentIndex, 30, 0);
@@ -576,7 +577,8 @@
             {
                 buyPrice = currentPrice;
             }
-            if ( (int)dr["MACD日"] >= 0  && kdjDays >= 0 && kdjDays <= 5 && ( (int)dr["MACD日"] >= kdjDays))
+            if ( (int)dr["MACD日"] >= 0  && kdjDays >= 0 && kdjDays <= 5 && ( (int)dr["MACD日"] >= kdjDays)
+                && !(stock.kLineDay[currentIndex - 1].endPrice >= prevMa5 &&  (stock.kLineDay[currentIndex].lowestPrice - ma5) / ma5 > 0.0382))
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"趋势一级\" >📈</a>";
             }
@@ -594,12 +596,8 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"上无压力\" >🌟</a>";
             }
-
-            if ((stock.kLineDay[currentIndex].lowestPrice - ma5) / ma5 > 0.0382)
-            {
-                continue;
-            }
-
+           
+            
 
 
             /*
