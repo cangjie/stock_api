@@ -70,7 +70,7 @@
         else
             currentDate = Util.GetDay(calendar.SelectedDate);
         DataTable dtOri = GetData(currentDate);
-        string filter = " 信号 like '%📈%' and 信号 like '%🔥%' and (信号 like '%👫%' or 信号 like '%🌟%') ";
+        string filter = " 信号 like '%📈%' and 信号 like '%🔥%' ";
         if (Util.GetSafeRequestValue(Request, "option", "").Trim().Equals("viewall"))
         {
             filter = "";
@@ -354,6 +354,12 @@
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
 
+            if (!stock.gid.Trim().Equals("sh603189"))
+            {
+                continue;
+            }
+
+
             stock.LoadKLineDay(rc);
             //stock.LoadKLineDay();
             int currentIndex = stock.GetItemIndex(currentDate);
@@ -512,13 +518,6 @@
                 //dr["信号"] = dr["信号"].ToString() + "📈";
             }
 
-            if (stock.gid.Trim().Equals("sz300393"))
-            {
-                string aa = "aa";
-            }
-
-
-
 
             /*
             if (ma5 > ma10 + 0.05  && ma10 > ma20 + 0.05)
@@ -550,7 +549,6 @@
             KeyValuePair<DateTime, double>[] highPoints = Stock.GetHighPoints(stock.kLineDay, currentIndex);
             for (int i = 0; i < highPoints.Length; i++)
             {
-                //if (Math.Abs(highPoints[i].Value - stock.kLineDay[currentIndex].highestPrice) / stock.kLineDay[currentIndex].highestPrice <= 0.01)
                 if (highPoints[i].Value >= stock.kLineDay[currentIndex].highestPrice * 0.99)
                 {
                     highPointPressure = highPoints[i].Value;
