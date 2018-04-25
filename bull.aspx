@@ -592,7 +592,7 @@
 
             if ((int)dr["KDJ日"] == 0 && (int)dr["MACD日"] == 0 && (double)dr["今涨"] <= 0.0618 && (double)dr["放量"] >= 1.25)
             {
-                 dr["信号"] = dr["信号"].ToString() + "<a title=\"同日双金叉\" >👑</a>";
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"同日双金叉\" >👑</a>";
             }
 
 
@@ -611,6 +611,11 @@
             if (currentPrice <= buyPrice * 1.01 && currentPrice >= buyPrice && (currentPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice <= 0.0618 )
             {
                 dr["信号"] = dr["信号"].ToString() + "🛍️";
+            }
+
+            if (currentPrice < stock.kLineDay[currentIndex].startPrice)
+            {
+                dr["信号"] = "";
             }
 
             dr["买入"] = buyPrice;
@@ -646,7 +651,7 @@
                 DataTable dt = GetData(currentDate);
                 foreach(DataRow dr in dt.Rows)
                 {
-                    if (dr["信号"].ToString().IndexOf("🛍️") >= 0 && dr["信号"].ToString().IndexOf("📈") >= 0 
+                    if (dr["信号"].ToString().IndexOf("🛍️") >= 0 && dr["信号"].ToString().IndexOf("📈") >= 0
                         && dr["信号"].ToString().IndexOf("🔥") >= 0 && dr["信号"].ToString().IndexOf("👑") >= 0 )
                     {
                         string message = dr["信号"].ToString() + " " + dr["代码"].ToString() + " " + dr["名称"].ToString();
