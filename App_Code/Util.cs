@@ -53,7 +53,15 @@ public class Util
         return GetWebContent(url, "GET", "", "html/text");
     }
 
-    
+    public static string RemoveHTMLTag(string str)
+    {
+        System.Text.RegularExpressions.MatchCollection mc = System.Text.RegularExpressions.Regex.Matches(str, @"<[^>]+>");
+        foreach (System.Text.RegularExpressions.Match m in mc)
+        {
+            str = str.Replace(m.Value.Trim(), "");
+        }
+        return str;
+    }
 
     public static string GetSimpleJsonValueByKey(string jsonStr, string key)
     {

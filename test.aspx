@@ -6,6 +6,13 @@
 <script runat="server">
     protected void Page_Load(object sender, EventArgs e)
     {
+        string str = "<a href=\"你好、\" >asss</a><a title=\"测试\" sfasd >sssdeee</a>";
+        System.Text.RegularExpressions.MatchCollection mc = System.Text.RegularExpressions.Regex.Matches(str, @"<[^>]+>", RegexOptions.ExplicitCapture);
+        foreach (System.Text.RegularExpressions.Match m in mc)
+        {
+            str = str.Replace(m.Value.Trim(), "");
+        }
+        Response.End();
         string[] gidArr = Util.GetAllGids();
         Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
         for (int i = 0; i < gidArr.Length; i++)
