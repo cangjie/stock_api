@@ -530,6 +530,12 @@
                 continue;
             }
 
+            DateTime upFootTime = DateTime.MaxValue;
+            double todayHighestPrice = 0;
+            double todayDisplayHighPrice = 0;
+            bool isUpFoot = UpFoot(timelineArray, out todayHighestPrice, out todayDisplayHighPrice, out upFootTime);
+
+
             bool atPoint = false;
             if (
                 ((Math.Abs(todayLowestPrice - highest)/highest <= 0.005 )
@@ -710,6 +716,14 @@
                 dr["信号"] = dr["信号"].ToString() + "🔺";
             }
 
+            if (isUpFoot)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"向上的无影脚\" >☄️</a>";
+                if (stock.kLineDay[currentIndex].highestPrice > todayHighestPrice)
+                {
+                    dr["信号"] = dr["信号"].ToString() + "<a title=\"突破向上的无影脚\" >👍</a>";
+                }
+            }
 
             dr["压力1"] = pressure1;
             dr["压力2"] = pressure2;
@@ -911,6 +925,45 @@
         }
     }
 
+    public static bool UpFoot(Core.Timeline[] tArr, out double highestPrice, out double displayHighPrice, out DateTime footTime)
+    {
+        highestPrice = 0;
+        displayHighPrice = 0;
+        footTime = DateTime.MinValue;
+        bool noShadow = false;
+        bool isRefeshHighestPrice = false;
+        int i = 0;
+        for (; i < tArr.Length && tArr[i].tickTime.Hour < 10; i++)
+        {
+            if (highestPrice < tArr[i].todayHighestPrice)
+            {
+                highestPrice = tArr[i].todayHighestPrice;
+                isRefeshHighestPrice = true;
+                //lowestTime = tArr[i].tickTime;
+            }
+            if (highestPrice > tArr[i].todayStartPrice &&   highestPrice - tArr[i].todayEndPrice >= 0.05)
+            {
+                if (isRefeshHighestPrice)
+                {
+                    footTime = tArr[i].tickTime;
+                    noShadow = true;
+                    isRefeshHighestPrice = false;
+
+                }
+
+            }
+            else
+            {
+                noShadow = false;
+            }
+            if (displayHighPrice < Math.Max(tArr[i].todayEndPrice, tArr[i].todayStartPrice))
+            {
+                displayHighPrice = Math.Max(tArr[i].todayEndPrice, tArr[i].todayStartPrice);
+            }
+        }
+        return noShadow;
+    }
+
     public static bool foot(Core.Timeline[] tArr, out double lowestPrice, out double displayLowPrice, out DateTime footTime)
     {
         lowestPrice = double.MaxValue;
@@ -934,7 +987,6 @@
                     footTime = tArr[i].tickTime;
                     noShadow = true;
                     isRefeshLowestPrice = false;
-
                 }
 
             }
