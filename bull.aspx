@@ -608,7 +608,7 @@
             }
             */
 
-            if (currentPrice <= buyPrice * 1.01 && currentPrice >= buyPrice && (currentPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice <= 0.0618 )
+            if (currentPrice <= buyPrice * 1.01 && currentPrice >= buyPrice)
             {
                 dr["信号"] = dr["信号"].ToString() + "🛍️";
             }
