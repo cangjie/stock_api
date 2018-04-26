@@ -732,7 +732,7 @@
 
             KeyValuePair<string, double>[] quota = stock.GetSortedQuota(currentIndex);
 
-            if (Math.Abs(buyPrice - quota[quota.Length - 1].Value) / buyPrice < 0.01)
+            if (Math.Abs(buyPrice - quota[quota.Length - 1].Value) / buyPrice < 0.005)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"买入价在均线支撑附近\" >🔥</a>";
             }
