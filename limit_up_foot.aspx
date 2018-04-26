@@ -691,7 +691,7 @@
 
             if (atPoint)
             {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"最低价位于支撑位\" >🔥</a>";
+                //dr["信号"] = dr["信号"].ToString() + "<a title=\"最低价位于支撑位\" >🔥</a>";
             }
 
             int kdjDays = stock.kdjDays(currentIndex);
@@ -718,7 +718,7 @@
 
             if (isUpFoot)
             {
-                
+
                 if (stock.kLineDay[currentIndex].highestPrice > todayHighestPrice)
                 {
                     dr["信号"] = dr["信号"].ToString() + "<a title=\"突破向上的无影脚\" >👍</a>";
@@ -727,6 +727,14 @@
                 {
                     dr["信号"] = dr["信号"].ToString() + "<a title=\"向上的无影脚\" >☄️</a>";
                 }
+            }
+
+
+            KeyValuePair<string, double>[] quota = stock.GetSortedQuota(currentIndex);
+
+            if (Math.Abs(buyPrice - quota[quota.Length - 1].Value) / buyPrice < 0.01)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"买入价在均线支撑附近\" >🔥</a>";
             }
 
             dr["压力1"] = pressure1;
