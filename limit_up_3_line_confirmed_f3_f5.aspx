@@ -408,7 +408,7 @@
             string memo = "";
 
             Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
-            
+
             if (timelineArray.Length == 0)
             {
                 timelineArray = Core.Timeline.LoadTimelineArrayFromSqlServer(stock.gid, currentDate);
@@ -551,8 +551,19 @@
 
 
             KeyValuePair<string, double>[] quota = stock.GetSortedQuota(currentIndex);
-
-            if (Math.Abs(buyPrice - quota[quota.Length - 1].Value) / buyPrice < 0.005)
+            bool isFire = false;
+            for (int i = quota.Length - 1; i >= 0; i--)
+            {
+                if (quota[i].Key.StartsWith("ma"))
+                {
+                    if (Math.Abs(buyPrice - quota[i].Value) / buyPrice < 0.01)
+                    {
+                        isFire = true;
+                        break;
+                    }
+                }
+            }
+            if (isFire)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"买入价在均线支撑附近\" >🔥</a>";
             }
