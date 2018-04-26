@@ -559,8 +559,9 @@
                     if (Math.Abs(buyPrice - quota[i].Value) / buyPrice < 0.01)
                     {
                         isFire = true;
-                        break;
+                        
                     }
+                    break;
                 }
             }
             if (isFire)
