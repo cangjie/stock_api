@@ -533,8 +533,9 @@
 
             if (width >= 30)
             {
-                dr["信号"] = dr["信号"] + "<a title=\"幅度超过30%\" >🔥</a>";
+                //dr["信号"] = dr["信号"] + "<a title=\"幅度超过30%\" >🔥</a>";
             }
+
 
 
             if (Math.Min(stock.kLineDay[currentIndex].startPrice, stock.kLineDay[currentIndex].endPrice) - stock.kLineDay[currentIndex].lowestPrice
@@ -547,6 +548,16 @@
             {
                 dr["信号"] = dr["信号"].ToString().Trim() + "<a title='无影脚' >❗️</a>";
             }
+
+
+            KeyValuePair<string, double>[] quota = stock.GetSortedQuota(currentIndex);
+
+            if (Math.Abs(buyPrice - quota[quota.Length - 1].Value) / buyPrice < 0.005)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"买入价在均线支撑附近\" >🔥</a>";
+            }
+
+
 
             dr["调整"] = currentIndex - limitUpIndex;
             dr["缩量"] = volumeReduce;
