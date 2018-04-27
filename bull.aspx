@@ -586,7 +586,7 @@
                 buyPrice = currentPrice;
             }
             if ( (int)dr["MACD日"] >= 0  && kdjDays >= 0 && kdjDays <= 5 && ( (int)dr["MACD日"] >= kdjDays)
-                && !(stock.kLineDay[currentIndex - 1].endPrice >= prevMa5 && stock.kLineDay[currentIndex].lowestPrice < stock.kLineDay[currentIndex - 1].lowestPrice))
+                && !(stock.kLineDay[currentIndex - 1].endPrice >= prevMa5))
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"趋势一级\" >📈</a>";
             }
