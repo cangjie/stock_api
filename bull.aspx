@@ -364,7 +364,7 @@
             double ma20 = stock.GetAverageSettlePrice(currentIndex, 20, 0);
             double ma30 = stock.GetAverageSettlePrice(currentIndex, 30, 0);
 
-            
+
             if (ma5 <= ma10 || ma10 <= ma20 || ma20 <= ma30)
             {
                 continue;
@@ -374,7 +374,7 @@
             {
                 continue;
             }
-            
+
 
             //KeyValuePair<string, double>[] quota = stock.GetSortedQuota(currentIndex);
 
@@ -612,6 +612,11 @@
             }
             */
 
+            if (stock.kLineDay[currentIndex].startPrice <= ma30)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"一阳穿三线\" >🌞</a>";
+            }
+
             if (currentPrice <= buyPrice * 1.01 && currentPrice >= buyPrice)
             {
                 dr["信号"] = dr["信号"].ToString() + "🛍️";
@@ -657,7 +662,7 @@
                 {
                     //string signalStr = Util.RemoveHTMLTag()
                     if (dr["信号"].ToString().IndexOf("🛍️") >= 0 && dr["信号"].ToString().IndexOf("📈") >= 0
-                        && dr["信号"].ToString().IndexOf("🔥") >= 0 
+                        && dr["信号"].ToString().IndexOf("🔥") >= 0
                         && (dr["信号"].ToString().IndexOf("👑") >= 0 || dr["信号"].ToString().IndexOf("🌟") >= 0))
                     {
                         string message = Util.RemoveHTMLTag(dr["信号"].ToString()) + " " + dr["代码"].ToString() + " " + dr["名称"].ToString();
