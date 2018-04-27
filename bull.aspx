@@ -564,9 +564,10 @@
             KeyValuePair<string, double>[] quota = stock.GetSortedQuota(currentIndex);
             for (int j = quota.Length - 1; j >= 0; j--)
             {
-                if (quota[j].Key.Trim().StartsWith("ma") && stock.kLineDay[currentIndex].highestPrice >= quota[j].Value)
+                if (quota[j].Key.Trim().StartsWith("ma") 
+                    && stock.kLineDay[currentIndex].highestPrice >= quota[j].Value && buyPrice < quota[j].Value)
                 {
-                    buyPrice = stock.kLineDay[currentIndex].highestPrice;
+                    buyPrice = quota[j].Value;
                     break;
                 }
             }
