@@ -561,6 +561,16 @@
 
             dr["前高压力"] = highPointPressure;
             buyPrice = Math.Max(buyPrice, stock.kLineDay[currentIndex].lowestPrice);
+            KeyValuePair<string, double>[] quota = stock.GetSortedQuota(currentIndex);
+            for (int j = quota.Length - 1; j >= 0; j--)
+            {
+                if (quota[j].Key.Trim().StartsWith("ma") && stock.kLineDay[currentIndex].highestPrice >= quota[j].Value)
+                {
+                    buyPrice = stock.kLineDay[currentIndex].highestPrice;
+                    break;
+                }
+            }
+
             double totalPressure = 0;
             if (pressure > 0 && highPointPressure > 0)
             {
