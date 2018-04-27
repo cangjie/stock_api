@@ -364,6 +364,7 @@
             double ma20 = stock.GetAverageSettlePrice(currentIndex, 20, 0);
             double ma30 = stock.GetAverageSettlePrice(currentIndex, 30, 0);
 
+            
             if (ma5 <= ma10 || ma10 <= ma20 || ma20 <= ma30)
             {
                 continue;
@@ -373,6 +374,9 @@
             {
                 continue;
             }
+            
+
+            //KeyValuePair<string, double>[] quota = stock.GetSortedQuota(currentIndex);
 
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
@@ -653,7 +657,8 @@
                 {
                     //string signalStr = Util.RemoveHTMLTag()
                     if (dr["信号"].ToString().IndexOf("🛍️") >= 0 && dr["信号"].ToString().IndexOf("📈") >= 0
-                        && dr["信号"].ToString().IndexOf("🔥") >= 0 && dr["信号"].ToString().IndexOf("👑") >= 0 )
+                        && dr["信号"].ToString().IndexOf("🔥") >= 0 
+                        && (dr["信号"].ToString().IndexOf("👑") >= 0 || dr["信号"].ToString().IndexOf("🌟") >= 0))
                     {
                         string message = Util.RemoveHTMLTag(dr["信号"].ToString()) + " " + dr["代码"].ToString() + " " + dr["名称"].ToString();
                         double price = Math.Round(double.Parse(dr["买入"].ToString()), 2);
