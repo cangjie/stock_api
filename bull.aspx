@@ -585,11 +585,20 @@
             {
                 buyPrice = currentPrice;
             }
+
+            if ((totalPressure - buyPrice) / buyPrice > 0.1 || totalPressure == 0)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"上无压力\" >🌟</a>";
+            }
+
             if ( (int)dr["MACD日"] >= 0  && kdjDays >= 0 && kdjDays <= 5 && ( (int)dr["MACD日"] >= kdjDays)
                 && !(stock.kLineDay[currentIndex - 1].endPrice >= prevMa5 && stock.kLineDay[currentIndex].lowestPrice < stock.kLineDay[currentIndex - 1].lowestPrice))
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"趋势一级\" >📈</a>";
             }
+
+            
+
             if (stock.kLineDay[currentIndex].VirtualVolume >= Stock.GetAvarageVolume(stock.kLineDay, currentIndex, 5)
                 && stock.kLineDay[currentIndex].VirtualVolume >= Stock.GetAvarageVolume(stock.kLineDay, currentIndex, 10))
             {
@@ -600,10 +609,7 @@
                 dr["信号"] = dr["信号"].ToString().Trim() + "<a title=\"过3线\" >👫</a>";
             }
             //buyPrice = Math.Max(currentPrice, buyPrice);
-            if ((totalPressure - buyPrice) / buyPrice > 0.1 || totalPressure == 0)
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"上无压力\" >🌟</a>";
-            }
+           
 
             if ((int)dr["KDJ日"] == 0 && (int)dr["MACD日"] == 0 && (double)dr["今涨"] <= 0.0618 && (double)dr["放量"] > 1.5)
             {
