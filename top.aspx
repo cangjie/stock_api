@@ -213,7 +213,7 @@
                 {
                     raiseCount++;
                 }
-                if (drOri["信号"].ToString().IndexOf("👑") >= 0)
+                if (drOri["信号"].ToString().IndexOf("🔥") >= 0)
                 {
                     fireCount++;
                 }
@@ -231,7 +231,7 @@
                         {
                             raiseSum[i - 1]++;
                         }
-                        if (drOri["信号"].ToString().IndexOf("👑") >= 0)
+                        if (drOri["信号"].ToString().IndexOf("🔥") >= 0)
                         {
                             fireSum[i - 1]++;
                         }
@@ -261,7 +261,7 @@
         drRaise["信号"] = "📈";
         drRaise["昨收"] = raiseCount.ToString();
         DataRow drFire = dt.NewRow();
-        drFire["信号"] = "👑";
+        drFire["信号"] = "🔥";
         drFire["昨收"] = fireCount.ToString();
         DataRow drStar = dt.NewRow();
         drStar["信号"] = "🌟";
@@ -675,7 +675,7 @@
                     //string signalStr = Util.RemoveHTMLTag()
                     if (dr["信号"].ToString().IndexOf("🛍️") >= 0 && dr["信号"].ToString().IndexOf("📈") >= 0
                         && dr["信号"].ToString().IndexOf("🔥") >= 0
-                        && (dr["信号"].ToString().IndexOf("👑") >= 0 || dr["信号"].ToString().IndexOf("🌟") >= 0))
+                        && (dr["信号"].ToString().IndexOf("🔥") >= 0 || dr["信号"].ToString().IndexOf("🌟") >= 0))
                     {
                         string message = Util.RemoveHTMLTag(dr["信号"].ToString()) + " " + dr["代码"].ToString() + " " + dr["名称"].ToString();
                         double price = Math.Round(double.Parse(dr["买入"].ToString()), 2);
