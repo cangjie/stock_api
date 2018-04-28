@@ -45,7 +45,7 @@
                 {
                     t.Abort();
                     t = new Thread(ts);
-                    t.Start();
+                    //t.Start();
 
                 }
             }
@@ -649,7 +649,7 @@
             {
                 if (currentIndex + i >= stock.kLineDay.Length)
                     break;
-                double highPrice = stock.kLineDay[currentIndex + i].startPrice;
+                double highPrice = stock.kLineDay[currentIndex + i].endPrice;
                 maxPrice = Math.Max(maxPrice, highPrice);
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) /buyPrice;
             }
@@ -674,8 +674,7 @@
                 {
                     //string signalStr = Util.RemoveHTMLTag()
                     if (dr["信号"].ToString().IndexOf("🛍️") >= 0 && dr["信号"].ToString().IndexOf("📈") >= 0
-                        && dr["信号"].ToString().IndexOf("🔥") >= 0
-                        && (dr["信号"].ToString().IndexOf("🔥") >= 0 || dr["信号"].ToString().IndexOf("🌟") >= 0))
+                        && dr["信号"].ToString().IndexOf("🔥") >= 0)
                     {
                         string message = Util.RemoveHTMLTag(dr["信号"].ToString()) + " " + dr["代码"].ToString() + " " + dr["名称"].ToString();
                         double price = Math.Round(double.Parse(dr["买入"].ToString()), 2);
