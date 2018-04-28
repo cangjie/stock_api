@@ -599,10 +599,12 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"大于5 10日均量线\" >🔥</a>";
             }
+            /*
             if (currentPrice > line3Price && stock.kLineDay[currentIndex - 1].endPrice < previous3LinePrice)
             {
                 dr["信号"] = dr["信号"].ToString().Trim() + "<a title=\"过3线\" >👫</a>";
             }
+            */
             //buyPrice = Math.Max(currentPrice, buyPrice);
 
             /*
