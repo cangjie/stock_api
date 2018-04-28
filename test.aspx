@@ -36,6 +36,7 @@
                         double maxMa = Math.Max(ma5, ma10);
                         maxMa = Math.Max(maxMa, ma20);
                         maxMa = Math.Max(maxMa, ma30);
+
                         if (stock.kLineDay[currentIndex].startPrice < minMa && stock.kLineDay[currentIndex].highestPrice > maxMa)
                         {
                             DBHelper.InsertData("alert_top", new string[,] { {"alert_date", "datetime", j.ToShortDateString() },
