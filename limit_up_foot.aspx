@@ -395,12 +395,12 @@
         foreach (DataRow drOri in dtOri.Rows)
         {
 
-            /*
-            if (!drOri["gid"].ToString().Trim().Equals("sz002864"))
+            
+            if (drOri["gid"].ToString().Trim().Equals("sh600476"))
             {
-                continue;
+                string aa = "aa";
             }
-            */
+            
 
 
             DateTime alertDate = DateTime.Parse(drOri["alert_date"].ToString().Trim());
