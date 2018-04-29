@@ -639,7 +639,7 @@
                 dr["信号"] = dr["信号"].ToString() + "🛍️";
             }
 
-            if (currentPrice < stock.kLineDay[currentIndex].startPrice)
+            if (buyPrice < stock.kLineDay[currentIndex].startPrice)
             {
                 dr["信号"] = "";
             }

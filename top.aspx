@@ -347,9 +347,9 @@
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
 
-            if (!stock.gid.Trim().Equals("sz300541"))
+            if (!stock.gid.Trim().Equals("sh603569"))
             {
-                //continue;
+                continue;
             }
 
 
@@ -643,7 +643,7 @@
                 dr["信号"] = dr["信号"].ToString() + "🛍️";
             }
 
-            if (currentPrice < stock.kLineDay[currentIndex].startPrice)
+            if (buyPrice < stock.kLineDay[currentIndex].startPrice)
             {
                 dr["信号"] = "";
             }
