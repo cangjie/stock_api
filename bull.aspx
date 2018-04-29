@@ -587,15 +587,15 @@
                 buyPrice = currentPrice;
             }
 
-            if ((totalPressure - buyPrice) / buyPrice > 0.1 || totalPressure == 0)
+            if (((totalPressure - buyPrice) / buyPrice > 0.1 || totalPressure == 0) && (double)dr["放量"] > 1.5)
             {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"上无压力\" >🌟</a>";
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"上无压力，放量\" >🌟</a>";
             }
 
-            if ( macdDays >= 0  && kdjDays >= 0 && kdjDays <= 5 && macdDays >= kdjDays
+            if ( macdDays >= 0  && kdjDays >= 0 && kdjDays <= 5 && macdDays >= kdjDays && (double)dr["放量"] > 1.5
                 && !(stock.kLineDay[currentIndex - 1].endPrice >= prevMa5 && stock.kLineDay[currentIndex].lowestPrice < stock.kLineDay[currentIndex - 1].lowestPrice))
             {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"趋势一级\" >📈</a>";
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"趋势一级，放量\" >📈</a>";
             }
 
             
