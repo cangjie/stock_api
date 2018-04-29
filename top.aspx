@@ -428,7 +428,7 @@
             DateTime lastDate = DateTime.Parse(stock.kLineDay[currentIndex - 1].startDateTime.ToShortDateString());
             double lastDayVolume = stock.kLineDay[currentIndex - 1].VirtualVolume;//Stock.GetVolumeAndAmount(stock.gid, lastDate)[0];
             double currentVolume = stock.kLineDay[currentIndex].VirtualVolume;//Stock.GetVolumeAndAmount(stock.gid, currentDate)[0];
-            int kdjDays = stock.kdjDays(currentIndex);
+            int kdjDays = stock.kdjDays(currentIndex - 1);
             double lowestPrice = stock.LowestPrice(currentDate, 20);
             double highestPrice = stock.HighestPrice(currentDate, 40);
             double f1 = lowestPrice + (highestPrice - lowestPrice) * 0.236;
@@ -492,7 +492,7 @@
             dr["高点"] = highestPrice;
 
             dr["KDJ日"] = kdjDays;
-            dr["MACD日"] = stock.macdDays(currentIndex);
+            dr["MACD日"] = stock.macdDays(currentIndex - 1);
             dr["MACD率"] = macdDegree;
             dr["KDJ率"] = kdjDegree;
             dr["涨幅"] = upSpace;
