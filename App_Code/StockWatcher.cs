@@ -153,6 +153,21 @@ public class StockWatcher
                                     DBHelper.InsertData("alert_bull", new string[,] { {"alert_date", "datetime", DateTime.Now.ToShortDateString() },
                                     {"gid", "varchar", stock.gid.Trim() } });
                                 }
+
+
+
+                                double minMa = Math.Min(ma5, ma10);
+                                minMa = Math.Min(minMa, ma20);
+                                minMa = Math.Min(minMa, ma30);
+                                double maxMa = Math.Max(ma5, ma10);
+                                maxMa = Math.Max(maxMa, ma20);
+                                maxMa = Math.Max(maxMa, ma30);
+
+                                if (stock.kLineDay[currentIndex].startPrice < minMa && stock.kLineDay[currentIndex].highestPrice > maxMa)
+                                {
+                                    DBHelper.InsertData("alert_top", new string[,] { {"alert_date", "datetime", DateTime.Now.Date.ToShortDateString()},
+                                    {"gid", "varchar", stock.gid.Trim() } });
+                                }
                             }
                             catch
                             {
