@@ -429,6 +429,7 @@
             double lastDayVolume = stock.kLineDay[currentIndex - 1].VirtualVolume;//Stock.GetVolumeAndAmount(stock.gid, lastDate)[0];
             double currentVolume = stock.kLineDay[currentIndex].VirtualVolume;//Stock.GetVolumeAndAmount(stock.gid, currentDate)[0];
             int kdjDays = stock.kdjDays(currentIndex - 1);
+            int macdDays = stock.macdDays(currentIndex - 1);
             double lowestPrice = stock.LowestPrice(currentDate, 20);
             double highestPrice = stock.HighestPrice(currentDate, 40);
             double f1 = lowestPrice + (highestPrice - lowestPrice) * 0.236;
@@ -492,7 +493,7 @@
             dr["高点"] = highestPrice;
 
             dr["KDJ日"] = kdjDays;
-            dr["MACD日"] = stock.macdDays(currentIndex - 1);
+            dr["MACD日"] = macdDays;
             dr["MACD率"] = macdDegree;
             dr["KDJ率"] = kdjDegree;
             dr["涨幅"] = upSpace;
@@ -586,8 +587,9 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"上无压力\" >🌟</a>";
             }
 
-            if ( (int)dr["MACD日"] >= 0  && kdjDays >= 0 && kdjDays <= 5 && ( (int)dr["MACD日"] >= kdjDays)
-                && !(stock.kLineDay[currentIndex - 1].endPrice >= prevMa5 && stock.kLineDay[currentIndex].lowestPrice < stock.kLineDay[currentIndex - 1].lowestPrice))
+            //if ( (int)dr["MACD日"] >= 0  && kdjDays >= 0 && kdjDays <= 5 && ( (int)dr["MACD日"] >= kdjDays)
+            //    && !(stock.kLineDay[currentIndex - 1].endPrice >= prevMa5 && stock.kLineDay[currentIndex].lowestPrice < stock.kLineDay[currentIndex - 1].lowestPrice))
+            if (kdjDays >= 0 && macdDays >= 0)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"趋势一级\" >📈</a>";
             }
