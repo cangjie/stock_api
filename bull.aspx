@@ -364,6 +364,13 @@
                 continue;
             }
 
+
+            if (stock.kLineDay[currentIndex].startPrice > stock.kLineDay[currentIndex - 1].endPrice
+                && stock.kLineDay[currentIndex - 1].endPrice > prevMa5 && stock.kLineDay[currentIndex - 1].startPrice > prevMa5)
+            {
+                continue;
+            }
+
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
