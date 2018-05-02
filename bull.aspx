@@ -406,10 +406,13 @@
                     if (stock.kLineDay[currentIndex - 1].startPrice > prevMa5)
                     //整个K线在ma5上方
                     {
+                        correctKlineStyle = false;
+                        /*
                         if (stock.kLineDay[currentIndex].startPrice < ma5)
                         {
                             correctKlineStyle = false;
                         }
+                        */
                     }
                 }
             }
