@@ -371,19 +371,50 @@
                 continue;
             }
             */
-            
+            /*
             if (!(((stock.kLineDay[currentIndex - 1].startPrice < prevMa5 && stock.kLineDay[currentIndex - 1].endPrice > prevMa5 ) && stock.kLineDay[currentIndex].startPrice < stock.kLineDay[currentIndex - 1].endPrice)
                 || (stock.kLineDay[currentIndex].startPrice <= ma5 && stock.kLineDay[currentIndex - 1].startPrice < stock.kLineDay[currentIndex - 1].endPrice)))
             {
                 continue;
             }
-            
+            */
             /*
             if (!((stock.kLineDay[currentIndex - 1].startPrice < prevMa5 && stock.kLineDay[currentIndex - 1].endPrice > prevMa5) && stock.kLineDay[currentIndex].startPrice < ma5))
             {
                 continue;
             }
             */
+
+
+            bool correctKlineStyle = true;
+
+            if (prevMa5 < stock.kLineDay[currentIndex - 1].endPrice)
+            //昨天收在均线上
+            {
+                if (stock.kLineDay[currentIndex - 1].endPrice < stock.kLineDay[currentIndex - 1].startPrice)
+                //昨天收阴
+                {
+                    correctKlineStyle = false;
+                }
+                else
+                //昨天收阳
+                {
+                    if (stock.kLineDay[currentIndex - 1].startPrice > prevMa5)
+                    //整个K线在ma5上方
+                    {
+                        if (stock.kLineDay[currentIndex].startPrice < ma5)
+                        {
+                            correctKlineStyle = false;
+                        }
+                    }
+                }
+            }
+
+            if (!correctKlineStyle)
+            {
+                continue;
+            }
+
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
