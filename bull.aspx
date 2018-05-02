@@ -401,7 +401,7 @@
             double lastDayVolume = stock.kLineDay[currentIndex - 1].VirtualVolume;//Stock.GetVolumeAndAmount(stock.gid, lastDate)[0];
             double currentVolume = stock.kLineDay[currentIndex].VirtualVolume;//Stock.GetVolumeAndAmount(stock.gid, currentDate)[0];
             int kdjDays = stock.kdjDays(currentIndex - 1);
-            int macdDays = stock.kdjDays(currentIndex - 1);
+            int macdDays = stock.macdDays(currentIndex - 1);
             double lowestPrice = stock.LowestPrice(currentDate, 20);
             double highestPrice = stock.HighestPrice(currentDate, 40);
             double f1 = lowestPrice + (highestPrice - lowestPrice) * 0.236;
