@@ -385,6 +385,10 @@
             }
             */
 
+            KLine.ComputeMACD(stock.kLineDay);
+            KLine.ComputeRSV(stock.kLineDay);
+            KLine.ComputeKDJ(stock.kLineDay);
+
 
             bool correctKlineStyle = true;
 
@@ -415,14 +419,20 @@
                 correctKlineStyle = false;
             }
 
+
+
+            if (stock.kLineDay[currentIndex - 1].macd < stock.kLineDay[currentIndex - 2].macd || stock.kLineDay[currentIndex - 1].j < stock.kLineDay[currentIndex - 2].j)
+            {
+                correctKlineStyle = false;
+            }
+
+            
+
             if (!correctKlineStyle)
             {
                 continue;
             }
 
-            KLine.ComputeMACD(stock.kLineDay);
-            KLine.ComputeRSV(stock.kLineDay);
-            KLine.ComputeKDJ(stock.kLineDay);
 
             double current3LinePrice = stock.GetAverageSettlePrice(currentIndex, 3, 3);
             double previous3LinePrice = 0;
