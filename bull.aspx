@@ -391,7 +391,7 @@
 
 
             bool correctKlineStyle = true;
-
+            /*
             if (prevMa5 < stock.kLineDay[currentIndex - 1].endPrice)
             //昨天收在均线上
             {
@@ -411,6 +411,7 @@
                 }
                 
             }
+            */
             /*
             if (ma5 < stock.kLineDay[currentIndex].startPrice &&  stock.kLineDay[currentIndex - 1].endPrice > prevMa5 )
             {
@@ -491,24 +492,10 @@
             bool waitLowPrice = false;
 
             if (stock.kLineDay[currentIndex].startPrice > ma5)
-            {/*
-                if (stock.kLineDay[currentIndex].startPrice > stock.kLineDay[currentIndex - 1].endPrice)
-                {
-                    buyPrice = Math.Max(stock.kLineDay[currentIndex].lowestPrice, ma5);
-                }
-                else
-                {
-                    buyPrice = stock.kLineDay[currentIndex].startPrice;
-                }*/
-                if (stock.kLineDay[currentIndex].startPrice > stock.kLineDay[currentIndex - 1].endPrice)
-                {
-                    buyPrice = Math.Max(stock.kLineDay[currentIndex].lowestPrice, ma5);
-                    waitLowPrice = true;
-                }
-                else
-                {
-                    buyPrice = stock.kLineDay[currentIndex].startPrice;
-                }
+            {
+                buyPrice = Math.Max(stock.kLineDay[currentIndex].lowestPrice, ma5);
+                waitLowPrice = true;
+                
 
             }
 
