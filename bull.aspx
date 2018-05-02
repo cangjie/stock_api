@@ -398,7 +398,6 @@
 
             if (prevMa5 < stock.kLineDay[currentIndex - 1].endPrice && stock.kLineDay[currentIndex].startPrice < ma5
                 && (stock.kLineDay[currentIndex - 1].endPrice - stock.kLineDay[currentIndex].startPrice) / stock.kLineDay[currentIndex - 1].endPrice > 0.0382)
-                )
             //昨天收在均线上, 今天开盘在均线下且跌幅超过3.82%
             {
                 correctKlineStyle = false;
