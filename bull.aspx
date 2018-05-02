@@ -488,7 +488,14 @@
 
             if (stock.kLineDay[currentIndex].startPrice > ma5)
             {
-                buyPrice = stock.kLineDay[currentIndex].startPrice;
+                if (stock.kLineDay[currentIndex].startPrice > stock.kLineDay[currentIndex - 1].endPrice)
+                {
+                    buyPrice = Math.Max(stock.kLineDay[currentIndex].lowestPrice, ma5);
+                }
+                else
+                {
+                    buyPrice = stock.kLineDay[currentIndex].startPrice;
+                }
             }
 
 
