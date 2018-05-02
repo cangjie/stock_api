@@ -76,7 +76,7 @@
         {
             filter = "信号 like '%🔺%'";
         }
-        else
+        else if (Util.GetSafeRequestValue(Request, "option", "").Trim().Equals("openlow"))
         {
             filter = "信号 not like '%🔺%'";
         }
