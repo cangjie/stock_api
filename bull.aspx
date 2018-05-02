@@ -403,7 +403,7 @@
                 else
                 //昨天收阳
                 {
-                    if (stock.kLineDay[currentIndex].startPrice > ma5 && stock.kLineDay[currentIndex].startPrice > stock.kLineDay[currentIndex - 1].endPrice)
+                    if (stock.kLineDay[currentIndex].startPrice > ma5 || stock.kLineDay[currentIndex].startPrice > stock.kLineDay[currentIndex - 1].endPrice)
                     {
                         correctKlineStyle = false;
                     }
