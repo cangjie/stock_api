@@ -400,14 +400,16 @@
                 {
                     correctKlineStyle = false;
                 }
+                /*
                 else
                 //昨天收阳
                 {
                     if ((stock.kLineDay[currentIndex].startPrice - ma5) / ma5 > 0.019 )
                     {
                         correctKlineStyle = false;
-                    }
+                    //}
                 }
+                */
             }
             /*
             if (ma5 < stock.kLineDay[currentIndex].startPrice &&  stock.kLineDay[currentIndex - 1].endPrice > prevMa5 )
@@ -486,8 +488,10 @@
 
             double buyPrice = ma5;
 
+            bool waitLowPrice = false;
+
             if (stock.kLineDay[currentIndex].startPrice > ma5)
-            {
+            {/*
                 if (stock.kLineDay[currentIndex].startPrice > stock.kLineDay[currentIndex - 1].endPrice)
                 {
                     buyPrice = Math.Max(stock.kLineDay[currentIndex].lowestPrice, ma5);
@@ -495,7 +499,17 @@
                 else
                 {
                     buyPrice = stock.kLineDay[currentIndex].startPrice;
+                }*/
+                if (stock.kLineDay[currentIndex].startPrice > stock.kLineDay[currentIndex - 1].endPrice)
+                {
+                    buyPrice = Math.Max(stock.kLineDay[currentIndex].lowestPrice, ma5);
+                    waitLowPrice = true;
                 }
+                else
+                {
+                    buyPrice = stock.kLineDay[currentIndex].startPrice;
+                }
+
             }
 
 
@@ -613,7 +627,10 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"趋势一级，放量\" >📈</a>";
             }
 
-
+            if (waitLowPrice)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"等待回抽\" >🔺</a>";
+            }
 
             if (stock.kLineDay[currentIndex].VirtualVolume >= Stock.GetAvarageVolume(stock.kLineDay, currentIndex, 5)
                 && stock.kLineDay[currentIndex].VirtualVolume >= Stock.GetAvarageVolume(stock.kLineDay, currentIndex, 10))
