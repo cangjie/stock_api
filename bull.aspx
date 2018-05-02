@@ -71,10 +71,14 @@
         else
             currentDate = Util.GetDay(calendar.SelectedDate);
         DataTable dtOri = GetData(currentDate);
-        string filter = " 信号 like '%📈%' or 信号 like '%🌟%' ";
-        if (Util.GetSafeRequestValue(Request, "option", "").Trim().Equals("viewall"))
+        string filter = "";
+        if (Util.GetSafeRequestValue(Request, "option", "").Trim().Equals("openhigh"))
         {
-            filter = "";
+            filter = "信号 like '%🔺%'";
+        }
+        else
+        {
+            filter = "信号 not like '%🔺%'";
         }
         return RenderHtml(dtOri.Select(filter, sort));
     }
@@ -495,7 +499,7 @@
             {
                 buyPrice = Math.Max(stock.kLineDay[currentIndex].lowestPrice, ma5);
                 waitLowPrice = true;
-                
+
 
             }
 
