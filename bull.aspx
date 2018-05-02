@@ -403,10 +403,17 @@
             int kdjDays = stock.kdjDays(currentIndex - 1);
             int macdDays = stock.macdDays(currentIndex - 1);
 
-            if (kdjDays == -1 && macdDays == -1)
+            //if (kdjDays == -1 && macdDays == -1 && (kdjDays ) )
+            //{
+            //    continue;
+            //}
+
+            if (!(kdjDays != -1 && macdDays != -1 && (macdDays <= kdjDays || ((macdDays > kdjDays) && macdDays > 5))))
             {
                 continue;
             }
+
+
 
             double lowestPrice = stock.LowestPrice(currentDate, 20);
             double highestPrice = stock.HighestPrice(currentDate, 40);
