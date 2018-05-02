@@ -404,7 +404,7 @@
                 else
                 //昨天收阳
                 {
-                    if ((stock.kLineDay[currentIndex].startPrice - ma5) / ma5 > 0.0382 )
+                    if ((stock.kLineDay[currentIndex].startPrice - ma5) / ma5 > 0.0191 )
                     {
                         correctKlineStyle = false;
                     }
