@@ -372,8 +372,8 @@
             }
             */
             
-            if (!(((stock.kLineDay[currentIndex - 1].startPrice < prevMa5 && stock.kLineDay[currentIndex - 1].endPrice > prevMa5 && stock.kLineDay[currentIndex - 1].startPrice < stock.kLineDay[currentIndex - 1].endPrice) && stock.kLineDay[currentIndex].startPrice < stock.kLineDay[currentIndex - 1].endPrice)
-                || (stock.kLineDay[currentIndex].startPrice <= ma5)))
+            if (!(((stock.kLineDay[currentIndex - 1].startPrice < prevMa5 && stock.kLineDay[currentIndex - 1].endPrice > prevMa5 ) && stock.kLineDay[currentIndex].startPrice < stock.kLineDay[currentIndex - 1].endPrice)
+                || (stock.kLineDay[currentIndex].startPrice <= ma5 && stock.kLineDay[currentIndex - 1].startPrice < stock.kLineDay[currentIndex - 1].endPrice)))
             {
                 continue;
             }
