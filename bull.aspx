@@ -339,7 +339,7 @@
 
             if (!stock.gid.Trim().Equals("sz002369"))
             {
-                continue;
+                //continue;
             }
 
 
