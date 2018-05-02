@@ -410,6 +410,11 @@
                 }
             }
 
+            if (ma5 < stock.kLineDay[currentIndex].startPrice)
+            {
+                correctKlineStyle = false;
+            }
+
             if (!correctKlineStyle)
             {
                 continue;
