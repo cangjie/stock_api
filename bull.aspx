@@ -333,29 +333,17 @@
         {
             gidArr[i] = dtOri.Rows[i]["gid"].ToString().Trim();
         }
-
-        //Stock.GetKLineSetArray(gidArr, "day", 50);
-        /*
-        foreach (DataRow drOri in dtOri.Rows)
-        {
-            sqlUnion = sqlUnion + (sqlUnion.Trim().Equals("") ? " " : " union ") + "  select  * from " + drOri["gid"].ToString().Trim() + "_k_line where type = 'day' and start_date = '"
-                + currentDate.ToShortDateString() + " 9:30' ";
-        }
-        */
-        //foreach (DataRow drOri in dtOri.Select(" gid = 'sz300101'  "))
-        //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
 
-            if (!stock.gid.Trim().Equals("sz300541"))
+            if (!stock.gid.Trim().Equals("sz002369"))
             {
-                //continue;
+                continue;
             }
 
 
             stock.LoadKLineDay(rc);
-            //stock.LoadKLineDay();
             int currentIndex = stock.GetItemIndex(currentDate);
             if (currentIndex < 1)
                 continue;
@@ -376,19 +364,12 @@
                 continue;
             }
 
-
-            //KeyValuePair<string, double>[] quota = stock.GetSortedQuota(currentIndex);
-
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
 
-
-            //if (!KLine.IsCros3LineTwice(stock.kLineDay, currentIndex, 20))
-            //    continue;
             double current3LinePrice = stock.GetAverageSettlePrice(currentIndex, 3, 3);
             double previous3LinePrice = 0;
-            //double previous3LineIndex = 0;
             int adjustDays = 0;
             for (int i = currentIndex - 1; i >= 0; i--)
             {
@@ -396,18 +377,7 @@
                 {
                     adjustDays++;
                 }
-                /*
-                if (previous3LineIndex == 0)
-                {
-                    double line3PriceTemp = stock.GetAverageSettlePrice(i, 3, 3);
-                    if (stock.kLineDay[i].endPrice  < line3PriceTemp)
-                        previous3LineIndex++;
 
-                    if (Math.Min(stock.kLineDay[i].startPrice, stock.kLineDay[i].endPrice) > line3PriceTemp &&
-                        stock.kLineDay[i + 1].startPrice < stock.GetAverageSettlePrice(i + 1, 3, 3))
-                        previous3LineIndex = i + 1;
-                }
-                */
                 if (KLine.IsCross3Line(stock.kLineDay, i))
                 {
                     previous3LinePrice = stock.GetAverageSettlePrice(i, 3, 3);
@@ -415,17 +385,6 @@
                 }
             }
             adjustDays++;
-
-
-            /*
-            if (previous3LineIndex == 0)
-                continue;
-                */
-            //if (previous3LinePrice > current3LinePrice)
-            //    continue;
-
-            //if (adjustDays > 5)
-            //    continue;
 
             double settlePrice = stock.kLineDay[currentIndex - 1].endPrice;
             double openPrice = stock.kLineDay[currentIndex].startPrice;
@@ -441,14 +400,37 @@
             double f1 = lowestPrice + (highestPrice - lowestPrice) * 0.236;
             double f3 = lowestPrice + (highestPrice - lowestPrice) * 0.382;
             double f5 = lowestPrice + (highestPrice - lowestPrice) * 0.618;
-            double buyPrice = currentPrice;
+
             double macdPrice = KLine.GetMACDFolkPrice(stock.kLineDay, currentIndex);
             double macdDegree = KLine.ComputeMacdDegree(stock.kLineDay, currentIndex)*1000;
             double kdjDegree = KLine.ComputeKdjDegree(stock.kLineDay, currentIndex);
             double upSpace = 0;
             double downSpace = 0;
-            buyPrice = Math.Max(macdPrice, line3Price);
-            buyPrice = Math.Max(stock.kLineDay[currentIndex].startPrice, buyPrice);
+
+
+
+            double buyPrice = ma5;
+
+            if (stock.kLineDay[currentIndex].startPrice > ma5)
+            {
+                buyPrice = stock.kLineDay[currentIndex].startPrice;
+            }
+
+
+            double pressure = stock.GetMaPressure(currentIndex, buyPrice);
+            double highPointPressure = 0;
+
+            KeyValuePair<DateTime, double>[] highPoints = Stock.GetHighPoints(stock.kLineDay, currentIndex);
+            for (int i = 0; i < highPoints.Length; i++)
+            {
+                if (highPoints[i].Value >= stock.kLineDay[currentIndex].highestPrice * 0.99)
+                {
+                    highPointPressure = highPoints[i].Value;
+                    break;
+                }
+            }
+
+
             if (buyPrice <= lowestPrice)
             {
                 downSpace = 0.1;
@@ -479,8 +461,6 @@
                 upSpace = 0.1;
                 downSpace = (buyPrice - highestPrice) / buyPrice;
             }
-            //if (kdjDays < 0)
-            //    continue;
 
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
@@ -509,54 +489,6 @@
             dr["TD"] = KLine.GetLastDeMarkBuyPointIndex(stock.kLineDay, currentIndex);
             dr["均涨"] = (line3Price - previous3LinePrice) /previous3LinePrice / adjustDays;
 
-            if (currentPrice < line3Price || kdjDays == -1)
-            {
-                //dr["信号"] = "💩";
-            }
-            if (currentVolume / lastDayVolume >= 0.75 && currentVolume / lastDayVolume <= 1.5 && (upSpace <= 0.005 || (upSpace >= downSpace * 2 && upSpace + downSpace >= 0.04)))
-            {
-                //dr["信号"] = dr["信号"].ToString() + "📈";
-            }
-
-
-            /*
-            if (ma5 > ma10 + 0.05  && ma10 > ma20 + 0.05)
-            {
-                if (ma20 > ma60 + 0.05)
-                {
-                    dr["信号"] = dr["信号"].ToString().Trim() + "<a title=\"5 10 20 60日均线多头排列\" >👨‍👩‍👧‍👦</a>";
-                }
-                else
-                {
-                    dr["信号"] = dr["信号"].ToString().Trim() + "<a title=\"5 10 20日均线多头排列\" >👪</a>";
-                }
-                if (line3Price < ma5 && line3Price > ma10)
-                {
-                    dr["信号"] = dr["信号"].ToString().Trim() + "<a title=\"3线在5日均线下\" >👫</a>";
-                }
-            }
-            */
-
-
-
-
-
-            double pressure = stock.GetMaPressure(currentIndex, currentPrice);
-            double highPointPressure = 0;
-
-
-
-            KeyValuePair<DateTime, double>[] highPoints = Stock.GetHighPoints(stock.kLineDay, currentIndex);
-            for (int i = 0; i < highPoints.Length; i++)
-            {
-                if (highPoints[i].Value >= stock.kLineDay[currentIndex].highestPrice * 0.99)
-                {
-                    highPointPressure = highPoints[i].Value;
-                    break;
-                }
-            }
-
-            buyPrice = stock.GetMaSupport(currentIndex, currentPrice);
             dr["均线支撑"] = buyPrice;
 
 
@@ -566,7 +498,7 @@
             KeyValuePair<string, double>[] quota = stock.GetSortedQuota(currentIndex);
             for (int j = quota.Length - 1; j >= 0; j--)
             {
-                if (quota[j].Key.Trim().StartsWith("ma") 
+                if (quota[j].Key.Trim().StartsWith("ma")
                     && stock.kLineDay[currentIndex].highestPrice >= quota[j].Value && buyPrice < quota[j].Value)
                 {
                     buyPrice = quota[j].Value;
@@ -599,7 +531,7 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"趋势一级，放量\" >📈</a>";
             }
 
-            
+
 
             if (stock.kLineDay[currentIndex].VirtualVolume >= Stock.GetAvarageVolume(stock.kLineDay, currentIndex, 5)
                 && stock.kLineDay[currentIndex].VirtualVolume >= Stock.GetAvarageVolume(stock.kLineDay, currentIndex, 10))
@@ -610,8 +542,6 @@
             {
                 dr["信号"] = dr["信号"].ToString().Trim() + "<a title=\"过3线\" >👫</a>";
             }
-            //buyPrice = Math.Max(currentPrice, buyPrice);
-           
 
             if ((int)dr["KDJ日"] == 0 && (int)dr["MACD日"] == 0 && (double)dr["今涨"] <= 0.0618 && (double)dr["放量"] > 1.5)
             {
@@ -619,17 +549,6 @@
             }
 
 
-            /*
-            if ((int)dr["MACD时"] >= 0 && (int)dr["KDJ日"] >= 0 && currentPrice <= f5 && currentPrice >= f1 && currentVolume / lastDayVolume >= 0.85)
-            {
-                dr["信号"] = dr["信号"].ToString() + "🔥";
-            }
-            
-            if (stock.kLineDay[currentIndex].lowestPrice > stock.kLineDay[currentIndex - 1].highestPrice && (double)dr["今涨"] <= 0.095 )
-            {
-                dr["信号"] = dr["信号"].ToString() + "🌟";
-            }
-            */
 
             if (stock.kLineDay[currentIndex].startPrice <= ma30)
             {
@@ -640,12 +559,12 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "🛍️";
             }
-
+            /*
             if (buyPrice < stock.kLineDay[currentIndex].startPrice)
             {
                 dr["信号"] = "";
             }
-
+            */
             dr["买入"] = buyPrice;
             dr["均线压力"] = pressure;
 
