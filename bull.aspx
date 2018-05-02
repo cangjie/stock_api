@@ -391,7 +391,7 @@
 
 
             bool correctKlineStyle = true;
-
+            /*
             if (prevMa5 < stock.kLineDay[currentIndex - 1].endPrice)
             //昨天收在均线上
             {
@@ -418,7 +418,7 @@
             {
                 correctKlineStyle = false;
             }
-
+            */
 
 
             if (stock.kLineDay[currentIndex - 1].macd < stock.kLineDay[currentIndex - 2].macd || stock.kLineDay[currentIndex - 1].j < stock.kLineDay[currentIndex - 2].j)
