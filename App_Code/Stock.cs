@@ -1494,7 +1494,46 @@ public class Stock
         return 0;
     }
 
+    public static double ComputeQuantityRelativeRatio(KLine[] kArr, Core.Timeline[] todayTimelineArr, DateTime currentDate)
+    {
+        int currentVolume = 0;
+        DateTime ratioDate = currentDate;
+        for (int i = 0; i < todayTimelineArr.Length; i++)
+        {
+            if (todayTimelineArr[i].tickTime < currentDate)
+            {
+                currentVolume = todayTimelineArr[i].volume;
+                ratioDate = todayTimelineArr[i].tickTime;
+            }
+            else
+            {
+                break;
+            }
+        }
+        double todayTransMinute = Core.Util.GetTrasactMinutesForADay(ratioDate);
+        //double todayVolumePerMinute = currentVolume / todayTransMinute;
+        double total5DayVolume = 0;
+        int j = 0;
+        for (int i = kArr.Length - 1; i >= 0; i--)
+        {
+            if (kArr[i].endDateTime.Date < currentDate.Date)
+            {
+                total5DayVolume = total5DayVolume + kArr[i].volume;
+                j++;
+            }
+            if (j >= 5)
+            {
+                break;
+            }
+        }
+        if (todayTransMinute > 0)
+        {
+            return (currentVolume / todayTransMinute) / (total5DayVolume / (60 * 4 * 5));
+        }
+        return 0;
+    }
 
+    
 
 
 }

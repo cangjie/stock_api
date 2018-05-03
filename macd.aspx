@@ -21,7 +21,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "今涨 desc");
+        sort = Util.GetSafeRequestValue(Request, "sort", "量比 desc");
         if (!IsPostBack)
         {
             try
@@ -121,6 +121,7 @@
                     {
                         case "综指":
                         case "昨收":
+                        case "量比":
                             dr[i] = Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2).ToString();
                             break;
                         case "买入":
@@ -143,6 +144,7 @@
                         case "均线支撑":
                         case "前高压力":
                         case "MACD价":
+
                             double currentValuePrice = (double)drOri[i];
                             dr[i] = "<font color=\"" + (currentValuePrice > currentPrice ? "red" : (currentValuePrice == currentPrice ? "gray" : "green")) + "\"  >"
                                 + Math.Round(currentValuePrice, 2).ToString() + "</font>";
@@ -297,6 +299,7 @@
         dt.Columns.Add("今收", Type.GetType("System.Double"));
         dt.Columns.Add("今涨", Type.GetType("System.Double"));
         dt.Columns.Add("放量", Type.GetType("System.Double"));
+        dt.Columns.Add("量比", Type.GetType("System.Double"));
         dt.Columns.Add("均线压力", Type.GetType("System.Double"));
         dt.Columns.Add("前高压力", Type.GetType("System.Double"));
         dt.Columns.Add("均线支撑", Type.GetType("System.Double"));
@@ -359,7 +362,7 @@
             stock.LoadKLineDay(rc);
             //stock.LoadKLineDay();
             int currentIndex = stock.GetItemIndex(currentDate);
-            if (currentIndex < 1)
+            if (currentIndex < 4)
                 continue;
             double ma5 = stock.GetAverageSettlePrice(currentIndex, 5, 0);
             double ma10 = stock.GetAverageSettlePrice(currentIndex, 10, 0);
@@ -368,6 +371,43 @@
 
 
 
+
+            /*
+            double past5DayVolumePerMin = stock.kLineDay[currentIndex - 1].volume + stock.kLineDay[currentIndex - 2].volume
+                + stock.kLineDay[currentIndex - 3].volume + stock.kLineDay[currentIndex - 4].volume + stock.kLineDay[currentIndex - 5].volume;
+            past5DayVolumePerMin = past5DayVolumePerMin / (60 * 4 * 5);
+
+            double currentTransactMinutes = 0;
+            if (DateTime.Now.Date == currentDate.Date)
+            {
+                if (DateTime.Now > DateTime.Now.Date.AddHours(9).AddMinutes(30) && DateTime.Now <= DateTime.Now.Date.AddHours(11).AddMinutes(30))
+                {
+                    TimeSpan ts = DateTime.Now - DateTime.Now.Date.AddHours(9).AddMinutes(30);
+                    currentTransactMinutes = ts.TotalMinutes;
+                }
+                else if (DateTime.Now > DateTime.Now.Date.AddHours(11).AddMinutes(30) && DateTime.Now <= DateTime.Now.Date.AddHours(13))
+                {
+                    currentTransactMinutes = 120;
+                }
+                else if (DateTime.Now > DateTime.Now.Date.AddHours(13) && DateTime.Now < DateTime.Now.Date.AddHours(15))
+                {
+                    TimeSpan ts = DateTime.Now - DateTime.Now.Date.AddHours(13);
+                    currentTransactMinutes = 120 + ts.TotalMinutes;
+                }
+                else
+                {
+                    currentTransactMinutes = 240;
+                }
+            }
+            else if (currentDate.Date < DateTime.Now.Date)
+            {
+                currentTransactMinutes = 60 * 4;
+            }
+            else
+            {
+                currentTransactMinutes = 0;
+            }
+            */
             /*
             if (ma5 <= ma10 || ma10 <= ma20 || ma20 <= ma30)
             {
@@ -452,7 +492,7 @@
             //double buyPrice = stock.kLineDay[currentIndex - 1].endPrice * 1.06; ;//Math.Max(maSupport, macdPrice);
             //if (stock.kLineDay[currentIndex].highestPrice < buyPrice || stock.kLineDay[currentIndex].lowestPrice > buyPrice)
             //{
-                //continue;
+            //continue;
             //}
             //buyPrice = Math.Max(buyPrice, line3Price);
             /*
@@ -470,11 +510,16 @@
             double maxMa = Math.Max(ma5, ma10);
             maxMa = Math.Max(maxMa, ma20);
             maxMa = Math.Max(maxMa, ma30);
+            /*
             if (stock.kLineDay[currentIndex].highestPrice < maxMa)
             {
                 continue;
             }
-            double buyPrice = maxMa;
+            */
+            double buyPrice = double.Parse(drOri["alert_price"].ToString());
+            //buyPrice = Math.Min(Math.Max(Math.Max(buyPrice, maxMa), macdPrice), stock.kLineDay[currentIndex].highestPrice);
+
+
             if (buyPrice <= lowestPrice)
             {
                 downSpace = 0.1;
@@ -512,7 +557,7 @@
                 continue;
             }
 
-            
+
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
@@ -521,6 +566,7 @@
             dr["今收"] = currentPrice;
             dr["今涨"] = (buyPrice - settlePrice) / settlePrice;
             dr["放量"] = currentVolume / lastDayVolume;
+            dr["量比"] = 0;// Math.Round((stock.kLineDay[currentIndex].volume / currentTransactMinutes) / past5DayVolumePerMin, 2);
             dr["3线"] = line3Price;
             dr["低点"] = lowestPrice;
             dr["调整日"] = adjustDays.ToString();// currentIndex - previous3LineIndex;
@@ -590,10 +636,6 @@
             dr["支撑涨幅"] = (maSupport - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
             dr["MACD涨幅"] = ((double)drOri["alert_price"] - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
 
-            if ((double)dr["MACD涨幅"] <= 0 || (double)dr["支撑涨幅"] <= 0)
-            {
-                continue;
-            }
 
 
             dr["相差"] = Math.Abs((double)dr["支撑涨幅"] - (double)dr["MACD涨幅"]);
@@ -630,7 +672,7 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"上无压力\" >🌟</a>";
             }
-
+            /*
             if ((double)dr["MACD涨幅"] > 0.06 && (double)dr["放量"] >= 1.5 && (double)dr["放量"] <= 2.5 )
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"涨幅过6%，放量200%\" >📈</a>";
@@ -640,7 +682,7 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"买入价过前高\" >🔥</a>";
             }
-
+            */
             /*
             if ((int)dr["MACD时"] >= 0 && (int)dr["KDJ日"] >= 0 && currentPrice <= f5 && currentPrice >= f1 && currentVolume / lastDayVolume >= 0.85)
             {
@@ -663,17 +705,34 @@
 
 
 
+
+
+
             double maxPrice = 0;
             for (int i = 1; i <= 5; i++)
             {
                 if (currentIndex + i >= stock.kLineDay.Length)
                     break;
-                double highPrice = stock.kLineDay[currentIndex + i].endPrice;
+                double highPrice = stock.kLineDay[currentIndex + i].highestPrice;
                 maxPrice = Math.Max(maxPrice, highPrice);
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) /buyPrice;
             }
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
 
+            if (stock.gid.Trim().Equals("sh600620"))
+            {
+                //string aa = "aa";
+            }
+
+            Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
+            if (timelineArray.Length == 0)
+            {
+                timelineArray = Core.Timeline.LoadTimelineArrayFromSqlServer(stock.gid, currentDate);
+            }
+            if (timelineArray != null)
+            {
+                dr["量比"] = Stock.ComputeQuantityRelativeRatio(stock.kLineDay, timelineArray, DateTime.Parse(drOri["create_date"].ToString().Trim()));
+            }
 
 
             dt.Rows.Add(dr);
@@ -761,7 +820,8 @@
                     <asp:BoundColumn DataField="信号" HeaderText="信号" SortExpression="信号|desc" ></asp:BoundColumn>
              
                     
-                    <asp:BoundColumn DataField="放量" HeaderText="放量" SortExpression="放量|desc"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="放量" HeaderText="放量" ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="量比" HeaderText="量比" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="今涨" HeaderText="今涨" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="前高压力" HeaderText="前高压力"></asp:BoundColumn>
                     <asp:BoundColumn DataField="均线压力" HeaderText="均线压力"></asp:BoundColumn>
@@ -769,18 +829,14 @@
                     <asp:BoundColumn DataField="MACD日" HeaderText="MACD日" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" ></asp:BoundColumn>
                     
-                    <asp:BoundColumn DataField="低点" HeaderText="低点"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="F5" HeaderText="F5"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="高点" HeaderText="高点"></asp:BoundColumn>
+                   
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
                     <asp:BoundColumn DataField="MACD价" HeaderText="MACD价"></asp:BoundColumn>
                     <asp:BoundColumn DataField="均线支撑" HeaderText="均线支撑"></asp:BoundColumn>
                     <asp:BoundColumn DataField="前高空间" HeaderText="前高空间"></asp:BoundColumn>
                     <asp:BoundColumn DataField="MACD涨幅" HeaderText="MACD涨幅" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="支撑涨幅" HeaderText="支撑涨幅" ></asp:BoundColumn>
-                    <asp:BoundColumn DataField="相差" HeaderText="相差"></asp:BoundColumn>
-
+                   
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="0日" HeaderText="0日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日" SortExpression="1日|desc" ></asp:BoundColumn>
