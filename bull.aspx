@@ -659,7 +659,7 @@
             }
 
             if ((dr["信号"].ToString().IndexOf("🔺") < 0 && currentPrice <= buyPrice * 1.01 && currentPrice >= buyPrice)
-                || (dr["信号"].ToString().IndexOf("🔺") >= 0 && stock.kLineDay[currentIndex].lowestPrice <= ma5 && currentPrice > ma5 * 1.005 && currentPrice < ma5 * 1.01 ) )
+                || (dr["信号"].ToString().IndexOf("🔺") >= 0 && stock.kLineDay[currentIndex].lowestPrice <= ma5 * 1.005 && currentPrice > ma5 * 1.005 && currentPrice < ma5 * 1.01 ) )
             {
                 dr["信号"] = dr["信号"].ToString() + "🛍️";
             }

@@ -21,7 +21,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "相差, MACD涨幅 desc");
+        sort = Util.GetSafeRequestValue(Request, "sort", "今涨 desc");
         if (!IsPostBack)
         {
             try
@@ -449,8 +449,13 @@
             double downSpace = 0;
             double pressure = stock.GetMaPressure(currentIndex, currentPrice);
             double maSupport = stock.GetMaSupport(currentIndex, currentPrice);
-            double buyPrice = Math.Max(maSupport, macdPrice);
-            buyPrice = Math.Max(buyPrice, line3Price);
+            //double buyPrice = stock.kLineDay[currentIndex - 1].endPrice * 1.06; ;//Math.Max(maSupport, macdPrice);
+            //if (stock.kLineDay[currentIndex].highestPrice < buyPrice || stock.kLineDay[currentIndex].lowestPrice > buyPrice)
+            //{
+                //continue;
+            //}
+            //buyPrice = Math.Max(buyPrice, line3Price);
+            /*
             if (buyPrice < stock.kLineDay[currentIndex].lowestPrice)
             {
                 buyPrice = stock.kLineDay[currentIndex].lowestPrice;
@@ -459,8 +464,17 @@
             {
                 buyPrice = stock.kLineDay[currentIndex].highestPrice;
             }
+            */
             //buyPrice = Math.Max(macdPrice, line3Price);
             //buyPrice = Math.Max(stock.kLineDay[currentIndex].startPrice, buyPrice);
+            double maxMa = Math.Max(ma5, ma10);
+            maxMa = Math.Max(maxMa, ma20);
+            maxMa = Math.Max(maxMa, ma30);
+            if (stock.kLineDay[currentIndex].highestPrice < maxMa)
+            {
+                continue;
+            }
+            double buyPrice = maxMa;
             if (buyPrice <= lowestPrice)
             {
                 downSpace = 0.1;
@@ -491,16 +505,21 @@
                 upSpace = 0.1;
                 downSpace = (buyPrice - highestPrice) / buyPrice;
             }
-            if (kdjDays < 0)
-                continue;
 
+            int macdDays =  stock.macdDays(currentIndex);
+            if (kdjDays >= 1 || macdDays >= 1)
+            {
+                continue;
+            }
+
+            
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
             dr["昨收"] = settlePrice;
             dr["今开"] = openPrice;
             dr["今收"] = currentPrice;
-            dr["今涨"] = (stock.kLineDay[currentIndex].highestPrice - settlePrice) / settlePrice;
+            dr["今涨"] = (buyPrice - settlePrice) / settlePrice;
             dr["放量"] = currentVolume / lastDayVolume;
             dr["3线"] = line3Price;
             dr["低点"] = lowestPrice;
@@ -511,7 +530,7 @@
             dr["高点"] = highestPrice;
 
             dr["KDJ日"] = kdjDays;
-            dr["MACD日"] = stock.macdDays(currentIndex);
+            dr["MACD日"] = macdDays;
 
             dr["MACD价"] = (double)drOri["alert_price"];
             dr["涨幅"] = upSpace;
@@ -743,11 +762,12 @@
              
                     
                     <asp:BoundColumn DataField="放量" HeaderText="放量" SortExpression="放量|desc"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="今涨" HeaderText="今涨" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="前高压力" HeaderText="前高压力"></asp:BoundColumn>
                     <asp:BoundColumn DataField="均线压力" HeaderText="均线压力"></asp:BoundColumn>
                     
-
-                    <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="MACD日" HeaderText="MACD日" ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" ></asp:BoundColumn>
                     
                     <asp:BoundColumn DataField="低点" HeaderText="低点"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>
