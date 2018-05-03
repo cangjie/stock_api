@@ -668,9 +668,22 @@
             }
             */
             //buyPrice = Math.Max(currentPrice, buyPrice);
-            if ((pressure - buyPrice) / buyPrice > 0.1 || pressure == 0)
+
+
+            Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
+            if (timelineArray.Length == 0)
             {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"上无压力\" >🌟</a>";
+                timelineArray = Core.Timeline.LoadTimelineArrayFromSqlServer(stock.gid, currentDate);
+            }
+            if (timelineArray != null)
+            {
+                dr["量比"] = Stock.ComputeQuantityRelativeRatio(stock.kLineDay, timelineArray, DateTime.Parse(drOri["create_date"].ToString().Trim()));
+            }
+
+
+            if (((pressure - buyPrice) / buyPrice > 0.1 || pressure == 0) && (double)dr["今涨"] > 0.02 && (double)dr["量比"] > 2)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"上无压力，此时涨2%，量比大于2\" >🌟</a>";
             }
             /*
             if ((double)dr["MACD涨幅"] > 0.06 && (double)dr["放量"] >= 1.5 && (double)dr["放量"] <= 2.5 )
@@ -724,16 +737,7 @@
                 //string aa = "aa";
             }
 
-            Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
-            if (timelineArray.Length == 0)
-            {
-                timelineArray = Core.Timeline.LoadTimelineArrayFromSqlServer(stock.gid, currentDate);
-            }
-            if (timelineArray != null)
-            {
-                dr["量比"] = Stock.ComputeQuantityRelativeRatio(stock.kLineDay, timelineArray, DateTime.Parse(drOri["create_date"].ToString().Trim()));
-            }
-
+            
 
             dt.Rows.Add(dr);
         }
