@@ -483,7 +483,7 @@
             //    continue;
             //}
 
-            if (!(macdDays <= kdjDays & kdjDays <= 1))
+            if (!(macdDays <= kdjDays && kdjDays <= 1 && Math.Abs(macdDays - kdjDays) < 2))
             {
                 continue;
             }
