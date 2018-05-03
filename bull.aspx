@@ -483,7 +483,7 @@
             //    continue;
             //}
 
-            if (!(kdjDays != -1 && macdDays != -1 && macdDays <= kdjDays & kdjDays <= 1))
+            if (!(macdDays <= kdjDays & kdjDays <= 1))
             {
                 continue;
             }
