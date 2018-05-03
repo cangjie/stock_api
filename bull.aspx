@@ -436,14 +436,14 @@
             DateTime lastDate = DateTime.Parse(stock.kLineDay[currentIndex - 1].startDateTime.ToShortDateString());
             double lastDayVolume = stock.kLineDay[currentIndex - 1].VirtualVolume;//Stock.GetVolumeAndAmount(stock.gid, lastDate)[0];
             double currentVolume = stock.kLineDay[currentIndex].VirtualVolume;//Stock.GetVolumeAndAmount(stock.gid, currentDate)[0];
-            int kdjDays = stock.kdjDays(currentIndex - 1);
-            int macdDays = stock.macdDays(currentIndex - 1);
+            int kdjDays = stock.kdjDays(currentIndex);
+            int macdDays = stock.macdDays(currentIndex);
 
 
 
             if (!(macdDays <= kdjDays && kdjDays <= 1 && Math.Abs(macdDays - kdjDays) < 2))
             {
-                continue;
+                //continue;
             }
 
             if (macdDays == -1 && kdjDays == -1)
