@@ -681,10 +681,16 @@
             }
 
 
-            if (((pressure - buyPrice) / buyPrice > 0.1 || pressure == 0) && (double)dr["今涨"] > 0.03 && (double)dr["量比"] > 3)
+            if (((pressure - buyPrice) / buyPrice > 0.1 || pressure == 0) )
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"上无压力，此时涨3%，量比大于3\" >🌟</a>";
             }
+
+            if ((double)dr["今涨"] > 0.03 && (double)dr["量比"] > 3)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"量比，涨幅都大于3\" >📈</a>";
+            }
+
             /*
             if ((double)dr["MACD涨幅"] > 0.06 && (double)dr["放量"] >= 1.5 && (double)dr["放量"] <= 2.5 )
             {
@@ -737,7 +743,7 @@
                 //string aa = "aa";
             }
 
-            
+
 
             dt.Rows.Add(dr);
         }
