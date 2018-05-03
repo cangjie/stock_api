@@ -709,11 +709,14 @@
                 foreach(DataRow dr in dt.Rows)
                 {
                     //string signalStr = Util.RemoveHTMLTag()
+                    /*
                     if (dr["信号"].ToString().IndexOf("🛍️") >= 0
                         && dr["信号"].ToString().IndexOf("🔥") >= 0
                         && (dr["信号"].ToString().IndexOf("👑") >= 0
                 || dr["信号"].ToString().IndexOf("🌟") >= 0
                 || dr["信号"].ToString().IndexOf("📈") >= 0))
+                */
+                    if (dr["信号"].ToString().IndexOf("🛍️") >= 0)
                     {
                         string message = Util.RemoveHTMLTag(dr["信号"].ToString()) + " " + dr["代码"].ToString()
                 + " " + dr["名称"].ToString() + " 放量：" + dr["放量"].ToString()
