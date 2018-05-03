@@ -133,6 +133,7 @@
                         case "昨收":
                         case "MACD率":
                         case "KDJ率":
+                        case "量比":
                             dr[i] = Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2).ToString();
                             break;
                         case "买入":
@@ -302,6 +303,7 @@
         dt.Columns.Add("今收", Type.GetType("System.Double"));
         dt.Columns.Add("今涨", Type.GetType("System.Double"));
         dt.Columns.Add("放量", Type.GetType("System.Double"));
+        dt.Columns.Add("量比", Type.GetType("System.Double"));
         dt.Columns.Add("均线压力", Type.GetType("System.Double"));
         dt.Columns.Add("前高压力", Type.GetType("System.Double"));
         dt.Columns.Add("均线支撑", Type.GetType("System.Double"));
@@ -341,7 +343,7 @@
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
 
-            if (!stock.gid.Trim().Equals("sz002369"))
+            if (!stock.gid.Trim().Equals("sz002030"))
             {
                 //continue;
             }
@@ -358,6 +360,11 @@
             double ma30 = stock.GetAverageSettlePrice(currentIndex, 30, 0);
 
 
+
+
+
+
+
             if (ma5 <= ma10 || ma10 <= ma20 || ma20 <= ma30)
             {
                 continue;
@@ -368,26 +375,7 @@
                 continue;
             }
 
-            /*
-            if (stock.kLineDay[currentIndex].startPrice > stock.kLineDay[currentIndex - 1].endPrice
-                && stock.kLineDay[currentIndex - 1].endPrice > prevMa5 && stock.kLineDay[currentIndex - 1].startPrice > prevMa5)
-            {
-                continue;
-            }
-            */
-            /*
-            if (!(((stock.kLineDay[currentIndex - 1].startPrice < prevMa5 && stock.kLineDay[currentIndex - 1].endPrice > prevMa5 ) && stock.kLineDay[currentIndex].startPrice < stock.kLineDay[currentIndex - 1].endPrice)
-                || (stock.kLineDay[currentIndex].startPrice <= ma5 && stock.kLineDay[currentIndex - 1].startPrice < stock.kLineDay[currentIndex - 1].endPrice)))
-            {
-                continue;
-            }
-            */
-            /*
-            if (!((stock.kLineDay[currentIndex - 1].startPrice < prevMa5 && stock.kLineDay[currentIndex - 1].endPrice > prevMa5) && stock.kLineDay[currentIndex].startPrice < ma5))
-            {
-                continue;
-            }
-            */
+
 
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
@@ -408,33 +396,6 @@
                 correctKlineStyle = false;
             }
 
-            /*
-            if (prevMa5 < stock.kLineDay[currentIndex - 1].endPrice)
-            //昨天收在均线上
-            {
-                if (stock.kLineDay[currentIndex - 1].endPrice < stock.kLineDay[currentIndex - 1].startPrice)
-                //昨天收阴
-                {
-                    correctKlineStyle = false;
-                }
-                
-                else
-                //昨天收阳
-                {
-                    if ((stock.kLineDay[currentIndex].startPrice - ma5) / ma5 > 0.0191 )
-                    {
-                        correctKlineStyle = false;
-                    }
-                }
-                
-            }
-            */
-            /*
-            if (ma5 < stock.kLineDay[currentIndex].startPrice &&  stock.kLineDay[currentIndex - 1].endPrice > prevMa5 )
-            {
-                correctKlineStyle = false;
-            }
-            */
 
 
             if (stock.kLineDay[currentIndex - 1].macd < stock.kLineDay[currentIndex - 2].macd || stock.kLineDay[currentIndex - 1].j < stock.kLineDay[currentIndex - 2].j)
@@ -478,10 +439,7 @@
             int kdjDays = stock.kdjDays(currentIndex - 1);
             int macdDays = stock.macdDays(currentIndex - 1);
 
-            //if (kdjDays == -1 && macdDays == -1 && (kdjDays ) )
-            //{
-            //    continue;
-            //}
+
 
             if (!(macdDays <= kdjDays && kdjDays <= 1 && Math.Abs(macdDays - kdjDays) < 2))
             {
@@ -493,7 +451,20 @@
                 continue;
             }
 
-
+            DateTime ma5Time = DateTime.Now;
+            Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
+            if (timelineArray.Length == 0)
+            {
+                timelineArray = Core.Timeline.LoadTimelineArrayFromSqlServer(stock.gid, currentDate);
+            }
+            for (int i = 0; i < timelineArray.Length; i++)
+            {
+                if (timelineArray[i].todayLowestPrice < ma5 * 1.005 && timelineArray[i].todayEndPrice > ma5 * 1.005)
+                {
+                    ma5Time = timelineArray[i].tickTime;
+                    break;
+                }
+            }
 
             double lowestPrice = stock.LowestPrice(currentDate, 20);
             double highestPrice = stock.HighestPrice(currentDate, 40);
@@ -575,6 +546,14 @@
             dr["今收"] = currentPrice;
             dr["今涨"] = (stock.kLineDay[currentIndex].startPrice - settlePrice) / settlePrice;
             dr["放量"] = currentVolume / lastDayVolume;
+            if (timelineArray != null)
+            {
+                dr["量比"] = Stock.ComputeQuantityRelativeRatio(stock.kLineDay, timelineArray, ma5Time);
+            }
+            else
+            {
+                dr["量比"] = 0;
+            }
             dr["3线"] = line3Price;
             dr["低点"] = lowestPrice;
             dr["调整日"] = adjustDays.ToString();// currentIndex - previous3LineIndex;
@@ -720,7 +699,7 @@
                     {
                         string message = Util.RemoveHTMLTag(dr["信号"].ToString()) + " " + dr["代码"].ToString()
                 + " " + dr["名称"].ToString() + " 放量：" + Math.Round(100 * double.Parse(dr["放量"].ToString()), 2).ToString()
-                + "% KDJ:" + dr["KDJ日"].ToString() + " MACD：" + dr["MACD日"].ToString();
+                + "% 量比:" + Math.Round((double)dr["量比"], 2).ToString() +  " KDJ:" + dr["KDJ日"].ToString() + " MACD：" + dr["MACD日"].ToString();
                         double price = Math.Round(double.Parse(dr["买入"].ToString()), 2);
                         if (StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()),
                                 dr["代码"].ToString().Trim(),
@@ -788,6 +767,7 @@
                     <asp:BoundColumn DataField="今收" HeaderText="今收"></asp:BoundColumn>
                     <asp:BoundColumn DataField="今涨" HeaderText="今涨" SortExpression="今涨|desc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="放量" HeaderText="放量" SortExpression="放量|desc"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="量比" HeaderText="量比" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="前高压力" HeaderText="前高压力"></asp:BoundColumn>
                     <asp:BoundColumn DataField="均线压力" HeaderText="均线压力"></asp:BoundColumn>
                     <asp:BoundColumn DataField="均线支撑" HeaderText="均线支撑"></asp:BoundColumn>
@@ -795,10 +775,7 @@
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD日|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>
                     
-                    <asp:BoundColumn DataField="低点" HeaderText="低点"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="F5" HeaderText="F5"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="高点" HeaderText="高点"></asp:BoundColumn>
+                   
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="0日" HeaderText="0日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日" SortExpression="1日|desc" ></asp:BoundColumn>
