@@ -719,7 +719,7 @@
                     if (dr["信号"].ToString().IndexOf("🛍️") >= 0)
                     {
                         string message = Util.RemoveHTMLTag(dr["信号"].ToString()) + " " + dr["代码"].ToString()
-                + " " + dr["名称"].ToString() + " 放量：" + Math.Round(double.Parse(dr["放量"].ToString()), 2).ToString()
+                + " " + dr["名称"].ToString() + " 放量：" + Math.Round(100 * double.Parse(dr["放量"].ToString()), 2).ToString()
                 + "% KDJ:" + dr["KDJ日"].ToString() + " MACD：" + dr["MACD日"].ToString();
                         double price = Math.Round(double.Parse(dr["买入"].ToString()), 2);
                         if (StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()),
