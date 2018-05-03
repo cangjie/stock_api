@@ -488,6 +488,11 @@
                 continue;
             }
 
+            if (macdDays == -1 && kdjDays == -1)
+            {
+                continue;
+            }
+
 
 
             double lowestPrice = stock.LowestPrice(currentDate, 20);
@@ -704,15 +709,15 @@
                 foreach(DataRow dr in dt.Rows)
                 {
                     //string signalStr = Util.RemoveHTMLTag()
-                    if (dr["信号"].ToString().IndexOf("🛍️") >= 0 
+                    if (dr["信号"].ToString().IndexOf("🛍️") >= 0
                         && dr["信号"].ToString().IndexOf("🔥") >= 0
-                        && (dr["信号"].ToString().IndexOf("👑") >= 0 
-				|| dr["信号"].ToString().IndexOf("🌟") >= 0
-				|| dr["信号"].ToString().IndexOf("📈") >= 0))
+                        && (dr["信号"].ToString().IndexOf("👑") >= 0
+                || dr["信号"].ToString().IndexOf("🌟") >= 0
+                || dr["信号"].ToString().IndexOf("📈") >= 0))
                     {
-                        string message = Util.RemoveHTMLTag(dr["信号"].ToString()) + " " + dr["代码"].ToString() 
-				+ " " + dr["名称"].ToString() + " 放量：" + dr["放量"].ToString()
-				+ " KDJ:" + dr["KDJ日"].ToString() + " MACD：" + dr["MACD日"].ToString();
+                        string message = Util.RemoveHTMLTag(dr["信号"].ToString()) + " " + dr["代码"].ToString()
+                + " " + dr["名称"].ToString() + " 放量：" + dr["放量"].ToString()
+                + " KDJ:" + dr["KDJ日"].ToString() + " MACD：" + dr["MACD日"].ToString();
                         double price = Math.Round(double.Parse(dr["买入"].ToString()), 2);
                         if (StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()),
                                 dr["代码"].ToString().Trim(),
