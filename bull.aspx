@@ -448,7 +448,7 @@
 
             if (macdDays == -1 && kdjDays == -1)
             {
-                continue;
+                //continue;
             }
 
             DateTime ma5Time = DateTime.Now;
