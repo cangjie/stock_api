@@ -22,7 +22,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "KDJ日,MACD日,放量 desc");
+        sort = Util.GetSafeRequestValue(Request, "sort", "放量 desc");
         if (!IsPostBack)
         {
             try
@@ -483,7 +483,7 @@
             //    continue;
             //}
 
-            if (!(kdjDays != -1 && macdDays != -1 && (macdDays <= kdjDays || ((macdDays > kdjDays) && macdDays > 5))))
+            if (!(kdjDays != -1 && macdDays != -1 && macdDays <= kdjDays & kdjDays <= 1))
             {
                 continue;
             }
@@ -625,10 +625,10 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"上无压力，放量\" >🌟</a>";
             }
 
-            if ( macdDays >= 0  && kdjDays >= 0 && kdjDays <= 5 && macdDays >= kdjDays  && buyPrice > line3Price
-                && !(stock.kLineDay[currentIndex - 1].endPrice >= prevMa5 && stock.kLineDay[currentIndex].lowestPrice < stock.kLineDay[currentIndex - 1].lowestPrice))
+            if (buyPrice > line3Price
+                && stock.kLineDay[currentIndex - 1].startPrice < prevMa5 )
             {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"趋势一级，放量\" >📈</a>";
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"三线以上，当日穿越5日均线\" >📈</a>";
             }
 
             if (waitLowPrice)
@@ -704,11 +704,15 @@
                 foreach(DataRow dr in dt.Rows)
                 {
                     //string signalStr = Util.RemoveHTMLTag()
-                    if (dr["信号"].ToString().IndexOf("🛍️") >= 0 && dr["信号"].ToString().IndexOf("📈") >= 0
+                    if (dr["信号"].ToString().IndexOf("🛍️") >= 0 
                         && dr["信号"].ToString().IndexOf("🔥") >= 0
-                        && (dr["信号"].ToString().IndexOf("👑") >= 0 || dr["信号"].ToString().IndexOf("🌟") >= 0))
+                        && (dr["信号"].ToString().IndexOf("👑") >= 0 
+				|| dr["信号"].ToString().IndexOf("🌟") >= 0
+				|| dr["信号"].ToString().IndexOf("📈") >= 0))
                     {
-                        string message = Util.RemoveHTMLTag(dr["信号"].ToString()) + " " + dr["代码"].ToString() + " " + dr["名称"].ToString();
+                        string message = Util.RemoveHTMLTag(dr["信号"].ToString()) + " " + dr["代码"].ToString() 
+				+ " " + dr["名称"].ToString() + " 放量：" + dr["放量"].ToString()
+				+ " KDJ:" + dr["KDJ日"].ToString() + " MACD：" + dr["MACD日"].ToString();
                         double price = Math.Round(double.Parse(dr["买入"].ToString()), 2);
                         if (StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()),
                                 dr["代码"].ToString().Trim(),
