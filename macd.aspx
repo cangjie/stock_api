@@ -762,11 +762,11 @@
                     //if (dr["信号"].ToString().IndexOf("🛍️") >= 0
                     //    && (dr["信号"].ToString().IndexOf("📈") >= 0 || dr["信号"].ToString().IndexOf("🔥") >= 0 || dr["信号"].ToString().IndexOf("🌟") >= 0)
                     //    && (   (dr["MACD日"].ToString().Equals("0") &&  dr["KDJ日"].ToString().Equals("0")) || (dr["KDJ日"].ToString().Equals("-1") && int.Parse(dr["MACD日"].ToString()) > 0 )  ))
-                    if (dr["信号"].ToString().IndexOf("🛍️") > 0)
+                    if (dr["信号"].ToString().IndexOf("🛍️") >= 0 && dr["信号"].ToString().IndexOf("📈") >= 0 )
                     {
-                        string message = dr["信号"].ToString().Trim() + " " + dr["代码"].ToString() 
+                        string message = Util.RemoveHTMLTag(dr["信号"].ToString().Trim()) + " " + dr["代码"].ToString() 
                             + " " + dr["名称"].ToString() + " 量比：" + Math.Round((double)dr["量比"], 2) 
-                            + " 涨幅：" + Math.Round((double)dr["涨幅"], 2);
+                            + " 涨幅：" + Math.Round(100 * (double)dr["涨幅"], 2)+"%";
                         double price = Math.Round(double.Parse(dr["买入"].ToString()), 2);
                         if (StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()),
                                 dr["代码"].ToString().Trim(),
@@ -775,7 +775,7 @@
                                 "买入价：" + price.ToString() + " " + message.Trim()))
                         {
                             StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(),
-                                dr["名称"].ToString() + " " + message, price, "bull");
+                                dr["名称"].ToString() + " " + message, price, "macd");
                         }
                     }
                     /*
