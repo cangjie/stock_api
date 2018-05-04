@@ -351,7 +351,6 @@
 
 
             stock.LoadKLineDay(rc);
-            stock.kLineDay[stock.kLineDay.Length - 1].endPrice = 17.19;
             int currentIndex = stock.GetItemIndex(currentDate);
             if (currentIndex < 1)
                 continue;
