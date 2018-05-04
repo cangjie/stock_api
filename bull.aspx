@@ -344,13 +344,14 @@
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
 
-            if (!stock.gid.Trim().Equals("sh603305"))
+            if (!stock.gid.Trim().Equals("sz000673"))
             {
                 //continue;
             }
 
 
             stock.LoadKLineDay(rc);
+            stock.kLineDay[stock.kLineDay.Length - 1].endPrice = 17.19;
             int currentIndex = stock.GetItemIndex(currentDate);
             if (currentIndex < 1)
                 continue;
@@ -383,7 +384,7 @@
                 correctKlineStyle = false;
             }
 
-            if (ma5 < stock.kLineDay[currentIndex].startPrice && stock.kLineDay[currentIndex].lowestPrice > ma5 * 1.0191)
+            if (ma5 < stock.kLineDay[currentIndex].startPrice && stock.kLineDay[currentIndex].lowestPrice > ma5 * 1.0382)
             {
                 correctKlineStyle = false;
             }
