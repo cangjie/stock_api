@@ -397,12 +397,12 @@
         foreach (DataRow drOri in dtOri.Rows)
         {
 
-            
+
             if (drOri["gid"].ToString().Trim().Equals("sh600476"))
             {
                 string aa = "aa";
             }
-            
+
 
 
             DateTime alertDate = DateTime.Parse(drOri["alert_date"].ToString().Trim());
@@ -724,8 +724,7 @@
                 if (stock.kLineDay[currentIndex].highestPrice > todayHighestPrice)
                 {
                     dr["信号"] = dr["信号"].ToString() + "<a title=\"突破向上的无影脚\" >👍</a>";
-                    buyPrice = stock.kLineDay[currentIndex].endPrice;
-                    dr["买入"] = buyPrice;
+
                 }
                 else
                 {
@@ -772,6 +771,12 @@
             dr["今开"] = stock.kLineDay[currentIndex].startPrice;
             dr["无影"] = todayLowestPrice;//timelineArr[0].todayLowestPrice;
             dr["评级"] = memo;
+
+            if (dr["信号"].ToString().IndexOf("👍") >= 0)
+            {
+                buyPrice = stock.kLineDay[currentIndex].endPrice;
+            }
+
             dr["买入"] = buyPrice;
             dr["KDJ日"] = kdjDays;
             dr["MACD日"] = stock.macdDays(currentIndex);
