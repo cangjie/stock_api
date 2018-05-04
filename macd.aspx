@@ -682,7 +682,7 @@
 
             if (((pressure - buyPrice) / buyPrice > 0.1 || pressure == 0) )
             {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"上无压力，此时涨3%，量比大于3\" >🌟</a>";
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"上无压力\" >🌟</a>";
             }
 
             if ((double)dr["今涨"] > 0.03 && (double)dr["量比"] > 3)
