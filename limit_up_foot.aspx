@@ -222,7 +222,7 @@
                 {
                     raiseCount++;
                 }
-                if (drOri["信号"].ToString().IndexOf("🔥") >= 0)
+                if (drOri["信号"].ToString().IndexOf("👍") >= 0)
                 {
                     fireCount++;
                 }
@@ -240,7 +240,7 @@
                         {
                             raiseSum[i - 1]++;
                         }
-                        if (drOri["信号"].ToString().IndexOf("🔥") >= 0)
+                        if (drOri["信号"].ToString().IndexOf("👍") >= 0)
                         {
                             fireSum[i - 1]++;
                         }
@@ -313,7 +313,7 @@
         drRaise["信号"] = "📈";
         drRaise["MACD日"] = raiseCount.ToString();
         DataRow drFire = dt.NewRow();
-        drFire["信号"] = "🔥";
+        drFire["信号"] = "👍";
         drFire["MACD日"] = fireCount.ToString();
         DataRow drStar = dt.NewRow();
         drStar["信号"] = "🌟";
