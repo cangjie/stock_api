@@ -438,7 +438,7 @@
                 continue;
             }
 
-            if (macdDays == -1 && kdjDays == -1)
+            if (macdDays > kdjDays && kdjDays == -1)
             {
                 continue;
             }
