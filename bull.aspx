@@ -294,6 +294,7 @@
         currentDate = Util.GetDay(currentDate);
         DateTime prevDate = Util.GetLastTransactDate(currentDate, 1);
         DataTable dtOri = DBHelper.GetDataTable(" select * from alert_bull where alert_date = '" + currentDate + "' ");
+        DataTable dtAlert = DBHelper.GetDataTable(" select * from stock_alert_message where alert_date = '" + currentDate.ToShortDateString() + "' and alert_type = 'bull' ");
         DataTable dt = new DataTable();
         dt.Columns.Add("代码", Type.GetType("System.String"));
         dt.Columns.Add("名称", Type.GetType("System.String"));
@@ -359,12 +360,6 @@
             double ma20 = stock.GetAverageSettlePrice(currentIndex, 20, 0);
             double ma30 = stock.GetAverageSettlePrice(currentIndex, 30, 0);
 
-
-
-
-
-
-
             if (ma5 <= ma10 || ma10 <= ma20 || ma20 <= ma30)
             {
                 continue;
@@ -375,12 +370,9 @@
                 continue;
             }
 
-
-
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
-
 
             bool correctKlineStyle = true;
 
@@ -647,6 +639,12 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "🛍️";
             }
+
+            if (dtAlert.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
+            {
+                dr["信号"] = dr["信号"].ToString().Trim() + "<a title=\"已经预警过\" >❗️</a>";
+            }
+
             /*
             if (buyPrice < stock.kLineDay[currentIndex].startPrice)
             {
