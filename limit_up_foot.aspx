@@ -724,7 +724,8 @@
                 if (stock.kLineDay[currentIndex].highestPrice > todayHighestPrice)
                 {
                     dr["信号"] = dr["信号"].ToString() + "<a title=\"突破向上的无影脚\" >👍</a>";
-                    dr["买入"] = stock.kLineDay[currentIndex].endPrice;
+                    buyPrice = stock.kLineDay[currentIndex].endPrice;
+                    dr["买入"] = buyPrice;
                 }
                 else
                 {
