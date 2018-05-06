@@ -774,7 +774,7 @@
 
             if (dr["信号"].ToString().IndexOf("👍") >= 0)
             {
-                buyPrice = stock.kLineDay[currentIndex].endPrice;
+                //buyPrice = stock.kLineDay[currentIndex].endPrice;
             }
 
             dr["买入"] = buyPrice;
