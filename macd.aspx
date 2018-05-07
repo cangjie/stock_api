@@ -577,6 +577,15 @@
             }
             */
             double buyPrice = double.Parse(drOri["alert_price"].ToString());
+            double riseLinePrice = settlePrice * 0.05;
+            if (buyPrice < stock.kLineDay[currentIndex].lowestPrice)
+            {
+                buyPrice = stock.kLineDay[currentIndex].lowestPrice;
+            }
+            if (buyPrice < riseLinePrice)
+            {
+                continue;
+            }
             //buyPrice = Math.Min(Math.Max(Math.Max(buyPrice, maxMa), macdPrice), stock.kLineDay[currentIndex].highestPrice);
 
 
@@ -623,7 +632,7 @@
             dr["昨收"] = settlePrice;
             dr["今开"] = openPrice;
             dr["今收"] = currentPrice;
-            dr["今涨"] = (stock.kLineDay[currentIndex].highestPrice - settlePrice) / settlePrice;
+            dr["今涨"] = (buyPrice - settlePrice) / settlePrice;
             /*
             if ((double)dr["今涨"] < 0.06)
                 continue;
