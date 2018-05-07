@@ -129,6 +129,8 @@
                         case "MACD率":
                         case "KDJ率":
                         case "均板":
+                        case "低时量比":
+                        case "无影量比":
                             dr[i] = Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2).ToString();
                             break;
                         case "买入":
@@ -350,6 +352,10 @@
         dt.Columns.Add("无影", Type.GetType("System.Double"));
         dt.Columns.Add("无影时间", Type.GetType("System.String"));
         dt.Columns.Add("最低时间", Type.GetType("System.String"));
+
+        dt.Columns.Add("低时量比", Type.GetType("System.Double"));
+        dt.Columns.Add("无影量比", Type.GetType("System.Double"));
+
         dt.Columns.Add("现高", Type.GetType("System.Double"));
         dt.Columns.Add("F2", Type.GetType("System.Double"));
         dt.Columns.Add("F3", Type.GetType("System.Double"));
@@ -660,6 +666,8 @@
             //dr["调整"] = currentIndex - limitUpIndex;
             dr["缩量"] = volumeReduce;
 
+            
+
             double openRaise =  (stock.kLineDay[currentIndex].startPrice - stock.kLineDay[limitUpIndex].endPrice) / stock.kLineDay[limitUpIndex].endPrice;
 
             if (openRaise < 0)
@@ -762,6 +770,9 @@
             dr["幅度"] = width.ToString() + "%";
             dr["无影时间"] = footTime.ToShortTimeString();
             dr["最低时间"] = todayLowestTime.ToShortTimeString();
+
+            dr["低时量比"] = Stock.ComputeQuantityRelativeRatio(stock.kLineDay, timelineArray, todayLowestTime);
+            dr["无影量比"] = Stock.ComputeQuantityRelativeRatio(stock.kLineDay, timelineArray, footTime);
             //dr["F3折返"] = (stock.kLineDay[currentIndex].lowestPrice - f3) / f3;
             dr["F2"] = f2;
             dr["F4"] = f4;
@@ -1110,11 +1121,8 @@
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="高开" HeaderText="高开"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="现高" HeaderText="现高"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="F2" HeaderText="F2"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="F4" HeaderText="F4"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F5" HeaderText="F5"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="F6" HeaderText="F6"></asp:BoundColumn>
                     <asp:BoundColumn DataField="前低" HeaderText="前低"></asp:BoundColumn>
                     <asp:BoundColumn DataField="更低" HeaderText="更低"></asp:BoundColumn>
                     <asp:BoundColumn DataField="更高" HeaderText="更高"></asp:BoundColumn>
@@ -1124,8 +1132,9 @@
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ" SortExpression="KDJ率|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="无影" HeaderText="无影"></asp:BoundColumn>
                     <asp:BoundColumn DataField="无影时间" HeaderText="无影时"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="无影量比" HeaderText="量比"></asp:BoundColumn>
                     <asp:BoundColumn DataField="最低时间" HeaderText="最低时"></asp:BoundColumn>
-     
+                    <asp:BoundColumn DataField="低时量比" HeaderText="量比"></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日" SortExpression="1日|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="2日" HeaderText="2日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3日" HeaderText="3日"></asp:BoundColumn>
