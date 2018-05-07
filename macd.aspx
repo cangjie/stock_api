@@ -577,7 +577,7 @@
             }
             */
             double buyPrice = double.Parse(drOri["alert_price"].ToString());
-            double riseLinePrice = settlePrice * 0.05;
+            double riseLinePrice = settlePrice * 1.05;
             if (buyPrice < stock.kLineDay[currentIndex].lowestPrice)
             {
                 buyPrice = stock.kLineDay[currentIndex].lowestPrice;
