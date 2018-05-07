@@ -1500,7 +1500,7 @@ public class Stock
         DateTime ratioDate = currentDate;
         for (int i = 0; i < todayTimelineArr.Length; i++)
         {
-            if (todayTimelineArr[i].tickTime < currentDate)
+            if (todayTimelineArr[i].tickTime <= currentDate)
             {
                 currentVolume = todayTimelineArr[i].volume;
                 ratioDate = todayTimelineArr[i].tickTime;
