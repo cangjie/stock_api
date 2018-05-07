@@ -18,9 +18,54 @@
 
     public static Thread t = new Thread(ts);
 
+    public static int searchTimes = 0;
+
+    public static ThreadStart tsMacd = new ThreadStart(SearchMacd);
+
+    public static Thread tMacd = new Thread(tsMacd);
+
+    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+
+    public static void SearchMacd()
+    {
+        for (; true;)
+        {
+            if (Core.Util.IsTransacDay(DateTime.Now) && Core.Util.IsTransacTime(DateTime.Now))
+            {
+                DataTable dtAlert = DBHelper.GetDataTable(" select * from alert_macd where alert_time = '" + DateTime.Now.ToShortDateString() + " 15:00'  ");
+                string[] gidArr = Util.GetAllGids();
+                for (int i = 0; i < gidArr.Length; i++)
+                {
+                    try
+                    {
+                        if (dtAlert.Select(" gid = '" + gidArr[i].Trim() + "' ").Length == 0)
+                        {
+                            Stock stock = new Stock(gidArr[i].Trim());
+                            stock.LoadKLineDay(rc);
+                            int currentIndex = stock.GetItemIndex(DateTime.Now.Date);
+                            KLine.ComputeMACD(stock.kLineDay);
+                            KLine.SearchMACDAlert(stock.kLineDay, currentIndex);
+                        }
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+                }
+                searchTimes++;
+            }
+            else
+            {
+                break;
+            }
+            Thread.Sleep(60000);
+        }
+    }
+
 
     protected void Page_Load(object sender, EventArgs e)
     {
+        //SearchMacd();
         sort = Util.GetSafeRequestValue(Request, "sort", "量比 desc");
         if (!IsPostBack)
         {
@@ -45,7 +90,7 @@
                 {
                     t.Abort();
                     t = new Thread(ts);
-                    t.Start();
+                    //t.Start();
 
                 }
             }
@@ -54,6 +99,21 @@
 
             }
 
+            try
+            {
+                if (tMacd.ThreadState != ThreadState.Running && tMacd.ThreadState != ThreadState.WaitSleepJoin)
+                {
+                    tMacd.Abort();
+                    tMacd = new Thread(tsMacd);
+                    tMacd.Start();
+                    //t.Start();
+
+                }
+            }
+            catch
+            {
+
+            }
 
             DataTable dt = GetData();
             dg.DataSource = dt;
@@ -346,7 +406,7 @@
         }
         */
         //foreach (DataRow drOri in dtOri.Select(" gid = 'sz300101'  "))
-        Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+        //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
         foreach (DataRow drOri in dtOri.Rows)
         {
 
@@ -766,8 +826,8 @@
                     //    && (   (dr["MACD日"].ToString().Equals("0") &&  dr["KDJ日"].ToString().Equals("0")) || (dr["KDJ日"].ToString().Equals("-1") && int.Parse(dr["MACD日"].ToString()) > 0 )  ))
                     if (dr["信号"].ToString().IndexOf("🛍️") >= 0 && dr["信号"].ToString().IndexOf("📈") >= 0 )
                     {
-                        string message = Util.RemoveHTMLTag(dr["信号"].ToString().Trim()) + " " + dr["代码"].ToString() 
-                            + " " + dr["名称"].ToString() + " 量比：" + Math.Round((double)dr["量比"], 2) 
+                        string message = Util.RemoveHTMLTag(dr["信号"].ToString().Trim()) + " " + dr["代码"].ToString()
+                            + " " + dr["名称"].ToString() + " 量比：" + Math.Round((double)dr["量比"], 2)
                             + " 涨幅：" + Math.Round(100 * (double)dr["涨幅"], 2)+"%";
                         double price = Math.Round(double.Parse(dr["买入"].ToString()), 2);
                         if (StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()),
@@ -870,5 +930,6 @@
         </table>
     </div>
     </form>
+    <%=searchTimes.ToString() %>
 </body>
 </html>
