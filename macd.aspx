@@ -623,9 +623,11 @@
             dr["昨收"] = settlePrice;
             dr["今开"] = openPrice;
             dr["今收"] = currentPrice;
-            dr["今涨"] = (buyPrice - settlePrice) / settlePrice;
+            dr["今涨"] = (stock.kLineDay[currentIndex].highestPrice - settlePrice) / settlePrice;
+            /*
             if ((double)dr["今涨"] < 0.06)
                 continue;
+                */
             dr["放量"] = currentVolume / lastDayVolume;
             dr["量比"] = 0;// Math.Round((stock.kLineDay[currentIndex].volume / currentTransactMinutes) / past5DayVolumePerMin, 2);
             dr["3线"] = line3Price;
