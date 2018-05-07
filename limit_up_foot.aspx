@@ -666,7 +666,7 @@
             //dr["调整"] = currentIndex - limitUpIndex;
             dr["缩量"] = volumeReduce;
 
-            
+
 
             double openRaise =  (stock.kLineDay[currentIndex].startPrice - stock.kLineDay[limitUpIndex].endPrice) / stock.kLineDay[limitUpIndex].endPrice;
 
@@ -680,6 +680,9 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"非一字板缩量\" >📈</a>";
             }
             */
+
+            
+
             bool isFirstFoot = false;
             for (int i = 0; i < timelineArray.Length && timelineArray[i].tickTime.Hour == 9 && timelineArray[i].tickTime.Minute <= 30; i++)
             {
@@ -794,6 +797,12 @@
             dr["高开"] = openRaise;
             dr["更高"] = moreThanHighest;
             dr["更低"] = lessThanLowest;
+
+            if ((double)dr["无影量比"] > 100 && (double)dr["缩量"] < 2  && (double)dr["高开"] < 0.0618 && ((int)dr["KDJ日"] <= 3 || (int)dr["MACD日"] <= 3) ) //&& (((double)dr["更高"] - (double)dr["买入"]) / (double)dr["买入"]) > 0.1)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"量比高于100，放量小于200%，并且有上涨空间\" >📈</a>";
+            }
+
             double maxPrice = 0;
             for (int i = 1; i <= 5; i++)
             {
