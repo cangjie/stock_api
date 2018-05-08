@@ -483,7 +483,20 @@
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
+            bool isMacdShake = false;
+            for (int i = 0; i < 5; i++)
+            {
+                if (stock.kLineDay[currentIndex - 1 - i].macd >= 0)
+                {
+                    isMacdShake = true;
+                    break;
+                }
+            }
 
+            if (isMacdShake)
+            {
+                continue;
+            }
 
             //if (!KLine.IsCros3LineTwice(stock.kLineDay, currentIndex, 20))
             //    continue;
