@@ -787,12 +787,12 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"买入价过前高\" >🔥</a>";
             }
             */
-            /*
-            if ((int)dr["MACD时"] >= 0 && (int)dr["KDJ日"] >= 0 && currentPrice <= f5 && currentPrice >= f1 && currentVolume / lastDayVolume >= 0.85)
-            {
-                dr["信号"] = dr["信号"].ToString() + "🔥";
-            }
             
+            if (macdPrice < maSupport)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"MACD价格低于均线支撑\" >👍</a>";
+            }
+            /*
             if (stock.kLineDay[currentIndex].lowestPrice > stock.kLineDay[currentIndex - 1].highestPrice && (double)dr["今涨"] <= 0.095 )
             {
                 dr["信号"] = dr["信号"].ToString() + "🌟";
