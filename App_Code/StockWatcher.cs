@@ -675,6 +675,34 @@ public class StockWatcher
         return tick;
     }
 
+    public static bool AddAlert(DateTime alertDate, string gid, string type, string name, string message, double price)
+    {
+        bool ret = false;
+        if (type.StartsWith("top") || type.StartsWith("bottom"))
+        {
+            alertDate = DateTime.Parse(alertDate.ToShortDateString());
+        }
+        try
+        {
+            DataTable dtAlerted = DBHelper.GetDataTable(" select * from stock_alert_message where alert_date = '" + alertDate.ToShortDateString()
+                + "' and alert_type = '" + type.Trim() + "'  and gid = '" + gid.Trim() + "' ");
+            if (dtAlerted.Rows.Count < 5)
+            {
+                int i = DBHelper.InsertData("stock_alert_message", new string[,] { { "alert_date", "datetime", alertDate.ToShortDateString() },
+                    { "gid","varchar", gid}, { "alert_type", "varchar", type.Trim()}, 
+                    { "name", "varchar", name.Trim()}, { "message", "varchar", message.Trim()}, 
+                    { "price", "float", price.ToString()} });
+                if (i > 0)
+                    ret = true;
+            }
+        }
+        catch
+        {
+
+        }
+        return ret;
+    }
+
     public static bool AddAlert(DateTime alertDate, string gid, string type, string name, string message)
     {
         bool ret = false;
@@ -684,10 +712,15 @@ public class StockWatcher
         }
         try
         {
-            int i = DBHelper.InsertData("stock_alert_message", new string[,] { { "alert_date", "datetime", alertDate.ToShortDateString() },
-            { "gid","varchar", gid}, { "alert_type", "varchar", type.Trim()}, { "name", "varchar", name.Trim()}, { "message", "varchar", message.Trim()} });
-            if (i > 0)
-                ret = true;
+            DataTable dtAlerted = DBHelper.GetDataTable(" select * from stock_alert_message where alert_date = '" + alertDate.ToShortDateString() 
+                + "' and alert_type = '" + type.Trim() + "'  and gid = '" + gid.Trim() + "' ");
+            if (dtAlerted.Rows.Count < 5)
+            {
+                int i = DBHelper.InsertData("stock_alert_message", new string[,] { { "alert_date", "datetime", alertDate.ToShortDateString() },
+                    { "gid","varchar", gid}, { "alert_type", "varchar", type.Trim()}, { "name", "varchar", name.Trim()}, { "message", "varchar", message.Trim()} });
+                if (i > 0)
+                    ret = true;
+            }
         }
         catch
         {

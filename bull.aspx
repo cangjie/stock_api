@@ -703,7 +703,7 @@
                                 dr["代码"].ToString().Trim(),
                                 "bull",
                                 dr["名称"].ToString().Trim(),
-                                "买入价：" + price.ToString() + " " + message.Trim()))
+                                "买入价：" + price.ToString() + " " + message.Trim(), price))
                         {
                             StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(),
                                 dr["名称"].ToString() + " " + message, price, "bull");
