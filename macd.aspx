@@ -409,14 +409,14 @@
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
-            if (stock.gid.Trim().Equals("sz000612"))
+            if (stock.gid.Trim().Equals("sz002271"))
             {
-                //t.Abort();
+                t.Abort();
                 //continue;
             }
             else
             {
-                //continue;
+                continue;
             }
             stock.LoadKLineDay(rc);
 
@@ -475,25 +475,15 @@
             double support =  stock.GetMaPressure(currentIndex, macdPrice);
             double pressure = stock.GetMaPressure(currentIndex, support);
 
-            /*
-            for (; pressure != 0 && (pressure - settlePrice) / settlePrice < 0.1;)
-            {
-                support = pressure;
-                pressure = stock.GetMaPressure(currentIndex, pressure);
-            }
-            */
-            if (stock.kLineDay[currentIndex].highestPrice < support || stock.kLineDay[currentIndex].lowestPrice > pressure)
+            double buyPrice = support * 1.005;
+
+            if (stock.kLineDay[currentIndex].highestPrice < buyPrice || stock.kLineDay[currentIndex].lowestPrice > pressure)
             {
                 continue;
             }
 
-            /*
-            double maSupport = stock.GetMaSupport(currentIndex, macdPrice);
-            double maxMa = Math.Max(ma5, ma10);
-            maxMa = Math.Max(maxMa, ma20);
-            maxMa = Math.Max(maxMa, ma30);
-            */
-            double buyPrice = support;
+
+            
 
 
             int macdDays =  stock.macdDays(currentIndex);
@@ -529,40 +519,7 @@
             dr["震幅"] = upSpace + downSpace;
             */
             dr["TD"] = KLine.GetLastDeMarkBuyPointIndex(stock.kLineDay, currentIndex);
-
-
-            //dr["支撑力"] = Math.Abs(maSupport - macdPrice) / Math.Min(maSupport, macdPrice);
-
-
-
-
-            /*
-            if (ma5 > ma10 + 0.05  && ma10 > ma20 + 0.05)
-            {
-                if (ma20 > ma60 + 0.05)
-                {
-                    dr["信号"] = dr["信号"].ToString().Trim() + "<a title=\"5 10 20 60日均线多头排列\" >👨‍👩‍👧‍👦</a>";
-                }
-                else
-                {
-                    dr["信号"] = dr["信号"].ToString().Trim() + "<a title=\"5 10 20日均线多头排列\" >👪</a>";
-                }
-                if (line3Price < ma5 && line3Price > ma10)
-                {
-                    dr["信号"] = dr["信号"].ToString().Trim() + "<a title=\"3线在5日均线下\" >👫</a>";
-                }
-            }
-            */
-
-
-
-
-
-
             double highPointPressure = 0;
-
-
-
             KeyValuePair<DateTime, double>[] highPoints = Stock.GetHighPoints(stock.kLineDay, currentIndex);
             for (int i = 0; i < highPoints.Length; i++)
             {
@@ -573,14 +530,9 @@
                     break;
                 }
             }
-
-
             dr["均线支撑"] = support;
             dr["支撑涨幅"] = (support - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
             dr["MACD涨幅"] = ((double)drOri["alert_price"] - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
-
-
-
             dr["相差"] = Math.Abs((double)dr["支撑涨幅"] - (double)dr["MACD涨幅"]);
             dr["前高压力"] = highPointPressure;
             dr["前高空间"] = (highPointPressure - buyPrice) / buyPrice;
@@ -595,22 +547,6 @@
             {
                 totalPressure = Math.Max(pressure, highPointPressure);
             }
-            /*
-            if (((kdjDays == 0 && (int)dr["MACD日"] == 0) || ((int)dr["MACD日"] > 0 && kdjDays == 0)))
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"趋势一级\" >📈</a>";
-            }
-            if (stock.kLineDay[currentIndex].VirtualVolume >= Stock.GetAvarageVolume(stock.kLineDay, currentIndex, 5)
-                && stock.kLineDay[currentIndex].VirtualVolume >= Stock.GetAvarageVolume(stock.kLineDay, currentIndex, 10))
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"大于5 10日均量线\" >🔥</a>";
-            }
-            if (currentPrice > line3Price && stock.kLineDay[currentIndex - 1].endPrice < previous3LinePrice)
-            {
-                dr["信号"] = dr["信号"].ToString().Trim() + "<a title=\"过3线\" >👫</a>";
-            }
-            */
-            //buyPrice = Math.Max(currentPrice, buyPrice);
 
 
             Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
