@@ -409,7 +409,7 @@
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
-            if (stock.gid.Trim().Equals("sz002271"))
+            if (stock.gid.Trim().Equals("sz002824"))
             {
                 //t.Abort();
                 //continue;
