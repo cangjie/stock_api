@@ -584,7 +584,7 @@
             }
             if (buyPrice < riseLinePrice)
             {
-                continue;
+                //continue;
             }
             //buyPrice = Math.Min(Math.Max(Math.Max(buyPrice, maxMa), macdPrice), stock.kLineDay[currentIndex].highestPrice);
 
