@@ -413,7 +413,7 @@
 
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
 
-            if (stock.gid.Trim().Equals("sz002496"))
+            if (stock.gid.Trim().Equals("sh600653"))
             {
                 //t.Abort();
                 //continue;
@@ -597,7 +597,7 @@
             }
             */
             double buyPrice = macdPrice;
-            double higherPressure = stock.GetMaPressure(currentIndex, pressure + 0.01);
+            double higherPressure = stock.GetMaPressure(currentIndex, pressure);
             if ((higherPressure - pressure) / pressure < 0.02 || higherPressure == 0)
             {
                 buyPrice = pressure;
