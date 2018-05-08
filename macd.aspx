@@ -788,7 +788,7 @@
             }
             */
             
-            if (macdPrice < maSupport)
+            if ((macdPrice < maSupport && (maxMa - buyPrice) / buyPrice > 0.1) || (macdPrice < maxMa && buyPrice > maxMa  )  )
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"MACD价格低于均线支撑\" >👍</a>";
             }
