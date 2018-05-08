@@ -409,7 +409,7 @@
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
-            if (stock.gid.Trim().Equals("sz002824"))
+            if (stock.gid.Trim().Equals("sh600119"))
             {
                 //t.Abort();
                 //continue;
@@ -551,11 +551,16 @@
             }
             if (timelineArray != null)
             {
-                dr["量比"] = Stock.ComputeQuantityRelativeRatio(stock.kLineDay, timelineArray, DateTime.Parse(drOri["create_date"].ToString().Trim()));
+                double ratio = Stock.ComputeQuantityRelativeRatio(stock.kLineDay, timelineArray, DateTime.Parse(drOri["create_date"].ToString().Trim()));
+                if (ratio == 0)
+                {
+                    ratio = Stock.ComputeQuantityRelativeRatio(stock.kLineDay, timelineArray, currentDate.Date.AddHours(9).AddMinutes(45));
+                }
+                dr["量比"] = ratio;
             }
 
 
-            if (pressure == 0 || (pressure - settlePrice) / settlePrice >= 0.095)
+            if (pressure == 0 || (pressure - buyPrice) / buyPrice >= 0.0382)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"上无压力\" >🌟</a>";
             }
@@ -565,7 +570,7 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"量比，涨幅都大于3\" >📈</a>";
             }
             */
-            
+
             if ((double)dr["量比"] >= 3 && (double)dr["放量"] > 1.5)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"量比大于3，放量过150%\" >📈</a>";
@@ -639,7 +644,7 @@
                     //    && (dr["信号"].ToString().IndexOf("📈") >= 0 || dr["信号"].ToString().IndexOf("🔥") >= 0 || dr["信号"].ToString().IndexOf("🌟") >= 0)
                     //    && (   (dr["MACD日"].ToString().Equals("0") &&  dr["KDJ日"].ToString().Equals("0")) || (dr["KDJ日"].ToString().Equals("-1") && int.Parse(dr["MACD日"].ToString()) > 0 )  ))
                     if (dr["信号"].ToString().IndexOf("🛍️") >= 0 && dr["信号"].ToString().IndexOf("📈") >= 0)// ||
-                        //dr["信号"].ToString().IndexOf("🌟") >= 0 || dr["信号"].ToString().IndexOf("👍") >= 0 ))
+                                                                                                          //dr["信号"].ToString().IndexOf("🌟") >= 0 || dr["信号"].ToString().IndexOf("👍") >= 0 ))
                     {
                         string message = Util.RemoveHTMLTag(dr["信号"].ToString().Trim()) + " " + dr["代码"].ToString()
                             + " " + dr["名称"].ToString() + " 量比：" + Math.Round((double)dr["量比"], 2);
