@@ -286,7 +286,7 @@
                         {
                             raiseSum[i - 1]++;
                         }
-                        if ((drOri["信号"].ToString().IndexOf("🛍️") >= 0)
+                        if (drOri["信号"].ToString().IndexOf("🛍️") >= 0)
                         {
                             fireSum[i - 1]++;
                         }
