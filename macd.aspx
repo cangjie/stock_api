@@ -411,12 +411,12 @@
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
             if (stock.gid.Trim().Equals("sz002271"))
             {
-                t.Abort();
+                //t.Abort();
                 //continue;
             }
             else
             {
-                continue;
+                //continue;
             }
             stock.LoadKLineDay(rc);
 
@@ -470,24 +470,14 @@
             double f3 = lowestPrice + (highestPrice - lowestPrice) * 0.382;
             double f5 = lowestPrice + (highestPrice - lowestPrice) * 0.618;
             double macdPrice = (double)drOri["alert_price"];
-
-
             double support =  stock.GetMaPressure(currentIndex, macdPrice);
-            double pressure = stock.GetMaPressure(currentIndex, support);
-
             double buyPrice = support * 1.005;
-
+            double pressure = stock.GetMaPressure(currentIndex, buyPrice);
             if (stock.kLineDay[currentIndex].highestPrice < buyPrice || stock.kLineDay[currentIndex].lowestPrice > pressure)
             {
                 continue;
             }
-
-
-            
-
-
             int macdDays =  stock.macdDays(currentIndex);
-
 
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
