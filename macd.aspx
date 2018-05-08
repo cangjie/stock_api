@@ -412,12 +412,13 @@
 
 
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
-            /*
-            if (!stock.gid.Trim().Equals("sh600562"))
+
+            if (stock.gid.Trim().Equals("sz002496"))
             {
-                continue;
+                //t.Abort();
+                //continue;
             }
-            */
+
             stock.LoadKLineDay(rc);
             //stock.LoadKLineDay();
             int currentIndex = stock.GetItemIndex(currentDate);
@@ -482,6 +483,9 @@
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
+
+
+
             bool isMacdShake = false;
             for (int i = 0; i < 5; i++)
             {
@@ -559,8 +563,12 @@
 
             double upSpace = 0;
             double downSpace = 0;
-            double pressure = stock.GetMaPressure(currentIndex, currentPrice);
-            double maSupport = stock.GetMaSupport(currentIndex, currentPrice);
+            double pressure = stock.GetMaPressure(currentIndex, macdPrice);
+            double maSupport = stock.GetMaSupport(currentIndex, macdPrice);
+
+
+
+
             //double buyPrice = stock.kLineDay[currentIndex - 1].endPrice * 1.06; ;//Math.Max(maSupport, macdPrice);
             //if (stock.kLineDay[currentIndex].highestPrice < buyPrice || stock.kLineDay[currentIndex].lowestPrice > buyPrice)
             //{
@@ -588,7 +596,21 @@
                 continue;
             }
             */
-            double buyPrice = double.Parse(drOri["alert_price"].ToString());
+            double buyPrice = macdPrice;
+            double higherPressure = stock.GetMaPressure(currentIndex, pressure + 0.01);
+            if ((higherPressure - pressure) / pressure < 0.02 || higherPressure == 0)
+            {
+                buyPrice = pressure;
+                pressure = higherPressure;
+            }
+
+            if (stock.kLineDay[currentIndex].highestPrice < buyPrice)
+            {
+                continue;
+            }
+
+
+            /*
             double riseLinePrice = settlePrice * 1.03;
             if (buyPrice < stock.kLineDay[currentIndex].lowestPrice)
             {
@@ -598,6 +620,7 @@
             {
                 //continue;
             }
+            */
             //buyPrice = Math.Min(Math.Max(Math.Max(buyPrice, maxMa), macdPrice), stock.kLineDay[currentIndex].highestPrice);
 
 
@@ -765,7 +788,7 @@
             }
 
 
-            if (((pressure - buyPrice) / buyPrice > 0.1 || pressure == 0) )
+            if (((higherPressure - buyPrice) / buyPrice > 0.1 || pressure == 0) )
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"上无压力\" >🌟</a>";
             }
@@ -786,8 +809,8 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"买入价过前高\" >🔥</a>";
             }
             */
-            
-            if ((macdPrice < maSupport && (maxMa - buyPrice) / buyPrice > 0.1) || (macdPrice < maxMa && buyPrice > maxMa  )  )
+
+            if ((macdPrice < buyPrice && ((higherPressure - buyPrice) / buyPrice > 0.1 || higherPressure == 0)) || (macdPrice < maxMa && buyPrice > maxMa  )  )
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"MACD价格低于均线支撑\" >👍</a>";
             }
