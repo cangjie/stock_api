@@ -457,8 +457,8 @@
             double currentPrice = stock.kLineDay[currentIndex].endPrice;
             double line3Price = stock.GetAverageSettlePrice(currentIndex, 3, 3);
             DateTime lastDate = DateTime.Parse(stock.kLineDay[currentIndex - 1].startDateTime.ToShortDateString());
-            double lastDayVolume = stock.kLineDay[currentIndex - 1].VirtualVolume;//Stock.GetVolumeAndAmount(stock.gid, lastDate)[0];
-            double currentVolume = stock.kLineDay[currentIndex].VirtualVolume;//Stock.GetVolumeAndAmount(stock.gid, currentDate)[0];
+            double lastDayVolume = stock.kLineDay[currentIndex - 1].VirtualVolume;
+            double currentVolume = stock.kLineDay[currentIndex].VirtualVolume;
             int kdjDays = stock.kdjDays(currentIndex);
             if (kdjDays < 0)
             {
@@ -471,7 +471,12 @@
             double f5 = lowestPrice + (highestPrice - lowestPrice) * 0.618;
             double macdPrice = (double)drOri["alert_price"];
             double support =  stock.GetMaPressure(currentIndex, macdPrice);
+            if (support == 0)
+            {
+                support = macdPrice;
+            }
             double buyPrice = support * 1.005;
+
             double pressure = stock.GetMaPressure(currentIndex, buyPrice);
             if (stock.kLineDay[currentIndex].highestPrice < buyPrice || stock.kLineDay[currentIndex].lowestPrice > pressure)
             {
@@ -549,7 +554,7 @@
                 dr["量比"] = Stock.ComputeQuantityRelativeRatio(stock.kLineDay, timelineArray, DateTime.Parse(drOri["create_date"].ToString().Trim()));
             }
 
-            
+
             if (pressure == 0 || (pressure - settlePrice) / settlePrice >= 0.095)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"上无压力\" >🌟</a>";
