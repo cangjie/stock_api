@@ -472,13 +472,16 @@
             double macdPrice = (double)drOri["alert_price"];
 
 
-            double pressure = stock.GetMaPressure(currentIndex, macdPrice);
-            double support = stock.GetMaSupport(currentIndex, macdPrice);
+            double support =  stock.GetMaPressure(currentIndex, macdPrice);
+            double pressure = stock.GetMaPressure(currentIndex, support);
+
+            /*
             for (; pressure != 0 && (pressure - settlePrice) / settlePrice < 0.1;)
             {
                 support = pressure;
                 pressure = stock.GetMaPressure(currentIndex, pressure);
             }
+            */
             if (stock.kLineDay[currentIndex].highestPrice < support || stock.kLineDay[currentIndex].lowestPrice > pressure)
             {
                 continue;
@@ -621,7 +624,7 @@
             }
 
             
-            if (pressure == 0)
+            if (pressure == 0 || (pressure - settlePrice) / settlePrice >= 0.095)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"上无压力\" >🌟</a>";
             }
