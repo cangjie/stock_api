@@ -933,7 +933,7 @@ public class Stock
         double pressure = 0;
         for (int i = 0; i < quotaArr.Length; i++)
         {
-            if (quotaArr[i].Value > price)
+            if (quotaArr[i].Value > price && quotaArr[i].Key.Trim().IndexOf("ma") >= 0)
             {
                 pressure = quotaArr[i].Value;
                 break;
@@ -1015,7 +1015,7 @@ public class Stock
         double support = 0;
         for (int i = quotaArr.Length  - 1; i >= 0 ; i--)
         {
-            if (quotaArr[i].Value < price)
+            if (quotaArr[i].Value < price && quotaArr[i].Key.Trim().IndexOf("ma") >= 0)
             {
                 support = quotaArr[i].Value;
                 break;
