@@ -578,8 +578,8 @@
             
             
             
-            if (stock.kLineDay[currentIndex - 2].volume < stock.kLineDay[currentIndex - 1].volume 
-                && stock.kLineDay[currentIndex - 1].volume < stock.kLineDay[currentIndex].VirtualVolume)
+            if (stock.kLineDay[currentIndex - 2].volume * 1.25 < stock.kLineDay[currentIndex - 1].volume 
+                && stock.kLineDay[currentIndex - 1].volume * 1.25 < stock.kLineDay[currentIndex].VirtualVolume)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"持续放量\" >👍</a>";
             }
