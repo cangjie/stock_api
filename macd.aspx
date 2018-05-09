@@ -342,6 +342,7 @@
     {
         //currentDate = Util.GetDay(currentDate);
         //DateTime prevDate = Util.GetLastTransactDate(currentDate, 1);
+        DataTable dtAlert = DBHelper.GetDataTable(" select * from stock_alert_message where alert_date = '" + currentDate.ToShortDateString() + "' and alert_type = 'macd' ");
         DataTable dtOri = DBHelper.GetDataTable(" select * from alert_macd where alert_time = '" + currentDate.ToShortDateString() + " 15:00' ");
         DataTable dt = new DataTable();
         dt.Columns.Add("代码", Type.GetType("System.String"));
@@ -553,6 +554,10 @@
                 dr["量比"] = ratio;
             }
 
+            if (dtAlert.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
+            {
+                dr["信号"] = dr["信号"].ToString().Trim() + "<a title=\"已经预警过\" >❗️</a>";
+            }
 
             if (pressure == 0 || (pressure - buyPrice) / buyPrice >= 0.0382)
             {
