@@ -575,12 +575,12 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"5 10日均线多头排列\" >🔥</a>";
             }
             
-            /*
-            if ((macdPrice < buyPrice && ((higherPressure - buyPrice) / buyPrice > 0.1 || higherPressure == 0)) || (macdPrice < maxMa && buyPrice > maxMa  )  )
+            
+            if (stock.kLineDay[currentIndex - 2].volume < stock.kLineDay[currentIndex - 1].volume )
             {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"MACD价格低于均线支撑\" >👍</a>";
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"持续放量\" >👍</a>";
             }
-            */
+            
             /*
             if (stock.kLineDay[currentIndex].lowestPrice > stock.kLineDay[currentIndex - 1].highestPrice && (double)dr["今涨"] <= 0.095 )
             {
