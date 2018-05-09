@@ -26,6 +26,8 @@
 
     public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
 
+    public static int alertQueryTimes = 0;
+
     public static void SearchMacd()
     {
         for (; true;)
@@ -666,7 +668,8 @@
 
                 }
             }
-            Thread.Sleep(600000);
+            alertQueryTimes++;
+            Thread.Sleep(60000);
         }
     }
 
@@ -737,6 +740,6 @@
         </table>
     </div>
     </form>
-    <%=searchTimes.ToString() %>
+    <%=searchTimes.ToString() %>/<%=alertQueryTimes.ToString() %>
 </body>
 </html>

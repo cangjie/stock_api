@@ -20,6 +20,8 @@
 
     public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
 
+    public static int alertQueryTimes = 0;
+
     protected void Page_Load(object sender, EventArgs e)
     {
         sort = Util.GetSafeRequestValue(Request, "sort", "放量 desc");
@@ -596,7 +598,7 @@
                 buyPrice = currentPrice;
             }
 
-            if (stock.kLineDay[currentIndex - 3].volume * 1.25 < stock.kLineDay[currentIndex - 2].volume 
+            if (stock.kLineDay[currentIndex - 3].volume * 1.25 < stock.kLineDay[currentIndex - 2].volume
                 && stock.kLineDay[currentIndex - 2].volume * 1.25 < stock.kLineDay[currentIndex - 1].volume)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"持续放量\" >👍</a>";
@@ -735,7 +737,8 @@
                     }*/
                 }
             }
-            Thread.Sleep(600000);
+            alertQueryTimes++;
+            Thread.Sleep(60000);
         }
     }
 
@@ -800,6 +803,8 @@
  
         </table>
     </div>
+        <br />
+        <%=alertQueryTimes.ToString() %>
     </form>
 </body>
 </html>

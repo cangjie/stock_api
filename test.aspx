@@ -7,13 +7,9 @@
     protected void Page_Load(object sender, EventArgs e)
     {
         Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
-        Stock s = new Stock("sz000014");
+        Stock s = new Stock("sz000620");
         s.LoadKLineDay(rc);
-        KLine.ComputeMACD(s.kLineDay);
-        KLine.ComputeRSV(s.kLineDay);
-        KLine.ComputeKDJ(s.kLineDay);
-        Response.Write(s.macdDays(s.kLineDay.Length - 3).ToString() + " " + s.kdjDays(s.kLineDay.Length - 3).ToString());
-        Response.Write("<br/>" + s.macdDays(s.kLineDay.Length - 4).ToString() + " " + s.kdjDays(s.kLineDay.Length - 4).ToString());
+        Response.Write(s.kLineDay[s.kLineDay.Length - 1].endPrice.ToString());
         rc.Dispose();
 
         Response.End();
