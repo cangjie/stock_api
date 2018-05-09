@@ -569,12 +569,12 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"量比大于3，放量过150%\" >📈</a>";
             }
-            /*
-            if (buyPrice > (double)dr["F5"] && (double)dr["相差"] < 0.005)
+            
+            if (ma5 > ma10 && ma10 > ma20 && ma20 > ma30 )
             {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"买入价过前高\" >🔥</a>";
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"均线多头排列\" >🔥</a>";
             }
-            */
+            
             /*
             if ((macdPrice < buyPrice && ((higherPressure - buyPrice) / buyPrice > 0.1 || higherPressure == 0)) || (macdPrice < maxMa && buyPrice > maxMa  )  )
             {
