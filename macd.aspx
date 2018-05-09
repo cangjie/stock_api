@@ -575,15 +575,18 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"量比大于3，放量过150%\" >📈</a>";
             }
             
+            
+            
+            
+            if (stock.kLineDay[currentIndex - 2].volume < stock.kLineDay[currentIndex - 1].volume 
+                && stock.kLineDay[currentIndex - 1].volume < stock.kLineDay[currentIndex].VirtualVolume)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"持续放量\" >👍</a>";
+            }
+
             if (ma5 > ma10)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"5 10日均线多头排列\" >🔥</a>";
-            }
-            
-            
-            if (stock.kLineDay[currentIndex - 2].volume < stock.kLineDay[currentIndex - 1].volume )
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"持续放量\" >👍</a>";
             }
             
             /*
