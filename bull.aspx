@@ -596,6 +596,13 @@
                 buyPrice = currentPrice;
             }
 
+            if (stock.kLineDay[currentIndex - 2].volume < stock.kLineDay[currentIndex - 1].volume 
+                && stock.kLineDay[currentIndex - 1].volume < stock.kLineDay[currentIndex].VirtualVolume)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"持续放量\" >👍</a>";
+            }
+
+
             if (((totalPressure - buyPrice) / buyPrice > 0.1 || totalPressure == 0)  && buyPrice > line3Price)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"上无压力，放量\" >🌟</a>";
