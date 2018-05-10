@@ -580,6 +580,10 @@
 
 
             Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
+            if (timelineArray.Length == 0)
+            {
+                timelineArray = Core.Timeline.LoadTimelineArrayFromSqlServer(stock.gid, currentDate);
+            }
             if (timelineArray != null)
             {
                 dr["量比"] = Stock.ComputeQuantityRelativeRatio(stock.kLineDay, timelineArray, DateTime.Parse(drOri["create_date"].ToString()));
