@@ -602,6 +602,15 @@
                 buyPrice = currentPrice;
             }
             buyPrice = buyPrice + 0.02;
+
+            if (stock.kLineDay[currentIndex - 2].volume * 1.25 < stock.kLineDay[currentIndex - 1].volume 
+                //&& stock.kLineDay[currentIndex - 3].volume * 1.25 < stock.kLineDay[currentIndex - 2].volume 
+                )
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"持续放量\" >👍</a>";
+            }
+
+
             if ((totalPressure - buyPrice) / buyPrice > 0.1 || totalPressure == 0)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"上无压力\" >🌟</a>";
@@ -652,6 +661,7 @@
             maxMa = Math.Max(maxMa, ma20);
             maxMa = Math.Max(maxMa, ma30);
 
+            
 
             if (stock.kLineDay[currentIndex].endPrice >= maxMa)
             {
