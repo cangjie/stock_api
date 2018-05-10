@@ -298,6 +298,7 @@
         dt.Columns.Add("今收", Type.GetType("System.Double"));
         dt.Columns.Add("今涨", Type.GetType("System.Double"));
         dt.Columns.Add("放量", Type.GetType("System.Double"));
+        dt.Columns.Add("量比", Type.GetType("System.Double"));
         dt.Columns.Add("均线压力", Type.GetType("System.Double"));
         dt.Columns.Add("前高压力", Type.GetType("System.Double"));
         dt.Columns.Add("均线支撑", Type.GetType("System.Double"));
@@ -504,6 +505,12 @@
             dr["TD"] = KLine.GetLastDeMarkBuyPointIndex(stock.kLineDay, currentIndex);
             dr["均涨"] = (line3Price - previous3LinePrice) /previous3LinePrice / adjustDays;
 
+
+
+
+
+
+
             if (currentPrice < line3Price || kdjDays == -1)
             {
                 //dr["信号"] = "💩";
@@ -567,6 +574,18 @@
                     buyPrice = quota[j].Value;
                     break;
                 }
+            }
+
+
+
+            Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
+            if (timelineArray != null)
+            {
+                dr["量比"] = Stock.ComputeQuantityRelativeRatio(stock.kLineDay, timelineArray, DateTime.Parse(drOri["create_date"].ToString()));
+            }
+            else
+            {
+                dr["量比"] = 0;
             }
 
             double totalPressure = 0;
@@ -748,12 +767,13 @@
                 <Columns>
                     <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="信号" HeaderText="信号" SortExpression="信号|desc" ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="信号" HeaderText="信号" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="昨收" HeaderText="昨收"></asp:BoundColumn>
                     <asp:BoundColumn DataField="今开" HeaderText="今开"></asp:BoundColumn>
                     <asp:BoundColumn DataField="今收" HeaderText="今收"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="今涨" HeaderText="今涨" SortExpression="今涨|desc"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="放量" HeaderText="放量" SortExpression="放量|desc"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="今涨" HeaderText="今涨" ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="放量" HeaderText="放量" ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="量比" HeaderText="量比" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="前高压力" HeaderText="前高压力"></asp:BoundColumn>
                     <asp:BoundColumn DataField="均线压力" HeaderText="均线压力"></asp:BoundColumn>
                     <asp:BoundColumn DataField="均线支撑" HeaderText="均线支撑"></asp:BoundColumn>
