@@ -653,7 +653,8 @@
                                                                                                           //dr["信号"].ToString().IndexOf("🌟") >= 0 || dr["信号"].ToString().IndexOf("👍") >= 0 ))
                     {
                         string message = Util.RemoveHTMLTag(dr["信号"].ToString().Trim()) + " " + dr["代码"].ToString()
-                            + " " + dr["名称"].ToString() + " 量比：" + Math.Round((double)dr["量比"], 2);
+                            + " " + dr["名称"].ToString() + " 量比：" + Math.Round((double)dr["量比"], 2)
+                            + " 放量：" + Math.Round(100 * (double)dr["放量"], 2).ToString() + "%";
                         // + " 涨幅：" + Math.Round(100 * (double)dr["涨幅"], 2)+"%";
                         double price = Math.Round(double.Parse(dr["买入"].ToString()), 2);
                         if (StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()),
