@@ -72,7 +72,7 @@
             currentDate = Util.GetDay(calendar.SelectedDate);
         DataTable dtOri = GetData(currentDate);
         string filter = " 信号 like '%📈%' or 信号 like '%🌟%' ";
-        if (Util.GetSafeRequestValue(Request, "option", "").Trim().Equals("viewall"))
+        if (Util.GetSafeRequestValue(Request, "option", "viewall").Trim().Equals("viewall"))
         {
             filter = "";
         }
