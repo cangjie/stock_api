@@ -564,13 +564,14 @@
                 }
             }
 
-            buyPrice = stock.GetMaSupport(currentIndex, currentPrice);
-            dr["均线支撑"] = buyPrice;
+            //buyPrice = stock.GetMaSupport(currentIndex, currentPrice);
+            dr["均线支撑"] = stock.GetMaSupport(currentIndex, currentPrice);
 
 
 
             dr["前高压力"] = highPointPressure;
-            buyPrice = Math.Max(buyPrice, stock.kLineDay[currentIndex].lowestPrice);
+            //buyPrice = Math.Max(buyPrice, stock.kLineDay[currentIndex].lowestPrice);
+            /*
             KeyValuePair<string, double>[] quota = stock.GetSortedQuota(currentIndex);
             for (int j = quota.Length - 1; j >= 0; j--)
             {
@@ -581,7 +582,7 @@
                     break;
                 }
             }
-
+            */
 
 
             Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
