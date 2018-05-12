@@ -483,15 +483,15 @@
 
             bool waitLowPrice = false;
 
-            /*
+            
             if (stock.kLineDay[currentIndex].startPrice > ma5)
             {
-                buyPrice = Math.Max(stock.kLineDay[currentIndex].lowestPrice, ma5);
+                //buyPrice = Math.Max(stock.kLineDay[currentIndex].lowestPrice, ma5);
                 waitLowPrice = true;
 
 
             }
-            */
+            
 
 
 
@@ -679,7 +679,7 @@
             {
                 if (currentIndex + i >= stock.kLineDay.Length)
                     break;
-                double highPrice = stock.kLineDay[currentIndex + i].endPrice;
+                double highPrice = stock.kLineDay[currentIndex + i].startPrice;
                 maxPrice = Math.Max(maxPrice, highPrice);
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) /buyPrice;
             }
