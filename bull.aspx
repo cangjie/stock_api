@@ -474,10 +474,16 @@
 
 
 
-            double buyPrice = ma5;
+            double buyPrice = ma5 * 1.005;
+
+            if (stock.kLineDay[currentIndex].highestPrice < buyPrice || stock.kLineDay[currentIndex].lowestPrice > buyPrice)
+            {
+                continue;
+            }
 
             bool waitLowPrice = false;
 
+            /*
             if (stock.kLineDay[currentIndex].startPrice > ma5)
             {
                 buyPrice = Math.Max(stock.kLineDay[currentIndex].lowestPrice, ma5);
@@ -485,6 +491,8 @@
 
 
             }
+            */
+
 
 
             double pressure = stock.GetMaPressure(currentIndex, buyPrice);
@@ -572,6 +580,7 @@
 
 
             dr["前高压力"] = highPointPressure;
+            /*
             buyPrice = Math.Max(buyPrice, stock.kLineDay[currentIndex].lowestPrice);
             KeyValuePair<string, double>[] quota = stock.GetSortedQuota(currentIndex);
             for (int j = quota.Length - 1; j >= 0; j--)
@@ -583,7 +592,7 @@
                     break;
                 }
             }
-
+            */
             double totalPressure = 0;
             if (pressure > 0 && highPointPressure > 0)
             {
@@ -670,7 +679,7 @@
             {
                 if (currentIndex + i >= stock.kLineDay.Length)
                     break;
-                double highPrice = stock.kLineDay[currentIndex + i].startPrice;
+                double highPrice = stock.kLineDay[currentIndex + i].endPrice;
                 maxPrice = Math.Max(maxPrice, highPrice);
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) /buyPrice;
             }
@@ -702,7 +711,7 @@
                 || dr["信号"].ToString().IndexOf("🌟") >= 0
                 || dr["信号"].ToString().IndexOf("📈") >= 0))
                 */
-                    if (dr["信号"].ToString().IndexOf("🛍️") >= 0 
+                    if (dr["信号"].ToString().IndexOf("🛍️") >= 0
                         && (dr["信号"].ToString().IndexOf("📈") >= 0 || dr["信号"].ToString().IndexOf("🌟") >= 0))
                     {
                         string message = Util.RemoveHTMLTag(dr["信号"].ToString()) + " " + dr["代码"].ToString()
