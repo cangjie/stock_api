@@ -906,7 +906,7 @@
                 DataTable dt = GetData(currentDate);
                 foreach(DataRow dr in dt.Rows)
                 {
-                    if (dr["信号"].ToString().IndexOf("🛍️") >= 0)
+                    if (dr["信号"].ToString().IndexOf("👍") >= 0)
                     {
                         double high = Math.Round(double.Parse(dr["现高"].ToString()), 2);
                         double low = Math.Round(double.Parse(dr["前低"].ToString()), 2);
