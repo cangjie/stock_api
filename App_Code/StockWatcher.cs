@@ -113,6 +113,8 @@ public class StockWatcher
         }
     }
 
+    public static ArrayList WatchEachStockRunLog = new ArrayList();
+
     public static void WatchEachStock()
     {
         Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
@@ -123,6 +125,7 @@ public class StockWatcher
                 if (Util.IsTransacDay(DateTime.Parse(DateTime.Now.ToShortDateString())) && DateTime.Now.Hour >= 9 && DateTime.Now.Hour <= 18)
                 {
                     string[] gidArr = Util.GetAllGids();
+                    WatchEachStockRunLog.Add(DateTime.Now);
                     //Stock.GetKLineSetArray(gidArr, "day", 100);
                     for (int i = 0; i < gidArr.Length; i++)
                     {
