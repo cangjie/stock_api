@@ -20,6 +20,8 @@
 
     public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
 
+    public static int queryTimes = 0;
+
     protected void Page_Load(object sender, EventArgs e)
     {
         sort = Util.GetSafeRequestValue(Request, "sort", "放量 desc");
@@ -719,6 +721,7 @@
             DateTime currentDate = Util.GetDay(DateTime.Now);
             if (Util.IsTransacDay(currentDate) && Util.IsTransacTime(DateTime.Now))
             {
+                queryTimes++;
                 DataTable dt = GetData(currentDate);
                 foreach(DataRow dr in dt.Rows)
                 {
@@ -825,6 +828,8 @@
  
         </table>
     </div>
+    <br />
+    <%=queryTimes.ToString() %>
     </form>
 </body>
 </html>
