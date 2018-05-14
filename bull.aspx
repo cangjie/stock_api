@@ -362,7 +362,15 @@
             double ma20 = stock.GetAverageSettlePrice(currentIndex, 20, 0);
             double ma30 = stock.GetAverageSettlePrice(currentIndex, 30, 0);
 
+            /*
             if (ma5 <= ma10 || ma10 <= ma20 || ma20 <= ma30)
+            {
+                continue;
+            }
+            */
+
+
+            if (!((ma5 > ma10 && ma10 > ma20 && ma20 > ma30) || (ma5 > ma10 && ma10 > ma20 && ma30 < ma5)))
             {
                 continue;
             }
@@ -483,7 +491,7 @@
 
             bool waitLowPrice = false;
 
-            
+
             if (stock.kLineDay[currentIndex].startPrice > ma5)
             {
                 //buyPrice = Math.Max(stock.kLineDay[currentIndex].lowestPrice, ma5);
@@ -491,7 +499,7 @@
 
 
             }
-            
+
 
 
 
