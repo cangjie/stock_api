@@ -8,7 +8,7 @@
     {
         foreach (object o in StockWatcher.WatchEachStockRunLog)
         {
-            Response(o.ToString() + "<br\>");
+            Response.Write(o.ToString() + "<br/>");
         }
         Response.End();
 
