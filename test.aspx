@@ -6,12 +6,10 @@
 <script runat="server">
     protected void Page_Load(object sender, EventArgs e)
     {
-        Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
-        Stock s = new Stock("sz000620");
-        s.LoadKLineDay(rc);
-        Response.Write(s.kLineDay[s.kLineDay.Length - 1].endPrice.ToString());
-        rc.Dispose();
-
+        foreach (object o in StockWatcher.WatchEachStockRunLog)
+        {
+            Response(o.ToString() + "<br\>");
+        }
         Response.End();
 
 
