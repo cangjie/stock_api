@@ -605,7 +605,7 @@
             dt.Rows.Add(dr);
 
         }
-        rc.Dispose();
+        //rc.Dispose();
         return dt;
     }
 
