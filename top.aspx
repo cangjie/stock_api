@@ -760,7 +760,7 @@
                     }*/
                 }
             }
-            Thread.Sleep(60000);
+            Thread.Sleep(15000);
         }
     }
 
