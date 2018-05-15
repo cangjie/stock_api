@@ -438,10 +438,7 @@
                     break;
                 }
             }
-            if (!isYesterdayCrossTheHighestMa)
-            {
-                continue;
-            }
+           
             KeyValuePair<string, double>[] currentQuota = stock.GetSortedQuota(currentIndex);
             double buyPrice = 0;
             bool isTodayTheLowestPriceNearTheHighestMa = false;
