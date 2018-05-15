@@ -379,7 +379,7 @@
         dt.Columns.Add("均板", Type.GetType("System.Double"));
         dt.Columns.Add("多日", Type.GetType("System.Int32"));
         //dt.Columns.Add("F3折返", Type.GetType("System.Double"));
-
+        dt.Columns.Add("0日", Type.GetType("System.Double"));
 
         for (int i = 1; i <= 5; i++)
         {
@@ -839,7 +839,7 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"量比高于100，放量小于200%，并且有上涨空间\" >📈</a>";
             }
-
+            dr["0日"] = (stock.kLineDay[currentIndex].endPrice / buyPrice) / buyPrice;
             double maxPrice = 0;
             for (int i = 1; i <= 5; i++)
             {
@@ -1185,6 +1185,7 @@
                     <asp:BoundColumn DataField="无影量比" HeaderText="量比"></asp:BoundColumn>
                     <asp:BoundColumn DataField="最低时间" HeaderText="最低时"></asp:BoundColumn>
                     <asp:BoundColumn DataField="低时量比" HeaderText="量比"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="0日" HeaderText="0日" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日" SortExpression="1日|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="2日" HeaderText="2日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3日" HeaderText="3日"></asp:BoundColumn>
