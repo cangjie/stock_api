@@ -839,7 +839,7 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"量比高于100，放量小于200%，并且有上涨空间\" >📈</a>";
             }
-            dr["0日"] = (stock.kLineDay[currentIndex].endPrice / buyPrice) / buyPrice;
+            dr["0日"] = (stock.kLineDay[currentIndex].endPrice - buyPrice) / buyPrice;
             double maxPrice = 0;
             for (int i = 1; i <= 5; i++)
             {
