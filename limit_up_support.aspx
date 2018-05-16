@@ -403,28 +403,147 @@
         foreach (DataRow drOri in dtOri.Rows)
         {
 
-
-            if (drOri["gid"].ToString().Trim().Equals("sz002888"))
+            if (drOri["gid"].ToString().Trim().Equals("sz300731"))
             {
                 string aa = "aa";
             }
-
-
-
+            /*
             DateTime alertDate = DateTime.Parse(drOri["alert_date"].ToString().Trim());
             DataRow[] drArrExists = dtOri.Select(" gid = '" + drOri["gid"].ToString() + "' and alert_date > '" + alertDate.ToShortDateString() + "'  ");
             if (drArrExists.Length > 0)
             {
                 continue;
             }
+            */
+
+
             Stock stock = new Stock(drOri["gid"].ToString().Trim(), rc);
             stock.LoadKLineDay(rc);
             int currentIndex = stock.GetItemIndex(currentDate);
             if (currentIndex < 2)
+            {
                 continue;
+            }
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
+            double settlePrice = stock.kLineDay[currentIndex - 1].endPrice;
+            double openPrice = stock.kLineDay[currentIndex].startPrice;
+            double pressureMa = double.MaxValue;
+            double supportMa = 0;
+            KeyValuePair<string, double>[] currentQuota = stock.GetSortedQuota(currentIndex);
+            for (int i = currentQuota.Length - 1; i >= 0; i--)
+            {
+                if (currentQuota[i].Key.StartsWith("ma"))
+                {
+                    if (openPrice > currentQuota[i].Value && supportMa == 0)
+                    {
+                        supportMa = currentQuota[i].Value;
+                    }
+                    if (openPrice < currentQuota[i].Value)
+                    {
+                        pressureMa = currentQuota[i].Value;
+                    }
+                }
+            }
+            int highIndex = 0;
+            int lowestIndex = 0;
+            int limitUpIndex = stock.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
+            double lowest = GetFirstLowestPrice(stock.kLineDay, limitUpIndex, out lowestIndex);
+            double highest = 0;
+            for (int i = limitUpIndex; i < currentIndex; i++)
+            {
+                if (highest < stock.kLineDay[i].highestPrice)
+                {
+                    highest = stock.kLineDay[i].highestPrice;
+                    highIndex = i;
+                }
+            }
+            double f2 = highest - (highest - lowest) * 0.236;
+            double f3 = highest - (highest - lowest) * 0.382;
+            double f4 = highest - (highest - lowest) * 0.5;
+            double f5 = highest - (highest - lowest) * 0.618;
+            double f6 = highest - (highest - lowest) * 0.809;
+            Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
+            if (timelineArray.Length == 0)
+            {
+                timelineArray = Core.Timeline.LoadTimelineArrayFromSqlServer(stock.gid, currentDate);
+            }
+            KeyValuePair<string, double>[] sortedSupportArr = new KeyValuePair<string, double>[4];
+            sortedSupportArr[0] = new KeyValuePair<string, double>("settle", settlePrice);
+            sortedSupportArr[1] = new KeyValuePair<string, double>("ma", supportMa);
+            sortedSupportArr[2] = new KeyValuePair<string, double>("f3", f3);
+            sortedSupportArr[3] = new KeyValuePair<string, double>("f5", f5);
+            sortedSupportArr = Core.Util.SortKeyValuePairDesc(sortedSupportArr);
+
+            DataTable dtBuyPoint = new DataTable();
+            dtBuyPoint.Columns.Add("type", Type.GetType("System.String"));
+            dtBuyPoint.Columns.Add("time", Type.GetType("System.DateTime"));
+            dtBuyPoint.Columns.Add("price", Type.GetType("System.Double"));
+            dtBuyPoint.Columns.Add("effect", Type.GetType("System.Int32"));
+            for (int i = 0; i < timelineArray.Length; i++)
+            {
+                foreach (KeyValuePair<string, double> supportPair in sortedSupportArr)
+                {
+                    double upLine = supportPair.Value * 1.01;
+                    double downLine = supportPair.Value * 0.99;
+                    double currentLowestPrice = timelineArray[i].todayLowestPrice;
+                    double currentTimelinePrice = timelineArray[i].todayEndPrice;
+                    DataRow[] drBuyPointArr = dtBuyPoint.Select("type = '" + supportPair.Key.Trim() + "' ");
+                    if (drBuyPointArr.Length == 0)
+                    {
+                        if (currentLowestPrice <= upLine && currentLowestPrice >= downLine && currentTimelinePrice > upLine && currentTimelinePrice <= upLine * 1.005)
+                        {
+                            DataRow drBuyPoint = dtBuyPoint.NewRow();
+                            drBuyPoint["type"] = supportPair.Key.Trim();
+                            drBuyPoint["time"] = timelineArray[i].tickTime;
+                            drBuyPoint["price"] = currentTimelinePrice;
+                            drBuyPoint["effect"] = 0;
+                            dtBuyPoint.Rows.Add(drBuyPoint);
+                        }
+                    }
+                    else
+                    {
+                        if (timelineArray[i].tickTime > ((DateTime)drBuyPointArr[0]["time"]).AddMinutes(1) && timelineArray[i].tickTime <= ((DateTime)drBuyPointArr[0]["time"]).AddMinutes(5))
+                        {
+                            if (currentTimelinePrice < supportPair.Value)
+                            {
+                                drBuyPointArr[0]["effect"] = -1;
+                            }
+                        }
+                        else if ((int)drBuyPointArr[0]["effect"] == 0 && timelineArray[i].tickTime >= ((DateTime)drBuyPointArr[0]["time"]).AddMinutes(5) )
+                        {
+                            drBuyPointArr[0]["effect"] = 1;
+                            drBuyPointArr[0]["time"] = timelineArray[i].tickTime;
+                            drBuyPointArr[0]["price"] = currentTimelinePrice;
+                        }
+                        
+                    }
+
+
+                }
+            }
+
+            DataRow[] drArrBuyPointEffect = dtBuyPoint.Select(" effect = 1 ");
+
+            double buyPrice = 0;
+
+            if (drArrBuyPointEffect.Length > 0)
+            {
+                buyPrice = (double)drArrBuyPointEffect[drArrBuyPointEffect.Length - 1]["price"];
+            }
+
+            if (buyPrice == 0)
+            {
+                continue;
+            }
+
+
+
+
+
+
+
             KeyValuePair<string, double>[] prevQuota = stock.GetSortedQuota(currentIndex - 1);
             bool isYesterdayCrossTheHighestMa = false;
             for (int i = prevQuota.Length - 1; i >= 0; i--)
@@ -439,8 +558,9 @@
                 }
             }
 
-            KeyValuePair<string, double>[] currentQuota = stock.GetSortedQuota(currentIndex);
-            double buyPrice = 0;
+            //KeyValuePair<string, double>[] currentQuota = stock.GetSortedQuota(currentIndex);
+
+
             /*
             bool isTodayTheLowestPriceNearTheHighestMa = false;
             for (int i = prevQuota.Length - 1; i >= 0; i--)
@@ -492,31 +612,14 @@
                     break;
                 }
             }
-            int limitUpIndex = stock.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
+
 
             if (limitUpIndex == -1)
             {
                 continue;
             }
 
-            int highIndex = 0;
-            int lowestIndex = 0;
-            double lowest = GetFirstLowestPrice(stock.kLineDay, limitUpIndex, out lowestIndex);
-            double highest = 0;
-            for (int i = limitUpIndex; i < currentIndex; i++)
-            {
-                if (highest < stock.kLineDay[i].highestPrice)
-                {
-                    highest = stock.kLineDay[i].highestPrice;
-                    highIndex = i;
-                }
-            }
 
-            double f2 = highest - (highest - lowest) * 0.236;
-            double f3 = highest - (highest - lowest) * 0.382;
-            double f4 = highest - (highest - lowest) * 0.5;
-            double f5 = highest - (highest - lowest) * 0.618;
-            double f6 = highest - (highest - lowest) * 0.809;
 
 
             for (int i = prevQuota.Length - 1; i >= 0; i--)
@@ -563,8 +666,8 @@
             }
             else
             {
-                buyPrice = double.MaxValue;
-                //continue;
+                //buyPrice = double.MaxValue;
+                continue;
             }
 
             double moreThanHighest = highest;
@@ -611,11 +714,7 @@
             //buyPrice = Math.Max(stock.kLineDay[limitUpIndex].highestPrice, stock.kLineDay[currentIndex].lowestPrice);
             string memo = "";
 
-            Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
-            if (timelineArray.Length == 0)
-            {
-                timelineArray = Core.Timeline.LoadTimelineArrayFromSqlServer(stock.gid, currentDate);
-            }
+
             DateTime footTime = DateTime.MinValue;
             if (!foot(timelineArray, out todayLowestPrice, out todayDisplayLowPrice, out footTime))
             {
