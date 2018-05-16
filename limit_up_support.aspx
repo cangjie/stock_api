@@ -563,7 +563,7 @@
             }
             else
             {
-                continue;
+                //continue;
             }
 
             double moreThanHighest = highest;
