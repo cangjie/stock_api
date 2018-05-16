@@ -557,11 +557,14 @@
             }
 
 
-            if (buyPrice == 0)
+            if (buyPrice != 0)
+            {
+                buyPrice = buyPrice * 1.005;
+            }
+            else
             {
                 continue;
             }
-
 
             double moreThanHighest = highest;
             double lessThanLowest = lowest;
@@ -790,8 +793,7 @@
 
             int kdjDays = stock.kdjDays(currentIndex);
 
-            if ((stock.kLineDay[currentIndex].endPrice - todayDisplayLowPrice) / todayDisplayLowPrice <= 0.005
-                && (buyPrice - stock.kLineDay[currentIndex - 1].endPrice) /  stock.kLineDay[currentIndex - 1].endPrice <= 0.09)
+            if (currentPrice >= buyPrice & currentPrice < buyPrice * 1.005)
             {
                 dr["信号"] = dr["信号"].ToString() + "🛍️";
             }
