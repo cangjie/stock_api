@@ -563,6 +563,7 @@
             }
             else
             {
+                buyPrice = double.MaxValue;
                 //continue;
             }
 
