@@ -50,7 +50,7 @@
                 {
                     t.Abort();
                     t = new Thread(ts);
-                    t.Start();
+                    //t.Start();
 
                 }
             }
@@ -404,7 +404,7 @@
         {
 
 
-            if (drOri["gid"].ToString().Trim().Equals("sh600476"))
+            if (drOri["gid"].ToString().Trim().Equals("sz002888"))
             {
                 string aa = "aa";
             }
@@ -438,9 +438,10 @@
                     break;
                 }
             }
-           
+
             KeyValuePair<string, double>[] currentQuota = stock.GetSortedQuota(currentIndex);
             double buyPrice = 0;
+            /*
             bool isTodayTheLowestPriceNearTheHighestMa = false;
             for (int i = prevQuota.Length - 1; i >= 0; i--)
             {
@@ -458,6 +459,7 @@
             {
                 continue;
             }
+            */
             /*
             Core.Timeline[] timelineArr = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
             if (timelineArr.Length == 0)
@@ -516,6 +518,51 @@
             double f5 = highest - (highest - lowest) * 0.618;
             double f6 = highest - (highest - lowest) * 0.809;
 
+
+            for (int i = prevQuota.Length - 1; i >= 0; i--)
+            {
+                if (prevQuota[i].Key.StartsWith("ma"))
+                {
+                    if (stock.kLineDay[currentIndex].lowestPrice <= prevQuota[i].Value * 1.005 && stock.kLineDay[currentIndex].lowestPrice >= prevQuota[i].Value * 0.995)
+                    {
+                        buyPrice = prevQuota[i].Value;
+                    }
+                    break;
+                }
+            }
+
+            if (buyPrice == 0 && stock.kLineDay[currentIndex].lowestPrice < stock.kLineDay[currentIndex - 1].endPrice * 1.005)
+            {
+                if (stock.kLineDay[currentIndex].lowestPrice >= stock.kLineDay[currentIndex - 1].endPrice * 0.995)
+                {
+                    buyPrice = stock.kLineDay[currentIndex - 1].endPrice;
+                }
+            }
+
+            if (buyPrice == 0 && stock.kLineDay[currentIndex].lowestPrice < f3 * 1.005)
+            {
+                if (stock.kLineDay[currentIndex].lowestPrice >= f3 * 0.995)
+                {
+                    buyPrice = f3;
+                }
+            }
+
+
+            if (buyPrice == 0 && stock.kLineDay[currentIndex].lowestPrice < f5 * 1.005)
+            {
+                if (stock.kLineDay[currentIndex].lowestPrice >= f5 * 0.995)
+                {
+                    buyPrice = f5;
+                }
+            }
+
+
+            if (buyPrice == 0)
+            {
+                continue;
+            }
+
+
             double moreThanHighest = highest;
             double lessThanLowest = lowest;
 
@@ -537,7 +584,7 @@
 
             double line3Price = KLine.GetAverageSettlePrice(stock.kLineDay, currentIndex, 3, 3);
             double currentPrice = stock.kLineDay[currentIndex].endPrice;
-            
+
             double pressure1 = 0;
             double pressure2 = 0;
 
