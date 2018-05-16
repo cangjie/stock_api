@@ -26,7 +26,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "高开 desc");
+        sort = Util.GetSafeRequestValue(Request, "sort", "缩量");
         if (!IsPostBack)
         {
             try
