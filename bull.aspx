@@ -449,13 +449,14 @@
             int macdDays = stock.macdDays(currentIndex - 1);
 
 
-
+            /*
             if (!(macdDays <= kdjDays && kdjDays <= 1 && Math.Abs(macdDays - kdjDays) < 2))
             {
                 continue;
             }
+            */
 
-            if (macdDays > kdjDays && kdjDays == -1)
+            if ((macdDays > kdjDays && kdjDays == -1) || (macdDays > -1 && kdjDays > -1 && macdDays > kdjDays))
             {
                 continue;
             }
