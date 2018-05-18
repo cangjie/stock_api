@@ -74,11 +74,12 @@
             currentDate = Util.GetDay(calendar.SelectedDate);
         DataTable dtOri = GetData(currentDate);
         string filter = "";
-        if (Util.GetSafeRequestValue(Request, "option", "").Trim().Equals("openhigh"))
+        string option = Util.GetSafeRequestValue(Request, "option", "openlow").Trim();
+        if (option.Equals("openhigh"))
         {
             filter = "信号 like '%🔺%'";
         }
-        else if (Util.GetSafeRequestValue(Request, "option", "").Trim().Equals("openlow"))
+        else if (option.Equals("openlow"))
         {
             filter = "信号 not like '%🔺%'";
         }
