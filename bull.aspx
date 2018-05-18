@@ -347,13 +347,13 @@
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
 
-            if (stock.gid.Trim().Equals("sz300164"))
+            if (stock.gid.Trim().Equals("sh601088"))
             {
-                //t.Suspend();
+                t.Suspend();
             }
             else
             {
-                //continue;
+                continue;
             }
 
 
@@ -457,11 +457,12 @@
             }
             */
 
+            /*
             if ((macdDays > kdjDays && kdjDays == -1) || (macdDays > -1 && kdjDays > -1 && macdDays > kdjDays))
             {
                 continue;
             }
-
+            */
             DateTime ma5Time = DateTime.Now;
             Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
             if (timelineArray.Length == 0)
