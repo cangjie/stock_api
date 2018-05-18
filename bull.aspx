@@ -346,10 +346,16 @@
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
 
-            if (!stock.gid.Trim().Equals("sz000673"))
+            if (stock.gid.Trim().Equals("sz300164"))
+            {
+                //t.Suspend();
+            }
+            else
             {
                 //continue;
             }
+
+
 
 
             stock.LoadKLineDay(rc);
@@ -399,11 +405,12 @@
             }
 
 
-
-            if (stock.kLineDay[currentIndex - 1].macd < stock.kLineDay[currentIndex - 2].macd || stock.kLineDay[currentIndex - 1].j < stock.kLineDay[currentIndex - 2].j)
+            /*
+            if (stock.kLineDay[currentIndex - 1].j < stock.kLineDay[currentIndex - 2].j)
             {
                 correctKlineStyle = false;
             }
+            */
 
 
 
