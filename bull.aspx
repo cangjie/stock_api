@@ -349,11 +349,11 @@
 
             if (stock.gid.Trim().Equals("sh601088"))
             {
-                t.Suspend();
+                //t.Suspend();
             }
             else
             {
-                continue;
+                //continue;
             }
 
 
