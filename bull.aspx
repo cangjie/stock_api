@@ -423,7 +423,7 @@
             double current3LinePrice = stock.GetAverageSettlePrice(currentIndex, 3, 3);
             double previous3LinePrice = 0;
             int adjustDays = 0;
-            for (int i = currentIndex - 1; i >= 0; i--)
+            for (int i = currentIndex - 1; i >= 5; i--)
             {
                 if (stock.kLineDay[i].endPrice < stock.GetAverageSettlePrice(i, 3, 3))
                 {
