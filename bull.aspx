@@ -622,7 +622,8 @@
             }
             if (buyPrice == 0)
             {
-                buyPrice = currentPrice;
+                //buyPrice = currentPrice;
+                continue;
             }
 
             if (stock.kLineDay[currentIndex - 3].volume * 1.25 < stock.kLineDay[currentIndex - 2].volume
