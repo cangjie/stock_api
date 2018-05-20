@@ -745,6 +745,12 @@
                         {
                             StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(),
                                 dr["名称"].ToString() + " " + message, price, "bull");
+                            //for shuangzi
+                            if (dr["信号"].ToString().IndexOf("🌟") >= 0)
+                            {
+                                StockWatcher.SendAlertMessage("oqrMvt_GEZtQibndfZujZeIIhN30", dr["代码"].ToString().Trim(),
+                                    dr["名称"].ToString() + " " + message, price, "bull");
+                            }
                         }
                     }
                     /*
