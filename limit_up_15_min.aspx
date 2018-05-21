@@ -477,7 +477,7 @@
                 {
                     buyPrice = qHourMa5Arr[i - startIndexQuarterHour];
                 }
-
+                */
                 if (stock.kLineQuaterHour[i].lowestPrice <= qHourMa10Arr[i - startIndexQuarterHour] * 1.005 && stock.kLineQuaterHour[i].endPrice > qHourMa10Arr[i - startIndexQuarterHour] * 0.995)
                 {
                     buyPrice = qHourMa10Arr[i - startIndexQuarterHour];
@@ -487,7 +487,7 @@
                 {
                     buyPrice = qHourMa20Arr[i - startIndexQuarterHour];
                 }
-                */
+                
 
                 if (stock.kLineQuaterHour[i].lowestPrice <= qHourMa30Arr[i - startIndexQuarterHour] * 1.005 && stock.kLineQuaterHour[i].endPrice > qHourMa30Arr[i - startIndexQuarterHour] * 0.995)
                 {
