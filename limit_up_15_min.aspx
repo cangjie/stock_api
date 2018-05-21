@@ -478,13 +478,14 @@
                     buyPrice = qHourMa5Arr[i - startIndexQuarterHour];
                 }
                 
-                if (stock.kLineQuaterHour[i].lowestPrice <= qHourMa10Arr[i - startIndexQuarterHour] * 1.005 && stock.kLineQuaterHour[i].endPrice > qHourMa10Arr[i - startIndexQuarterHour] * 0.995)
-                {
-                    buyPrice = qHourMa10Arr[i - startIndexQuarterHour];
-                }
+          
                 */
                 if ( qHourMa10Arr[i - startIndexQuarterHour] > qHourMa20Arr[i - startIndexQuarterHour] && qHourMa20Arr[i - startIndexQuarterHour] > qHourMa30Arr[i - startIndexQuarterHour])
                 {
+                    if (stock.kLineQuaterHour[i].lowestPrice <= qHourMa10Arr[i - startIndexQuarterHour] * 1.005 && stock.kLineQuaterHour[i].endPrice > qHourMa10Arr[i - startIndexQuarterHour] * 0.995)
+                    {
+                        buyPrice = qHourMa10Arr[i - startIndexQuarterHour];
+                    }
                     if (stock.kLineQuaterHour[i].lowestPrice <= qHourMa20Arr[i - startIndexQuarterHour] * 1.005 && stock.kLineQuaterHour[i].endPrice > qHourMa20Arr[i - startIndexQuarterHour] * 0.995)
                     {
                         buyPrice = qHourMa20Arr[i - startIndexQuarterHour];
@@ -633,7 +634,7 @@
 
 
             KeyValuePair<string, double>[] prevQuota = stock.GetSortedQuota(currentIndex - 1);
-            bool isYesterdayCrossTheHighestMa = false;
+            //bool isYesterdayCrossTheHighestMa = false;
             for (int i = prevQuota.Length - 1; i >= 0; i--)
             {
                 if (prevQuota[i].Key.StartsWith("ma"))
