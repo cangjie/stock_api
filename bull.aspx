@@ -774,7 +774,7 @@
                 }
             }
             alertQueryTimes++;
-            Thread.Sleep(60000);
+            Thread.Sleep(30000);
         }
     }
 
