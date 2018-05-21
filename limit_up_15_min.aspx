@@ -641,7 +641,7 @@
                 {
                     if (stock.kLineDay[currentIndex - 1].endPrice > prevQuota[i].Value && stock.kLineDay[currentIndex - 1].startPrice < prevQuota[i].Value)
                     {
-                        isYesterdayCrossTheHighestMa = true;
+                        //isYesterdayCrossTheHighestMa = true;
                     }
                     break;
                 }
