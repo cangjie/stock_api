@@ -472,7 +472,7 @@
                 qHourMa10Arr[i - startIndexQuarterHour] = KLine.GetAverageSettlePrice(stock.kLineQuaterHour, i - 9, 10, 0);
                 qHourMa20Arr[i - startIndexQuarterHour] = KLine.GetAverageSettlePrice(stock.kLineQuaterHour, i - 19, 20, 0);
                 qHourMa30Arr[i - startIndexQuarterHour] = KLine.GetAverageSettlePrice(stock.kLineQuaterHour, i - 29, 30, 0);
-
+                /*
                 if (stock.kLineQuaterHour[i].lowestPrice <= qHourMa5Arr[i - startIndexQuarterHour] * 1.005 && stock.kLineQuaterHour[i].endPrice > qHourMa5Arr[i - startIndexQuarterHour] * 0.995)
                 {
                     buyPrice = qHourMa5Arr[i - startIndexQuarterHour];
@@ -482,7 +482,7 @@
                 {
                     buyPrice = qHourMa10Arr[i - startIndexQuarterHour];
                 }
-
+                */
                 if (stock.kLineQuaterHour[i].lowestPrice <= qHourMa20Arr[i - startIndexQuarterHour] * 1.005 && stock.kLineQuaterHour[i].endPrice > qHourMa20Arr[i - startIndexQuarterHour] * 0.995)
                 {
                     buyPrice = qHourMa20Arr[i - startIndexQuarterHour];
@@ -706,7 +706,7 @@
 
 
 
-
+            /*
             for (int i = prevQuota.Length - 1; i >= 0; i--)
             {
                 if (prevQuota[i].Key.StartsWith("ma"))
@@ -754,6 +754,7 @@
                 //buyPrice = double.MaxValue;
                 continue;
             }
+            */
 
             double moreThanHighest = highest;
             double lessThanLowest = lowest;
