@@ -347,7 +347,7 @@
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
 
-            if (stock.gid.Trim().Equals("sh601088"))
+            if (stock.gid.Trim().Equals("sh601118"))
             {
                 //t.Suspend();
             }
@@ -363,6 +363,10 @@
             int currentIndex = stock.GetItemIndex(currentDate);
             if (currentIndex < 1)
                 continue;
+
+
+            //stock.kLineDay[currentIndex].endPrice = 6.06;
+
             double ma5 = stock.GetAverageSettlePrice(currentIndex, 5, 0);
             double prevMa5 = stock.GetAverageSettlePrice(currentIndex - 1, 5, 0);
             double ma10 = stock.GetAverageSettlePrice(currentIndex, 10, 0);
@@ -502,7 +506,7 @@
             bool waitLowPrice = false;
 
 
-            if (stock.kLineDay[currentIndex].startPrice > ma5)
+            if (stock.kLineDay[currentIndex].startPrice > ma5 * 1.01)
             {
                 //buyPrice = Math.Max(stock.kLineDay[currentIndex].lowestPrice, ma5);
                 waitLowPrice = true;
@@ -751,6 +755,9 @@
                                     dr["名称"].ToString() + " " + message, price, "bull");
                                 StockWatcher.SendAlertMessage("oqrMvt_GEZtQibndfZujZeIIhN30", dr["代码"].ToString().Trim(),
                                     dr["名称"].ToString() + " " + message, price, "bull");
+                                StockWatcher.SendAlertMessage("oqrMvt4_kkXkPb15PauQB1MrHeRQ", dr["代码"].ToString().Trim(),
+                                    dr["名称"].ToString() + " " + message, price, "bull");
+
                             }
                         }
                     }
