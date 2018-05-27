@@ -365,7 +365,7 @@
                 continue;
 
 
-            //stock.kLineDay[currentIndex].endPrice = 6.06;
+            //stock.kLineDay[currentIndex].endPrice = 5.98;
 
             double ma5 = stock.GetAverageSettlePrice(currentIndex, 5, 0);
             double prevMa5 = stock.GetAverageSettlePrice(currentIndex - 1, 5, 0);
