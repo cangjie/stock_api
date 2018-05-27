@@ -468,34 +468,34 @@
 
             for (int i = startIndexQuarterHour; i <= endIndexQuarterHour; i++)
             {
-                qHourMa5Arr[i - startIndexQuarterHour] = KLine.GetAverageSettlePrice(stock.kLineQuaterHour, i - 4, 5, 0);
-                qHourMa10Arr[i - startIndexQuarterHour] = KLine.GetAverageSettlePrice(stock.kLineQuaterHour, i - 9, 10, 0);
-                qHourMa20Arr[i - startIndexQuarterHour] = KLine.GetAverageSettlePrice(stock.kLineQuaterHour, i - 19, 20, 0);
-                qHourMa30Arr[i - startIndexQuarterHour] = KLine.GetAverageSettlePrice(stock.kLineQuaterHour, i - 29, 30, 0);
-                /*
-                if (stock.kLineQuaterHour[i].lowestPrice <= qHourMa5Arr[i - startIndexQuarterHour] * 1.005 && stock.kLineQuaterHour[i].endPrice > qHourMa5Arr[i - startIndexQuarterHour] * 0.995)
+                try
                 {
-                    buyPrice = qHourMa5Arr[i - startIndexQuarterHour];
+                    qHourMa5Arr[i - startIndexQuarterHour] = KLine.GetAverageSettlePrice(stock.kLineQuaterHour, i - 4, 5, 0);
+                    qHourMa10Arr[i - startIndexQuarterHour] = KLine.GetAverageSettlePrice(stock.kLineQuaterHour, i - 9, 10, 0);
+                    qHourMa20Arr[i - startIndexQuarterHour] = KLine.GetAverageSettlePrice(stock.kLineQuaterHour, i - 19, 20, 0);
+                    qHourMa30Arr[i - startIndexQuarterHour] = KLine.GetAverageSettlePrice(stock.kLineQuaterHour, i - 29, 30, 0);
+
+                    if (qHourMa10Arr[i - startIndexQuarterHour] > qHourMa20Arr[i - startIndexQuarterHour] && qHourMa20Arr[i - startIndexQuarterHour] > qHourMa30Arr[i - startIndexQuarterHour])
+                    {
+                        if (stock.kLineQuaterHour[i].lowestPrice <= qHourMa10Arr[i - startIndexQuarterHour] * 1.005 && stock.kLineQuaterHour[i].endPrice > qHourMa10Arr[i - startIndexQuarterHour] * 0.995)
+                        {
+                            //buyPrice = qHourMa10Arr[i - startIndexQuarterHour];
+                        }
+                        if (stock.kLineQuaterHour[i].lowestPrice <= qHourMa20Arr[i - startIndexQuarterHour] * 1.005 && stock.kLineQuaterHour[i].endPrice > qHourMa20Arr[i - startIndexQuarterHour] * 0.995)
+                        {
+                            buyPrice = qHourMa20Arr[i - startIndexQuarterHour];
+                        }
+
+
+                        if (stock.kLineQuaterHour[i].lowestPrice <= qHourMa30Arr[i - startIndexQuarterHour] * 1.005 && stock.kLineQuaterHour[i].endPrice > qHourMa30Arr[i - startIndexQuarterHour] * 0.995)
+                        {
+                            buyPrice = qHourMa30Arr[i - startIndexQuarterHour];
+                        }
+                    }
                 }
-                
-          
-                */
-                if ( qHourMa10Arr[i - startIndexQuarterHour] > qHourMa20Arr[i - startIndexQuarterHour] && qHourMa20Arr[i - startIndexQuarterHour] > qHourMa30Arr[i - startIndexQuarterHour])
+                catch
                 {
-                    if (stock.kLineQuaterHour[i].lowestPrice <= qHourMa10Arr[i - startIndexQuarterHour] * 1.005 && stock.kLineQuaterHour[i].endPrice > qHourMa10Arr[i - startIndexQuarterHour] * 0.995)
-                    {
-                        //buyPrice = qHourMa10Arr[i - startIndexQuarterHour];
-                    }
-                    if (stock.kLineQuaterHour[i].lowestPrice <= qHourMa20Arr[i - startIndexQuarterHour] * 1.005 && stock.kLineQuaterHour[i].endPrice > qHourMa20Arr[i - startIndexQuarterHour] * 0.995)
-                    {
-                        buyPrice = qHourMa20Arr[i - startIndexQuarterHour];
-                    }
-
-
-                    if (stock.kLineQuaterHour[i].lowestPrice <= qHourMa30Arr[i - startIndexQuarterHour] * 1.005 && stock.kLineQuaterHour[i].endPrice > qHourMa30Arr[i - startIndexQuarterHour] * 0.995)
-                    {
-                        buyPrice = qHourMa30Arr[i - startIndexQuarterHour];
-                    }
+                    continue;
                 }
             }
 
