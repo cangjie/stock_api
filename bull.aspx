@@ -350,7 +350,7 @@
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
 
-            if (stock.gid.Trim().Equals("sh601118"))
+            if (stock.gid.Trim().Equals("sh600073"))
             {
                 //t.Suspend();
             }
@@ -709,10 +709,10 @@
                 switch (sellPoint)
                 {
                     case "high":
-                        highestPrice = stock.kLineDay[currentIndex + i].highestPrice;
+                        highPrice = stock.kLineDay[currentIndex + i].highestPrice;
                         break;
                     case "settle":
-                        highestPrice = stock.kLineDay[currentIndex + i].endPrice;
+                        highPrice = stock.kLineDay[currentIndex + i].endPrice;
                         break;
                     default:
                         break;
