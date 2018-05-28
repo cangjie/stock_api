@@ -22,6 +22,8 @@
 
     public static int alertQueryTimes = 0;
 
+    public static string sellPoint = "open";
+
     protected void Page_Load(object sender, EventArgs e)
     {
         sort = Util.GetSafeRequestValue(Request, "sort", "放量 desc");
@@ -68,6 +70,7 @@
 
     public DataTable GetData()
     {
+        sellPoint = Util.GetSafeRequestValue(Request, "sell", "open");
         if (calendar.SelectedDate.Year < 2000)
             currentDate = Util.GetDay(DateTime.Now);
         else
@@ -703,6 +706,17 @@
                 if (currentIndex + i >= stock.kLineDay.Length)
                     break;
                 double highPrice = stock.kLineDay[currentIndex + i].startPrice;
+                switch (sellPoint)
+                {
+                    case "high":
+                        highestPrice = stock.kLineDay[currentIndex + i].highestPrice;
+                        break;
+                    case "settle":
+                        highestPrice = stock.kLineDay[currentIndex + i].endPrice;
+                        break;
+                    default:
+                        break;
+                }
                 maxPrice = Math.Max(maxPrice, highPrice);
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) /buyPrice;
             }
@@ -747,7 +761,7 @@
                                 dr["名称"].ToString().Trim(),
                                 "买入价：" + price.ToString() + " " + message.Trim(), price))
                         {
-                            
+
                             //for shuangzi
                             if (dr["信号"].ToString().IndexOf("🌟") >= 0)
                             {
