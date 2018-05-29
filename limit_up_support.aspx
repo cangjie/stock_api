@@ -526,6 +526,18 @@
             {
                 timelineArray = Core.Timeline.LoadTimelineArrayFromSqlServer(stock.gid, currentDate);
             }
+
+            double openLowPrice = 0;
+            foreach (Core.Timeline t in timelineArray)
+            {
+                if (t.tickTime >= t.tickTime.Date.AddHours(9).AddMinutes(30).AddMinutes(30))
+                {
+                    openLowPrice = t.todayLowestPrice;
+                    break;
+                }
+            }
+
+
             DateTime footTime = DateTime.MinValue;
             if (!foot(timelineArray, out todayLowestPrice, out todayDisplayLowPrice, out footTime))
             {
@@ -666,7 +678,7 @@
 
             if (Math.Abs(openRaise) > 0.01)
             {
-                continue;
+                //continue;
             }
             /*
             if (volumeReduce < 1.25 && stock.kLineDay[currentIndex].startPrice != stock.kLineDay[currentIndex].highestPrice)
@@ -675,7 +687,7 @@
             }
             */
 
-            
+
 
             bool isFirstFoot = false;
             for (int i = 0; i < timelineArray.Length && timelineArray[i].tickTime.Hour == 9 && timelineArray[i].tickTime.Minute <= 30; i++)
@@ -735,6 +747,12 @@
                 {
                     dr["信号"] = dr["信号"].ToString() + "<a title=\"向上的无影脚\" >☄️</a>";
                 }
+            }
+
+            if (openLowPrice > stock.kLineDay[currentIndex].lowestPrice * 1.005)
+            {
+                //dr["信号"] = dr["信号"].ToString() + "<a title=\"跌破开盘时低价\" >💩</a>";
+                continue;
             }
 
 
@@ -913,7 +931,7 @@
                         message = message.Trim() + "  " + ((int.Parse(dr["KDJ日"].ToString()) >= 0) ? "👑KDJ" : "");
                         message = message.Trim() + "  幅度：" + Math.Round(100 * (high - low) / low, 2).ToString() + "%";
                         */
-                        string message = Util.RemoveHTMLTag(dr["信号"].ToString()) + " 缩量：" + Math.Round(100 * (double)dr["缩量"], 2).ToString() 
+                        string message = Util.RemoveHTMLTag(dr["信号"].ToString()) + " 缩量：" + Math.Round(100 * (double)dr["缩量"], 2).ToString()
                             + "% 量比：" + Math.Round((double)dr["低时量比"], 2).ToString();
                         double price = Math.Round(double.Parse(dr["现价"].ToString()), 2);
                         if (StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()),
