@@ -60,7 +60,7 @@
                     t.Abort();
                     ts = new ThreadStart(PageWatcher);
                     t = new Thread(ts);
-                    t.Start();
+                    //t.Start();
                 }
             }
             catch(Exception err)
@@ -91,7 +91,7 @@
         DateTime currentDate = calendar.SelectedDate;
         if (currentDate.Year < 2000)
             currentDate = DateTime.Now;
-        DataTable dtOri = GetData(currentDate, Util.GetSafeRequestValue(Request, "days", "3,4,5,6"));
+        DataTable dtOri = GetData(currentDate, Util.GetSafeRequestValue(Request, "days", "10,11,12,13,14,15"));
         DataRow[] drOriArr = dtOri.Select(Util.GetSafeRequestValue(Request, "whereclause", "   ").Trim(), sort);
         return RenderHtml(drOriArr);
     }
