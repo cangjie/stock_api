@@ -749,7 +749,7 @@
                 || dr["信号"].ToString().IndexOf("📈") >= 0))
                 */
                     if (dr["信号"].ToString().IndexOf("🛍️") >= 0 && dr["信号"].ToString().IndexOf("🔺") < 0
-                        && (dr["信号"].ToString().IndexOf("📈") >= 0 || dr["信号"].ToString().IndexOf("🌟") >= 0) && double.Parse(dr["放量"].ToString()) >= 1.5)
+                        && dr["信号"].ToString().IndexOf("🌟") >= 0 && double.Parse(dr["放量"].ToString()) >= 1.5)
                     {
                         string message = Util.RemoveHTMLTag(dr["信号"].ToString()) + " " + dr["代码"].ToString()
                 + " " + dr["名称"].ToString() + " 放量：" + Math.Round(100 * double.Parse(dr["放量"].ToString()), 2).ToString()
