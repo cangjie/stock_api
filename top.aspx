@@ -48,7 +48,7 @@
                 {
                     t.Abort();
                     t = new Thread(ts);
-                    t.Start();
+                    //t.Start();
 
                 }
             }
