@@ -762,17 +762,15 @@
                                 "买入价：" + price.ToString() + " " + message.Trim(), price))
                         {
 
-                            //for shuangzi
-                            if (dr["信号"].ToString().IndexOf("🌟") >= 0)
-                            {
-                                StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(),
-                                    dr["名称"].ToString() + " " + message, price, "bull");
-                                StockWatcher.SendAlertMessage("oqrMvt_GEZtQibndfZujZeIIhN30", dr["代码"].ToString().Trim(),
-                                    dr["名称"].ToString() + " " + message, price, "bull");
-                                StockWatcher.SendAlertMessage("oqrMvt4_kkXkPb15PauQB1MrHeRQ", dr["代码"].ToString().Trim(),
-                                    dr["名称"].ToString() + " " + message, price, "bull");
+                 
+                            StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(),
+                                dr["名称"].ToString() + " " + message, price, "bull");
+                            StockWatcher.SendAlertMessage("oqrMvt_GEZtQibndfZujZeIIhN30", dr["代码"].ToString().Trim(),
+                                dr["名称"].ToString() + " " + message, price, "bull");
+                            StockWatcher.SendAlertMessage("oqrMvt4_kkXkPb15PauQB1MrHeRQ", dr["代码"].ToString().Trim(),
+                                dr["名称"].ToString() + " " + message, price, "bull");
 
-                            }
+                            
                         }
                     }
                     /*
