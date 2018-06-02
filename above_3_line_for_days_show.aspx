@@ -367,7 +367,7 @@
             double volumeIncrease = (currentVolume - lastDayVolume) / lastDayVolume;
             dr["放量"] = currentVolume / lastDayVolume;
             int kdjDays = stock.kdjDays(currentIndex);
-            if (kdjDays == -1)
+            if (kdjDays == -1 || macdDays == -1)
                 continue;
        
             dr["kdj"] = kdjDays.ToString();
