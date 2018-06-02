@@ -375,7 +375,7 @@
             int days3Line = KLine.Above3LineDays(stock, currentIndex);
             dr["3线日"] = daysAbove3Line;
             dr["3线"] = stock.GetAverageSettlePrice(currentIndex, 3, 3);
-            double buyPrice = stock.kLineDay[currentIndex].startPrice;
+            double buyPrice = stock.GetAverageSettlePrice(currentIndex, 5, 0);
             double lowestPrice = stock.LowestPrice(currentDate, 20);
             double highestPrice = stock.HighestPrice(currentDate, 40);
             double f1 = lowestPrice + (highestPrice - lowestPrice) * 0.236;
