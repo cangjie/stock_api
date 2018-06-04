@@ -49,7 +49,7 @@
         //Thread t = new Thread(ts);
         //t.Start();
 
-    
+
         sort = Util.GetSafeRequestValue(Request, "sort", "放量 desc");
         if (!IsPostBack)
         {
@@ -342,6 +342,12 @@
             //   continue;
 
 
+            double ma5 = stock.GetAverageSettlePrice(currentIndex, 5, 0);
+            //double prevMa5 = stock.GetAverageSettlePrice(currentIndex - 1, 5, 0);
+            double ma10 = stock.GetAverageSettlePrice(currentIndex, 10, 0);
+            double ma20 = stock.GetAverageSettlePrice(currentIndex, 20, 0);
+            double ma30 = stock.GetAverageSettlePrice(currentIndex, 30, 0);
+
             DataRow dr = dt.NewRow();
 
             dr["代码"] = stock.gid.Trim();
@@ -369,13 +375,13 @@
             int kdjDays = stock.kdjDays(currentIndex);
             if (kdjDays == -1 || macdDays == -1)
                 continue;
-       
+
             dr["kdj"] = kdjDays.ToString();
 
             int days3Line = KLine.Above3LineDays(stock, currentIndex);
             dr["3线日"] = daysAbove3Line;
             dr["3线"] = stock.GetAverageSettlePrice(currentIndex, 3, 3);
-            double buyPrice = stock.GetAverageSettlePrice(currentIndex, 5, 0);
+            double buyPrice = ma5;
             double lowestPrice = stock.LowestPrice(currentDate, 20);
             double highestPrice = stock.HighestPrice(currentDate, 40);
             double f1 = lowestPrice + (highestPrice - lowestPrice) * 0.236;
@@ -455,6 +461,11 @@
             if (currentPrice <= buyPrice * 1.005)
             {
                 dr["信号"] = dr["信号"].ToString().Trim() + "🛍️";
+            }
+
+            if (ma5 <= ma10 && ma10 <= ma20 && ma20 <= ma30)
+            {
+                dr["信号"] = dr["信号"].ToString().Trim() + "👨‍👩‍👧‍👦";
             }
 
             if (kdjDays >= 0 && kdjDays <= 1 && (int)dr["TD"] <= 4)
