@@ -426,7 +426,7 @@
             double todayDisplayLowPrice = double.MaxValue;
 
 
-
+            
 
 
             KLine.ComputeMACD(stock.kLineDay);
@@ -440,6 +440,21 @@
             int currentIndex = stock.GetItemIndex(currentDate);
             if (currentIndex < 0)
                 continue;
+
+
+
+            double ma5 = stock.GetAverageSettlePrice(currentIndex, 5, 0);
+            double prevMa5 = stock.GetAverageSettlePrice(currentIndex - 1, 5, 0);
+            double ma10 = stock.GetAverageSettlePrice(currentIndex, 10, 0);
+            double ma20 = stock.GetAverageSettlePrice(currentIndex, 20, 0);
+            double ma30 = stock.GetAverageSettlePrice(currentIndex, 30, 0);
+
+            if (!(ma5 >= ma10 && ma10 >= ma20 && ma20 >= ma30))
+            {
+                continue;
+            }
+
+
             for (int i = currentIndex; i > 0; i--)
             {
                 if (stock.kLineDay[i].endPrice >= stock.GetAverageSettlePrice(i, 20, 0))

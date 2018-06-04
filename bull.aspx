@@ -350,7 +350,7 @@
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
 
-            if (stock.gid.Trim().Equals("sh600073"))
+            if (stock.gid.Trim().Equals("sh600769"))
             {
                 //t.Suspend();
             }
@@ -393,6 +393,9 @@
             {
                 continue;
             }
+
+
+            //stock.kLineDay[currentIndex].endPrice = 6.19;
 
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
