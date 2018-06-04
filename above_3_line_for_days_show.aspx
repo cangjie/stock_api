@@ -60,7 +60,7 @@
                     t.Abort();
                     ts = new ThreadStart(PageWatcher);
                     t = new Thread(ts);
-                    //t.Start();
+                    t.Start();
                 }
             }
             catch(Exception err)
@@ -577,34 +577,24 @@
                 {
                     try
                     {
-                        DataTable dt = GetData(DateTime.Now, "10,11,12,13,14,15");
+                        DataTable dt = GetData(DateTime.Now, "6,7,8,9,10,11,12,13,14,15");
                         foreach (DataRow dr in dt.Rows)
                         {
-                            if (dr["信号"].ToString().IndexOf("📈") >= 0)
+                            if (dr["信号"].ToString().IndexOf("📈") >= 0 && dr["信号"].ToString().IndexOf("👨‍👩‍👧‍👦") >= 0)
                             {
-                                Stock s = new Stock(dr["代码"].ToString().Trim());
-                                s.kLineHour = KLine.GetLocalKLine(s.gid.Trim(), "1hr");
-                                s.LoadKLineDay();
-                                KLine.ComputeRSV(s.kLineHour);
-                                KLine.ComputeKDJ(s.kLineHour);
-                                KLine.ComputeMACD(s.kLineHour);
-                                string message = "";
-                                if (StockWatcher.IsKdjFolk(s.kLineHour, s.kLineHour.Length - 1))
-                                    message = "KDJ金叉";
-                                if (StockWatcher.IsMacdFolk(s.kLineHour, s.kLineHour.Length - 1))
-                                    message = "MACD金叉";
-                                if (!message.Trim().Equals("") && s.LastTrade < s.kLineDay[s.kLineDay.Length - 1].startPrice)
+                                string message = "KDJ:" + dr["KDJ"].ToString() + " MACD:" + dr["MACD"].ToString() + " 3线日:" + dr["3线日"].ToString()
+                                    + " 放量:" + Math.Round(100 * (double)dr["放量"], 2).ToString() + "%";
+
+                                if (StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()),
+                                    dr["代码"].ToString().Trim(),
+                                    "above_3_line_for_days",
+                                    dr["名称"].ToString().Trim(),
+                                    "买入价：" + Math.Round((double)dr["买入"], 2).ToString() + " " + message))
                                 {
-                                    if (StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()),
-                                        s.gid,
-                                        "above_3_line_for_days",
-                                        s.Name,
-                                        "买入价：" + s.LastTrade.ToString() + " " + message))
-                                    {
-                                        StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(),
-                                            dr["名称"].ToString() + " " + message, s.LastTrade, "above_3_line_for_days");
-                                    }
+                                    StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(),
+                                        dr["名称"].ToString() + " " + message, Math.Round((double)dr["买入"], 2), "above_3_line_for_days");
                                 }
+
                             }
                         }
                     }
