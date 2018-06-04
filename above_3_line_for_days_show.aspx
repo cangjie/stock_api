@@ -454,7 +454,7 @@
 
             if (currentPrice <= buyPrice * 1.005)
             {
-                //dr["信号"] = dr["信号"].ToString().Trim() + "🛍️";
+                dr["信号"] = dr["信号"].ToString().Trim() + "🛍️";
             }
 
             if (kdjDays >= 0 && kdjDays <= 1 && (int)dr["TD"] <= 4)
@@ -477,6 +477,10 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "📈";
             }
+
+
+
+
 
             //if (totalScore !=0 && (stock.kLineDay[currentIndex].highestPrice - settlePrice) / settlePrice < 0.07 )
             dt.Rows.Add(dr);
