@@ -629,7 +629,7 @@
                 memo = memo + "<br/>折返在F3之上";
             }
 
-            buyPrice = todayDisplayLowPrice;
+            buyPrice = openLowPrice;
             if (buyPrice > 100000)
             {
                 buyPrice = stock.kLineDay[currentIndex].lowestPrice;
@@ -767,7 +767,7 @@
             if (openLowPrice > stock.kLineDay[currentIndex].lowestPrice * 1.005)
             {
                 //dr["信号"] = dr["信号"].ToString() + "<a title=\"跌破开盘时低价\" >💩</a>";
-                continue;
+                //continue;
             }
 
 
