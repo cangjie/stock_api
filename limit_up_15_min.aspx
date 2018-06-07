@@ -355,7 +355,7 @@
 
         dt.Columns.Add("低时量比", Type.GetType("System.Double"));
         dt.Columns.Add("无影量比", Type.GetType("System.Double"));
-
+        dt.Columns.Add("支撑类型", Type.GetType("System.String"));
         dt.Columns.Add("现高", Type.GetType("System.Double"));
         dt.Columns.Add("F2", Type.GetType("System.Double"));
         dt.Columns.Add("F3", Type.GetType("System.Double"));
@@ -457,9 +457,11 @@
             double[] qHourMa10Arr = new double[endIndexQuarterHour - startIndexQuarterHour+1];
             double[] qHourMa20Arr = new double[endIndexQuarterHour - startIndexQuarterHour+1];
             double[] qHourMa30Arr = new double[endIndexQuarterHour - startIndexQuarterHour+1];
-
+            double[] qHourMa60Arr = new double[endIndexQuarterHour - startIndexQuarterHour+1];
 
             double buyPrice = 0;
+
+            string supportType = "";
 
             if (startIndexQuarterHour < 10 || endIndexQuarterHour < 10)
             {
@@ -474,22 +476,24 @@
                     qHourMa10Arr[i - startIndexQuarterHour] = KLine.GetAverageSettlePrice(stock.kLineQuaterHour, i - 9, 10, 0);
                     qHourMa20Arr[i - startIndexQuarterHour] = KLine.GetAverageSettlePrice(stock.kLineQuaterHour, i - 19, 20, 0);
                     qHourMa30Arr[i - startIndexQuarterHour] = KLine.GetAverageSettlePrice(stock.kLineQuaterHour, i - 29, 30, 0);
+                    qHourMa60Arr[i - startIndexQuarterHour] = KLine.GetAverageSettlePrice(stock.kLineQuaterHour, i - 59, 60, 0);
 
                     if (qHourMa10Arr[i - startIndexQuarterHour] > qHourMa20Arr[i - startIndexQuarterHour] && qHourMa20Arr[i - startIndexQuarterHour] > qHourMa30Arr[i - startIndexQuarterHour])
                     {
-                        if (stock.kLineQuaterHour[i].lowestPrice <= qHourMa10Arr[i - startIndexQuarterHour] * 1.005 && stock.kLineQuaterHour[i].endPrice > qHourMa10Arr[i - startIndexQuarterHour] * 0.995)
-                        {
-                            //buyPrice = qHourMa10Arr[i - startIndexQuarterHour];
-                        }
                         if (stock.kLineQuaterHour[i].lowestPrice <= qHourMa20Arr[i - startIndexQuarterHour] * 1.005 && stock.kLineQuaterHour[i].endPrice > qHourMa20Arr[i - startIndexQuarterHour] * 0.995)
                         {
                             buyPrice = qHourMa20Arr[i - startIndexQuarterHour];
+                            supportType = "20";
                         }
-
-
                         if (stock.kLineQuaterHour[i].lowestPrice <= qHourMa30Arr[i - startIndexQuarterHour] * 1.005 && stock.kLineQuaterHour[i].endPrice > qHourMa30Arr[i - startIndexQuarterHour] * 0.995)
                         {
                             buyPrice = qHourMa30Arr[i - startIndexQuarterHour];
+                            supportType = "30";
+                        }
+                        if (stock.kLineQuaterHour[i].lowestPrice <= qHourMa60Arr[i - startIndexQuarterHour] * 1.005 && stock.kLineQuaterHour[i].endPrice > qHourMa60Arr[i - startIndexQuarterHour] * 0.995)
+                        {
+                            buyPrice = qHourMa30Arr[i - startIndexQuarterHour];
+                            supportType = "60";
                         }
                     }
                 }
@@ -1065,6 +1069,7 @@
             }
 
             dr["买入"] = buyPrice;
+            dr["支撑类型"] = supportType.Trim();
             dr["KDJ日"] = kdjDays;
             dr["MACD日"] = stock.macdDays(currentIndex);
             dr["高开"] = openRaise;
@@ -1414,6 +1419,7 @@
                     <asp:BoundColumn DataField="更高" HeaderText="更高"></asp:BoundColumn>
                     <asp:BoundColumn DataField="幅度" HeaderText="幅度"></asp:BoundColumn>
                     <asp:BoundColumn DataField="现价" HeaderText="现价"></asp:BoundColumn>
+
                     <asp:BoundColumn DataField="MACD日" HeaderText="MACD" SortExpression="MACD日|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ" SortExpression="KDJ率|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="无影" HeaderText="无影"></asp:BoundColumn>
@@ -1421,6 +1427,7 @@
                     <asp:BoundColumn DataField="无影量比" HeaderText="量比"></asp:BoundColumn>
                     <asp:BoundColumn DataField="最低时间" HeaderText="最低时"></asp:BoundColumn>
                     <asp:BoundColumn DataField="低时量比" HeaderText="量比"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="支撑类型" HeaderText="支撑类型"></asp:BoundColumn>
                     <asp:BoundColumn DataField="0日" HeaderText="0日" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日" SortExpression="1日|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="2日" HeaderText="2日"></asp:BoundColumn>
