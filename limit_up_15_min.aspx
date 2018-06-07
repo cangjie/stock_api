@@ -499,7 +499,7 @@
                 }
                 catch
                 {
-                    continue;
+                    //continue;
                 }
             }
 
@@ -1419,7 +1419,6 @@
                     <asp:BoundColumn DataField="更高" HeaderText="更高"></asp:BoundColumn>
                     <asp:BoundColumn DataField="幅度" HeaderText="幅度"></asp:BoundColumn>
                     <asp:BoundColumn DataField="现价" HeaderText="现价"></asp:BoundColumn>
-
                     <asp:BoundColumn DataField="MACD日" HeaderText="MACD" SortExpression="MACD日|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ" SortExpression="KDJ率|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="无影" HeaderText="无影"></asp:BoundColumn>
