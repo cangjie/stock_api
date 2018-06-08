@@ -497,6 +497,12 @@
                             buyPrice = qHourMa60Arr[i - startIndexQuarterHour];
                             supportType = "60";
                         }
+                        if (stock.kLineQuaterHour[i].lowestPrice < qHourMa60Arr[i - startIndexQuarterHour] * 0.99)
+                        {
+                            supportType = "low";
+                            buyPrice = qHourMa60Arr[i - startIndexQuarterHour];
+                        }
+
                     }
                 }
                 catch
@@ -649,7 +655,17 @@
 
             if (buyPrice == 0)
             {
-                continue;
+                //supportType = "";
+                //buyPrice = stock.kLineDay[currentIndex].lowestPrice;
+                if (stock.kLineDay[currentIndex].lowestPrice >= stock.kLineDay[currentIndex - 1].highestPrice * 0.995)
+                {
+                    buyPrice = stock.kLineDay[currentIndex].lowestPrice;
+                    supportType = "high";
+                }
+                else
+                {
+                    continue;
+                }
             }
 
 
