@@ -661,6 +661,11 @@
                 {
                     buyPrice = stock.kLineDay[currentIndex].lowestPrice;
                     supportType = "high";
+                    if (buyPrice > stock.kLineDay[currentIndex - 1].highestPrice * 1.001)
+                    {
+                        supportType = "gap";
+                    }
+                    
                 }
                 else
                 {
