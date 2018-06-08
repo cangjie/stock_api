@@ -452,7 +452,19 @@
 
             int currentIndex = stock.GetItemIndex(currentDate);
             int endIndexQuarterHour = Stock.GetItemIndex(currentTime, stock.kLineQuaterHour);
+            if (endIndexQuarterHour == -1)
+            {
+                if (currentTime.Date == DateTime.Now.Date)
+                {
+                    endIndexQuarterHour = stock.kLineQuaterHour.Length - 1;
+                }
+                else
+                {
+                    continue;
+                }
+            }
             int startIndexQuarterHour = Stock.GetItemIndex(currentTime.Date.AddHours(9).AddMinutes(30), stock.kLineQuaterHour);
+
             double[] qHourMa5Arr = new double[endIndexQuarterHour - startIndexQuarterHour+1];
             double[] qHourMa10Arr = new double[endIndexQuarterHour - startIndexQuarterHour+1];
             double[] qHourMa20Arr = new double[endIndexQuarterHour - startIndexQuarterHour+1];
@@ -665,7 +677,7 @@
                     {
                         supportType = "gap";
                     }
-                    
+
                 }
                 else
                 {
