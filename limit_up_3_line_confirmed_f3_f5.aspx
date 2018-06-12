@@ -319,7 +319,7 @@
         }
 
         DateTime lastTransactDate = Util.GetLastTransactDate(currentDate, 1);
-        DateTime limitUpStartDate = Util.GetLastTransactDate(lastTransactDate, 4);
+        DateTime limitUpStartDate = Util.GetLastTransactDate(lastTransactDate, 7);
 
 
 
