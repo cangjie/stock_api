@@ -812,7 +812,8 @@
             }
 
             double maxPrice = 0;
-            for (int i = 0; i <= 5; i++)
+            dr["0日"] = (currentPrice - buyPrice) / buyPrice;
+            for (int i = 1; i <= 5; i++)
             {
                 if (currentIndex + i >= stock.kLineDay.Length)
                     break;
