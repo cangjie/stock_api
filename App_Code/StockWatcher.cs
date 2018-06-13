@@ -630,7 +630,9 @@ public class StockWatcher
             + "\"keyword3\": {\"value\":\"" + keyword3 + "\", \"color\":\"#000000\"}"
             + "}}";
         Util.GetWebContent("http://weixin.luqinwenda.com/api/send_template_message.aspx", "POST", json, "application/raw");
-        
+        Util.GetWebContent("https://weixin-new-time-english.chinacloudsites.cn/api/send_template_message.aspx", "POST", 
+            json.Replace(templateId, "yNg8gCkQmAZJxoy0KG8xDFz6cEF5zclfWpgu4XOpzw4"), "application/raw");
+
     }
    
     public static DataTable GetTimeLineTradeAndVolumeTable(string gid, DateTime date)

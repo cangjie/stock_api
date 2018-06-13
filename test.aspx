@@ -6,6 +6,11 @@
 <script runat="server">
     protected void Page_Load(object sender, EventArgs e)
     {
+        StockWatcher.SendAlertMessage("oeC_l1Zn1ineEuGmDl6hgE5ixPCw", "sh600031", "三一重工", 10, "bull");
+
+
+        Response.End();
+
         foreach (object o in StockWatcher.WatchEachStockRunLog)
         {
             Response.Write(o.ToString() + "<br/>");
