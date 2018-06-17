@@ -403,7 +403,7 @@
         foreach (DataRow drOri in dtOri.Rows)
         {
 
-            if (drOri["gid"].ToString().Trim().Equals("sz002517"))
+            if (drOri["gid"].ToString().Trim().Equals("sh603777"))
             {
                 string aa = "aa";
             }
@@ -492,13 +492,6 @@
 
                     if (qHourMa10Arr[i - startIndexQuarterHour] > qHourMa20Arr[i - startIndexQuarterHour] && qHourMa20Arr[i - startIndexQuarterHour] > qHourMa30Arr[i - startIndexQuarterHour])
                     {
-                        /*
-                        if (stock.kLineQuaterHour[i].lowestPrice <= qHourMa20Arr[i - startIndexQuarterHour] * 1.005 && stock.kLineQuaterHour[i].endPrice > qHourMa20Arr[i - startIndexQuarterHour] * 0.995)
-                        {
-                            buyPrice = qHourMa20Arr[i - startIndexQuarterHour];
-                            supportType = "20";
-                        }
-                        */
                         if (stock.kLineQuaterHour[i].lowestPrice <= qHourMa30Arr[i - startIndexQuarterHour] * 1.005 && stock.kLineQuaterHour[i].endPrice > qHourMa30Arr[i - startIndexQuarterHour] * 0.995)
                         {
                             buyPrice = qHourMa30Arr[i - startIndexQuarterHour];
