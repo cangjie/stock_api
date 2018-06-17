@@ -8,7 +8,7 @@
 
     public DateTime currentDate = Util.GetDay(DateTime.Now);
 
-    public string sort = "MACD日,KDJ日,综指 desc";
+    public string sort = "缩量";
 
     public static ThreadStart tsQ = new ThreadStart(StockWatcher.LogQuota);
 
@@ -388,8 +388,29 @@
             }
 
 
-
-
+            int tochSupportStatus = 0;
+            for (int i = currentIndex - 1; i >= highIndex; i--)
+            {
+                switch (tochSupportStatus)
+                {
+                    case 0:
+                        if (stock.kLineDay[i].lowestPrice > buyPrice * 1.01)
+                        {
+                            tochSupportStatus++;
+                        }
+                        break;
+                    case 1:
+                        if (stock.kLineDay[i].lowestPrice < buyPrice * 1.01)
+                        {
+                            tochSupportStatus++;
+                        }
+                        break;
+                }
+            }
+            if (tochSupportStatus == 2)
+            {
+                continue;
+            }
 
 
 
