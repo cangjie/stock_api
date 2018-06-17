@@ -368,7 +368,7 @@
             {
                 buyPrice = Math.Max(f3, stock.kLineDay[currentIndex].lowestPrice);
             }
-            else if (stock.kLineDay[currentIndex].lowestPrice <= f5 * 1.01 && stock.kLineDay[currentIndex].highestPrice >= f5 * 0.99)
+            else if (stock.kLineDay[currentIndex].lowestPrice <= f5 * 1.01 && stock.kLineDay[currentIndex].startPrice >= f5)
             {
                 buyPrice = Math.Max(f5, stock.kLineDay[currentIndex].lowestPrice);
             }
