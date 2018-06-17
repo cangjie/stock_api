@@ -398,6 +398,10 @@
                         {
                             tochSupportStatus++;
                         }
+                        else
+                        {
+                            tochSupportStatus = 2;
+                        }
                         break;
                     case 1:
                         if (stock.kLineDay[i].lowestPrice < buyPrice * 1.01)
@@ -405,6 +409,10 @@
                             tochSupportStatus++;
                         }
                         break;
+                }
+                if (tochSupportStatus == 2)
+                {
+                    break;
                 }
             }
             if (tochSupportStatus == 2)
