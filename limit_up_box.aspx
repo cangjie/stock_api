@@ -321,7 +321,8 @@
         DateTime lastTransactDate = Util.GetLastTransactDate(currentDate, 1);
         DateTime limitUpStartDate = Util.GetLastTransactDate(lastTransactDate, 10);
 
-
+        DataTable dtDtl = DBHelper.GetDataTable(" select gid, alert_date, price from alert_foot where alert_date > '"
+            + currentDate.ToShortDateString() + "' and alert_date < '" + currentDate.AddDays(1).ToShortDateString() + "'  order by alert_date desc ");
 
         DataTable dtOri = DBHelper.GetDataTable(" select gid, alert_date from limit_up where alert_date >= '" + limitUpStartDate.ToShortDateString()
             + "' and alert_date <= '" + lastTransactDate.ToShortDateString() + "' order by alert_date desc ");
@@ -468,7 +469,7 @@
             {
                 timelineArray = Core.Timeline.LoadTimelineArrayFromSqlServer(stock.gid, currentDate);
             }
-            bool isFoot = foot(timelineArray, out todayLowestPrice, out todayDisplayedLowestPrice, out footTime);
+            /*bool isFoot = foot(timelineArray, out todayLowestPrice, out todayDisplayedLowestPrice, out footTime);
             DateTime todayLowestTime = Core.Timeline.GetLowestTime(timelineArray);
             if (todayLowestTime.Hour == 9 && todayLowestTime.Minute < 30)
             {
@@ -500,8 +501,8 @@
                     todayLowestTimeSpan = todayLowestTimeSpan - (currentDate.Date.AddHours(13) - currentDate.Date.AddHours(11).AddMinutes(30));
                 }
             }
-
-            memo = todayLowestTimeSpan.Hours.ToString() + "小时" + todayLowestTimeSpan.Minutes.ToString() + "分钟";
+            */
+            // memo = todayLowestTimeSpan.Hours.ToString() + "小时" + todayLowestTimeSpan.Minutes.ToString() + "分钟";
 
 
             if (f3 >= line3Price)
@@ -534,6 +535,7 @@
                             dr["信号"] = dr["信号"] + "<a title=\"F3在3线之上\" >🌟</a>";
                         }
                         */
+            /*
             if (stock.kLineDay[currentIndex].lowestPrice >= f3 - 0.05 && todayLowestTime > DateTime.MinValue)
             {
                 dr["信号"] = dr["信号"] + "<a title=\"折返在F3之上\" >🌟</a>";
@@ -542,38 +544,13 @@
                     dr["信号"] = dr["信号"] + "<a title=\"折返" + (starCount+1).ToString() + "小时\"  >🌟</a>";
                 }
             }
-
+            */
             if (f3 >= line3Price)
             {
                 dr["信号"] = dr["信号"] + "<a title=\"3线上\"  >👑</a>";
             }
 
-            /*
-            else
-            {
-                int overF3Times = 0;
-                for (int i = 1; i < timelineArray.Length; i++)
-                {
-                    if (timelineArray[i - 1].tickTime >= todayLowestTime)
-                    {
-                        if (timelineArray[i - 1].todayEndPrice <= f3 && timelineArray[i].todayEndPrice >= f3)
-                        {
-                            overF3Times++;
-                        }
-                    }
-                }
-                if (overF3Times == 1)
-                {
-                    dr["信号"] = dr["信号"] + "<a title=\"穿越F3仅1次\" >🌟</a>";
-                    memo = memo + "<br/>穿越F3仅1次";
-                }
-            }*/
-            /*
-            if ((stock.kLineDay[currentIndex].startPrice - stock.kLineDay[currentIndex].lowestPrice) / stock.kLineDay[currentIndex].lowestPrice >= 0.01)
-            {
-                dr["信号"] = dr["信号"] + "<a title=\"高开\" >🌟</a>";
-            }
-            */
+
             double width = Math.Round(100 * (highest - lowest) / lowest, 2);
 
             if (width >= 30)
@@ -589,11 +566,17 @@
                 dr["信号"] = dr["信号"] + "<a title=\"长下影线\" >🔺</a>";
             }
 
+            DataRow[] lowPriceDrArr = dtDtl.Select(" gid = '" + drOri["gid"].ToString().Trim() + "' ", " alert_date desc ");
+            if (lowPriceDrArr.Length > 0)
+            {
+                 dr["信号"] = dr["信号"].ToString().Trim() + "<a title='无影脚' >❗️</a>";
+            }
+            /*
             if (isFoot && footTime.Hour <= 13 && footTime.Hour >= 10)
             {
                 dr["信号"] = dr["信号"].ToString().Trim() + "<a title='无影脚' >❗️</a>";
             }
-
+            */
 
             KeyValuePair<string, double>[] quota = stock.GetSortedQuota(currentIndex);
             bool isFire = false;
