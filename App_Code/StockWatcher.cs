@@ -616,7 +616,7 @@ public class StockWatcher
                 type = type.Replace("bottom", "支撑位").Replace("wave", "波段").Replace("low", "低位").Replace("high", "高位").Trim().Replace("over3line", "突破三线").Replace("volumeincrease", "放量");
                 type = type.Replace("volumedecrease", "缩量调整后上涨超3%").Replace("3_line", "底部突破3线").Replace("macd", "MACD金叉").Replace("break_3_line_twice", "双穿三线").Replace("above_3_line_for_days", "三线上多日");
                 type = type.Replace("limit_up_box_f3", "涨停后F3支撑").Replace("limit_up_box_f5", "涨停后F5支撑").Replace("bull", "多头趋势1级").Replace("macd", "双金叉").Replace("top", "一阳穿4线");
-                type = type.Replace("limit_up_hand", "小手");
+                type = type.Replace("limit_up_hand", "小手").Replace("limit_up_box", "涨停后箱体支撑");
                 first = type;
                 keyword1 = "[" + gid.Trim() + "]" + name.Trim();
                 keyword2 = price.ToString();
@@ -629,9 +629,23 @@ public class StockWatcher
             + "\"keyword2\": {\"value\":\"" + keyword2 + "\", \"color\":\"#000000\"},"
             + "\"keyword3\": {\"value\":\"" + keyword3 + "\", \"color\":\"#000000\"}"
             + "}}";
-        Util.GetWebContent("http://weixin.luqinwenda.com/api/send_template_message.aspx", "POST", json, "application/raw");
-        Util.GetWebContent("https://weixin-new-time-english.chinacloudsites.cn/api/send_template_message.aspx", "POST", 
-            json.Replace(templateId, "yNg8gCkQmAZJxoy0KG8xDFz6cEF5zclfWpgu4XOpzw4"), "application/raw");
+        try
+        {
+            Util.GetWebContent("http://weixin.luqinwenda.com/api/send_template_message.aspx", "POST", json, "application/raw");
+        }
+        catch
+        {
+
+        }
+        try
+        {
+            Util.GetWebContent("https://weixin-new-time-english.chinacloudsites.cn/api/send_template_message.aspx", "POST",
+                json.Replace(templateId, "yNg8gCkQmAZJxoy0KG8xDFz6cEF5zclfWpgu4XOpzw4"), "application/raw");
+        }
+        catch
+        {
+
+        }
 
     }
    
