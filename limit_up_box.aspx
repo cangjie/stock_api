@@ -71,8 +71,17 @@
         else
             currentDate = Util.GetDay(calendar.SelectedDate);
         DataTable dtOri = GetData(currentDate);
+        string filter = "";
+        if (Util.GetSafeRequestValue(Request, "goldcross", "1").Trim().Equals("0"))
+        {
+            filter = "";
+        }
+        else
+        {
+            filter = " (KDJ日 >= 0 and  MACD日 >= 0)";
+        }
         //return RenderHtml(dtOri.Select(" 信号 like '%📈%' ", sort));
-        return RenderHtml(dtOri.Select("", sort));
+        return RenderHtml(dtOri.Select(filter, sort));
     }
 
     protected void calendar_SelectionChanged(object sender, EventArgs e)
@@ -700,7 +709,7 @@
                     double low = Math.Round(double.Parse(dr["前低"].ToString()), 2);
                     double price = Math.Round((double)dr["买入"], 2);
                     string message = "缩量：" + Math.Round(100 * (double)dr["缩量"], 2).ToString() + "% 幅度：" + Math.Round(100 * (high - low) / low, 2).ToString() + "%";
-                    
+
                     if (StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()),
                                 dr["代码"].ToString().Trim(),
                                 "limit_up_box",
