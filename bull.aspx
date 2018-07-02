@@ -773,6 +773,10 @@
                             StockWatcher.SendAlertMessage("oqrMvt4_kkXkPb15PauQB1MrHeRQ", dr["代码"].ToString().Trim(),
                                 dr["名称"].ToString() + " " + message, price, "bull");
 
+                            //刘鹏
+                            StockWatcher.SendAlertMessage("oeC_l1YtDIBOTFmMgiJSZqXkR3iM", dr["代码"].ToString().Trim(),
+                                dr["名称"].ToString() + " " + message, price, "bull");
+
                             
                         }
                     }
