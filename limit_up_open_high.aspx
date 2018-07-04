@@ -320,6 +320,11 @@
             + lastTransactDate.ToShortDateString() + "'  order by alert_date desc ");
 
         Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+
+
+        DataTable dtDtl = DBHelper.GetDataTable(" select gid, alert_date, price from alert_foot where alert_date > '"
+            + currentDate.ToShortDateString() + "' and alert_date < '" + currentDate.AddDays(1).ToShortDateString() + "'  order by alert_date desc ");
+
         foreach (DataRow drOri in dtOri.Rows)
         {
 
@@ -372,7 +377,7 @@
                 }
             }
             double f3 = highest - (highest - lowest) * 0.382;
-            if (stock.kLineDay[currentIndex].startPrice < stock.kLineDay[limitUpIndex].endPrice )
+            if ((stock.kLineDay[currentIndex].startPrice < stock.kLineDay[limitUpIndex].endPrice) || (stock.kLineDay[currentIndex].startPrice >  stock.kLineDay[limitUpIndex].endPrice * 1.0095 ) )
                 continue;
             double f5 = highest - (highest - lowest) * 0.618;
             double line3Price = KLine.GetAverageSettlePrice(stock.kLineDay, currentIndex, 3, 3);
@@ -380,7 +385,7 @@
             double buyPrice = 0;
             //double f3Distance = 0.382 - (highest - stock.kLineDay[currentIndex].lowestPrice) / (highest - lowest);
 
-            double volumeToday = stock.kLineDay[currentIndex].volume;  //Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(currentDate.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
+            double volumeToday = stock.kLineDay[currentIndex].VirtualVolume;//Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(currentDate.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
 
             double volumeYesterday = stock.kLineDay[limitUpIndex].VirtualVolume;
             if (DateTime.Now.Date != currentDate.Date || (DateTime.Now.Hour >= 15))
@@ -395,14 +400,34 @@
             }
             */
 
+            double maxVolume = 0;
+            for (int i = lowestIndex; i < currentIndex; i++)
+            {
+                maxVolume = Math.Max(maxVolume, stock.kLineDay[i].volume);
+            }
 
-            double volumeReduce = volumeToday / volumeYesterday;
+
+            double volumeReduce = volumeToday / maxVolume;
 
             if (lowest == 0 || line3Price == 0)
             {
                 continue;
             }
-            buyPrice = Math.Max(stock.kLineDay[limitUpIndex].highestPrice, stock.kLineDay[currentIndex].lowestPrice);
+
+            bool foot = false;
+
+            buyPrice = stock.kLineDay[currentIndex].lowestPrice; //Math.Max(stock.kLineDay[limitUpIndex].highestPrice, stock.kLineDay[currentIndex].lowestPrice);
+
+            DataRow[] lowPriceDrArr = dtDtl.Select(" gid = '" + drOri["gid"].ToString().Trim() + "' ", " alert_date desc ");
+            if (lowPriceDrArr.Length > 0)
+            {
+                //dr["信号"] = dr["信号"].ToString().Trim() + "<a title='无影脚' >👣</a>";
+                foot = true;
+                buyPrice = double.Parse(lowPriceDrArr[0]["price"].ToString());
+            }
+
+
+
             string memo = "";
 
             Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
@@ -488,6 +513,13 @@
                 && timelineArr[0].todayLowestPrice <= stock.kLineDay[currentIndex].lowestPrice)
             {
                 dr["信号"] = dr["信号"].ToString() + "❗️";
+            }
+
+
+            //DataRow[] lowPriceDrArr = dtDtl.Select(" gid = '" + drOri["gid"].ToString().Trim() + "' ", " alert_date desc ");
+            if (foot)
+            {
+                dr["信号"] = dr["信号"].ToString().Trim() + "<a title='无影脚' >👣</a>";
             }
 
             dr["现高"] = highest;
