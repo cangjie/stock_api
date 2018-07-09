@@ -72,7 +72,7 @@
             currentDate = Util.GetDay(calendar.SelectedDate);
         DataTable dtOri = GetData(currentDate);
         string filter = "";
-        if (Util.GetSafeRequestValue(Request, "goldcross", "1").Trim().Equals("0"))
+        if (Util.GetSafeRequestValue(Request, "goldcross", "0").Trim().Equals("0"))
         {
             filter = "";
         }
