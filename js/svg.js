@@ -143,19 +143,19 @@ function display_gold_line_between_prices(min_price, max_price) {
         var f3_price = max_price - 0.382*(max_price - min_price);
         var f5_price = max_price - 0.618*(max_price - min_price);
         var max_line = createLine("gold_line_max", 0, get_y_value(max_price), k_line_map_x + k_line_map_width, get_y_value(max_price),
-            "1", "yellow");
+            "1", "orange");
         svg.appendChild(max_line);
         var f3_line = createLine("gold_line_f3", 0, get_y_value(f3_price), k_line_map_x + k_line_map_width, get_y_value(f3_price),
-            "1", "yellow", "2,2");
+            "1", "orange", "2,2");
         svg.appendChild(f3_line);
-        var f3_txt = createTextBox("f3_txt", k_line_map_x + k_line_map_width - 50, get_y_value(f3_price)-10,
+        var f3_txt = createTextBox("f3_txt", k_line_map_x + k_line_map_width - 25, get_y_value(f3_price)-10,
             "f3:" + (Math.round(f3_price*100)/100).toString(), "15", "orange");
         svg.appendChild(f3_txt);
         var f5_line = createLine("gold_line_f5", 0, get_y_value(f5_price), k_line_map_x + k_line_map_width, get_y_value(f5_price),
-            "1", "yellow", "2,2");
+            "1", "orange", "2,2");
         svg.appendChild(f5_line);
         var min_line = createLine("gold_line_min", 0, get_y_value(min_price), k_line_map_x + k_line_map_width, get_y_value(min_price),
-            "1", "yellow");
+            "1", "orange");
         svg.appendChild(min_line);
     }
 }
