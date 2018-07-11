@@ -123,6 +123,10 @@
     var item_today = stock_data.items[stock_data.items.length - 1];
     var item_yesterday = stock_data.items[stock_data.items.length - 2];
 
+    
+
+
+
     price = item_today.item_end_price;
     open = item_today.item_start_price;
     settle = item_yesterday.item_end_price;
@@ -158,6 +162,12 @@
     var k_line_count_in_map = 0;
     var stock_max_price = 0;
     var stock_min_price = 0;
+
+    var computed_max_price = <%=Util.GetSafeRequestValue(Request, "maxprice", "0")%>;
+    var computed_min_price = <%=Util.GetSafeRequestValue(Request, "minprice", "0")%>;
+
+    
+
     var svg_width = window.innerWidth-25;
     var svg_height = window.innerHeight-50;
     var draw_state = false;
@@ -262,6 +272,12 @@
         //var poly_line = createPolyLine("poly_line", "0,0 100,100 200,200 300,300", "1", "green");
         //svg.appendChild(poly_line);
         draw_3_3_line();
+
+        if (computed_max_price > 0 && computed_min_price >= 0) {
+            display_gold_line_between_prices(computed_min_price, compute_max_price);
+        }
+
+
     }
     function draw_3_3_line() {
         var points_array = "";
@@ -387,5 +403,7 @@
             btn_draw.style.backgroundColor = "white";
         }
     }
+
+    
 </script>
 </html>
