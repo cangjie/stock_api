@@ -274,7 +274,7 @@
         draw_3_3_line();
 
         if (computed_max_price > 0 && computed_min_price >= 0) {
-            display_gold_line_between_prices(computed_min_price, compute_max_price);
+            display_gold_line_between_prices(computed_min_price, computed_max_price);
         }
 
 
