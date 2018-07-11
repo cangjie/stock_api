@@ -187,7 +187,7 @@
                     dr[i] = drOri[i].ToString();
                 }
             }
-            dr["代码"] = "<a href=\"show_K_line_day.aspx?gid=" + dr["代码"].ToString() + "\" target=\"_blank\" >" + dr["代码"].ToString() + "</a>";
+            dr["代码"] = "<a href=\"show_K_line_day.aspx?gid=" + dr["代码"].ToString() + "&maxprice=" + dr["现高"].ToString() + "&minprice=" + dr["前低"].ToString().Trim() + "\" target=\"_blank\" >" + dr["代码"].ToString() + "</a>";
             dt.Rows.Add(dr);
         }
         AddTotal(drArr, dt);
