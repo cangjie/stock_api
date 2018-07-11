@@ -156,7 +156,7 @@ function display_gold_line_between_prices(min_price, max_price) {
         svg.appendChild(f5_line);
         var f5_txt = createTextBox("f5_txt", k_line_map_x + k_line_map_width - 20, get_y_value(f5_price) - 10,
             "f5:" + (Math.round(f5_price * 100) / 100).toString(), "15", "orange");
-        svg.appendChild(f5_line);
+        svg.appendChild(f5_txt);
         var min_line = createLine("gold_line_min", 0, get_y_value(min_price), k_line_map_x + k_line_map_width, get_y_value(min_price),
             "1", "orange");
         svg.appendChild(min_line);
