@@ -123,6 +123,8 @@
             DataRow dr = dt.NewRow();
             //double settle = Math.Round((double)drOri["昨收"], 2);
             double currentPrice = Math.Round((double)drOri["现价"], 2);
+            double lowPrice = Math.Round((double)drOri["前低"], 2);
+            double hightPrice =  Math.Round((double)drOri["现高"], 2);
             for (int i = 0; i < drArr[0].Table.Columns.Count; i++)
             {
 
@@ -187,7 +189,7 @@
                     dr[i] = drOri[i].ToString();
                 }
             }
-            dr["代码"] = "<a href=\"show_K_line_day.aspx?gid=" + dr["代码"].ToString() + "\" target=\"_blank\" >" + dr["代码"].ToString() + "</a>";
+            dr["代码"] = "<a href=\"show_K_line_day.aspx?gid=" + dr["代码"].ToString() + "&maxprice=" + hightPrice.ToString() + "&minprice=" + lowPrice.ToString() + "\" target=\"_blank\" >" + dr["代码"].ToString() + "</a>";
             dt.Rows.Add(dr);
         }
         AddTotal(drArr, dt);
