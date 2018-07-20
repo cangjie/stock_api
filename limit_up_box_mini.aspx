@@ -339,6 +339,9 @@
         DataTable dtOri = DBHelper.GetDataTable(" select gid, alert_date from limit_up where alert_date >= '" + limitUpStartDate.ToShortDateString()
             + "' and alert_date <= '" + lastTransactDate.ToShortDateString() + "' order by alert_date desc ");
 
+
+        
+
         //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
         foreach (DataRow drOri in dtOri.Rows)
         {
@@ -393,6 +396,8 @@
             {
                 continue;
             }
+
+            double lastSettle = stock.kLineDay[currentIndex - 1].endPrice;
 
             double maxVolume = 0;
             for (int i = lowestIndex; i < currentIndex; i++)
@@ -634,7 +639,7 @@
             dr["无影时"] = footTime;
             dr["无影"] = todayLowestPrice;
             double maxPrice = 0;
-            dr["0日"] = (currentPrice - buyPrice) / buyPrice;
+            dr["0日"] = (buyPrice - lastSettle) / lastSettle;
             for (int i = 1; i <= 5; i++)
             {
                 if (currentIndex + i >= stock.kLineDay.Length)
@@ -871,6 +876,7 @@
                     <asp:BoundColumn DataField="F5" HeaderText="F5"></asp:BoundColumn>
                     <asp:BoundColumn DataField="折返" HeaderText="折返"></asp:BoundColumn>
                     <asp:BoundColumn DataField="幅度" HeaderText="幅度"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="0日" HeaderText="0日"></asp:BoundColumn>
                 </Columns>
                 <FooterStyle BackColor="#CCCCCC" ForeColor="Black" />
                 <HeaderStyle BackColor="#000084" Font-Bold="True" ForeColor="White" />
