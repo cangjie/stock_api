@@ -145,9 +145,7 @@
                         case "今开":
                         case "现价":
                         case "前低":
-                        case "F1":
-                        case "F3":
-                        case "F5":
+                      
                         case "现高":
                         case "3线":
                         case "无影":
@@ -155,6 +153,12 @@
                             double currentValuePrice = (double)drOri[i];
                             dr[i] = "<font color=\"" + (currentValuePrice > currentPrice ? "red" : (currentValuePrice == currentPrice ? "gray" : "green")) + "\"  >"
                                 + Math.Round(currentValuePrice, 2).ToString() + "</font>";
+                            break;
+                        case "F3":
+                        case "F5":
+                            double currentValuePrice2 = (double)drOri[i];
+                            dr[i] = "<font color=\"" + (drOri["类型"].ToString().Trim().Equals(drArr[0].Table.Columns[i].Caption.Trim())? "red":"green") + "\"  >"
+                                + Math.Round(currentValuePrice2, 2).ToString() + "</font>";
                             break;
                         case "价差":
                             double currentValuePrice1 = (double)drOri[i];
@@ -324,6 +328,7 @@
         dt.Columns.Add("无影时", Type.GetType("System.DateTime"));
         dt.Columns.Add("无影", Type.GetType("System.Double"));
         dt.Columns.Add("价差", Type.GetType("System.Double"));
+        dt.Columns.Add("类型", Type.GetType("System.String"));
 
         for (int i = 0; i <= 5; i++)
         {
@@ -635,10 +640,12 @@
             if (Math.Abs(f3ReverseRate) > Math.Abs(f5ReverseRate))
             {
                 dr["价差"] = stock.kLineDay[currentIndex].lowestPrice - f5;
+                dr["类型"] = "F5";
             }
             else
             {
                 dr["价差"] = stock.kLineDay[currentIndex].lowestPrice - f3;
+                dr["类型"] = "F3";
             }
 
 
