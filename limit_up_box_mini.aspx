@@ -151,11 +151,15 @@
                         case "现高":
                         case "3线":
                         case "无影":
+
                             double currentValuePrice = (double)drOri[i];
                             dr[i] = "<font color=\"" + (currentValuePrice > currentPrice ? "red" : (currentValuePrice == currentPrice ? "gray" : "green")) + "\"  >"
                                 + Math.Round(currentValuePrice, 2).ToString() + "</font>";
                             break;
-
+                        case "价差":
+                            double currentValuePrice1 = (double)drOri[i];
+                            dr[i] = Math.Round(currentValuePrice1, 2).ToString();
+                            break;
                         default:
                             if (System.Text.RegularExpressions.Regex.IsMatch(drArr[0].Table.Columns[i].Caption.Trim(), "\\d日")
                                 || drArr[0].Table.Columns[i].Caption.Trim().Equals("总计"))
@@ -319,6 +323,7 @@
         dt.Columns.Add("折返", Type.GetType("System.Double"));
         dt.Columns.Add("无影时", Type.GetType("System.DateTime"));
         dt.Columns.Add("无影", Type.GetType("System.Double"));
+        dt.Columns.Add("价差", Type.GetType("System.Double"));
 
         for (int i = 0; i <= 5; i++)
         {
@@ -340,7 +345,7 @@
             + "' and alert_date <= '" + lastTransactDate.ToShortDateString() + "' order by alert_date desc ");
 
 
-        
+
 
         //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
         foreach (DataRow drOri in dtOri.Rows)
@@ -626,6 +631,17 @@
 
             double f3ReverseRate = (stock.kLineDay[currentIndex].lowestPrice - f3) / f3;
             double f5ReverseRate = (stock.kLineDay[currentIndex].lowestPrice - f5) / f5;
+
+            if (Math.Abs(f3ReverseRate) > Math.Abs(f5ReverseRate))
+            {
+                dr["价差"] = stock.kLineDay[currentIndex].lowestPrice - f5;
+            }
+            else
+            {
+                dr["价差"] = stock.kLineDay[currentIndex].lowestPrice - f3;
+            }
+
+
             dr["折返"] = (Math.Abs(f3ReverseRate) < Math.Abs(f5ReverseRate)) ? f3ReverseRate : f5ReverseRate;
             //dr["F3折返"] = (stock.kLineDay[currentIndex].lowestPrice - f3) / f3;
 
@@ -875,6 +891,7 @@
                     <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F5" HeaderText="F5"></asp:BoundColumn>
                     <asp:BoundColumn DataField="折返" HeaderText="折返"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="价差" HeaderText="价差"></asp:BoundColumn>
                     <asp:BoundColumn DataField="幅度" HeaderText="幅度"></asp:BoundColumn>
                     <asp:BoundColumn DataField="0日" HeaderText="0日"></asp:BoundColumn>
                 </Columns>
