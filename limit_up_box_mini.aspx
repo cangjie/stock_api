@@ -22,7 +22,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "幅度 desc");
+        sort = Util.GetSafeRequestValue(Request, "sort", "价差abs");
         if (!IsPostBack)
         {
             try
@@ -145,7 +145,7 @@
                         case "今开":
                         case "现价":
                         case "前低":
-                      
+
                         case "现高":
                         case "3线":
                         case "无影":
@@ -157,8 +157,17 @@
                         case "F3":
                         case "F5":
                             double currentValuePrice2 = (double)drOri[i];
-                            dr[i] = "<font color=\"" + (drOri["类型"].ToString().Trim().Equals(drArr[0].Table.Columns[i].Caption.Trim())? "red":"green") + "\"  >"
+                            if (drOri["类型"].ToString().Trim().Equals(drArr[0].Table.Columns[i].Caption.Trim()))
+                            {
+                                dr[i] = "<font color=\"red\"  >"
                                 + Math.Round(currentValuePrice2, 2).ToString() + "</font>";
+                            }
+                            else
+                            {
+                                dr[i] = "<font color=\"green\"  >"
+                                + Math.Round(currentValuePrice2, 2).ToString() + "</font>";
+                            }
+                            
                             break;
                         case "价差":
                             double currentValuePrice1 = (double)drOri[i];
@@ -328,6 +337,7 @@
         dt.Columns.Add("无影时", Type.GetType("System.DateTime"));
         dt.Columns.Add("无影", Type.GetType("System.Double"));
         dt.Columns.Add("价差", Type.GetType("System.Double"));
+        dt.Columns.Add("价差abs", Type.GetType("System.Double"));
         dt.Columns.Add("类型", Type.GetType("System.String"));
 
         for (int i = 0; i <= 5; i++)
@@ -640,6 +650,7 @@
             if (Math.Abs(f3ReverseRate) > Math.Abs(f5ReverseRate))
             {
                 dr["价差"] = stock.kLineDay[currentIndex].lowestPrice - f5;
+                
                 dr["类型"] = "F5";
             }
             else
@@ -647,7 +658,7 @@
                 dr["价差"] = stock.kLineDay[currentIndex].lowestPrice - f3;
                 dr["类型"] = "F3";
             }
-
+            dr["价差abs"] = Math.Abs((double)dr["价差"]);
 
             dr["折返"] = (Math.Abs(f3ReverseRate) < Math.Abs(f5ReverseRate)) ? f3ReverseRate : f5ReverseRate;
             //dr["F3折返"] = (stock.kLineDay[currentIndex].lowestPrice - f3) / f3;
