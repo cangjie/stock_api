@@ -22,7 +22,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "价差abs");
+        sort = Util.GetSafeRequestValue(Request, "sort", "价差abs, 幅度 desc");
         if (!IsPostBack)
         {
             try
@@ -167,7 +167,7 @@
                                 dr[i] = "<font color=\"green\"  >"
                                 + Math.Round(currentValuePrice2, 2).ToString() + "</font>";
                             }
-                            
+
                             break;
                         case "价差":
                             double currentValuePrice1 = (double)drOri[i];
@@ -382,6 +382,12 @@
                 continue;
 
 
+            if (stock.gid.Trim().Equals("sh603223"))
+            {
+                t.Abort();
+            }
+
+
             int limitUpIndex = stock.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
             int highIndex = 0;
             int lowestIndex = 0;
@@ -425,7 +431,7 @@
                 maxVolume = Math.Max(maxVolume, stock.kLineDay[i].volume);
             }
 
-
+            
             int tochSupportStatus = 0;
             for (int i = currentIndex - 1; i >= highIndex; i--)
             {
@@ -458,7 +464,7 @@
                 continue;
             }
 
-
+            
 
 
             double todayLowestPrice = 0;
@@ -650,7 +656,7 @@
             if (Math.Abs(f3ReverseRate) > Math.Abs(f5ReverseRate))
             {
                 dr["价差"] = stock.kLineDay[currentIndex].lowestPrice - f5;
-                
+
                 dr["类型"] = "F5";
             }
             else
