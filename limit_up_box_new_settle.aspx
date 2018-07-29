@@ -472,7 +472,7 @@
 
 
 
-            double volumeToday = stock.kLineDay[currentIndex].VirtualVolume;  
+            double volumeToday = stock.kLineDay[currentIndex].VirtualVolume;
             double volumeYesterday = stock.kLineDay[limitUpIndex].volume;
 
             double volumeReduce = volumeToday / maxVolume;
@@ -489,7 +489,7 @@
             {
                 timelineArray = Core.Timeline.LoadTimelineArrayFromSqlServer(stock.gid, currentDate);
             }
-           
+
 
             if (f3 >= line3Price)
             {
@@ -515,7 +515,7 @@
             {
                 dr["信号"] = dr["信号"] + "🛍️";
             }
-            
+
             if (f3 >= line3Price)
             {
                 dr["信号"] = dr["信号"] + "<a title=\"3线上\"  >👑</a>";
@@ -524,7 +524,7 @@
 
             double width = Math.Round(100 * (highest - lowest) / lowest, 2);
 
-          
+
 
 
             if (Math.Min(stock.kLineDay[currentIndex].startPrice, stock.kLineDay[currentIndex].endPrice) - stock.kLineDay[currentIndex].lowestPrice
@@ -538,7 +538,7 @@
             {
                 dr["信号"] = dr["信号"].ToString().Trim() + "<a title='无影脚' >❗️</a>";
             }
-           
+
 
             KeyValuePair<string, double>[] quota = stock.GetSortedQuota(currentIndex);
             bool isFire = false;
@@ -559,7 +559,10 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"买入价在均线支撑附近\" >🔥</a>";
             }
 
-
+            if (tochSupportStatus >= 2)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"二次预警\" >✌🏻</a>";
+            }
 
             dr["调整"] = currentIndex - limitUpIndex;
             dr["缩量"] = volumeReduce;
@@ -614,7 +617,7 @@
             dt.Rows.Add(dr);
 
         }
- 
+
         return dt;
     }
 
@@ -693,7 +696,7 @@
                         StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(),
                                 dr["名称"].ToString() + " " + message, price, "limit_up_box");
                     }
-                   
+
                 }
 
             }
