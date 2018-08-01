@@ -765,7 +765,7 @@
                                 "买入价：" + price.ToString() + " " + message.Trim(), price))
                         {
 
-                 
+                 /*
                             StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(),
                                 dr["名称"].ToString() + " " + message, price, "bull");
                             StockWatcher.SendAlertMessage("oqrMvt_GEZtQibndfZujZeIIhN30", dr["代码"].ToString().Trim(),
@@ -776,7 +776,7 @@
                             //刘鹏
                             StockWatcher.SendAlertMessage("oeC_l1YtDIBOTFmMgiJSZqXkR3iM", dr["代码"].ToString().Trim(),
                                 dr["名称"].ToString() + " " + message, price, "bull");
-
+*/
                             
                         }
                     }

@@ -22,6 +22,8 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
+        Response.Redirect("limit_up_box_mini.aspx", true);
+
         sort = Util.GetSafeRequestValue(Request, "sort", "幅度 desc");
         if (!IsPostBack)
         {
@@ -46,7 +48,7 @@
                 {
                     t.Abort();
                     t = new Thread(ts);
-                    t.Start();
+                    //t.Start();
 
                 }
             }
@@ -713,6 +715,7 @@
                     double price = Math.Round((double)dr["买入"], 2);
                     string message = "缩量：" + Math.Round(100 * (double)dr["缩量"], 2).ToString() + "% 幅度：" + Math.Round(100 * (high - low) / low, 2).ToString()
                         + "% MACD：" + dr["MACD日"].ToString() + " KDJ:" + dr["KDJ日"].ToString();
+                        //+ "% 价差：" + dr[""]
 
                     if ((int)dr["KDJ日"] >= 0 && (int)dr["MACD日"] >= 0 && (double)dr["缩量"] < 1 &&  StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()),
                         dr["代码"].ToString().Trim(),
