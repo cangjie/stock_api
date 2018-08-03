@@ -384,7 +384,7 @@
 
             if (stock.gid.Trim().Equals("sz002211"))
             {
-                t.Abort();
+                //t.Abort();
             }
 
 
