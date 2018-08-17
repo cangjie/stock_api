@@ -568,6 +568,11 @@
                 downSpace = (buyPrice - highestPrice) / buyPrice;
             }
 
+            if (stock.kLineDay[currentIndex].endPrice >= buyPrice)
+            {
+                continue;
+            }
+
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
@@ -621,6 +626,10 @@
                 }
             }
             */
+
+
+
+
             double totalPressure = 0;
             if (pressure > 0 && highPointPressure > 0)
             {
@@ -765,19 +774,19 @@
                                 "买入价：" + price.ToString() + " " + message.Trim(), price))
                         {
 
-                 /*
-                            StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(),
-                                dr["名称"].ToString() + " " + message, price, "bull");
-                            StockWatcher.SendAlertMessage("oqrMvt_GEZtQibndfZujZeIIhN30", dr["代码"].ToString().Trim(),
-                                dr["名称"].ToString() + " " + message, price, "bull");
-                            StockWatcher.SendAlertMessage("oqrMvt4_kkXkPb15PauQB1MrHeRQ", dr["代码"].ToString().Trim(),
-                                dr["名称"].ToString() + " " + message, price, "bull");
+                            /*
+                                       StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(),
+                                           dr["名称"].ToString() + " " + message, price, "bull");
+                                       StockWatcher.SendAlertMessage("oqrMvt_GEZtQibndfZujZeIIhN30", dr["代码"].ToString().Trim(),
+                                           dr["名称"].ToString() + " " + message, price, "bull");
+                                       StockWatcher.SendAlertMessage("oqrMvt4_kkXkPb15PauQB1MrHeRQ", dr["代码"].ToString().Trim(),
+                                           dr["名称"].ToString() + " " + message, price, "bull");
 
-                            //刘鹏
-                            StockWatcher.SendAlertMessage("oeC_l1YtDIBOTFmMgiJSZqXkR3iM", dr["代码"].ToString().Trim(),
-                                dr["名称"].ToString() + " " + message, price, "bull");
-*/
-                            
+                                       //刘鹏
+                                       StockWatcher.SendAlertMessage("oeC_l1YtDIBOTFmMgiJSZqXkR3iM", dr["代码"].ToString().Trim(),
+                                           dr["名称"].ToString() + " " + message, price, "bull");
+           */
+
                         }
                     }
                     /*
