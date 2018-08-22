@@ -685,6 +685,10 @@
             {
                 continue;
             }
+            if (kdjDays < macdDays && macdDays - kdjDays < 5)
+            {
+                continue;
+            }
             dr["KDJ日"] = kdjDays;
             dr["MACD日"] = macdDays;
             dr["无影时"] = footTime;
