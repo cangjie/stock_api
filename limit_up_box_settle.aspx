@@ -641,16 +641,17 @@
 
             double f3ReverseRate = (stock.kLineDay[currentIndex].lowestPrice - f3) / f3;
             double f5ReverseRate = (stock.kLineDay[currentIndex].lowestPrice - f5) / f5;
-
+            double supportPrice = 0;
             if (Math.Abs(f3ReverseRate) > Math.Abs(f5ReverseRate))
             {
                 dr["价差"] = stock.kLineDay[currentIndex].lowestPrice - f5;
-
+                supportPrice = f5;
                 dr["类型"] = "F5";
             }
             else
             {
                 dr["价差"] = stock.kLineDay[currentIndex].lowestPrice - f3;
+                supportPrice = f3;
                 dr["类型"] = "F3";
             }
             dr["价差abs"] = Math.Abs((double)dr["价差"]);
@@ -676,7 +677,7 @@
             dr["无影时"] = footTime;
             dr["无影"] = todayLowestPrice;
             double maxPrice = 0;
-            dr["0日"] = (currentPrice - buyPrice) / buyPrice;
+            dr["0日"] = (currentPrice - supportPrice) / supportPrice;
             for (int i = 1; i <= 5; i++)
             {
                 if (currentIndex + i >= stock.kLineDay.Length)
