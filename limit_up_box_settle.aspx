@@ -22,7 +22,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "价差abs, 幅度 desc");
+        sort = Util.GetSafeRequestValue(Request, "sort", "价差abs, 幅度 desc,MACD日,KDJ日");
         if (!IsPostBack)
         {
             try
@@ -665,8 +665,14 @@
             dr["评级"] = memo;
             buyPrice = stock.kLineDay[currentIndex].endPrice;
             dr["买入"] = buyPrice;
+
             dr["KDJ日"] = stock.kdjDays(currentIndex);
+
             dr["MACD日"] = stock.macdDays(currentIndex);
+            if ((int)dr["MACD日"] == -1)
+            {
+                continue;
+            }
             dr["无影时"] = footTime;
             dr["无影"] = todayLowestPrice;
             double maxPrice = 0;
