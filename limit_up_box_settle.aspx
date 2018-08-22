@@ -391,6 +391,12 @@
                     highIndex = i;
                 }
             }
+
+            if (stock.kLineDay[currentIndex].highestPrice >= highest)
+            {
+                continue;
+            }
+
             double f3 = highest - (highest - lowest) * 0.382;
             double f5 = highest - (highest - lowest) * 0.618;
             double line3Price = KLine.GetAverageSettlePrice(stock.kLineDay, currentIndex, 3, 3);
