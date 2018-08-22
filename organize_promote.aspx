@@ -23,7 +23,7 @@
     protected void Page_Load(object sender, EventArgs e)
     {
 
-   
+
 
         sort = Util.GetSafeRequestValue(Request, "sort", "KDJ日,MACD日");
         if (!IsPostBack)
@@ -376,7 +376,7 @@
         foreach (DataRow drOri in dtOri.Rows)
         {
             //DateTime alertDate = DateTime.Parse(drOri["alert_time"].ToString().Trim());
-            
+
             Stock stock = new Stock(drOri["gid"].ToString().Trim(), rc);
             stock.LoadKLineDay(rc);
             KLine.ComputeMACD(stock.kLineDay);
@@ -415,7 +415,7 @@
             double line3Price = KLine.GetAverageSettlePrice(stock.kLineDay, currentIndex, 3, 3);
             double currentPrice = stock.kLineDay[currentIndex].endPrice;
             double buyPrice = double.Parse(drOri["buy_price"].ToString());
-            
+
 
             double lastSettle = stock.kLineDay[currentIndex - 1].endPrice;
 
@@ -557,7 +557,7 @@
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
-            
+
             /*
             dr["信号"] = (stock.kLineDay[currentIndex].endPrice <= f3 * 1.01) ? "📈" : "";
             if (dr["信号"].ToString().Trim().Equals("") && StockWatcher.HaveAlerted(stock.gid.Trim(), "limit_up_box", currentDate))
@@ -651,19 +651,19 @@
 
             //double f3ReverseRate = (stock.kLineDay[currentIndex].lowestPrice - f3) / f3;
             //double f5ReverseRate = (stock.kLineDay[currentIndex].lowestPrice - f5) / f5;
-/*
-            if (Math.Abs(f3ReverseRate) > Math.Abs(f5ReverseRate))
-            {
-                dr["价差"] = stock.kLineDay[currentIndex].lowestPrice - f5;
+            /*
+                        if (Math.Abs(f3ReverseRate) > Math.Abs(f5ReverseRate))
+                        {
+                            dr["价差"] = stock.kLineDay[currentIndex].lowestPrice - f5;
 
-                dr["类型"] = "F5";
-            }
-            else
-            {
-                dr["价差"] = stock.kLineDay[currentIndex].lowestPrice - f3;
-                dr["类型"] = "F3";
-            }
-            */
+                            dr["类型"] = "F5";
+                        }
+                        else
+                        {
+                            dr["价差"] = stock.kLineDay[currentIndex].lowestPrice - f3;
+                            dr["类型"] = "F3";
+                        }
+                        */
             //dr["价差abs"] = Math.Abs((double)dr["价差"]);
 
             //dr["折返"] = (Math.Abs(f3ReverseRate) < Math.Abs(f5ReverseRate)) ? f3ReverseRate : f5ReverseRate;
@@ -674,8 +674,15 @@
 
             dr["评级"] = memo;
             dr["买入"] = buyPrice;
-            dr["KDJ日"] = stock.kdjDays(currentIndex);
-            dr["MACD日"] = stock.macdDays(currentIndex);
+
+            int kdjDays = stock.kdjDays(currentIndex);
+            int macdDays = stock.macdDays(currentIndex);
+            if (kdjDays <= -1 || macdDays <= -1)
+            {
+                continue;
+            }
+            dr["KDJ日"] = kdjDays;
+            dr["MACD日"] = macdDays;
             dr["无影时"] = footTime;
             dr["无影"] = todayLowestPrice;
             double maxPrice = 0;
