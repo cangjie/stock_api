@@ -8,7 +8,7 @@
 
     public DateTime currentDate = Util.GetDay(DateTime.Now);
 
-    public string sort = "缩量";
+    public string sort = "放量";
 
     public static ThreadStart tsQ = new ThreadStart(StockWatcher.LogQuota);
 
@@ -25,7 +25,7 @@
 
 
 
-        sort = Util.GetSafeRequestValue(Request, "sort", "KDJ日,MACD日");
+        sort = Util.GetSafeRequestValue(Request, "sort", "KDJ日,MACD日,放量 desc");
         if (!IsPostBack)
         {
             try
@@ -135,6 +135,9 @@
                 {
                     switch (drArr[0].Table.Columns[i].Caption.Trim())
                     {
+                        case "放量":
+                            dr[i] = Math.Round(100 * (double)drOri["放量"], 2).ToString() + "%";
+                            break;
                         case "综指":
                         case "昨收":
                         case "MACD率":
@@ -330,7 +333,7 @@
         dt.Columns.Add("代码", Type.GetType("System.String"));
         dt.Columns.Add("名称", Type.GetType("System.String"));
         dt.Columns.Add("信号", Type.GetType("System.String"));
-        dt.Columns.Add("缩量", Type.GetType("System.Double"));
+        dt.Columns.Add("放量", Type.GetType("System.Double"));
         dt.Columns.Add("调整", Type.GetType("System.Int32"));
         dt.Columns.Add("现高", Type.GetType("System.Double"));
         dt.Columns.Add("F3", Type.GetType("System.Double"));
@@ -419,11 +422,8 @@
 
             double lastSettle = stock.kLineDay[currentIndex - 1].endPrice;
 
-            double maxVolume = 0;
-            for (int i = lowestIndex; i < currentIndex; i++)
-            {
-                maxVolume = Math.Max(maxVolume, stock.kLineDay[i].volume);
-            }
+            double maxVolume = stock.kLineDay[currentIndex - 1].volume;
+            
 
 
             int tochSupportStatus = 0;
@@ -642,7 +642,7 @@
 
 
             //dr["调整"] = currentIndex - limitUpIndex;
-            dr["缩量"] = volumeReduce;
+            dr["放量"] = volumeReduce;
             dr["现高"] = highest;
             //dr["F3"] = f3;
             //dr["F5"] = f5;
@@ -841,11 +841,11 @@
                     double high = Math.Round(double.Parse(dr["现高"].ToString()), 2);
                     double low = Math.Round(double.Parse(dr["前低"].ToString()), 2);
                     double price = Math.Round((double)dr["买入"], 2);
-                    string message = "缩量：" + Math.Round(100 * (double)dr["缩量"], 2).ToString() + "% 幅度：" + Math.Round(100 * (high - low) / low, 2).ToString()
+                    string message = "放量：" + Math.Round(100 * (double)dr["放量"], 2).ToString() + "% 幅度：" + Math.Round(100 * (high - low) / low, 2).ToString()
                         //+ "% MACD：" + dr["MACD日"].ToString() + " KDJ:" + dr["KDJ日"].ToString();
                         + "% 价差：" + Math.Round(double.Parse(dr["价差"].ToString().Trim()), 2).ToString().Trim() + " 支撑：" + dr["类型"].ToString().Trim();
 
-                    if ((int)dr["KDJ日"] >= 0 && (int)dr["MACD日"] >= 0 && (double)dr["缩量"] < 1 &&  StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()),
+                    if ((int)dr["KDJ日"] >= 0 && (int)dr["MACD日"] >= 0 && (double)dr["放量"] < 1 &&  StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()),
                         dr["代码"].ToString().Trim(),
                         "limit_up_box",
                         dr["名称"].ToString().Trim(),
@@ -1006,6 +1006,7 @@
                 <Columns>
                     <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="放量" HeaderText="放量"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="MACD日" HeaderText="MACD日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="买入" HeaderText="买入"></asp:BoundColumn>
