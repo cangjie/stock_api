@@ -564,6 +564,8 @@
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
 
+
+
             /*
             dr["信号"] = (stock.kLineDay[currentIndex].endPrice <= f3 * 1.01) ? "📈" : "";
             if (dr["信号"].ToString().Trim().Equals("") && StockWatcher.HaveAlerted(stock.gid.Trim(), "limit_up_box", currentDate))
@@ -710,6 +712,14 @@
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
             }
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
+
+
+            DataTable dtPromote = DBHelper.GetDataTable(" select 'a' from organize_promote where promote_date = '" + currentDate.ToShortDateString() + "' and gid = '" + stock.gid.Trim() + "' ");
+            if (dtPromote.Rows.Count == 1)
+            {
+                dr["信号"] = "🌟";
+            }
+
             dt.Rows.Add(dr);
 
         }
@@ -1012,6 +1022,7 @@
                 <Columns>
                     <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="信号" HeaderText="信号"></asp:BoundColumn>
                     <asp:BoundColumn DataField="放量" HeaderText="放量"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="MACD日" HeaderText="MACD日"></asp:BoundColumn>
