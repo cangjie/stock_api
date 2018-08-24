@@ -423,7 +423,7 @@
             double lastSettle = stock.kLineDay[currentIndex - 1].endPrice;
 
             double maxVolume = stock.kLineDay[currentIndex - 1].volume;
-            
+
 
 
             int tochSupportStatus = 0;
@@ -492,6 +492,12 @@
                                                                          */
 
             double volumeReduce = volumeToday / maxVolume;
+
+            if (volumeReduce <= 1)
+            {
+                continue;
+            }
+
             /*
             if (lowest == 0 || line3Price == 0)
             {
