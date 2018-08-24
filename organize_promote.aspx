@@ -713,11 +713,20 @@
             }
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
 
+            DateTime startPromoteDate = Util.GetLastTransactDate(currentDate, 5);
 
-            DataTable dtPromote = DBHelper.GetDataTable(" select 'a' from organize_promote where promote_date = '" + currentDate.ToShortDateString() + "' and gid = '" + stock.gid.Trim() + "' ");
-            if (dtPromote.Rows.Count == 1)
+            DataTable dtPromote = DBHelper.GetDataTable(" select *  from organize_promote where promote_date <= '" + currentDate.ToShortDateString()
+                + "' and promote_date >= '" + startPromoteDate.ToShortDateString() + "' and gid = '" + stock.gid.Trim() + "' order by promote_date desc ");
+            if (dtPromote.Rows.Count >= 1)
             {
-                dr["信号"] = "🌟";
+                if (DateTime.Parse(dtPromote.Rows[0]["promote_date"].ToString()) == currentDate)
+                {
+                    dr["信号"] = "🌟";
+                }
+                for (int i = 0; i < dtPromote.Rows.Count - 1; i++)
+                {
+                    dr["信号"] = dr["信号"].ToString() + "🔺";
+                }
             }
 
             dt.Rows.Add(dr);
