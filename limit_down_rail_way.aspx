@@ -390,7 +390,7 @@
                 continue;
 
 
-            if (stock.kLineDay[currentIndex].endPrice < stock.kLineDay[currentIndex - 1].endPrice * 1.05)
+            if (stock.kLineDay[currentIndex].highestPrice < stock.kLineDay[currentIndex - 1].endPrice * 1.05)
             {
                 continue;
             }
