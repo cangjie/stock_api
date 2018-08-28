@@ -22,7 +22,7 @@
 
     public static int alertQueryTimes = 0;
 
-    public static string sellPoint = "open";
+    //public static string sellPoint = "open";
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -70,7 +70,7 @@
 
     public DataTable GetData()
     {
-        sellPoint = Util.GetSafeRequestValue(Request, "sell", "open");
+        //sellPoint = Util.GetSafeRequestValue(Request, "sell", "open");
         if (calendar.SelectedDate.Year < 2000)
             currentDate = Util.GetDay(DateTime.Now);
         else
@@ -568,11 +568,6 @@
                 downSpace = (buyPrice - highestPrice) / buyPrice;
             }
 
-            if (stock.kLineDay[currentIndex].endPrice >= buyPrice)
-            {
-                continue;
-            }
-
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
@@ -626,10 +621,6 @@
                 }
             }
             */
-
-
-
-
             double totalPressure = 0;
             if (pressure > 0 && highPointPressure > 0)
             {
@@ -718,19 +709,13 @@
                 if (currentIndex + i >= stock.kLineDay.Length)
                     break;
                 double highPrice = stock.kLineDay[currentIndex + i].startPrice;
-                switch (sellPoint)
-                {
-                    case "high":
-                        highPrice = stock.kLineDay[currentIndex + i].highestPrice;
-                        break;
-                    case "settle":
-                        highPrice = stock.kLineDay[currentIndex + i].endPrice;
-                        break;
-                    default:
-                        break;
-                }
+                highPrice = stock.kLineDay[currentIndex + i].highestPrice;
+
                 maxPrice = Math.Max(maxPrice, highPrice);
-                dr[i.ToString() + "日"] = (highPrice - stock.kLineDay[currentIndex].endPrice) /stock.kLineDay[currentIndex].endPrice;
+
+                double todaySettlePrice = stock.kLineDay[currentIndex].endPrice;
+
+                dr[i.ToString() + "日"] = (highPrice - todaySettlePrice) /todaySettlePrice;
             }
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
 
