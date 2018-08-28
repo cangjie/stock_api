@@ -724,7 +724,7 @@
                         highPrice = stock.kLineDay[currentIndex + i].highestPrice;
                         break;
                     case "settle":
-                        highPrice = stock.kLineDay[currentIndex + i].endPrice;
+                        highPrice = stock.kLineDay[currentIndex + i].highestPrice;
                         break;
                     default:
                         break;
