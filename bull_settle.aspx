@@ -706,7 +706,7 @@
             dr["均线压力"] = pressure;
 
             dr["0日"] = (currentPrice - buyPrice) / buyPrice;
-
+            double todaySettlePrice = stock.kLineDay[currentIndex].endPrice;
             double maxPrice = 0;
             for (int i = 1; i <= 5; i++)
             {
@@ -719,11 +719,11 @@
 
                 maxPrice = Math.Max(maxPrice, highPrice);
 
-                double todaySettlePrice = stock.kLineDay[currentIndex].endPrice;
+                
 
                 dr[i.ToString() + "日"] = (highPrice - todaySettlePrice) /todaySettlePrice;
             }
-            dr["总计"] = (maxPrice - buyPrice) / buyPrice;
+            dr["总计"] = (maxPrice - todaySettlePrice) / todaySettlePrice;
 
 
 
