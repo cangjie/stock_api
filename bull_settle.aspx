@@ -26,7 +26,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "放量 desc");
+        sort = Util.GetSafeRequestValue(Request, "sort", "MACD日,KDJ日,放量 desc");
         if (!IsPostBack)
         {
             try
@@ -459,6 +459,10 @@
             int kdjDays = stock.kdjDays(currentIndex - 1);
             int macdDays = stock.macdDays(currentIndex - 1);
 
+            if (macdDays < 0 || kdjDays < 0)
+            {
+                continue;
+            }
 
             /*
             if (!(macdDays <= kdjDays && kdjDays <= 1 && Math.Abs(macdDays - kdjDays) < 2))
