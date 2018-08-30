@@ -601,7 +601,7 @@
 
             if (buyPrice == 0)
             {
-                dr["信号"] = dr["信号"].ToString() + "💩";
+                //dr["信号"] = dr["信号"].ToString() + "💩";
             }
 
             dr["调整"] = currentIndex - limitUpIndex;
