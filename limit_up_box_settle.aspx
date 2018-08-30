@@ -556,6 +556,9 @@
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
+
+
+            /*
             dr["信号"] = (stock.kLineDay[currentIndex].endPrice <= f3 * 1.01) ? "📈" : "";
             if (dr["信号"].ToString().Trim().Equals("") && StockWatcher.HaveAlerted(stock.gid.Trim(), "limit_up_box", currentDate))
             {
@@ -566,22 +569,10 @@
             {
                 dr["信号"] = dr["信号"] + "🛍️";
             }
-            /*
-                        if (f3 >= line3Price)
-                        {
-                            dr["信号"] = dr["信号"] + "<a title=\"F3在3线之上\" >🌟</a>";
-                        }
-                        */
-            /*
-            if (stock.kLineDay[currentIndex].lowestPrice >= f3 - 0.05 && todayLowestTime > DateTime.MinValue)
-            {
-                dr["信号"] = dr["信号"] + "<a title=\"折返在F3之上\" >🌟</a>";
-                for (int starCount = 0; starCount < (int)todayLowestTimeSpan.TotalHours; starCount++)
-                {
-                    dr["信号"] = dr["信号"] + "<a title=\"折返" + (starCount+1).ToString() + "小时\"  >🌟</a>";
-                }
-            }
-            */
+
+
+
+     
             if (f3 >= line3Price)
             {
                 dr["信号"] = dr["信号"] + "<a title=\"3线上\"  >👑</a>";
@@ -590,11 +581,7 @@
 
             double width = Math.Round(100 * (highest - lowest) / lowest, 2);
 
-            if (width >= 30)
-            {
-                //dr["信号"] = dr["信号"] + "<a title=\"幅度超过30%\" >🔥</a>";
-            }
-
+ 
 
 
             if (Math.Min(stock.kLineDay[currentIndex].startPrice, stock.kLineDay[currentIndex].endPrice) - stock.kLineDay[currentIndex].lowestPrice
@@ -608,12 +595,25 @@
             {
                 dr["信号"] = dr["信号"].ToString().Trim() + "<a title='无影脚' >❗️</a>";
             }
-            /*
-            if (isFoot && footTime.Hour <= 13 && footTime.Hour >= 10)
-            {
-                dr["信号"] = dr["信号"].ToString().Trim() + "<a title='无影脚' >❗️</a>";
-            }
             */
+
+            bool jumpEmpty = false;
+
+            for (int i = highIndex + 1; i <= currentIndex; i++)
+            {
+                if ((stock.kLineDay[i - 1].startPrice > stock.kLineDay[i - 1].endPrice && stock.kLineDay[i].startPrice < stock.kLineDay[i - 1].endPrice)
+                    || (stock.kLineDay[i - 1].endPrice > stock.kLineDay[i - 1].startPrice && stock.kLineDay[i].startPrice < stock.kLineDay[i - 1].startPrice))
+                {
+                    jumpEmpty = true;
+                    break;
+                }
+            }
+            if (!jumpEmpty)
+            {
+                dr["信号"] = "📈";
+            }
+
+
 
             KeyValuePair<string, double>[] quota = stock.GetSortedQuota(currentIndex);
             bool isFire = false;
