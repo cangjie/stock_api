@@ -556,9 +556,6 @@
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
-
-
-            /*
             dr["信号"] = (stock.kLineDay[currentIndex].endPrice <= f3 * 1.01) ? "📈" : "";
             if (dr["信号"].ToString().Trim().Equals("") && StockWatcher.HaveAlerted(stock.gid.Trim(), "limit_up_box", currentDate))
             {
@@ -569,33 +566,32 @@
             {
                 dr["信号"] = dr["信号"] + "🛍️";
             }
-
-
-
-     
+            /*
+                        if (f3 >= line3Price)
+                        {
+                            dr["信号"] = dr["信号"] + "<a title=\"F3在3线之上\" >🌟</a>";
+                        }
+                        */
+            /*
+            if (stock.kLineDay[currentIndex].lowestPrice >= f3 - 0.05 && todayLowestTime > DateTime.MinValue)
+            {
+                dr["信号"] = dr["信号"] + "<a title=\"折返在F3之上\" >🌟</a>";
+                for (int starCount = 0; starCount < (int)todayLowestTimeSpan.TotalHours; starCount++)
+                {
+                    dr["信号"] = dr["信号"] + "<a title=\"折返" + (starCount+1).ToString() + "小时\"  >🌟</a>";
+                }
+            }
+            */
             if (f3 >= line3Price)
             {
                 dr["信号"] = dr["信号"] + "<a title=\"3线上\"  >👑</a>";
             }
 
 
+            
+
+            
             double width = Math.Round(100 * (highest - lowest) / lowest, 2);
-
- 
-
-
-            if (Math.Min(stock.kLineDay[currentIndex].startPrice, stock.kLineDay[currentIndex].endPrice) - stock.kLineDay[currentIndex].lowestPrice
-                 > Math.Abs(stock.kLineDay[currentIndex].startPrice - stock.kLineDay[currentIndex].endPrice))
-            {
-                dr["信号"] = dr["信号"] + "<a title=\"长下影线\" >🔺</a>";
-            }
-
-            DataRow[] lowPriceDrArr = dtDtl.Select(" gid = '" + drOri["gid"].ToString().Trim() + "' ", " alert_date desc ");
-            if (lowPriceDrArr.Length > 0)
-            {
-                dr["信号"] = dr["信号"].ToString().Trim() + "<a title='无影脚' >❗️</a>";
-            }
-            */
 
             bool jumpEmpty = false;
 
@@ -612,28 +608,6 @@
             {
                 dr["信号"] = "📈";
             }
-
-
-
-            KeyValuePair<string, double>[] quota = stock.GetSortedQuota(currentIndex);
-            bool isFire = false;
-            for (int i = quota.Length - 1; i >= 0; i--)
-            {
-                if (quota[i].Key.StartsWith("ma"))
-                {
-                    if (Math.Abs(buyPrice - quota[i].Value) / buyPrice < 0.01)
-                    {
-                        isFire = true;
-
-                    }
-                    break;
-                }
-            }
-            if (isFire)
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"买入价在均线支撑附近\" >🔥</a>";
-            }
-
 
 
             dr["调整"] = currentIndex - limitUpIndex;
