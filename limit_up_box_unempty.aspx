@@ -585,8 +585,8 @@
 
             for (int i = highIndex + 1; i <= currentIndex; i++)
             {
-                if ((stock.kLineDay[i - 1].startPrice > stock.kLineDay[i - 1].endPrice && stock.kLineDay[i].startPrice < stock.kLineDay[i - 1].endPrice)
-                    || (stock.kLineDay[i - 1].endPrice > stock.kLineDay[i - 1].startPrice && stock.kLineDay[i].startPrice < stock.kLineDay[i - 1].startPrice))
+                if ((stock.kLineDay[i - 1].startPrice >= stock.kLineDay[i - 1].endPrice && stock.kLineDay[i].startPrice < stock.kLineDay[i - 1].endPrice)
+                    || (stock.kLineDay[i - 1].endPrice >= stock.kLineDay[i - 1].startPrice && stock.kLineDay[i].startPrice < stock.kLineDay[i - 1].startPrice))
                 {
                     jumpEmpty = true;
                     break;
