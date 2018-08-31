@@ -594,7 +594,7 @@
             }
 
             KLine highKLine = stock.kLineDay[highIndex];
-            if (!jumpEmpty &&  (highKLine.highestPrice - Math.Max(highKLine.endPrice, highKLine.startPrice)) < (Math.Abs(highKLine.endPrice - highKLine.startPrice)))
+            if (!jumpEmpty)
             {
                 dr["信号"] = "📈";
             }
