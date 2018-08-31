@@ -416,7 +416,8 @@
             }
             if (buyPrice == 0)
             {
-                continue;
+                //continue;
+                buyPrice = stock.kLineDay[currentIndex].lowestPrice;
             }
 
             double maxVolume = 0;
