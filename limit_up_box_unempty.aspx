@@ -416,7 +416,7 @@
             }
             if (buyPrice == 0)
             {
-                //continue;
+                continue;
             }
 
             double maxVolume = 0;
