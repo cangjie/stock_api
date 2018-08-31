@@ -593,8 +593,8 @@
                 }
             }
 
-
-            if (!jumpEmpty)
+            KLine highKLine = stock.kLineDay[highIndex];
+            if (!jumpEmpty && highKLine.startPrice < highKLine.endPrice && (highKLine.highestPrice - highKLine.endPrice) < (highKLine.endPrice - highKLine.startPrice))
             {
                 dr["信号"] = "📈";
             }
