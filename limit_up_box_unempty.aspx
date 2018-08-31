@@ -652,7 +652,7 @@
             dr["无影时"] = footTime;
             dr["无影"] = todayLowestPrice;
             double maxPrice = 0;
-            buyPrice = supportPrice;
+            //buyPrice = supportPrice;
             dr["买入"] = buyPrice;
 
             dr["0日"] = (currentPrice - supportPrice) / supportPrice;
