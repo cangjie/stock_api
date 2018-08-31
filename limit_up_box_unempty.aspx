@@ -442,7 +442,7 @@
                 switch (tochSupportStatus)
                 {
                     case 0:
-                        if (stock.kLineDay[i].lowestPrice > buyPrice * 1.01)
+                        if (stock.kLineDay[i].lowestPrice > buyPrice)
                         {
                             tochSupportStatus++;
                         }
@@ -452,7 +452,7 @@
                         }
                         break;
                     case 1:
-                        if (stock.kLineDay[i].lowestPrice < buyPrice * 1.01)
+                        if (stock.kLineDay[i].lowestPrice < buyPrice)
                         {
                             tochSupportStatus++;
                         }
