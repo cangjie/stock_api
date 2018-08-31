@@ -690,7 +690,7 @@
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
             }
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
-
+            dr["信号"] = "";
             if (supportPrice > line3Price)
             {
                 dr["信号"] = "🌟";
