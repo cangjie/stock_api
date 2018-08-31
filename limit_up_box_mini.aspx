@@ -652,16 +652,17 @@
 
             double f3ReverseRate = (stock.kLineDay[currentIndex].lowestPrice - f3) / f3;
             double f5ReverseRate = (stock.kLineDay[currentIndex].lowestPrice - f5) / f5;
-
+            double supportPrice = 0;
             if (Math.Abs(f3ReverseRate) > Math.Abs(f5ReverseRate))
             {
                 dr["价差"] = stock.kLineDay[currentIndex].lowestPrice - f5;
-
+                supportPrice = f5;
                 dr["类型"] = "F5";
             }
             else
             {
                 dr["价差"] = stock.kLineDay[currentIndex].lowestPrice - f3;
+                supportPrice = f3;
                 dr["类型"] = "F3";
             }
             dr["价差abs"] = Math.Abs((double)dr["价差"]);
@@ -689,6 +690,12 @@
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
             }
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
+
+            if (supportPrice > line3Price)
+            {
+                dr["信号"] = "🌟";
+            }
+
             dt.Rows.Add(dr);
 
         }
@@ -784,7 +791,7 @@
                                 dr["名称"].ToString() + " " + message, price, "limit_up_box");
 
 
-                        
+
                     }
                     /*
                     if (dr["信号"].ToString().IndexOf("🛍️") >= 0 &&
@@ -927,6 +934,7 @@
                 <Columns>
                     <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="信号" HeaderText="信号"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F5" HeaderText="F5"></asp:BoundColumn>
                     <asp:BoundColumn DataField="折返" HeaderText="折返"></asp:BoundColumn>
