@@ -607,6 +607,7 @@
             if (!jumpEmpty)
             {
                 dr["信号"] = "📈";
+
             }
 
             if (buyPrice == 0)
@@ -665,6 +666,10 @@
             dr["买入"] = buyPrice;
 
             dr["0日"] = (currentPrice - supportPrice) / supportPrice;
+            if ((double)dr["0日"] >= 0.01 && (double)dr["0日"] <= 0.03 && dr["信号"].ToString().IndexOf("📈") >= 0)
+            {
+                dr["信号"] = dr["信号"].ToString() + "🌟";
+            }
             buyPrice = stock.kLineDay[currentIndex].endPrice;
             for (int i = 1; i <= 5; i++)
             {
