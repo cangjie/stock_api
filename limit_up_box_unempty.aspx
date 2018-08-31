@@ -361,6 +361,9 @@
         //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
         foreach (DataRow drOri in dtOri.Rows)
         {
+
+
+
             DateTime alertDate = DateTime.Parse(drOri["alert_date"].ToString().Trim());
             DataRow[] drArrExists = dtOri.Select(" gid = '" + drOri["gid"].ToString() + "' and alert_date > '" + alertDate.ToShortDateString() + "'  ");
             if (drArrExists.Length > 0)
@@ -378,6 +381,12 @@
                 continue;
 
 
+            if (stock.gid.Trim().Equals("sz002464"))
+            {
+                t.Suspend();
+
+            }
+
             int limitUpIndex = stock.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
             int highIndex = 0;
             int lowestIndex = 0;
@@ -394,7 +403,7 @@
 
             if (stock.kLineDay[currentIndex].highestPrice >= highest)
             {
-                continue;
+                //continue;
             }
 
             double f3 = highest - (highest - lowest) * 0.382;
@@ -719,7 +728,7 @@
     }
 
 
-      public static void PageWatcher()
+    public static void PageWatcher()
     {
         for(; true; )
         {
@@ -760,7 +769,7 @@
                                 dr["名称"].ToString() + " " + message, price, "limit_up_box");
 
                     */
-                        
+
                     }
                     /*
                     if (dr["信号"].ToString().IndexOf("🛍️") >= 0 &&
