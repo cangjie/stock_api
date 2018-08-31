@@ -403,7 +403,7 @@
 
             if (stock.kLineDay[currentIndex].highestPrice >= highest)
             {
-                //continue;
+                continue;
             }
 
             double f3 = highest - (highest - lowest) * 0.382;
