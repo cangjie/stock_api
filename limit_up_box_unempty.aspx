@@ -168,10 +168,12 @@
                             dr[i] = "<font color=\"" + (currentValuePrice > currentPrice ? "red" : (currentValuePrice == currentPrice ? "gray" : "green")) + "\"  >"
                                 + Math.Round(currentValuePrice, 2).ToString() + "</font>";
                             break;
+                            /*
                         case "价差":
                             double currentValuePrice1 = (double)drOri[i];
                             dr[i] = Math.Round(currentValuePrice1, 2).ToString();
                             break;
+                            */
                         default:
                             if (System.Text.RegularExpressions.Regex.IsMatch(drArr[0].Table.Columns[i].Caption.Trim(), "\\d日")
                                 || drArr[0].Table.Columns[i].Caption.Trim().Equals("总计"))
@@ -628,13 +630,13 @@
             double supportPrice = 0;
             if (Math.Abs(f3ReverseRate) > Math.Abs(f5ReverseRate))
             {
-                dr["价差"] = stock.kLineDay[currentIndex].lowestPrice - f5;
+                dr["价差"] = (stock.kLineDay[currentIndex].lowestPrice - f5)/f5;
                 supportPrice = f5;
                 dr["类型"] = "F5";
             }
             else
             {
-                dr["价差"] = stock.kLineDay[currentIndex].lowestPrice - f3;
+                dr["价差"] = (stock.kLineDay[currentIndex].lowestPrice - f3)/f3;
                 supportPrice = f3;
                 dr["类型"] = "F3";
             }
@@ -746,7 +748,7 @@
                     double price = Math.Round((double)dr["买入"], 2);
                     string message = "📈缩量：" + Math.Round(100 * (double)dr["缩量"], 2).ToString() + "% 幅度：" + Math.Round(100 * (high - low) / low, 2).ToString()
                         //+ "% MACD：" + dr["MACD日"].ToString() + " KDJ:" + dr["KDJ日"].ToString();
-                        + "% 价差：" + Math.Round(double.Parse(dr["价差"].ToString().Trim()), 2).ToString().Trim() + " 支撑：" + dr["类型"].ToString().Trim();
+                        + "% 价差：" + Math.Round(100 * double.Parse(dr["价差"].ToString().Trim()), 2).ToString().Trim() + "% 支撑：" + dr["类型"].ToString().Trim();
 
                     if (dr["信号"].ToString().Trim().IndexOf("📈") >= 0 &&  StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()),
                         dr["代码"].ToString().Trim(),
