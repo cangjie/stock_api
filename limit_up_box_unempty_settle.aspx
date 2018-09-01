@@ -168,10 +168,13 @@
                             dr[i] = "<font color=\"" + (currentValuePrice > currentPrice ? "red" : (currentValuePrice == currentPrice ? "gray" : "green")) + "\"  >"
                                 + Math.Round(currentValuePrice, 2).ToString() + "</font>";
                             break;
+                            /*
                         case "价差":
+                            
                             double currentValuePrice1 = (double)drOri[i];
                             dr[i] = Math.Round(currentValuePrice1, 2).ToString();
                             break;
+                            */
                         default:
                             if (System.Text.RegularExpressions.Regex.IsMatch(drArr[0].Table.Columns[i].Caption.Trim(), "\\d日")
                                 || drArr[0].Table.Columns[i].Caption.Trim().Equals("总计"))
@@ -629,13 +632,13 @@
             double supportPrice = 0;
             if (Math.Abs(f3ReverseRate) > Math.Abs(f5ReverseRate))
             {
-                dr["价差"] = stock.kLineDay[currentIndex].lowestPrice - f5;
+                dr["价差"] = (stock.kLineDay[currentIndex].lowestPrice - f5)/f5;
                 supportPrice = f5;
                 dr["类型"] = "F5";
             }
             else
             {
-                dr["价差"] = stock.kLineDay[currentIndex].lowestPrice - f3;
+                dr["价差"] = (stock.kLineDay[currentIndex].lowestPrice - f3)/f3;
                 supportPrice = f3;
                 dr["类型"] = "F3";
             }
