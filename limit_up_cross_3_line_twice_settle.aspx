@@ -143,7 +143,7 @@
             dr["MACD日"] = stock.macdDays(currentIndex);
             if ((int)dr["MACD日"] == -1)
             {
-                continue;
+                //continue;
             }
             double width = Math.Round(100 * (highest - lowest) / lowest, 2);
             dr["幅度"] = width;
