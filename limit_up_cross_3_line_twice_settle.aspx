@@ -141,9 +141,9 @@
             dr["3线"] = today3Line;
             dr["KDJ日"] = stock.kdjDays(currentIndex);
             dr["MACD日"] = stock.macdDays(currentIndex);
-            if ((int)dr["MACD日"] == -1)
+            if ((int)dr["MACD日"] == -1 && (int)dr["KDJ日"])
             {
-                //continue;
+                continue;
             }
             double width = Math.Round(100 * (highest - lowest) / lowest, 2);
             dr["幅度"] = width;
