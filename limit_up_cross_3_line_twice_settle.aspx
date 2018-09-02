@@ -157,6 +157,7 @@
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
             }
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
+            dt.Rows.Add(dr);
         }
 
 
