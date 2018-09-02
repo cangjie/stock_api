@@ -231,6 +231,7 @@
                             double buyPrice = Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2);
                             dr[i] = "<font color=\"" + ((buyPrice > currentPrice) ? "red" : ((buyPrice == currentPrice) ? "gray" : "green")) + "\" >" + Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2).ToString() + "</font>";
                             break;
+                            /*
                         case "F3":
                         case "F5":
                             double currentValuePrice2 = (double)drOri[i];
@@ -246,6 +247,7 @@
                             }
 
                             break;
+                            */
                         case "今开":
                         case "现价":
                         case "前低":
@@ -253,6 +255,8 @@
                         case "现高":
                         case "3线":
                         case "无影":
+                        case "F3":
+                        case "F5":
                             double currentValuePrice = (double)drOri[i];
                             dr[i] = "<font color=\"" + (currentValuePrice > currentPrice ? "red" : (currentValuePrice == currentPrice ? "gray" : "green")) + "\"  >"
                                 + Math.Round(currentValuePrice, 2).ToString() + "</font>";
