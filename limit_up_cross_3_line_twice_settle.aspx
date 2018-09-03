@@ -145,7 +145,7 @@
             {
                 continue;
             }
-            double width = Math.Round(100 * (highest - lowest) / lowest, 2);
+            double width = Math.Round(100 * (highest - lowest) / lowest, 2) / 100;
             dr["幅度"] = width;
             double buyPrice = stock.kLineDay[currentIndex].endPrice;
             double maxPrice = 0;
