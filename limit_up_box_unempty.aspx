@@ -750,7 +750,7 @@
                         //+ "% MACD：" + dr["MACD日"].ToString() + " KDJ:" + dr["KDJ日"].ToString();
                         + "% 价差：" + Math.Round(100 * double.Parse(dr["价差"].ToString().Trim()), 2).ToString().Trim() + "% 支撑：" + dr["类型"].ToString().Trim();
 
-                    if (dr["信号"].ToString().Trim().IndexOf("📈") >= 0 &&  StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()),
+                    if ((double)dr["价差abs"] <= 0.005 &&  StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()),
                         dr["代码"].ToString().Trim(),
                         "limit_up_box",
                         dr["名称"].ToString().Trim(),
