@@ -149,6 +149,7 @@
             dr["幅度"] = width;
             double buyPrice = today3Line;
             double maxPrice = 0;
+            dr["0日"] = (stock.kLineDay[currentIndex].endPrice - today3Line) / today3Line;
             for (int i = 1; i <= 5; i++)
             {
                 if (currentIndex + i >= stock.kLineDay.Length)
