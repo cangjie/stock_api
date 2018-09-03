@@ -45,7 +45,7 @@
         dt.Columns.Add("F3", Type.GetType("System.Double"));
         dt.Columns.Add("F5", Type.GetType("System.Double"));
         dt.Columns.Add("前低", Type.GetType("System.Double"));
-        dt.Columns.Add("幅度", Type.GetType("System.String"));
+        dt.Columns.Add("幅度", Type.GetType("System.Double"));
         dt.Columns.Add("3线", Type.GetType("System.Double"));
         dt.Columns.Add("现价", Type.GetType("System.Double"));
         dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));

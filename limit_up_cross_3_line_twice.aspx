@@ -45,7 +45,7 @@
         dt.Columns.Add("F3", Type.GetType("System.Double"));
         dt.Columns.Add("F5", Type.GetType("System.Double"));
         dt.Columns.Add("前低", Type.GetType("System.Double"));
-        dt.Columns.Add("幅度", Type.GetType("System.String"));
+        dt.Columns.Add("幅度", Type.GetType("System.Double"));
         dt.Columns.Add("3线", Type.GetType("System.Double"));
         dt.Columns.Add("现价", Type.GetType("System.Double"));
         dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
@@ -216,8 +216,10 @@
             double currentPrice = Math.Round((double)drOri["现价"], 2);
             double lowPrice = Math.Round((double)drOri["前低"], 2);
             double hightPrice =  Math.Round((double)drOri["现高"], 2);
+            
             for (int i = 0; i < drArr[0].Table.Columns.Count; i++)
             {
+
 
                 if (drArr[0].Table.Columns[i].DataType.FullName.ToString().Equals("System.Double"))
                 {
