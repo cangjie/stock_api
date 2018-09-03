@@ -746,7 +746,7 @@
                     double high = Math.Round(double.Parse(dr["现高"].ToString()), 2);
                     double low = Math.Round(double.Parse(dr["前低"].ToString()), 2);
                     double price = Math.Round((double)dr["买入"], 2);
-                    string message = "📈缩量：" + Math.Round(100 * (double)dr["缩量"], 2).ToString() + "% 幅度：" + Math.Round(100 * (high - low) / low, 2).ToString()
+                    string message = dr["信号"].ToString().Trim() + " 缩量：" + Math.Round(100 * (double)dr["缩量"], 2).ToString() + "% 幅度：" + Math.Round(100 * (high - low) / low, 2).ToString()
                         //+ "% MACD：" + dr["MACD日"].ToString() + " KDJ:" + dr["KDJ日"].ToString();
                         + "% 价差：" + Math.Round(100 * double.Parse(dr["价差"].ToString().Trim()), 2).ToString().Trim() + "% 支撑：" + dr["类型"].ToString().Trim();
 
@@ -754,7 +754,7 @@
                         dr["代码"].ToString().Trim(),
                         "limit_up_box",
                         dr["名称"].ToString().Trim(),
-                        "📈现价：" + price.ToString() + " " + message.Trim()))
+                        "现价：" + price.ToString() + " " + message.Trim()))
                     {
                         StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(),
                                 dr["名称"].ToString() + " " + message, price, "limit_up_box");
