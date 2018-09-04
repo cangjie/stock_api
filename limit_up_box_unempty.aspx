@@ -640,6 +640,13 @@
                 supportPrice = f3;
                 dr["类型"] = "F3";
             }
+
+
+	if (stock.kLineDay[currentIndex].startPrice < supportPrice * 0.995 || stock.kLineDay[currentIndex].highestPrice < supportPrice * 0.995)
+{
+continue;
+}		
+
             dr["价差abs"] = Math.Abs((double)dr["价差"]);
 
 
