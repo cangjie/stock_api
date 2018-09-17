@@ -159,6 +159,12 @@
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
             }
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
+
+            if (today3Line > f5 && today3Line < f3)
+            {
+                dr["信号"] = "🌟";
+            }
+
             dt.Rows.Add(dr);
         }
 
@@ -216,7 +222,7 @@
             double currentPrice = Math.Round((double)drOri["现价"], 2);
             double lowPrice = Math.Round((double)drOri["前低"], 2);
             double hightPrice =  Math.Round((double)drOri["现高"], 2);
-            
+
             for (int i = 0; i < drArr[0].Table.Columns.Count; i++)
             {
 
@@ -235,23 +241,23 @@
                             double buyPrice = Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2);
                             dr[i] = "<font color=\"" + ((buyPrice > currentPrice) ? "red" : ((buyPrice == currentPrice) ? "gray" : "green")) + "\" >" + Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2).ToString() + "</font>";
                             break;
-                            /*
-                        case "F3":
-                        case "F5":
-                            double currentValuePrice2 = (double)drOri[i];
-                            if (drOri["类型"].ToString().Trim().Equals(drArr[0].Table.Columns[i].Caption.Trim()))
-                            {
-                                dr[i] = "<font color=\"red\"  >"
-                                + Math.Round(currentValuePrice2, 2).ToString() + "</font>";
-                            }
-                            else
-                            {
-                                dr[i] = "<font color=\"green\"  >"
-                                + Math.Round(currentValuePrice2, 2).ToString() + "</font>";
-                            }
+                        /*
+                    case "F3":
+                    case "F5":
+                        double currentValuePrice2 = (double)drOri[i];
+                        if (drOri["类型"].ToString().Trim().Equals(drArr[0].Table.Columns[i].Caption.Trim()))
+                        {
+                            dr[i] = "<font color=\"red\"  >"
+                            + Math.Round(currentValuePrice2, 2).ToString() + "</font>";
+                        }
+                        else
+                        {
+                            dr[i] = "<font color=\"green\"  >"
+                            + Math.Round(currentValuePrice2, 2).ToString() + "</font>";
+                        }
 
-                            break;
-                            */
+                        break;
+                        */
                         case "今开":
                         case "现价":
                         case "前低":
@@ -439,6 +445,7 @@
                 <Columns>
                     <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="信号" HeaderText="信号"></asp:BoundColumn>
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
