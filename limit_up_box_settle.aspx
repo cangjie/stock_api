@@ -576,9 +576,9 @@
             }
             */
 
-            
 
-            
+
+
             double width = Math.Round(100 * (highest - lowest) / lowest, 2);
 
             bool jumpEmpty = false;
@@ -596,6 +596,11 @@
             if (!jumpEmpty)
             {
                 dr["信号"] = "📈";
+            }
+
+            if (line3Price <= currentPrice)
+            {
+                dr["信号"] = dr["信号"].ToString().Trim() + "🌟";
             }
 
 
