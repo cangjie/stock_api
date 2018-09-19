@@ -220,6 +220,7 @@
         dt.Columns.Add("今涨", Type.GetType("System.Double"));
         dt.Columns.Add("放量", Type.GetType("System.Double"));
         dt.Columns.Add("MACD", Type.GetType("System.Int32"));
+        dt.Columns.Add("幅度", Type.GetType("System.Double"));
         dt.Columns.Add("3线", Type.GetType("System.Double"));
         dt.Columns.Add("低点", Type.GetType("System.Double"));
         dt.Columns.Add("F3", Type.GetType("System.Double"));
@@ -272,6 +273,7 @@
             if (macdHours > 8)
                 continue;
             dr["MACD"] = macdHours.ToString();
+            
             dr["3线"] = stock.GetAverageSettlePrice(currentIndex, 3, 3);
             double lowestPrice = stock.LowestPrice(currentDate, 20);
             double highestPrice = stock.HighestPrice(currentDate, 40);
@@ -348,7 +350,7 @@
             dr["F5"] = f5;
             dr["高点"] = highestPrice;
             dr["买入"] = buyPrice;
-            
+            dr["幅度"] = (highestPrice - lowestPrice) / lowestPrice;
             double maxPrice = 0;
             for (int i = 1; i <= 5; i++)
             {
@@ -498,6 +500,7 @@
                     <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F5" HeaderText="F5"></asp:BoundColumn>
                     <asp:BoundColumn DataField="高点" HeaderText="高点"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="幅度" HeaderText="幅度"></asp:BoundColumn>
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="2日" HeaderText="2日"></asp:BoundColumn>
