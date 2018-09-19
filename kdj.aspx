@@ -16,6 +16,7 @@
     {
         if (!IsPostBack)
         {
+            sort = Util.GetSafeRequestValue(Request, "sort", "幅度 desc");
             /*
             try
             {
