@@ -392,10 +392,7 @@
                 }
             }
 
-            if (stock.kLineDay[currentIndex].highestPrice >= highest)
-            {
-                continue;
-            }
+       
 
             double f3 = highest - (highest - lowest) * 0.382;
             double f5 = highest - (highest - lowest) * 0.618;
