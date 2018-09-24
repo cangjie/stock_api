@@ -15,7 +15,7 @@
     protected void Page_Load(object sender, EventArgs e)
     {
         //GetData(DateTime.Parse("2018-8-1"));
-        sort = Util.GetSafeRequestValue(Request, "sort", "MACD日,KDJ日,幅度 desc");
+        sort = Util.GetSafeRequestValue(Request, "sort", "幅度 desc,MACD日,KDJ日");
         if (!IsPostBack)
         {
             DataTable dt = GetData();
