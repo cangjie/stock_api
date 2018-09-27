@@ -374,7 +374,7 @@
             }
             else
             {
-                continue;
+                //continue;
             }
 
             Stock stock = new Stock(drOri["gid"].ToString().Trim(), rc);
