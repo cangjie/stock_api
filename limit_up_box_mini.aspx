@@ -461,7 +461,7 @@
             }
             if (tochSupportStatus == 2)
             {
-                continue;
+                //continue;
             }
 
 

@@ -367,6 +367,16 @@
             {
                 continue;
             }
+
+            if (drOri["gid"].ToString().Trim().Equals("sz000017"))
+            {
+                string aa = "aa";
+            }
+            else
+            {
+                continue;
+            }
+
             Stock stock = new Stock(drOri["gid"].ToString().Trim(), rc);
             stock.LoadKLineDay(rc);
             KLine.ComputeMACD(stock.kLineDay);
@@ -392,7 +402,7 @@
                 }
             }
 
-       
+
 
             double f3 = highest - (highest - lowest) * 0.382;
             double f5 = highest - (highest - lowest) * 0.618;
@@ -452,7 +462,7 @@
             }
             if (tochSupportStatus == 2)
             {
-                continue;
+                //continue;
             }
 
 
