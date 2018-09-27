@@ -29,8 +29,8 @@
                 DataTable dt = GetData(i);
                 foreach (DataRow dr in dt.Rows)
                 {
-                    if ((double)dr["总计"] >= 0.1)
-                    {
+                    //if ((double)dr["总计"] >= 0.1)
+                    //{
                         try
                         {
                             DBHelper.InsertData("bread_count", new string[,] {
@@ -57,7 +57,7 @@
                         {
                             Console.WriteLine(err.ToString());
                         }
-                    }
+                    //}
                 }
             }
         }
