@@ -406,7 +406,7 @@
             {
                 continue;
             }
-            if (currentPrice < f5)
+            if (currentPrice < f5 * 0.98)
             {
                 continue;
             }
