@@ -610,10 +610,7 @@
                 dr["信号"] = dr["信号"].ToString().Trim() + "🌟";
             }
 
-            if ((double)dr["幅度"] > 0.25 && line3Price <= f5)
-            {
-                dr["信号"] = dr["信号"].ToString().Trim() + "🔥";
-            }
+   
 
             dr["调整"] = currentIndex - limitUpIndex;
             dr["缩量"] = volumeReduce;
@@ -632,6 +629,10 @@
                 dr["价差"] = stock.kLineDay[currentIndex].lowestPrice - f5;
                 supportPrice = f5;
                 dr["类型"] = "F5";
+         if (width  > 25 && line3Price <= f5)
+            {
+                dr["信号"] = dr["信号"].ToString().Trim() + "🔥";
+            }
             }
             else
             {
