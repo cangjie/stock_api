@@ -616,6 +616,11 @@
                 //dr["信号"] = dr["信号"].ToString() + "💩";
             }
 
+            if ((double)dr["幅度"] > 0.25 && line3Price <= f5)
+            {
+                dr["信号"] = dr["信号"].ToString().Trim() + "🔥";
+            }
+
             dr["调整"] = currentIndex - limitUpIndex;
             dr["缩量"] = volumeReduce;
             dr["现高"] = highest;
