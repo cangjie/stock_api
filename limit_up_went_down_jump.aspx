@@ -168,12 +168,12 @@
                             dr[i] = "<font color=\"" + (currentValuePrice > currentPrice ? "red" : (currentValuePrice == currentPrice ? "gray" : "green")) + "\"  >"
                                 + Math.Round(currentValuePrice, 2).ToString() + "</font>";
                             break;
-                            /*
-                        case "价差":
-                            double currentValuePrice1 = (double)drOri[i];
-                            dr[i] = Math.Round(currentValuePrice1, 2).ToString();
-                            break;
-                            */
+                        /*
+                    case "价差":
+                        double currentValuePrice1 = (double)drOri[i];
+                        dr[i] = Math.Round(currentValuePrice1, 2).ToString();
+                        break;
+                        */
                         default:
                             if (System.Text.RegularExpressions.Regex.IsMatch(drArr[0].Table.Columns[i].Caption.Trim(), "\\d日")
                                 || drArr[0].Table.Columns[i].Caption.Trim().Equals("总计"))
@@ -406,11 +406,35 @@
             {
                 continue;
             }
-            if (currentPrice < f5 * 0.98)
+
+            double buyPrice = f5;
+
+
+            Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
+
+            if (timelineArray.Length == 0)
+            {
+                timelineArray = Core.Timeline.LoadTimelineArrayFromSqlServer(stock.gid, currentDate);
+            }
+
+            bool reachLow = false;
+            bool backToF5 = false;
+            foreach (Core.Timeline timeLine in timelineArray)
+            {
+                if (timeLine.todayLowestPrice == todayLowestPrice)
+                {
+                    reachLow = true;
+                }
+                if (reachLow && timeLine.todayEndPrice >= f5)
+                {
+                    backToF5 = true;
+                }
+            }
+
+            if (!backToF5)
             {
                 continue;
             }
-            double buyPrice = f5;
 
             double maxVolume = 0;
             for (int i = lowestIndex; i < currentIndex; i++)
@@ -452,6 +476,20 @@
             }
 
             */
+
+            bool haveLessThan3Line = false;
+            for (int i = currentIndex - 1; i >= highIndex; i--)
+            {
+                if (stock.kLineDay[i].endPrice <= stock.GetAverageSettlePrice(i, 3, 3))
+                {
+                    haveLessThan3Line = true;
+                    break;
+                }
+            }
+            if (haveLessThan3Line)
+            {
+                continue;
+            }
 
 
             //DateTime footTime = DateTime.Now;
@@ -528,8 +566,8 @@
             dr["价差"] = (stock.kLineDay[currentIndex].lowestPrice - f5)/f5;
             supportPrice = f5;
             dr["类型"] = "F5";
-                
-            
+
+
             dr["价差abs"] = Math.Abs((double)dr["价差"]);
 
 
