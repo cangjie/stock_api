@@ -586,6 +586,11 @@
 
             dr["KDJ日"] = stock.kdjDays(currentIndex);
 
+            if ((int)dr["KDJ日"] >= 0)
+            {
+                dr["信号"] = dr["信号"].ToString().Trim() + "🌟";
+            }
+
             dr["MACD日"] = stock.macdDays(currentIndex);
             if ((int)dr["MACD日"] == -1)
             {
