@@ -425,7 +425,7 @@
                 {
                     reachLow = true;
                 }
-                if (reachLow && timeLine.todayEndPrice >= f5)
+                if (reachLow && timeLine.todayEndPrice >= f5* 0.995)
                 {
                     backToF5 = true;
                 }
@@ -547,9 +547,12 @@
 
             if (line3Price <= f5)
             {
-                dr["信号"] = dr["信号"].ToString().Trim() + "🌟";
+                //dr["信号"] = dr["信号"].ToString().Trim() + "🌟";
             }
-
+            else
+            {
+                continue;
+            }
 
 
             dr["调整"] = currentIndex - limitUpIndex;
