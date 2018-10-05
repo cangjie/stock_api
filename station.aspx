@@ -228,7 +228,7 @@
         dt.Columns.Add("F3", Type.GetType("System.Double"));
         dt.Columns.Add("F5", Type.GetType("System.Double"));
         dt.Columns.Add("前低", Type.GetType("System.Double"));
-        dt.Columns.Add("幅度", Type.GetType("System.String"));
+        dt.Columns.Add("幅度", Type.GetType("System.Double"));
         dt.Columns.Add("3线", Type.GetType("System.Double"));
         dt.Columns.Add("现价", Type.GetType("System.Double"));
         dt.Columns.Add("买入", Type.GetType("System.Double"));
@@ -245,8 +245,8 @@
             return dt;
         }
 
-        DateTime startDate = Util.GetLastTransactDate(currentDate, 3);
-        DateTime endDate = Util.GetLastTransactDate(currentDate, 2);
+        DateTime startDate = Util.GetLastTransactDate(currentDate, 4);
+        DateTime endDate = Util.GetLastTransactDate(currentDate, 3);
 
         DataTable dtOri = DBHelper.GetDataTable(" select * from limit_up where alert_date >= '" + startDate.ToShortDateString()
             + "' and alert_date < '" + endDate.AddDays(1) + "' ");
