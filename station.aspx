@@ -24,7 +24,7 @@
             currentDate = Util.GetDay(calendar.SelectedDate);
         DataTable dtOri = GetData(currentDate);
         string filter = "";
-        
+
         return RenderHtml(dtOri.Select(filter, sort));
     }
 
@@ -268,6 +268,7 @@
                 continue;
             }
             bool limitUpAgain = false;
+            bool veryLow = false;
             for (int i = limitUpIndex + 1; i < currentIndex; i++)
             {
                 if ((stock.kLineDay[i].endPrice - stock.kLineDay[i - 1].endPrice) / stock.kLineDay[i - 1].endPrice >= 0.0995)
@@ -275,8 +276,17 @@
                     limitUpAgain = true;
                     break;
                 }
+                if (stock.kLineDay[i].lowestPrice <= stock.kLineDay[limitUpIndex].lowestPrice)
+                {
+                    veryLow = true;
+                    break;
+                }
             }
             if (limitUpAgain)
+            {
+                continue;
+            }
+            if (veryLow)
             {
                 continue;
             }
