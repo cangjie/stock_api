@@ -19,9 +19,9 @@
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        //for (DateTime startDate = DateTime.Parse("2018-1-10"); startDate >= DateTime.Parse("2018-1-10"); startDate = startDate.AddDays(-1))
-        //{
-        DateTime startDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "date", DateTime.Now.ToShortDateString()));
+        for (DateTime startDate = DateTime.Parse("2018-6-5"); startDate >= DateTime.Parse("2018-9-28"); startDate = startDate.AddDays(-1))
+        {
+        //DateTime startDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "date", DateTime.Now.ToShortDateString()));
 
         if (Util.IsTransacDay(startDate))
         {
@@ -30,7 +30,7 @@
                 LogAbove3LineForDays(startDate, i);
             }
         }
-        //}
+        }
 
         Response.End();
 
