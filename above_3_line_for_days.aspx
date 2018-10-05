@@ -19,7 +19,7 @@
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        for (DateTime startDate = DateTime.Parse("2018-6-5"); startDate <= DateTime.Parse("2018-9-28"); startDate = startDate.AddDays(1))
+        for (DateTime startDate = DateTime.Parse("2018-6-7"); startDate <= DateTime.Parse("2018-9-28"); startDate = startDate.AddDays(1))
         {
         //DateTime startDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "date", DateTime.Now.ToShortDateString()));
 
@@ -515,9 +515,9 @@
                 DBHelper.InsertData("alert_above_3_line_for_days", new string[,] { {"alert_date", "datetime", currentDate.ToShortDateString() },
                     {"gid", "varchar", drOri["gid"].ToString().Trim() }, {"above_3_line_days", "int", days.ToString() } });
             }
-            catch
+            catch(Exception err)
             {
-
+                string aa = "aa";
             }
         }
     }
