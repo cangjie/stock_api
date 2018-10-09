@@ -46,7 +46,7 @@
                 {
                     t.Abort();
                     t = new Thread(ts);
-                    //t.Start();
+                    t.Start();
 
                 }
             }
@@ -765,7 +765,7 @@
                 }
 
             }
-            Thread.Sleep(30000);
+            Thread.Sleep(10000);
         }
     }
 
