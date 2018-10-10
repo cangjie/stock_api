@@ -368,14 +368,7 @@
                 continue;
             }
 
-            if (drOri["gid"].ToString().Trim().Equals("sz000017"))
-            {
-                string aa = "aa";
-            }
-            else
-            {
-                //continue;
-            }
+            
 
             Stock stock = new Stock(drOri["gid"].ToString().Trim(), rc);
             stock.LoadKLineDay(rc);
@@ -462,7 +455,7 @@
             }
             if (tochSupportStatus == 2)
             {
-                //continue;
+                continue;
             }
 
 
