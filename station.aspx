@@ -13,6 +13,12 @@
     protected void Page_Load(object sender, EventArgs e)
     {
         sort = Util.GetSafeRequestValue(Request, "sort", "幅度 desc");
+        if (!IsPostBack)
+        {
+            DataTable dt = GetData();
+            dg.DataSource = dt;
+            dg.DataBind();
+        }
 
     }
 
