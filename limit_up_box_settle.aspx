@@ -453,7 +453,10 @@
                     break;
                 }
             }
-            if (tochSupportStatus == 2)
+
+            double width = Math.Round(100 * (highest - lowest) / lowest, 2);
+
+            if (tochSupportStatus == 2 && width < 0.4)
             {
                 continue;
             }
@@ -579,7 +582,7 @@
 
 
 
-            double width = Math.Round(100 * (highest - lowest) / lowest, 2);
+            
 
             bool jumpEmpty = false;
 
