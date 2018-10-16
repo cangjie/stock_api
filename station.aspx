@@ -329,7 +329,7 @@
             dr["KDJ日"] = stock.kdjDays(currentIndex);
             dr["MACD日"] = stock.macdDays(currentIndex);
             dr["买入"] = buyPrice;
-            dr["0日"] = (currentPrice - buyPrice) / buyPrice;
+            dr["0日"] = (buyPrice - stock.kLineDay[currentIndex].startPrice) / stock.kLineDay[currentIndex].startPrice;
             double maxPrice = 0;
             for (int i = 1; i <= 5; i++)
             {
