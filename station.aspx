@@ -313,7 +313,7 @@
             double f3 = highest - (highest - lowest) * 0.382;
             double f5 = highest - (highest - lowest) * 0.618;
             double currentPrice = stock.kLineDay[currentIndex].endPrice;
-            double buyPrice = stock.kLineDay[currentIndex].startPrice;
+            double buyPrice = stock.kLineDay[currentIndex].endPrice;
             DataRow dr = dt.NewRow();
 
             dr["代码"] = stock.gid.Trim();
