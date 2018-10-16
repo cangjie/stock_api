@@ -290,7 +290,7 @@
                     veryLow = true;
                     break;
                 }
-                if (stock.kLineDay[i].endPrice < stock.kLineDay[i].startPrice && i == currentIndex)
+                if (stock.kLineDay[i].endPrice < stock.kLineDay[i].startPrice)
                 {
                     haveGreenDay = true;
                     break;
