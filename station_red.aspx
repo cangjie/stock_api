@@ -278,7 +278,7 @@
             bool limitUpAgain = false;
             bool veryLow = false;
             bool haveGreenDay = false;
-            for (int i = limitUpIndex + 1; i < currentIndex; i++)
+            for (int i = limitUpIndex + 1; i <= currentIndex; i++)
             {
                 if ((stock.kLineDay[i].endPrice - stock.kLineDay[i - 1].endPrice) / stock.kLineDay[i - 1].endPrice >= 0.0995)
                 {
