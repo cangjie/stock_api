@@ -285,7 +285,10 @@
             {
                 continue;
             }
-            
+            if ((stock.kLineDay[currentIndex].startPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice > 0.0382)
+            {
+                continue;
+            }
             int highIndex = 0;
             int lowestIndex = 0;
             double lowest = GetFirstLowestPrice(stock.kLineDay, limitUpIndex, out lowestIndex);
@@ -301,7 +304,28 @@
             double f3 = highest - (highest - lowest) * 0.382;
             double f5 = highest - (highest - lowest) * 0.618;
             double currentPrice = stock.kLineDay[currentIndex].endPrice;
-            double buyPrice = stock.kLineDay[limitUpIndex].endPrice;
+            double buyPrice = 0;
+            if (stock.kLineDay[currentIndex].lowestPrice < stock.kLineDay[limitUpIndex].endPrice && stock.kLineDay[currentIndex].highestPrice > stock.kLineDay[limitUpIndex].endPrice)
+            {
+                buyPrice = stock.kLineDay[currentIndex].startPrice;
+            }
+            else if (stock.kLineDay[currentIndex].highestPrice < stock.kLineDay[limitUpIndex].endPrice)
+            {
+                buyPrice = stock.kLineDay[currentIndex].highestPrice;
+            }
+            else if (stock.kLineDay[currentIndex].lowestPrice > stock.kLineDay[limitUpIndex].endPrice)
+            {
+                buyPrice = stock.kLineDay[currentIndex].lowestPrice;
+            }
+            else
+            {
+                buyPrice = 0;
+            }
+            if (buyPrice == 0)
+            {
+                continue;
+            }
+
             DataRow dr = dt.NewRow();
 
             dr["代码"] = stock.gid.Trim();
