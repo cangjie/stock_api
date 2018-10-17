@@ -946,9 +946,9 @@ public class Stock
     {
         double avaVolume = 0;
         int i = 0;
-        for (; i < days && i < kArr.Length; i++)
+        for (; i < days && i < kArr.Length && index - i >= 0; i++)
         {
-            avaVolume = avaVolume + kArr[i].volume;
+            avaVolume = avaVolume + kArr[index - i].volume;
         }
         return avaVolume / (double)i;
     }
