@@ -309,7 +309,7 @@
                 {
                     goBack = true;
                 }
-                if (goBack && timeline.todayEndPrice >= stock.kLineDay[limitUpIndex].endPrice)
+                if (goBack && timeline.todayEndPrice >= stock.kLineDay[limitUpIndex].endPrice * 1.005)
                 {
                     goUp = true;
                 }
