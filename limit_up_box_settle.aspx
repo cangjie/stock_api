@@ -46,7 +46,7 @@
                 {
                     t.Abort();
                     t = new Thread(ts);
-                    //t.Start();
+                    t.Start();
 
                 }
             }
@@ -723,6 +723,7 @@
     }
 
 
+   
     public static void PageWatcher()
     {
         for(; true; )
@@ -740,16 +741,34 @@
                     double low = Math.Round(double.Parse(dr["前低"].ToString()), 2);
                     double price = Math.Round((double)dr["买入"], 2);
                     string message = "缩量：" + Math.Round(100 * (double)dr["缩量"], 2).ToString() + "% 幅度：" + Math.Round(100 * (high - low) / low, 2).ToString()
-                        + "% MACD：" + dr["MACD日"].ToString() + " KDJ:" + dr["KDJ日"].ToString();
+                        //+ "% MACD：" + dr["MACD日"].ToString() + " KDJ:" + dr["KDJ日"].ToString();
+                        + "% 价差：" + Math.Round(double.Parse(dr["价差"].ToString().Trim()), 2).ToString().Trim() + " 支撑：" + dr["类型"].ToString().Trim();
 
-                    if ((int)dr["KDJ日"] >= 0 && (int)dr["MACD日"] >= 0 && (double)dr["缩量"] < 1 &&  StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()),
+                    if ((double)dr["价差abs"] <= 0.02 &&  StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()),
                         dr["代码"].ToString().Trim(),
                         "limit_up_box",
                         dr["名称"].ToString().Trim(),
                         "现价：" + price.ToString() + " " + message.Trim()))
                     {
-                        StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(),
+                        //StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(),
+                        //        dr["名称"].ToString() + " " + message, price, "limit_up_box");
+
+
+                        //18601197897
+                        StockWatcher.SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", dr["代码"].ToString().Trim(),
                                 dr["名称"].ToString() + " " + message, price, "limit_up_box");
+
+                        //老马
+                        StockWatcher.SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", dr["代码"].ToString().Trim(),
+                                dr["名称"].ToString() + " " + message, price, "limit_up_box");
+                        //老马的朋友
+                        StockWatcher.SendAlertMessage("oqrMvt7eGkY9UejlTH1i8d-oD-V0", dr["代码"].ToString().Trim(),
+                                dr["名称"].ToString() + " " + message, price, "limit_up_box");
+                        StockWatcher.SendAlertMessage("oqrMvtwvHer0l3SJGYP73ioQeuVo", dr["代码"].ToString().Trim(),
+                                dr["名称"].ToString() + " " + message, price, "limit_up_box");
+
+
+
                     }
                     /*
                     if (dr["信号"].ToString().IndexOf("🛍️") >= 0 &&
@@ -821,9 +840,10 @@
                 }
 
             }
-            Thread.Sleep(30000);
+            Thread.Sleep(15000);
         }
     }
+
 
     public static bool foot(Core.Timeline[] tArr, out double lowestPrice, out double displayLowPrice, out DateTime footTime)
     {
