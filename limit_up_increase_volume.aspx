@@ -275,11 +275,12 @@
             {
                 continue;
             }
+            /*
             if ((stock.kLineDay[limitUpIndex].endPrice - stock.kLineDay[limitUpIndex].startPrice) / stock.kLineDay[limitUpIndex].startPrice < 0.05)
             {
                 continue;
             }
-
+            */
             double line3Price = stock.GetAverageSettlePrice(currentIndex, 3, 3);
             if (stock.kLineDay[currentIndex].startPrice < line3Price)
             {
