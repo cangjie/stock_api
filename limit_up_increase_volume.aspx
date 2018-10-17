@@ -286,10 +286,43 @@
             {
                 continue;
             }
+            /*
             if ((stock.kLineDay[currentIndex].startPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice > 0.0382)
             {
                 continue;
             }
+            */
+
+            //if (stock.kLineDay[currentIndex].lowestPrice < stock.kLineDay[limitUpIndex].endPrice )
+
+            Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
+            if (timelineArray.Length == 0)
+            {
+                timelineArray = Core.Timeline.LoadTimelineArrayFromSqlServer(stock.gid, currentDate);
+            }
+            bool goBack = false;
+            bool goUp = false;
+            foreach (Core.Timeline timeline in timelineArray)
+            {
+                if (timeline.todayEndPrice <= stock.kLineDay[limitUpIndex].endPrice)
+                {
+                    goBack = true;
+                }
+                if (goBack && timeline.todayEndPrice >= stock.kLineDay[limitUpIndex].endPrice)
+                {
+                    goUp = true;
+                }
+                if (goUp && goBack)
+                {
+                    break;
+                }
+            }
+
+            if (!goBack || !goUp)
+            {
+                continue;
+            }
+
             int highIndex = 0;
             int lowestIndex = 0;
             double lowest = GetFirstLowestPrice(stock.kLineDay, limitUpIndex, out lowestIndex);
