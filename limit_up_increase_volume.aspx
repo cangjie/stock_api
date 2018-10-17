@@ -307,7 +307,7 @@
             double buyPrice = 0;
             if (stock.kLineDay[currentIndex].lowestPrice < stock.kLineDay[limitUpIndex].endPrice && stock.kLineDay[currentIndex].highestPrice > stock.kLineDay[limitUpIndex].endPrice)
             {
-                buyPrice = stock.kLineDay[currentIndex].startPrice;
+                buyPrice = stock.kLineDay[limitUpIndex].endPrice;
             }
             else if (stock.kLineDay[currentIndex].highestPrice < stock.kLineDay[limitUpIndex].endPrice)
             {
