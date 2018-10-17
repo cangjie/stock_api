@@ -302,6 +302,7 @@
             }
             bool goBack = false;
             bool goUp = false;
+            bool isRaise = false;
             foreach (Core.Timeline timeline in timelineArray)
             {
                 if (timeline.todayEndPrice <= stock.kLineDay[limitUpIndex].endPrice)
@@ -314,11 +315,15 @@
                 }
                 if (goUp && goBack)
                 {
+                    if (timeline.todayEndPrice > stock.kLineDay[currentIndex].startPrice)
+                    {
+                        isRaise = true;
+                    }
                     break;
                 }
             }
 
-            if (!goBack || !goUp)
+            if (!goBack || !goUp || !isRaise)
             {
                 continue;
             }
