@@ -349,27 +349,8 @@
             double f3 = highest - (highest - lowest) * 0.382;
             double f5 = highest - (highest - lowest) * 0.618;
             double currentPrice = stock.kLineDay[currentIndex].endPrice;
-            double buyPrice = 0;
-            if (stock.kLineDay[currentIndex].lowestPrice < stock.kLineDay[limitUpIndex].endPrice && stock.kLineDay[currentIndex].highestPrice > stock.kLineDay[limitUpIndex].endPrice)
-            {
-                buyPrice = stock.kLineDay[limitUpIndex].endPrice;
-            }
-            else if (stock.kLineDay[currentIndex].highestPrice < stock.kLineDay[limitUpIndex].endPrice)
-            {
-                buyPrice = stock.kLineDay[currentIndex].highestPrice;
-            }
-            else if (stock.kLineDay[currentIndex].lowestPrice > stock.kLineDay[limitUpIndex].endPrice)
-            {
-                buyPrice = stock.kLineDay[currentIndex].lowestPrice;
-            }
-            else
-            {
-                buyPrice = 0;
-            }
-            if (buyPrice == 0)
-            {
-                //continue;
-            }
+            double buyPrice = stock.kLineDay[currentIndex].endPrice;
+            
 
             DataRow dr = dt.NewRow();
 
