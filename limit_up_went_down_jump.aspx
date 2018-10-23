@@ -442,7 +442,7 @@
                 maxVolume = Math.Max(maxVolume, stock.kLineDay[i].volume);
             }
 
-            /*
+            
             int tochSupportStatus = 0;
             for (int i = currentIndex - 1; i >= highIndex; i--)
             {
@@ -475,7 +475,7 @@
                 continue;
             }
 
-            */
+            
 
             bool haveLessThan3Line = false;
             for (int i = currentIndex - 1; i >= highIndex; i--)

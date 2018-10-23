@@ -46,7 +46,7 @@
                 {
                     t.Abort();
                     t = new Thread(ts);
-                    t.Start();
+                    //t.Start();
 
                 }
             }
@@ -368,7 +368,7 @@
                 continue;
             }
 
-            
+
 
             Stock stock = new Stock(drOri["gid"].ToString().Trim(), rc);
             stock.LoadKLineDay(rc);
@@ -379,6 +379,7 @@
 
             if (currentIndex < 0)
                 continue;
+
 
 
             int limitUpIndex = stock.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
@@ -456,7 +457,7 @@
 
             double width = Math.Round(100 * (highest - lowest) / lowest, 2);
 
-            if (tochSupportStatus == 2 && width < 0.4)
+            if (tochSupportStatus == 2 && width < 40)
             {
                 continue;
             }
@@ -582,7 +583,7 @@
 
 
 
-            
+
 
             bool jumpEmpty = false;
 
@@ -606,7 +607,7 @@
                 dr["信号"] = dr["信号"].ToString().Trim() + "🌟";
             }
 
-   
+
 
             dr["调整"] = currentIndex - limitUpIndex;
             dr["缩量"] = volumeReduce;
@@ -723,7 +724,7 @@
     }
 
 
-   
+
     public static void PageWatcher()
     {
         for(; true; )
