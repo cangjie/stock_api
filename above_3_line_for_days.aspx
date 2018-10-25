@@ -23,6 +23,8 @@
         //{
         DateTime startDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "date", DateTime.Now.ToShortDateString()));
 
+
+
         if (Util.IsTransacDay(startDate))
         {
             for (int i = 15; i >= 5; i--)

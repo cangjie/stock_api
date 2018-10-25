@@ -310,7 +310,7 @@
         dt.Columns.Add("涨幅", Type.GetType("System.Double"));
         dt.Columns.Add("跌幅", Type.GetType("System.Double"));
         dt.Columns.Add("震幅", Type.GetType("System.Double"));
-        for (int i = 1; i <= 10; i++)
+        for (int i = 0; i <= 10; i++)
         {
             dt.Columns.Add(i.ToString() + "日", Type.GetType("System.Double"));
         }
@@ -381,7 +381,7 @@
             int days3Line = KLine.Above3LineDays(stock, currentIndex);
             dr["3线日"] = daysAbove3Line;
             dr["3线"] = stock.GetAverageSettlePrice(currentIndex, 3, 3);
-            double buyPrice = ma5;
+            double buyPrice = stock.kLineDay[currentIndex].endPrice;
             double lowestPrice = stock.LowestPrice(currentDate, 20);
             double highestPrice = stock.HighestPrice(currentDate, 40);
             double f1 = lowestPrice + (highestPrice - lowestPrice) * 0.236;
@@ -398,6 +398,7 @@
             double kdjDegree = KLine.ComputeKdjDegree(stock.kLineDay, currentIndex);
             dr["KDJ率"] = stock.kLineDay[currentIndex].j;
             double maxPrice = 0;
+            dr["0日"] = (buyPrice - stock.kLineDay[currentIndex].startPrice) / stock.kLineDay[currentIndex].startPrice;
             for (int i = 1; i <= 10; i++)
             {
                 if (currentIndex + i >= stock.kLineDay.Length)
@@ -655,6 +656,7 @@
 			        <asp:BoundColumn DataField="涨幅" HeaderText="涨幅"  ></asp:BoundColumn>
 					<asp:BoundColumn DataField="跌幅" HeaderText="跌幅"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="震幅" HeaderText="震幅"  ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="0日" HeaderText="0日" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日" SortExpression="1日|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="2日" HeaderText="2日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3日" HeaderText="3日"></asp:BoundColumn>
