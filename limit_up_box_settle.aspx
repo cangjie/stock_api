@@ -397,6 +397,14 @@
             }
 
 
+            double avarageVolume = 0;
+            for (int i = lowestIndex; i < highIndex; i++)
+            {
+                avarageVolume = avarageVolume + stock.kLineDay[i].volume;
+            }
+            avarageVolume = (int)Math.Round((double)avarageVolume / (double)(highIndex - lowestIndex), 0);
+
+
 
             double f3 = highest - (highest - lowest) * 0.382;
             double f5 = highest - (highest - lowest) * 0.618;
@@ -607,7 +615,10 @@
                 dr["信号"] = dr["信号"].ToString().Trim() + "🌟";
             }
 
-
+            if (stock.kLineDay[highIndex].volume / avarageVolume >= 2.5 && stock.kLineDay[highIndex].volume / avarageVolume <= 3.5)
+            {
+                dr["信号"] = dr["信号"] + "👍";
+            }
 
             dr["调整"] = currentIndex - limitUpIndex;
             dr["缩量"] = volumeReduce;
