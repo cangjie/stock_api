@@ -408,6 +408,16 @@
                 continue;
             }
 
+
+
+            double avarageVolume = 0;
+            for (int i = lowestIndex; i < highIndex; i++)
+            {
+                avarageVolume = avarageVolume + stock.kLineDay[i].volume;
+            }
+            avarageVolume = (int)Math.Round((double)avarageVolume / (double)(highIndex - lowestIndex), 0);
+
+
             double f3 = highest - (highest - lowest) * 0.382;
             double f5 = highest - (highest - lowest) * 0.618;
             double line3Price = KLine.GetAverageSettlePrice(stock.kLineDay, currentIndex, 3, 3);
@@ -635,10 +645,10 @@
                 dr["价差"] = (stock.kLineDay[currentIndex].lowestPrice - f5)/f5;
                 supportPrice = f5;
                 dr["类型"] = "F5";
-if (width  > 25 && line3Price <= f5)
-            {
-                dr["信号"] = dr["信号"].ToString().Trim() + "🔥";
-            }
+                if (width  > 25 && line3Price <= f5)
+                {
+                    dr["信号"] = dr["信号"].ToString().Trim() + "🔥";
+                }
             }
             else
             {
@@ -648,10 +658,16 @@ if (width  > 25 && line3Price <= f5)
             }
 
 
-	if (stock.kLineDay[currentIndex].startPrice < supportPrice * 0.995 || stock.kLineDay[currentIndex].highestPrice < supportPrice * 0.995)
-{
-continue;
-}		
+	        if (stock.kLineDay[currentIndex].startPrice < supportPrice * 0.995 || stock.kLineDay[currentIndex].highestPrice < supportPrice * 0.995)
+            {
+                continue;
+            }		
+
+
+            if (stock.kLineDay[highIndex].volume / avarageVolume >= 2.5 && stock.kLineDay[highIndex].volume / avarageVolume <= 3.5)
+            {
+                dr["信号"] = dr["信号"] + "👍";
+            }
 
             dr["价差abs"] = Math.Abs((double)dr["价差"]);
 
