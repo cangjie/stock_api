@@ -19,7 +19,7 @@
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        for (DateTime startDate = DateTime.Parse("2018-6-7"); startDate <= DateTime.Parse("2018-9-28"); startDate = startDate.AddDays(1))
+        for (DateTime startDate = DateTime.Parse("2018-10-8"); startDate <= DateTime.Parse("2018-10-24"); startDate = startDate.AddDays(1))
         {
         //DateTime startDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "date", DateTime.Now.ToShortDateString()));
 
