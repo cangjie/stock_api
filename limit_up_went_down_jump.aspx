@@ -394,6 +394,14 @@
                 }
             }
 
+            double avarageVolume = 0;
+            for (int i = lowestIndex; i < highIndex; i++)
+            {
+                avarageVolume = avarageVolume + stock.kLineDay[i].volume;
+            }
+            avarageVolume = (int)Math.Round((double)avarageVolume / (double)(highIndex - lowestIndex), 0);
+
+
 
 
             double f3 = highest - (highest - lowest) * 0.382;
@@ -442,7 +450,7 @@
                 maxVolume = Math.Max(maxVolume, stock.kLineDay[i].volume);
             }
 
-            
+
             int tochSupportStatus = 0;
             for (int i = currentIndex - 1; i >= highIndex; i--)
             {
@@ -475,7 +483,7 @@
                 continue;
             }
 
-            
+
 
             bool haveLessThan3Line = false;
             for (int i = currentIndex - 1; i >= highIndex; i--)
@@ -600,6 +608,12 @@
             dr["无影"] = todayLowestPrice;
             double maxPrice = 0;
             dr["0日"] = (currentPrice - supportPrice) / supportPrice;
+
+            if (stock.kLineDay[highIndex].volume / avarageVolume >= 2.5 && stock.kLineDay[highIndex].volume / avarageVolume <= 3.5)
+            {
+                dr["信号"] = dr["信号"] + "🔥";
+            }
+
             for (int i = 1; i <= 5; i++)
             {
                 if (currentIndex + i >= stock.kLineDay.Length)
