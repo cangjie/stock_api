@@ -27,7 +27,7 @@
 
         if (Util.IsTransacDay(startDate))
         {
-            for (int i = 15; i >= 5; i--)
+            for (int i = 15; i >= 3; i--)
             {
                 LogAbove3LineForDays(startDate, i);
             }
