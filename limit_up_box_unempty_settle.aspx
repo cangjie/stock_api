@@ -22,7 +22,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "价差abs, 幅度 desc,MACD日,KDJ日");
+        sort = Util.GetSafeRequestValue(Request, "sort", "价差");
         if (!IsPostBack)
         {
             try
@@ -170,7 +170,6 @@
                             break;
                             /*
                         case "价差":
-                            
                             double currentValuePrice1 = (double)drOri[i];
                             dr[i] = Math.Round(currentValuePrice1, 2).ToString();
                             break;
@@ -409,6 +408,16 @@
                 continue;
             }
 
+
+
+            double avarageVolume = 0;
+            for (int i = lowestIndex; i < highIndex; i++)
+            {
+                avarageVolume = avarageVolume + stock.kLineDay[i].volume;
+            }
+            avarageVolume = (int)Math.Round((double)avarageVolume / (double)(highIndex - lowestIndex), 0);
+
+
             double f3 = highest - (highest - lowest) * 0.382;
             double f5 = highest - (highest - lowest) * 0.618;
             double line3Price = KLine.GetAverageSettlePrice(stock.kLineDay, currentIndex, 3, 3);
@@ -610,13 +619,14 @@
             if (!jumpEmpty)
             {
                 dr["信号"] = "📈";
-
             }
 
             if (buyPrice == 0)
             {
                 //dr["信号"] = dr["信号"].ToString() + "💩";
             }
+
+            
 
             dr["调整"] = currentIndex - limitUpIndex;
             dr["缩量"] = volumeReduce;
@@ -635,19 +645,34 @@
                 dr["价差"] = (stock.kLineDay[currentIndex].lowestPrice - f5)/f5;
                 supportPrice = f5;
                 dr["类型"] = "F5";
+                if (width  > 25 && line3Price <= f5)
+                {
+                    dr["信号"] = dr["信号"].ToString().Trim() + "🔥";
+                }
             }
             else
             {
                 dr["价差"] = (stock.kLineDay[currentIndex].lowestPrice - f3)/f3;
                 supportPrice = f3;
                 dr["类型"] = "F3";
+                continue;
             }
+
+
+	        if (stock.kLineDay[currentIndex].startPrice < supportPrice * 0.995 || stock.kLineDay[currentIndex].highestPrice < supportPrice * 0.995)
+            {
+                continue;
+            }		
+
+
+            if (stock.kLineDay[highIndex].volume / avarageVolume >= 2.5 && stock.kLineDay[highIndex].volume / avarageVolume <= 3.5)
+            {
+                dr["信号"] = dr["信号"] + "<a title=\"量比\" >🌟</a>";
+            }
+
             dr["价差abs"] = Math.Abs((double)dr["价差"]);
 
-	if (stock.kLineDay[currentIndex].startPrice < supportPrice * 0.995 || stock.kLineDay[currentIndex].highestPrice < supportPrice * 0.995)
-{
-continue;
-}
+
 
             dr["F3折返"] = (stock.kLineDay[currentIndex].lowestPrice - f3) / f3;
 
@@ -672,20 +697,15 @@ continue;
             dr["买入"] = buyPrice;
 
             dr["0日"] = (currentPrice - supportPrice) / supportPrice;
-            if ((double)dr["0日"] >= 0.01  && ((int)dr["KDJ日"] > -1  || (int)dr["MACD日"] >= -1 ) && (double)dr["0日"] <= 0.03 && dr["信号"].ToString().IndexOf("📈") >= 0)
-            {
-                dr["信号"] = dr["信号"].ToString() + "🌟";
-            }
-            buyPrice = stock.kLineDay[currentIndex].endPrice;
             for (int i = 1; i <= 5; i++)
             {
                 if (currentIndex + i >= stock.kLineDay.Length)
                     break;
                 double highPrice = stock.kLineDay[currentIndex + i].highestPrice;
                 maxPrice = Math.Max(maxPrice, highPrice);
-                dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
+                dr[i.ToString() + "日"] = (highPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice;
             }
-            dr["总计"] = (maxPrice - buyPrice) / buyPrice;
+            dr["总计"] = (maxPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice;
             dt.Rows.Add(dr);
 
         }
@@ -756,15 +776,15 @@ continue;
                     double high = Math.Round(double.Parse(dr["现高"].ToString()), 2);
                     double low = Math.Round(double.Parse(dr["前低"].ToString()), 2);
                     double price = Math.Round((double)dr["买入"], 2);
-                    string message = "📈缩量：" + Math.Round(100 * (double)dr["缩量"], 2).ToString() + "% 幅度：" + Math.Round(100 * (high - low) / low, 2).ToString()
+                    string message = dr["信号"].ToString().Trim() + " 缩量：" + Math.Round(100 * (double)dr["缩量"], 2).ToString() + "% 幅度：" + Math.Round(100 * (high - low) / low, 2).ToString()
                         //+ "% MACD：" + dr["MACD日"].ToString() + " KDJ:" + dr["KDJ日"].ToString();
-                        + "% 价差：" + Math.Round(double.Parse(dr["价差"].ToString().Trim()), 2).ToString().Trim() + " 支撑：" + dr["类型"].ToString().Trim();
+                        + "% 价差：" + Math.Round(100 * double.Parse(dr["价差"].ToString().Trim()), 2).ToString().Trim() + "% 支撑：" + dr["类型"].ToString().Trim();
 
-                    if (dr["信号"].ToString().Trim().IndexOf("📈") >= 0 &&  StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()),
+                    if ((double)dr["价差abs"] <= 0.005 && ((double)dr["现价"] - price) / price > 0.005 &&  ((double)dr["现价"] - price) / price < 0.015 && StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()),
                         dr["代码"].ToString().Trim(),
                         "limit_up_box",
                         dr["名称"].ToString().Trim(),
-                        "📈现价：" + price.ToString() + " " + message.Trim()))
+                        "现价：" + price.ToString() + " " + message.Trim()))
                     {
                         StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(),
                                 dr["名称"].ToString() + " " + message, price, "limit_up_box");
