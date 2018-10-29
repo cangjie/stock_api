@@ -666,7 +666,7 @@
 
             if (stock.kLineDay[highIndex].volume / avarageVolume >= 2.5 && stock.kLineDay[highIndex].volume / avarageVolume <= 3.5)
             {
-                dr["信号"] = dr["信号"] + "🌟";
+                dr["信号"] = dr["信号"] + "<a title=\"量比\" >🌟</a>";
             }
 
             dr["价差abs"] = Math.Abs((double)dr["价差"]);
