@@ -22,7 +22,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "价差 desc");
+        sort = Util.GetSafeRequestValue(Request, "sort", "价差");
         if (!IsPostBack)
         {
             try
