@@ -595,7 +595,7 @@
             }
 
 
-            
+
 
             if (width >= 30)
             {
@@ -694,8 +694,14 @@
             dr["信号"] = "";
             if (supportPrice > line3Price)
             {
-                dr["信号"] = "🌟";
+                dr["信号"] = dr["信号"].ToString() + "🌟";
             }
+
+            if (currentIndex > 0 && (stock.kLineDay[currentIndex - 1].volume / maxVolume) < 0.65)
+            {
+                dr["信号"] = dr["信号"].ToString() + "📍";
+            }
+
 
             dt.Rows.Add(dr);
 

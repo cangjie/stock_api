@@ -706,6 +706,12 @@
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
             }
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
+
+            if (currentIndex > 0 && (stock.kLineDay[currentIndex - 1].volume / maxVolume) < 0.65)
+            {
+                dr["信号"] = dr["信号"].ToString() + "📍";
+            }
+
             dt.Rows.Add(dr);
 
         }
