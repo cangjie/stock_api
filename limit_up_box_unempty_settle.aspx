@@ -655,7 +655,11 @@
                 dr["价差"] = (stock.kLineDay[currentIndex].lowestPrice - f3)/f3;
                 supportPrice = f3;
                 dr["类型"] = "F3";
-                continue;
+                if (width  > 25 && line3Price <= f3)
+                {
+                    dr["信号"] = dr["信号"].ToString().Trim() + "🔥";
+                }
+                //continue;
             }
 
 
