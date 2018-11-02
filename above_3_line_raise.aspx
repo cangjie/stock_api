@@ -362,7 +362,6 @@
             dr["名称"] = stock.Name.Trim();
             double avgRaiseRate = (stock.kLineDay[currentIndex].endPrice - startRaisePrice) / (startRaisePrice * daysAbove3Line) ;
             dr["日均涨幅"] = avgRaiseRate;
-
             double settlePrice = stock.kLineDay[currentIndex - 1].endPrice;
             double openPrice = stock.kLineDay[currentIndex].startPrice;
             double currentPrice = stock.kLineDay[currentIndex].endPrice;
@@ -374,18 +373,25 @@
             dr["TD"] = currentIndex - KLine.GetLastDeMarkBuyPointIndex(stock.kLineDay, currentIndex);
             double todayRaise = (stock.kLineDay[currentIndex].startPrice - settlePrice) / settlePrice;
             dr["今涨"] = todayRaise;
-
+            if (todayRaise < 0)
+            {
+                continue;
+            }
             DateTime lastDate = DateTime.Parse(stock.kLineDay[currentIndex - 1].startDateTime.ToShortDateString());
             double lastDayVolume = stock.kLineDay[currentIndex-1].VirtualVolume;//Stock.GetVolumeAndAmount(stock.gid, lastDate)[0];
             double currentVolume = stock.kLineDay[currentIndex].VirtualVolume;//Stock.GetVolumeAndAmount(stock.gid, currentDate)[0];
             double volumeIncrease = (currentVolume - lastDayVolume) / lastDayVolume;
             dr["放量"] = currentVolume / lastDayVolume;
+            if ((double)dr["放量"] < 1)
+            {
+                continue;
+            }
             int kdjDays = stock.kdjDays(currentIndex);
             if (kdjDays == -1 || macdDays == -1)
+            {
                 continue;
-
+            }
             dr["kdj"] = kdjDays.ToString();
-
             int days3Line = KLine.Above3LineDays(stock, currentIndex);
             dr["3线日"] = daysAbove3Line;
             dr["3线"] = stock.GetAverageSettlePrice(currentIndex, 3, 3);
@@ -408,6 +414,11 @@
             double maxPrice = 0;
 
             dr["0日"] = (buyPrice - stock.kLineDay[currentIndex].startPrice) / stock.kLineDay[currentIndex].startPrice;
+
+            if (stock.kLineDay[currentIndex].startPrice > buyPrice)
+            {
+                continue;
+            }
 
             for (int i = 1; i <= 10; i++)
             {
