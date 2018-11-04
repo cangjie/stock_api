@@ -23,7 +23,7 @@
                 int currentIndex = s.GetItemIndex(currentDate);
                 if (currentIndex > 0)
                 {
-                    if (s.kLineDay[currentIndex].endPrice == s.kLineDay[currentIndex].lowestPrice && s.kLineDay[currentIndex].lowestPrice <= s.kLineDay[currentIndex - 1].endPrice * 0.905)
+                    if (s.kLineDay[currentIndex].endPrice == s.kLineDay[currentIndex].lowestPrice && s.kLineDay[currentIndex].lowestPrice <= s.kLineDay[currentIndex - 1].endPrice * (1-0.09))
                     {
                         try
                         {
