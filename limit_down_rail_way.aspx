@@ -724,8 +724,8 @@
             DataTable dtPromote = DBHelper.GetDataTable(" select *  from organize_promote where promote_date <= '" + currentDate.ToShortDateString()
                 + "' and promote_date >= '" + startPromoteDate.ToShortDateString() + "' and gid = '" + stock.gid.Trim() + "' order by promote_date desc ");
 
-            if (stock.kLineDay[currentIndex].endPrice * (1 - 0.095) >= stock.kLineDay[currentIndex - 1].endPrice
-                && stock.kLineDay[currentIndex - 2].endPrice * (1 - 0.095) >= stock.kLineDay[currentIndex - 1].endPrice)
+            if ((stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice >= 0.0975
+                && (stock.kLineDay[currentIndex - 1].endPrice - stock.kLineDay[currentIndex -2].endPrice) / stock.kLineDay[currentIndex - 2].endPrice <= -0.0975)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"涨跌停\" >🔺</a>";
             }
