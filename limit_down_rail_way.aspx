@@ -612,13 +612,14 @@
                 //dr["信号"] = dr["信号"] + "<a title=\"幅度超过30%\" >🔥</a>";
             }
             */
-
+            /*
 
             if (Math.Min(stock.kLineDay[currentIndex].startPrice, stock.kLineDay[currentIndex].endPrice) - stock.kLineDay[currentIndex].lowestPrice
                  > Math.Abs(stock.kLineDay[currentIndex].startPrice - stock.kLineDay[currentIndex].endPrice))
             {
                 dr["信号"] = dr["信号"] + "<a title=\"长下影线\" >🔺</a>";
             }
+            */
             /*
             DataRow[] lowPriceDrArr = dtDtl.Select(" gid = '" + drOri["gid"].ToString().Trim() + "' ", " alert_date desc ");
             if (lowPriceDrArr.Length > 0)
@@ -646,11 +647,12 @@
                     break;
                 }
             }
+            /*
             if (isFire)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"买入价在均线支撑附近\" >🔥</a>";
             }
-
+            */
 
 
             //dr["调整"] = currentIndex - limitUpIndex;
@@ -721,16 +723,11 @@
 
             DataTable dtPromote = DBHelper.GetDataTable(" select *  from organize_promote where promote_date <= '" + currentDate.ToShortDateString()
                 + "' and promote_date >= '" + startPromoteDate.ToShortDateString() + "' and gid = '" + stock.gid.Trim() + "' order by promote_date desc ");
-            if (dtPromote.Rows.Count >= 1)
+
+            if (stock.kLineDay[currentIndex].endPrice * (1 - 0.095) >= stock.kLineDay[currentIndex - 1].endPrice
+                && stock.kLineDay[currentIndex - 2].endPrice * (1 - 0.095) >= stock.kLineDay[currentIndex - 1].endPrice)
             {
-                if (DateTime.Parse(dtPromote.Rows[0]["promote_date"].ToString()) == currentDate)
-                {
-                    dr["信号"] = "🌟";
-                }
-                for (int i = 0; i < dtPromote.Rows.Count - 1; i++)
-                {
-                    dr["信号"] = dr["信号"].ToString() + "🔺";
-                }
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"涨跌停\" >🔺</a>";
             }
 
             dt.Rows.Add(dr);
