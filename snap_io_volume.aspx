@@ -44,12 +44,13 @@
 
                         }
                     }
+                    System.Threading.Thread.Sleep(1000);
                 }
                 dt.Dispose();
 
 
                 
-                System.Threading.Thread.Sleep(1000);
+                
             }
         }
     }
