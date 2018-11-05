@@ -688,6 +688,11 @@
                 dr["信号"] = dr["信号"].ToString() + "📍";
             }
 
+            if (stock.kLineDay[currentIndex].IOVolumeDiff > 0)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"外盘高\" >✅</a>";
+            }
+
 
             dt.Rows.Add(dr);
 
