@@ -168,12 +168,12 @@
                             dr[i] = "<font color=\"" + (currentValuePrice > currentPrice ? "red" : (currentValuePrice == currentPrice ? "gray" : "green")) + "\"  >"
                                 + Math.Round(currentValuePrice, 2).ToString() + "</font>";
                             break;
-                            /*
-                        case "价差":
-                            double currentValuePrice1 = (double)drOri[i];
-                            dr[i] = Math.Round(currentValuePrice1, 2).ToString();
-                            break;
-                            */
+                        /*
+                    case "价差":
+                        double currentValuePrice1 = (double)drOri[i];
+                        dr[i] = Math.Round(currentValuePrice1, 2).ToString();
+                        break;
+                        */
                         default:
                             if (System.Text.RegularExpressions.Regex.IsMatch(drArr[0].Table.Columns[i].Caption.Trim(), "\\d日")
                                 || drArr[0].Table.Columns[i].Caption.Trim().Equals("总计"))
@@ -626,7 +626,7 @@
                 //dr["信号"] = dr["信号"].ToString() + "💩";
             }
 
-            
+
 
             dr["调整"] = currentIndex - limitUpIndex;
             dr["缩量"] = volumeReduce;
@@ -663,10 +663,10 @@
             }
 
 
-	        if (stock.kLineDay[currentIndex].startPrice < supportPrice * 0.995 || stock.kLineDay[currentIndex].highestPrice < supportPrice * 0.995)
+            if (stock.kLineDay[currentIndex].startPrice < supportPrice * 0.995 || stock.kLineDay[currentIndex].highestPrice < supportPrice * 0.995)
             {
                 continue;
-            }		
+            }
 
 
             if (stock.kLineDay[highIndex].volume / avarageVolume >= 2.5 && stock.kLineDay[highIndex].volume / avarageVolume <= 3.5  && (double)dr["价差"] < 0.01)
@@ -714,6 +714,10 @@
             if (currentIndex > 0 && (stock.kLineDay[currentIndex - 1].volume / maxVolume) < 0.65)
             {
                 dr["信号"] = dr["信号"].ToString() + "📍";
+            }
+            if (stock.kLineDay[currentIndex].IOVolumeDiff > 0)
+            {
+                dr["信号"] = dr["信号"].ToString() + "✅";
             }
 
             dt.Rows.Add(dr);

@@ -272,6 +272,23 @@ public class KLine
         }
     }
 
+    public double IOVolumeDiff
+    {
+        get
+        {
+            double ret = 0;
+            DataTable dt = DBHelper.GetDataTable(" select * from io_volume where gid = '" + gid.Trim() + "' and trans_date = '" + endDateTime.ToShortDateString() + "' ");
+            if (dt.Rows.Count == 1)
+            {
+                double inVolume = double.Parse(dt.Rows[0]["in_volume"].ToString());
+                double outVolume = double.Parse(dt.Rows[0]["out_volume"].ToString());
+                ret = (outVolume - inVolume) / inVolume;
+            }
+            dt.Dispose();
+            return ret;
+        }
+    }
+
     public static KLine[] GetKLine(string type, string gid, DateTime startDateTime, DateTime endDateTime)
     {
         KLine[] kLineArr = new KLine[0];
