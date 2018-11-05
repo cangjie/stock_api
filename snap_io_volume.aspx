@@ -13,7 +13,8 @@
             //gidArr = new string[] { "sh600093" };
             foreach (string gid in gidArr)
             {
-                try
+                DataTable dt = DBHelper.GetDataTable(" select * from io_volume where gid = '" + gid.Trim() + "' and trans_date = '" + volumeDate.ToShortDateString() + "' ");
+                if (dt.Rows.Count == 0)
                 {
                     string jsonContent = "";
                     try
@@ -33,17 +34,10 @@
                         string temp = m.Value.Trim();
                         try
                         {
-                            DataTable dt = DBHelper.GetDataTable(" select * from io_volume where gid = '" + gid.Trim() + "' and trans_date = '" + volumeDate.ToShortDateString() + "' ");
-                            if (dt.Rows.Count == 0)
-                            {
-                                DBHelper.InsertData("io_volume", new string[,] { {"trans_date", "datetime", volumeDate.ToShortDateString() }, {"gid", "varchar", gid.Trim() }
-                                    , {"in_volume", "float", m.Value.Trim().Split(',')[0].Trim() }, {"out_volume", "float", m.Value.Split(',')[1].Trim() } });
-                            }
-                            else
-                            {
-                                DBHelper.UpdateData("io_volume", new string[,] { { "in_volume", "float", m.Value.Trim().Split(',')[0].Trim() }, { "out_volume", "float", m.Value.Split(',')[1].Trim() } },
-                                    new string[,] {{"trans_date", "datetime", volumeDate.ToShortDateString() }, {"gid", "varchar", gid.Trim() } }, Util.conStr.Trim());
-                            }
+         
+                            DBHelper.InsertData("io_volume", new string[,] { {"trans_date", "datetime", volumeDate.ToShortDateString() }, {"gid", "varchar", gid.Trim() }
+                                , {"in_volume", "float", m.Value.Trim().Split(',')[0].Trim() }, {"out_volume", "float", m.Value.Split(',')[1].Trim() } });
+            
                         }
                         catch
                         {
@@ -51,10 +45,10 @@
                         }
                     }
                 }
-                catch
-                {
+                dt.Dispose();
 
-                }
+
+                
                 System.Threading.Thread.Sleep(1000);
             }
         }
