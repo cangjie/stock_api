@@ -23,7 +23,7 @@
         //{
         DateTime startDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "date", DateTime.Now.ToShortDateString()));
 
-
+        //startDate = DateTime.Parse("2018-11-5");
 
         if (Util.IsTransacDay(startDate))
         {
@@ -487,7 +487,7 @@
             currentDate = currentDate.AddDays(1);
             break3LineDate = Util.GetLastTransactDate(currentDate, days);
         }
-        currentDate = currentDate.AddDays(-1);
+        //currentDate = currentDate.AddDays(-1);
         DataTable dtOri = new DataTable();
         SqlDataAdapter da = new SqlDataAdapter(" select * from bottom_break_cross_3_line where suggest_date = '" + break3LineDate.ToShortDateString() + "' " , Util.conStr);
         da.Fill(dtOri);
