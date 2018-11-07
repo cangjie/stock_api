@@ -13,7 +13,7 @@
             Stock s = new Stock(gidArr[i].Trim());
             s.LoadKLineDay();
 
-            for (DateTime currentDate = DateTime.Now.Date ; currentDate >= DateTime.Now.Date; currentDate = currentDate.AddDays(-1))
+            for (DateTime currentDate = DateTime.Now.Date ; currentDate >= DateTime.Parse("2018-11-1"); currentDate = currentDate.AddDays(-1))
             {
                 if (!Util.IsTransacDay(currentDate))
                 {
