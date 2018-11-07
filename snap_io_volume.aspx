@@ -13,7 +13,7 @@
             //gidArr = new string[] { "sh600093" };
             foreach (string gid in gidArr)
             {
-                DataTable dt = DBHelper.GetDataTable(" select * from io_volume where gid = '" + gid.Trim() + "' and trans_date = '" + volumeDate.ToShortDateString() + "' ");
+                DataTable dt = DBHelper.GetDataTable(" select * from io_volume where gid = '" + gid.Trim() + "' and trans_date_time = '" + volumeDate.ToShortDateString() + "' ");
                 if (dt.Rows.Count == 0)
                 {
                     string jsonContent = "";
@@ -35,7 +35,7 @@
                         try
                         {
          
-                            DBHelper.InsertData("io_volume", new string[,] { {"trans_date", "datetime", volumeDate.ToShortDateString() }, {"gid", "varchar", gid.Trim() }
+                            DBHelper.InsertData("io_volume", new string[,] { {"trans_date_time", "datetime", volumeDate.ToShortDateString() }, {"gid", "varchar", gid.Trim() }
                                 , {"in_volume", "float", m.Value.Trim().Split(',')[0].Trim() }, {"out_volume", "float", m.Value.Split(',')[1].Trim() } });
             
                         }

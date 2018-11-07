@@ -277,7 +277,7 @@ public class KLine
         get
         {
             double ret = 0;
-            DataTable dt = DBHelper.GetDataTable(" select * from io_volume where gid = '" + gid.Trim() + "' and trans_date = '" + endDateTime.ToShortDateString() + "' ");
+            DataTable dt = DBHelper.GetDataTable(" select * from io_volume where gid = '" + gid.Trim() + "' and trans_date_time = '" + endDateTime.ToShortDateString() + "' ");
             if (dt.Rows.Count == 1)
             {
                 double inVolume = double.Parse(dt.Rows[0]["in_volume"].ToString());
