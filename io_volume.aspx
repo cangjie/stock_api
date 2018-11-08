@@ -330,7 +330,8 @@
         dt.Columns.Add("现价", Type.GetType("System.Double"));
         dt.Columns.Add("评级", Type.GetType("System.String"));
         dt.Columns.Add("买入", Type.GetType("System.Double"));
-        dt.Columns.Add("盘比", Type.GetType("System.Double"));
+        dt.Columns.Add("始盘比", Type.GetType("System.Double"));
+        dt.Columns.Add("终盘比", Type.GetType("System.Double"));
         dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
         dt.Columns.Add("F3折返", Type.GetType("System.Double"));
@@ -564,8 +565,8 @@
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
-
-            dr["盘比"] = double.Parse(drOri["end_io_volume"].ToString());
+            dr["始盘比"] = double.Parse(drOri["start_io_volume"].ToString());
+            dr["终盘比"] = double.Parse(drOri["end_io_volume"].ToString());
 
             /*
             dr["信号"] = (stock.kLineDay[currentIndex].endPrice <= f3 * 1.01) ? "📈" : "";
@@ -932,7 +933,8 @@
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                     
                     <asp:BoundColumn DataField="缩量" HeaderText="缩量"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="盘比" HeaderText="盘比"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="始盘比" HeaderText="始盘比"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="终盘比" HeaderText="终盘比"></asp:BoundColumn>
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD日|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>
                    
