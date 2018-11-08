@@ -372,6 +372,7 @@
         DataTable dtOri = DBHelper.GetDataTable(" select gid from limit_down where alert_date = '" + lastTransactDate.ToShortDateString()   + "'  ");
 
 
+        DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor " + currentDate.ToShortDateString());
 
 
         //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
@@ -730,7 +731,7 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"涨跌停\" >🔺</a>";
             }
 
-            if (stock.kLineDay[currentIndex].IOVolumeDiff > 0)
+            if (dtIOVolume.Select("gid = '" + stock.gid.Trim() + "' ").Length > 0)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"外盘高\" >✅</a>";
             }

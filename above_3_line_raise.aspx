@@ -283,6 +283,9 @@
         SqlDataAdapter da = new SqlDataAdapter(" select *  from alert_above_3_line_for_days where alert_date = '" + alertDate.ToShortDateString() + "'  "
             + (!days.Trim().Equals("")? " and above_3_line_days  in (" + days + ") " : "  "), Util.conStr);
         da.Fill(dtOri);
+
+        DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor " + currentDate.ToShortDateString());
+
         DataTable dt = new DataTable();
         dt.Columns.Add("代码", Type.GetType("System.String"));
         dt.Columns.Add("名称", Type.GetType("System.String"));
@@ -511,7 +514,7 @@
                 dr["信号"] = dr["信号"].ToString() + "📈";
             }
 
-            if (stock.kLineDay[currentIndex].IOVolumeDiff > 0)
+            if (dtIOVolume.Select("gid = '" + stock.gid.Trim() + "' ").Length > 0)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"外盘高\" >✅</a>";
             }
