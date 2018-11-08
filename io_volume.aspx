@@ -330,6 +330,7 @@
         dt.Columns.Add("现价", Type.GetType("System.Double"));
         dt.Columns.Add("评级", Type.GetType("System.String"));
         dt.Columns.Add("买入", Type.GetType("System.Double"));
+        dt.Columns.Add("盘比", Type.GetType("System.Double"));
         dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
         dt.Columns.Add("F3折返", Type.GetType("System.Double"));
@@ -563,7 +564,13 @@
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
-
+            double inVolume = double.Parse(drOri["in_volume"].ToString());
+            double outVolume = double.Parse(drOri["out_volume"].ToString());
+            if (inVolume == 0)
+            {
+                continue;
+            }
+            dr["盘比"] = (outVolume - inVolume) / inVolume;
 
             /*
             dr["信号"] = (stock.kLineDay[currentIndex].endPrice <= f3 * 1.01) ? "📈" : "";
