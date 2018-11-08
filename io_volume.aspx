@@ -564,13 +564,8 @@
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
-            double inVolume = double.Parse(drOri["in_volume"].ToString());
-            double outVolume = double.Parse(drOri["out_volume"].ToString());
-            if (inVolume == 0)
-            {
-                continue;
-            }
-            dr["盘比"] = (outVolume - inVolume) / inVolume;
+
+            dr["盘比"] = double.Parse(drOri["end_io_volume"].ToString());
 
             /*
             dr["信号"] = (stock.kLineDay[currentIndex].endPrice <= f3 * 1.01) ? "📈" : "";
