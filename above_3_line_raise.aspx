@@ -284,7 +284,7 @@
             + (!days.Trim().Equals("")? " and above_3_line_days  in (" + days + ") " : "  "), Util.conStr);
         da.Fill(dtOri);
 
-        DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor " + currentDate.ToShortDateString());
+        DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor '" + currentDate.ToShortDateString() + "' ");
 
         DataTable dt = new DataTable();
         dt.Columns.Add("代码", Type.GetType("System.String"));

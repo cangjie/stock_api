@@ -372,7 +372,7 @@
         DataTable dtOri = DBHelper.GetDataTable(" select gid from limit_down where alert_date = '" + lastTransactDate.ToShortDateString()   + "'  ");
 
 
-        DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor " + currentDate.ToShortDateString());
+        DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor '" + currentDate.ToShortDateString() + "' ");
 
 
         //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
