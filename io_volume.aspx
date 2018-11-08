@@ -361,7 +361,7 @@
         //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
         foreach (DataRow drOri in dtIOVolume.Rows)
         {
-           
+
             Stock stock = new Stock(drOri["gid"].ToString().Trim(), rc);
             stock.LoadKLineDay(rc);
             KLine.ComputeMACD(stock.kLineDay);
@@ -372,7 +372,10 @@
             if (currentIndex < 0)
                 continue;
 
-
+            if ((stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice < -0.095)
+            {
+                continue;
+            }
 
             int limitUpIndex = stock.GetItemIndex(currentDate);
             int highIndex = 0;
@@ -680,7 +683,7 @@
                 dr["信号"] = dr["信号"].ToString() + "📍";
             }
 
-            
+
 
             dt.Rows.Add(dr);
 
