@@ -650,7 +650,7 @@
             dr["现价"] = currentPrice;
 
             dr["评级"] = memo;
-            buyPrice = stock.kLineDay[currentIndex].endPrice;
+            buyPrice = stock.kLineDay[currentIndex].startPrice;
             dr["买入"] = buyPrice;
 
             dr["KDJ日"] = stock.kdjDays(currentIndex);
@@ -663,7 +663,7 @@
             dr["无影时"] = footTime;
             dr["无影"] = todayLowestPrice;
             double maxPrice = 0;
-            dr["0日"] = (currentPrice - supportPrice) / supportPrice;
+            dr["0日"] = (currentPrice - buyPrice) / buyPrice;
             for (int i = 1; i <= 5; i++)
             {
                 if (currentIndex + i >= stock.kLineDay.Length)
