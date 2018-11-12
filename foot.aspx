@@ -335,8 +335,6 @@
         dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
         dt.Columns.Add("F3折返", Type.GetType("System.Double"));
-        dt.Columns.Add("无影时", Type.GetType("System.DateTime"));
-        dt.Columns.Add("无影", Type.GetType("System.Double"));
         dt.Columns.Add("价差", Type.GetType("System.Double"));
         dt.Columns.Add("价差abs", Type.GetType("System.Double"));
         dt.Columns.Add("类型", Type.GetType("System.String"));
@@ -471,9 +469,6 @@
 
 
 
-            double todayLowestPrice = 0;
-            double todayDisplayedLowestPrice = 0;
-            DateTime footTime = DateTime.Now;
 
 
 
@@ -667,8 +662,7 @@
             {
                 continue;
             }
-            dr["无影时"] = footTime;
-            dr["无影"] = todayLowestPrice;
+     
             double maxPrice = 0;
             dr["0日"] = (buyPrice - stock.kLineDay[currentIndex].startPrice) / stock.kLineDay[currentIndex].startPrice;
             for (int i = 1; i <= 5; i++)
@@ -864,7 +858,7 @@
         }
     }
 
-
+    /*
     public static bool foot(Core.Timeline[] tArr, out double lowestPrice, out double displayLowPrice, out DateTime footTime)
     {
         lowestPrice = double.MaxValue;
@@ -904,7 +898,7 @@
         return noShadow;
     }
 
-
+*/
 </script>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
