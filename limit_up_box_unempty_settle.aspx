@@ -362,6 +362,8 @@
 
         DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor '" + currentDate.ToShortDateString() + "' ");
 
+        DataTable dtFoot = DBHelper.GetDataTable(" select * from alert_foot where alert_date > '" + currentDate.Date.ToShortDateString() + "' and alert_date < '" + currentDate.AddDays(1).ToShortDateString() + "' ");
+
 
         //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
         foreach (DataRow drOri in dtOri.Rows)
@@ -722,7 +724,10 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"外盘高\" >✅</a>";
             }
-
+            if (dtFoot.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"无影脚\" >🦶</a>";
+            }
             dt.Rows.Add(dr);
 
         }

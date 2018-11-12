@@ -285,6 +285,7 @@
         da.Fill(dtOri);
 
         DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor '" + currentDate.ToShortDateString() + "' ");
+        DataTable dtFoot = DBHelper.GetDataTable(" select * from alert_foot where alert_date > '" + currentDate.Date.ToShortDateString() + "' and alert_date < '" + currentDate.AddDays(1).ToShortDateString() + "' ");
 
         DataTable dt = new DataTable();
         dt.Columns.Add("代码", Type.GetType("System.String"));
@@ -519,7 +520,10 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"外盘高\" >✅</a>";
             }
 
-
+            if (dtFoot.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"无影脚\" >🦶</a>";
+            }
 
             //if (totalScore !=0 && (stock.kLineDay[currentIndex].highestPrice - settlePrice) / settlePrice < 0.07 )
             dt.Rows.Add(dr);
