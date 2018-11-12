@@ -358,7 +358,7 @@
         DataTable dtOri = DBHelper.GetDataTable(" select gid, alert_date from limit_up where alert_date >= '" + limitUpStartDate.ToShortDateString()
             + "' and alert_date <= '" + lastTransactDate.ToShortDateString() + "' order by alert_date desc ");
             */
-        DataTable dtIOVolume = DBHelper.GetDataTable(" select * from alert_foot where alert_date > '" + currentDate.Date.ToShortDateString() + "' and alert_date < '" + currentDate.AddDays(1).ToShortDateString() + "' ");
+        DataTable dtIOVolume = DBHelper.GetDataTable(" select * from view_alert_foot where alert_date > '" + currentDate.Date.ToShortDateString() + "' and alert_date < '" + currentDate.AddDays(1).ToShortDateString() + "' ");
         //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
         foreach (DataRow drOri in dtIOVolume.Rows)
         {
@@ -407,22 +407,7 @@
             double line3Price = KLine.GetAverageSettlePrice(stock.kLineDay, currentIndex, 3, 3);
             double currentPrice = stock.kLineDay[currentIndex].endPrice;
             double buyPrice = 0;
-            if (stock.kLineDay[currentIndex].lowestPrice >= f3 * 0.99 && stock.kLineDay[currentIndex].lowestPrice <= f3 * 1.01)
-            {
-                buyPrice = Math.Max(f3, stock.kLineDay[currentIndex].lowestPrice);
-            }
-            else if (stock.kLineDay[currentIndex].lowestPrice <= f5 * 1.01 && stock.kLineDay[currentIndex].startPrice >= f5 * 1.01)
-            {
-                buyPrice = Math.Max(f5, stock.kLineDay[currentIndex].lowestPrice);
-            }
-            else
-            {
-                buyPrice = 0;
-            }
-            if (buyPrice == 0)
-            {
-                //continue;
-            }
+            
 
             double maxVolume = 0;
             for (int i = lowestIndex; i < currentIndex; i++)
