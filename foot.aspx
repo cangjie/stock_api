@@ -20,7 +20,7 @@
 
     public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
 
-    DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor '" + currentDate.ToShortDateString() + "' ");
+    //DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor '" + currentDate.ToShortDateString() + "' ");
 
 
     protected void Page_Load(object sender, EventArgs e)
@@ -363,8 +363,8 @@
             */
 
 
-        string sql = " select * from view_alert_foot where alert_date >= '" + currentDate.Date.ToShortDateString() + "' and alert_date < '"
-            + currentDate.AddDays(1).ToShortDateString() + "' ";
+        string sql = " select * from view_alert_foot where convert(datetime, alert_date) >= '" + currentDate.Date.ToShortDateString() 
+		+ "' and convert(datetime, alert_date) < '" + currentDate.AddDays(1).ToShortDateString() + "' ";
         
         DataTable dtIOVolume = DBHelper.GetDataTable(sql);
 
