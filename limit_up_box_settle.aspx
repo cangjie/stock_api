@@ -620,7 +620,7 @@
 
             if (stock.kLineDay[highIndex].volume / avarageVolume >= 2.5 && stock.kLineDay[highIndex].volume / avarageVolume <= 3.5)
             {
-                dr["信号"] = dr["信号"] + "👍";
+                dr["信号"] = dr["信号"] + "3⃣️";
             }
 
             dr["调整"] = currentIndex - limitUpIndex;
