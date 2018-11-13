@@ -20,6 +20,9 @@
 
     public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
 
+    DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor '" + currentDate.ToShortDateString() + "' ");
+
+
     protected void Page_Load(object sender, EventArgs e)
     {
         sort = Util.GetSafeRequestValue(Request, "sort", "无影时 desc");
@@ -358,8 +361,13 @@
         DataTable dtOri = DBHelper.GetDataTable(" select gid, alert_date from limit_up where alert_date >= '" + limitUpStartDate.ToShortDateString()
             + "' and alert_date <= '" + lastTransactDate.ToShortDateString() + "' order by alert_date desc ");
             */
-        DataTable dtIOVolume = DBHelper.GetDataTable(" select * from view_alert_foot where convert(datetime, alert_date) >= '" 
-		+ currentDate.ToShortDateString() + "' and convert(datetime, alert_date) < '" + currentDate.AddDays(1).ToShortDateString() + "' ");
+
+
+        string sql = " select * from view_alert_foot where alert_date >= '" + currentDate.Date.ToShortDateString() + "' and alert_date < '"
+            + currentDate.AddDays(1).ToShortDateString() + "' ";
+        
+        DataTable dtIOVolume = DBHelper.GetDataTable(sql);
+
         //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
         foreach (DataRow drOri in dtIOVolume.Rows)
         {
@@ -408,7 +416,7 @@
             double line3Price = KLine.GetAverageSettlePrice(stock.kLineDay, currentIndex, 3, 3);
             double currentPrice = stock.kLineDay[currentIndex].endPrice;
             double buyPrice = 0;
-            
+
 
             double maxVolume = 0;
             for (int i = lowestIndex; i < currentIndex; i++)
@@ -648,7 +656,7 @@
             {
                 continue;
             }
-     
+
             double maxPrice = 0;
             dr["0日"] = (buyPrice - stock.kLineDay[currentIndex].startPrice) / stock.kLineDay[currentIndex].startPrice;
             for (int i = 1; i <= 5; i++)
@@ -667,7 +675,10 @@
                 dr["信号"] = dr["信号"].ToString() + "📍";
             }
 
-
+            if (dtIOVolume.Select("gid = '" + stock.gid.Trim() + "' ").Length > 0)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"外盘高\" >✅</a>";
+            }
 
             dt.Rows.Add(dr);
 
