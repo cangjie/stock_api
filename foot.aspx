@@ -22,7 +22,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "价差abs, 幅度 desc,MACD日,KDJ日");
+        sort = Util.GetSafeRequestValue(Request, "sort", "无影时 desc");
         if (!IsPostBack)
         {
             try
@@ -358,7 +358,8 @@
         DataTable dtOri = DBHelper.GetDataTable(" select gid, alert_date from limit_up where alert_date >= '" + limitUpStartDate.ToShortDateString()
             + "' and alert_date <= '" + lastTransactDate.ToShortDateString() + "' order by alert_date desc ");
             */
-        DataTable dtIOVolume = DBHelper.GetDataTable(" select * from view_alert_foot where alert_date >= '" + currentDate.Date.ToShortDateString() + "' and alert_date < '" + currentDate.AddDays(1).ToShortDateString() + "' ");
+        DataTable dtIOVolume = DBHelper.GetDataTable(" select * from view_alert_foot where convert(datetime, alert_date) >= '" 
+		+ currentDate.ToShortDateString() + "' and convert(datetime, alert_date) < '" + currentDate.AddDays(1).ToShortDateString() + "' ");
         //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
         foreach (DataRow drOri in dtIOVolume.Rows)
         {
