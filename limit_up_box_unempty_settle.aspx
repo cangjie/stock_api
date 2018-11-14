@@ -340,7 +340,7 @@
         dt.Columns.Add("价差", Type.GetType("System.Double"));
         dt.Columns.Add("价差abs", Type.GetType("System.Double"));
         dt.Columns.Add("类型", Type.GetType("System.String"));
-
+        dt.Columns.Add("涨幅", Type.GetType("System.Double"));
         for (int i = 0; i <= 5; i++)
         {
             dt.Columns.Add(i.ToString() + "日", Type.GetType("System.Double"));
@@ -705,6 +705,8 @@
             //buyPrice = supportPrice;
             dr["买入"] = buyPrice;
 
+            dr["涨幅"] = (currentPrice - buyPrice) / buyPrice;
+
             dr["0日"] = (currentPrice - supportPrice) / supportPrice;
             for (int i = 1; i <= 5; i++)
             {
@@ -983,6 +985,7 @@
                     <asp:BoundColumn DataField="幅度" HeaderText="幅度"></asp:BoundColumn>
                     <asp:BoundColumn DataField="现价" HeaderText="现价"></asp:BoundColumn>
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="涨幅" HeaderText="涨幅"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="0日" HeaderText="0日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日" SortExpression="1日|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="2日" HeaderText="2日"></asp:BoundColumn>
