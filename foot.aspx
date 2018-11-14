@@ -927,9 +927,9 @@
                     <asp:BoundColumn DataField="缩量" HeaderText="缩量"></asp:BoundColumn>
                     <asp:BoundColumn DataField="无影价" HeaderText="无影价"></asp:BoundColumn>
                     <asp:BoundColumn DataField="无影时" HeaderText="无影时"></asp:BoundColumn>
-					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD日|asc"></asp:BoundColumn>
+					
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>
-                   
+                    <asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD日|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
                     
                     <asp:BoundColumn DataField="现价" HeaderText="现价"></asp:BoundColumn>
