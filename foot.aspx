@@ -923,7 +923,7 @@
                 <Columns>
                     <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
-                    
+                    <asp:BoundColumn DataField="信号" HeaderText="信号"></asp:BoundColumn>
                     <asp:BoundColumn DataField="缩量" HeaderText="缩量"></asp:BoundColumn>
                     <asp:BoundColumn DataField="无影价" HeaderText="无影价"></asp:BoundColumn>
                     <asp:BoundColumn DataField="无影时" HeaderText="无影时"></asp:BoundColumn>
