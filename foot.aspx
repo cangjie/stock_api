@@ -74,16 +74,7 @@
         else
             currentDate = Util.GetDay(calendar.SelectedDate);
         DataTable dtOri = GetData(currentDate);
-        string filter = "";
-        if (Util.GetSafeRequestValue(Request, "goldcross", "0").Trim().Equals("0"))
-        {
-            filter = "";
-        }
-        else
-        {
-            filter = " (KDJ日 >= 0 and MACD日 >= 0)";
-        }
-        //return RenderHtml(dtOri.Select(" 信号 like '%📈%' ", sort));
+        string filter = Util.GetSafeRequestValue(Request, "filter", "").Trim();
         return RenderHtml(dtOri.Select(filter, sort));
     }
 
