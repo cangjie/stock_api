@@ -22,7 +22,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "价差abs, 幅度 desc,MACD日,KDJ日");
+        sort = Util.GetSafeRequestValue(Request, "sort", "增量 desc");
         if (!IsPostBack)
         {
             try
@@ -332,6 +332,7 @@
         dt.Columns.Add("买入", Type.GetType("System.Double"));
         dt.Columns.Add("始盘比", Type.GetType("System.Double"));
         dt.Columns.Add("终盘比", Type.GetType("System.Double"));
+        dt.Columns.Add("增量", Type.GetType("System.Double"));
         dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
         dt.Columns.Add("F3折返", Type.GetType("System.Double"));
@@ -567,7 +568,7 @@
             dr["名称"] = stock.Name.Trim();
             dr["始盘比"] = double.Parse(drOri["start_io_volume"].ToString());
             dr["终盘比"] = double.Parse(drOri["end_io_volume"].ToString());
-
+            dr["增量"] = double.Parse(drOri["end_io_volume"].ToString()) - double.Parse(drOri["start_io_volume"].ToString());
             /*
             dr["信号"] = (stock.kLineDay[currentIndex].endPrice <= f3 * 1.01) ? "📈" : "";
             if (dr["信号"].ToString().Trim().Equals("") && StockWatcher.HaveAlerted(stock.gid.Trim(), "limit_up_box", currentDate))
@@ -935,6 +936,7 @@
                     <asp:BoundColumn DataField="缩量" HeaderText="缩量"></asp:BoundColumn>
                     <asp:BoundColumn DataField="始盘比" HeaderText="始盘比"></asp:BoundColumn>
                     <asp:BoundColumn DataField="终盘比" HeaderText="终盘比"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="增量" HeaderText="增量"></asp:BoundColumn>
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD日|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>
                    
