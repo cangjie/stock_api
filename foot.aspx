@@ -637,7 +637,7 @@
             dr["现价"] = currentPrice;
 
             dr["评级"] = memo;
-            buyPrice = stock.kLineDay[currentIndex].endPrice;
+            buyPrice = double.Parse(drOri["price"].ToString()) * 1.015; 
             dr["买入"] = buyPrice;
 
             dr["KDJ日"] = stock.kdjDays(currentIndex);
