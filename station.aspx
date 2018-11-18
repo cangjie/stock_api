@@ -271,7 +271,7 @@
                 continue;
             }
             double line3Price = stock.GetAverageSettlePrice(currentIndex, 3, 3);
-            if (stock.kLineDay[currentIndex].startPrice < line3Price)
+            if (stock.kLineDay[currentIndex].lowestPrice < line3Price)
             {
                 continue;
             }
@@ -318,6 +318,10 @@
 
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
+            if (stock.kLineDay[currentIndex].highestPrice > highest)
+            {
+                dr["信号"] = "🔥";
+            }
             dr["信号"] = "";
             dr["现高"] = highest;
             dr["F3"] = f3;
