@@ -254,6 +254,10 @@
         DateTime startDate = Util.GetLastTransactDate(currentDate, 4);
         DateTime endDate = Util.GetLastTransactDate(currentDate, 3);
 
+
+        DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor '" + currentDate.ToShortDateString() + "' ");
+        
+
         DataTable dtOri = DBHelper.GetDataTable(" select * from limit_up where alert_date >= '" + startDate.ToShortDateString()
             + "' and alert_date < '" + endDate.AddDays(1) + "' ");
         foreach (DataRow drOri in dtOri.Rows)
@@ -344,6 +348,12 @@
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
             }
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
+
+            if (dtIOVolume.Select("gid = '" + stock.gid.Trim() + "' ").Length > 0)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"外盘高\" >✅</a>";
+            }
+
             dt.Rows.Add(dr);
 
         }
