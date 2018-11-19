@@ -391,10 +391,11 @@
                 continue;
             }
             int kdjDays = stock.kdjDays(currentIndex);
-            if (kdjDays == -1 || macdDays == -1)
+            if (kdjDays == -1 || macdDays == -1 || kdjDays >= 4 || macdDays > kdjDays)
             {
                 continue;
             }
+
             dr["kdj"] = kdjDays.ToString();
             int days3Line = KLine.Above3LineDays(stock, currentIndex);
             dr["3线日"] = daysAbove3Line;

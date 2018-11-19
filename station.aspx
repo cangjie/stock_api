@@ -256,7 +256,7 @@
 
 
         DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor '" + currentDate.ToShortDateString() + "' ");
-        
+
 
         DataTable dtOri = DBHelper.GetDataTable(" select * from limit_up where alert_date >= '" + startDate.ToShortDateString()
             + "' and alert_date < '" + endDate.AddDays(1) + "' ");
@@ -332,6 +332,10 @@
             dr["F5"] = f5;
             dr["前低"] = lowest;
             dr["幅度"] = (highest - lowest) / lowest;
+            if ((double)dr["幅度"] < 0.3)
+            {
+                continue;
+            }
             dr["3线"] = line3Price;
             dr["现价"] = currentPrice;
             dr["KDJ日"] = stock.kdjDays(currentIndex);
