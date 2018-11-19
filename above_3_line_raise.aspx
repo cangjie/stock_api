@@ -92,7 +92,7 @@
         if (currentDate.Year < 2000)
             currentDate = DateTime.Now;
         DataTable dtOri = GetData(currentDate, Util.GetSafeRequestValue(Request, "days", "3,4,5"));
-        DataRow[] drOriArr = dtOri.Select(Util.GetSafeRequestValue(Request, "whereclause", "   ").Trim(), sort);
+        DataRow[] drOriArr = dtOri.Select(Util.GetSafeRequestValue(Request, "whereclause", " KDJ in (0,1,2) and MACD <= KDJ and MACD >= 0   ").Trim(), sort);
         return RenderHtml(drOriArr);
     }
 
