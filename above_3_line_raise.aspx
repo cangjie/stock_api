@@ -50,7 +50,7 @@
         //t.Start();
 
 
-        sort = Util.GetSafeRequestValue(Request, "sort", "KDJ,MACD,放量 desc");
+        sort = Util.GetSafeRequestValue(Request, "sort", "放量 desc");
         if (!IsPostBack)
         {
             try
