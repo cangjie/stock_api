@@ -13,26 +13,13 @@
             KLineCache.allGid = Util.GetAllGids();
         }
 
-        //Stock.todayKLineArr = new KLine[KLineCache.allGid.Length];
-
-
-
+        
         KLineCache.kLineDayCache = new CachedKLine[Util.GetAllGids().Length];
-
         StockWatcher.tKLineRefresher.Start();
-        //StockWatcher.tRefreshUpdatedKLine.Start();
-        //StockWatcher.tLoadTodayKLine.Start();
-
-
-
-        //StockWatcher.tLoadCurrentKLineToCache.Start();
         StockWatcher.tWatchEachStock.Start();
         StockWatcher.tLogQuota.Start();
-
-
-        //StockWatcher.tRefreshUpdatedKLine.Start();
-
-        //Core.RedisClient 
+        
+        
 
 
 

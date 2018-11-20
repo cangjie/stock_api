@@ -21,7 +21,8 @@
         s = new Stock(gid);
         if (!IsPostBack)
         {
-            dg.DataSource = GetData(calendar.SelectedDate);
+            //DateTime currentDate = calendar.SelectedDate
+            dg.DataSource = GetData(DateTime.Now.Date);
             dg.DataBind();
         }
 

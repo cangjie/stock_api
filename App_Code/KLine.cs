@@ -576,11 +576,25 @@ public class KLine
 
     public static double ema(double[] xArr, int currentIndex, int n)
     {
-        if (currentIndex == 0)
-            return xArr[currentIndex];
-        else
+        try
         {
-            return (xArr[currentIndex] * 2 + ema(xArr, currentIndex - 1, n) * (double)(n - 1)) / (double)(n + 1);
+            if (currentIndex == 0)
+                return xArr[currentIndex];
+            else
+            {
+                try
+                {
+                    return (xArr[currentIndex] * 2 + ema(xArr, currentIndex - 1, n) * (double)(n - 1)) / (double)(n + 1);
+                }
+                catch
+                {
+                    return xArr[currentIndex];
+                }
+            }
+        }
+        catch
+        {
+            return xArr[0];
         }
     }
     public static void ComputeMACD(KLine[] kArr)
@@ -602,10 +616,17 @@ public class KLine
 
         for (int i = 1; i < kArr.Length; i++)
         {
-            kArr[i].dif = ema(endPirceArr, i, shortDays) - ema(endPirceArr, i, longDays);
-            difArr[i] = kArr[i].dif;
-            kArr[i].dea = ema(difArr, i, midDays);
-            kArr[i].macd = (kArr[i].dif - kArr[i].dea) * 2;
+            try
+            {
+                kArr[i].dif = ema(endPirceArr, i, shortDays) - ema(endPirceArr, i, longDays);
+                difArr[i] = kArr[i].dif;
+                kArr[i].dea = ema(difArr, i, midDays);
+                kArr[i].macd = (kArr[i].dif - kArr[i].dea) * 2;
+            }
+            catch
+            {
+                break;
+            }
         }
     }
 
