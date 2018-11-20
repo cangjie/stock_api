@@ -35,7 +35,7 @@
         dt.Columns.Add("价格");
         if (Util.IsTransacDay(currentDate))
         {
-            Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromSqlServer(gid, currentDate.Date);
+            Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromSqlServer(gid, currentDate);
             DataTable dtOri = DBHelper.GetDataTable(" select * from io_volume where gid = '" + gid.Trim() + "' and trans_date_time > '" + currentDate.Date.ToShortDateString()
                 + "' and trans_date_time < '" + currentDate.Date.ToShortDateString() + " 23:00' order by trans_date_time ");
             int i = 0;
