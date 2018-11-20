@@ -270,6 +270,7 @@
                 }
             }
             dr["代码"] = "<a href=\"show_K_line_day.aspx?gid=" + dr["代码"].ToString() + "\" target=\"_blank\" >" + dr["代码"].ToString() + "</a>";
+            dr["名称"] = "<a href=\"io_volume_detail.aspx?gid=" + dr["代码"].ToString() + "\" target=\"_blank\" >" + dr["代码"].ToString() + "</a>";
             dt.Rows.Add(dr);
         }
         AddTotal(drArr, dt);

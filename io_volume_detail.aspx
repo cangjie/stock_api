@@ -7,6 +7,9 @@
     public string gid = "sh600031";
 
     public Stock s;
+
+    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+
     protected void Page_Load(object sender, EventArgs e)
     {
         gid = Util.GetSafeRequestValue(Request, "gid", "sh600031");
@@ -36,7 +39,15 @@
         dt.Columns.Add("价格");
         if (Util.IsTransacDay(currentDate))
         {
-            Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromSqlServer(gid, currentDate);
+            Core.Timeline[] timelineArray;// = Core.Timeline.LoadTimelineArrayFromRedis(gid, currentDate, rc);
+            if (currentDate == DateTime.Now.Date)
+            {
+                timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(gid, currentDate, rc);
+            }
+            else
+            {
+                timelineArray = Core.Timeline.LoadTimelineArrayFromSqlServer(gid, currentDate);
+            }
             DataTable dtOri = DBHelper.GetDataTable(" select * from io_volume where gid = '" + gid.Trim() + "' and trans_date_time > '" + currentDate.Date.ToShortDateString()
                 + "' and trans_date_time < '" + currentDate.Date.ToShortDateString() + " 23:00' order by trans_date_time ");
             int i = 0;
