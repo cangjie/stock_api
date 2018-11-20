@@ -24,8 +24,13 @@
         s = new Stock(gid);
         if (!IsPostBack)
         {
-            //DateTime currentDate = calendar.SelectedDate
-            dg.DataSource = GetData(DateTime.Now.Date);
+            DateTime currentDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "date", DateTime.Now.ToShortDateString()));
+            if (currentDate.Year < 2010)
+            {
+                currentDate = DateTime.Now;
+            }
+            calendar.SelectedDate = currentDate;
+            dg.DataSource = GetData(currentDate);
             dg.DataBind();
         }
 
