@@ -354,10 +354,7 @@
             */
 
 
-        string sql = " select * from view_alert_foot where convert(datetime, alert_date) >= '" + currentDate.Date.ToShortDateString() 
-		+ "' and convert(datetime, alert_date) < '" + currentDate.AddDays(1).ToShortDateString() + "' ";
-        
-        DataTable dtIOVolume = DBHelper.GetDataTable(sql);
+        DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor_new '" + currentDate.ToShortDateString() + "' ");
 
         //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
         foreach (DataRow drOri in dtIOVolume.Rows)
