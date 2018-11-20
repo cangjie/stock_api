@@ -352,9 +352,13 @@
         DataTable dtOri = DBHelper.GetDataTable(" select gid, alert_date from limit_up where alert_date >= '" + limitUpStartDate.ToShortDateString()
             + "' and alert_date <= '" + lastTransactDate.ToShortDateString() + "' order by alert_date desc ");
             */
+        DataTable dtIOVolumeNew = DBHelper.GetDataTable("exec proc_io_volume_monitor_new '" + currentDate.ToShortDateString() + "' ");
 
 
-        DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor_new '" + currentDate.ToShortDateString() + "' ");
+        string sql = " select * from view_alert_foot where convert(datetime, alert_date) >= '" + currentDate.Date.ToShortDateString() 
+		+ "' and convert(datetime, alert_date) < '" + currentDate.AddDays(1).ToShortDateString() + "' ";
+        
+        DataTable dtIOVolume = DBHelper.GetDataTable(sql);
 
         //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
         foreach (DataRow drOri in dtIOVolume.Rows)
@@ -663,7 +667,7 @@
                 dr["信号"] = dr["信号"].ToString() + "📍";
             }
 
-            if (dtIOVolume.Select("gid = '" + stock.gid.Trim() + "' ").Length > 0)
+            if (dtIOVolumeNew.Select("gid = '" + stock.gid.Trim() + "' ").Length > 0)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"外盘高\" >✅</a>";
             }
