@@ -14,7 +14,7 @@
         {
             gid = "sh" + gid.Trim();
         }
-        else
+        if (gid.StartsWith("20") || gid.StartsWith("30") || gid.StartsWith("00"))
         {
             gid = "sz" + gid.Trim();
         }
