@@ -70,7 +70,7 @@
             currentDate = Util.GetDay(DateTime.Now);
         else
             currentDate = Util.GetDay(calendar.SelectedDate);
-        DataTable dtOri = GetData(currentDate);
+        DataTable dtOri = GetData(currentDate, double.Parse(Util.GetSafeRequestValue(Request, "rate", "0.1")));
         string filter = "";
         if (Util.GetSafeRequestValue(Request, "goldcross", "0").Trim().Equals("0"))
         {
@@ -312,7 +312,7 @@
 
     }
 
-    public static DataTable GetData(DateTime currentDate)
+    public static DataTable GetData(DateTime currentDate, double increaseRate)
     {
         currentDate = Util.GetDay(currentDate);
         DataTable dt = new DataTable();
@@ -360,7 +360,7 @@
 
         DataTable dtOri = DBHelper.GetDataTable(" select gid, alert_date from limit_up where alert_date >= '" + limitUpStartDate.ToShortDateString()
             + "' and alert_date <= '" + lastTransactDate.ToShortDateString() + "' order by alert_date desc ");
-        DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor_new '" + currentDate.ToShortDateString() + "' ");
+        DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor_new '" + currentDate.ToShortDateString() + "', " + increaseRate.ToString());
         //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
         foreach (DataRow drOri in dtIOVolume.Rows)
         {
