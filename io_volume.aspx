@@ -70,7 +70,7 @@
             currentDate = Util.GetDay(DateTime.Now);
         else
             currentDate = Util.GetDay(calendar.SelectedDate);
-        DataTable dtOri = GetData(currentDate, double.Parse(Util.GetSafeRequestValue(Request, "rate", "0.1")));
+        DataTable dtOri = GetData(currentDate, double.Parse(Util.GetSafeRequestValue(Request, "rate", "0.01")));
         string filter = Util.GetSafeRequestValue(Request, "filter", " 缩量 >= 1 ");
         /*
         if (Util.GetSafeRequestValue(Request, "goldcross", "0").Trim().Equals("0"))
