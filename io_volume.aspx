@@ -205,7 +205,10 @@
                     dr[i] = drOri[i].ToString();
                 }
             }
+            string gid = dr["代码"].ToString();
             dr["代码"] = "<a href=\"show_K_line_day.aspx?gid=" + dr["代码"].ToString() + "&maxprice=" + hightPrice.ToString() + "&minprice=" + lowPrice.ToString() + "\" target=\"_blank\" >" + dr["代码"].ToString() + "</a>";
+            dr["名称"] = "<a href=\"io_volume_detail.aspx?gid=" + gid.Trim() + "&date=" + calendar.SelectedDate.ToShortDateString() + "\" target=\"_blank\" >" + dr["名称"].ToString() + "</a>";
+            
             dt.Rows.Add(dr);
         }
         AddTotal(drArr, dt);
