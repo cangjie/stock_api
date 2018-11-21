@@ -571,7 +571,7 @@
             dr["名称"] = stock.Name.Trim();
             dr["始盘比"] = double.Parse(drOri["start_io_volume"].ToString());
             dr["终盘比"] = double.Parse(drOri["end_io_volume"].ToString());
-            dr["增量"] = double.Parse(drOri["end_io_volume"].ToString()) - double.Parse(drOri["start_io_volume"].ToString());
+            dr["增量"] = drOri["rate"].ToString().Trim();
             /*
             dr["信号"] = (stock.kLineDay[currentIndex].endPrice <= f3 * 1.01) ? "📈" : "";
             if (dr["信号"].ToString().Trim().Equals("") && StockWatcher.HaveAlerted(stock.gid.Trim(), "limit_up_box", currentDate))
