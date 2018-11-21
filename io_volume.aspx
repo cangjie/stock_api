@@ -751,7 +751,7 @@
             DateTime currentDate = Util.GetDay(DateTime.Now);
             if (Util.IsTransacDay(currentDate) && Util.IsTransacTime(DateTime.Now))
             {
-                DataTable dt = GetData(currentDate);
+                DataTable dt = GetData(currentDate, 0.1);
 
 
 
