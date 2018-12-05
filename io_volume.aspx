@@ -388,6 +388,7 @@
             KLine.ComputeKDJ(stock.kLineHour);
             int startHourIndex = 0;
             int endHourIndex = 0;
+            double crossJHour = 0;
             for (int i = 0; i < stock.kLineHour.Length; i++)
             {
                 if (stock.kLineHour[i].startDateTime > currentDate && startHourIndex == 0)
@@ -405,6 +406,7 @@
                     kdjCrossHourIndex = i;
                     if (haveHourKdjCross)
                     {
+                        crossJHour = stock.kLineHour[i].j;
                         break;
                     }
                 }
@@ -424,6 +426,7 @@
             KLine.ComputeKDJ(stock.kLineHalfHour);
             int startHalfHourIndex = 0;
             int endHalfHourIndex = 0;
+            double crossJHalfHour = 0;
             for (int i = 0; i < stock.kLineHalfHour.Length; i++)
             {
                 if (stock.kLineHalfHour[i].startDateTime > currentDate && startHalfHourIndex == 0)
@@ -440,6 +443,7 @@
                     kdjCrossHalfHourIndex = i;
                     if (haveHalfHourKdjCross)
                     {
+                        crossJHalfHour = stock.kLineHalfHour[i].j;
                         break;
                     }
                 }
@@ -478,7 +482,6 @@
                 avarageVolume = avarageVolume + stock.kLineDay[i].volume;
             }
             avarageVolume = (int)Math.Round((double)avarageVolume / (double)(highIndex - lowestIndex), 0);
-
 
 
             double f3 = highest - (highest - lowest) * 0.382;
@@ -666,11 +669,11 @@
                 maxPrice = Math.Max(maxPrice, highPrice);
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
             }
-            if (haveHourKdjCross)
+            if (haveHourKdjCross && crossJHour < 40)
             {
                 dr["信号"] = "🔥";
             }
-            if (haveHalfHourKdjCross)
+            if (haveHalfHourKdjCross && crossJHalfHour < 40)
             {
                 dr["信号"] = "📈";
             }
