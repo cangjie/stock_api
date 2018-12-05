@@ -378,10 +378,10 @@
 
             bool haveHourKdjCross = false;
             int kdjCrossHourIndex = 0;
-            stock.kLineHour = Stock.LoadRedisKLine(stock.gid.Trim(), "hour", rc);
+            stock.kLineHour = Stock.LoadRedisKLine(stock.gid.Trim(), "60min", rc);
             if (stock.kLineHour == null || stock.kLineHour.Length == 0)
             {
-                stock.kLineHour = Stock.LoadLocalKLineFromDB(stock.gid.Trim(), "hour");
+                stock.kLineHour = Stock.LoadLocalKLineFromDB(stock.gid.Trim(), "60min");
             }
             KLine.ComputeMACD(stock.kLineHour);
             KLine.ComputeRSV(stock.kLineHour);
@@ -669,21 +669,16 @@
                 maxPrice = Math.Max(maxPrice, highPrice);
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
             }
+            dr["信号"] = "";
             if (haveHourKdjCross && (crossJHour < 40 || crossJHour > 70))
             {
-                dr["信号"] = "🔥";
+                dr["信号"] = dr["信号"].ToString().Trim() + "🔥";
             }
             if (haveHalfHourKdjCross && (crossJHalfHour < 40 || crossJHalfHour > 70))
             {
-                dr["信号"] = "📈";
+                dr["信号"] = dr["信号"].ToString().Trim() + "📈";
             }
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
-
-
-            
-
-
-
             dt.Rows.Add(dr);
 
         }
