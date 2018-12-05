@@ -669,7 +669,7 @@
                 maxPrice = Math.Max(maxPrice, highPrice);
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
             }
-            if (haveHourKdjCross && crossJHour < 50)
+            if (haveHourKdjCross && (crossJHour < 40 || crossJHour > 70))
             {
                 dr["信号"] = "🔥";
             }
