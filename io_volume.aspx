@@ -673,7 +673,7 @@
             {
                 dr["信号"] = "🔥";
             }
-            if (haveHalfHourKdjCross && crossJHalfHour < 50)
+            if (haveHalfHourKdjCross && (crossJHalfHour < 40 || crossJHalfHour > 70))
             {
                 dr["信号"] = "📈";
             }
