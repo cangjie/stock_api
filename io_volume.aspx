@@ -210,7 +210,7 @@
             string gid = dr["代码"].ToString();
             dr["代码"] = "<a href=\"show_K_line_day.aspx?gid=" + dr["代码"].ToString() + "&maxprice=" + hightPrice.ToString() + "&minprice=" + lowPrice.ToString() + "\" target=\"_blank\" >" + dr["代码"].ToString() + "</a>";
             dr["名称"] = "<a href=\"io_volume_detail.aspx?gid=" + gid.Trim() + "&date=" + calendar.SelectedDate.ToShortDateString() + "\" target=\"_blank\" >" + dr["名称"].ToString() + "</a>";
-            
+
             dt.Rows.Add(dr);
         }
         AddTotal(drArr, dt);
@@ -375,6 +375,78 @@
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
+
+            bool haveHourKdjCross = false;
+            int kdjCrossHourIndex = 0;
+            stock.kLineHour = Stock.LoadRedisKLine(stock.gid.Trim(), "hour", rc);
+            if (stock.kLineHour == null || stock.kLineHour.Length == 0)
+            {
+                stock.kLineHour = Stock.LoadLocalKLineFromDB(stock.gid.Trim(), "hour");
+            }
+            KLine.ComputeMACD(stock.kLineHour);
+            KLine.ComputeRSV(stock.kLineHour);
+            KLine.ComputeKDJ(stock.kLineHour);
+            int startHourIndex = 0;
+            int endHourIndex = 0;
+            for (int i = 0; i < stock.kLineHour.Length; i++)
+            {
+                if (stock.kLineHour[i].startDateTime > currentDate && startHourIndex == 0)
+                {
+                    startHourIndex = i;
+                }
+                if (stock.kLineHour[i].endDateTime < currentDate.AddDays(1))
+                {
+                    endHourIndex = i;
+                }
+
+                if (stock.kLineHour[i].startDateTime.Date == currentDate.Date)
+                {
+                    haveHourKdjCross = StockWatcher.IsKdjFolk(stock.kLineHour, i);
+                    kdjCrossHourIndex = i;
+                    if (haveHourKdjCross)
+                    {
+                        break;
+                    }
+                }
+            }
+
+
+
+            bool haveHalfHourKdjCross = false;
+            int kdjCrossHalfHourIndex = 0;
+            stock.kLineHalfHour = Stock.LoadRedisKLine(stock.gid.Trim(), "30min", rc);
+            if (stock.kLineHalfHour == null || stock.kLineHalfHour.Length == 0)
+            {
+                stock.kLineHalfHour = Stock.LoadLocalKLineFromDB(stock.gid.Trim(), "30min");
+            }
+            KLine.ComputeMACD(stock.kLineHalfHour);
+            KLine.ComputeRSV(stock.kLineHalfHour);
+            KLine.ComputeKDJ(stock.kLineHalfHour);
+            int startHalfHourIndex = 0;
+            int endHalfHourIndex = 0;
+            for (int i = 0; i < stock.kLineHalfHour.Length; i++)
+            {
+                if (stock.kLineHalfHour[i].startDateTime > currentDate && startHalfHourIndex == 0)
+                {
+                    startHalfHourIndex = i;
+                }
+                if (stock.kLineHalfHour[i].endDateTime < currentDate.AddDays(1))
+                {
+                    endHalfHourIndex = i;
+                }
+                if (stock.kLineHalfHour[i].startDateTime.Date == currentDate.Date)
+                {
+                    haveHalfHourKdjCross = StockWatcher.IsKdjFolk(stock.kLineHalfHour, i);
+                    kdjCrossHalfHourIndex = i;
+                    if (haveHalfHourKdjCross)
+                    {
+                        break;
+                    }
+                }
+            }
+
+
+
             int currentIndex = stock.GetItemIndex(currentDate);
 
             if (currentIndex < 0)
@@ -482,37 +554,13 @@
 
 
 
+            double volumeToday = stock.kLineDay[currentIndex].VirtualVolume;
 
+            double volumeYesterday = stock.kLineDay[limitUpIndex].volume;
 
-
-
-
-            if (limitUpIndex == -1)
-            {
-                //continue;
-            }
-
-
-
-            //double f3Distance = 0.382 - (highest - stock.kLineDay[currentIndex].lowestPrice) / (highest - lowest);
-
-            double volumeToday = stock.kLineDay[currentIndex].VirtualVolume;  //Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(currentDate.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
-
-            double volumeYesterday = stock.kLineDay[limitUpIndex].volume;// Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(stock.kLineDay[limitUpIndex].startDateTime.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
-                                                                         /*
-                                                                         for (int j = lowestIndex; j < currentIndex; j++)
-                                                                         {
-                                                                             volumeYesterday = Math.Max(volumeYesterday, stock.kLineDay[j].VirtualVolume);
-                                                                         }
-                                                                         */
 
             double volumeReduce = volumeToday / maxVolume;
 
-            if (lowest == 0 || line3Price == 0)
-            {
-                //continue;
-            }
-            //buyPrice = Math.Max(f3, stock.kLineDay[currentIndex].lowestPrice);
             string memo = "";
 
             Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
@@ -521,40 +569,7 @@
             {
                 timelineArray = Core.Timeline.LoadTimelineArrayFromSqlServer(stock.gid, currentDate);
             }
-            /*bool isFoot = foot(timelineArray, out todayLowestPrice, out todayDisplayedLowestPrice, out footTime);
-            DateTime todayLowestTime = Core.Timeline.GetLowestTime(timelineArray);
-            if (todayLowestTime.Hour == 9 && todayLowestTime.Minute < 30)
-            {
-                todayLowestTime = todayLowestTime.Date.AddHours(9).AddMinutes(30);
-            }
-            TimeSpan todayLowestTimeSpan;
 
-
-            if (DateTime.Now.Date == currentDate.Date && DateTime.Now.Hour < 15)
-            {
-                todayLowestTimeSpan = DateTime.Now - todayLowestTime;
-                if (todayLowestTime.Hour < 13)
-                {
-                    if (DateTime.Now.Hour < 13)
-                    {
-                        todayLowestTimeSpan = todayLowestTimeSpan - (DateTime.Now - DateTime.Now.Date.AddHours(11).AddMinutes(30));
-                    }
-                    else
-                    {
-                        todayLowestTimeSpan = todayLowestTimeSpan - (DateTime.Now.AddHours(13) - DateTime.Now.Date.AddHours(11).AddMinutes(30));
-                    }
-                }
-            }
-            else
-            {
-                todayLowestTimeSpan = todayLowestTime.Date.AddHours(15) - todayLowestTime;
-                if (todayLowestTime.Hour < 13)
-                {
-                    todayLowestTimeSpan = todayLowestTimeSpan - (currentDate.Date.AddHours(13) - currentDate.Date.AddHours(11).AddMinutes(30));
-                }
-            }
-            */
-            // memo = todayLowestTimeSpan.Hours.ToString() + "小时" + todayLowestTimeSpan.Minutes.ToString() + "分钟";
 
 
             if (f3 >= line3Price)
@@ -574,27 +589,6 @@
             dr["始盘比"] = double.Parse(drOri["start_io_volume"].ToString());
             dr["终盘比"] = double.Parse(drOri["end_io_volume"].ToString());
             dr["增量"] = drOri["rate"].ToString().Trim();
-            /*
-            dr["信号"] = (stock.kLineDay[currentIndex].endPrice <= f3 * 1.01) ? "📈" : "";
-            if (dr["信号"].ToString().Trim().Equals("") && StockWatcher.HaveAlerted(stock.gid.Trim(), "limit_up_box", currentDate))
-            {
-                dr["信号"] = "📈";
-            }
-
-            if (Math.Abs(currentPrice - buyPrice) / buyPrice < 0.01  && dr["信号"].ToString().IndexOf("📈") >= 0 )
-            {
-                dr["信号"] = dr["信号"] + "🛍️";
-            }
-        
-            if (f3 >= line3Price)
-            {
-                dr["信号"] = dr["信号"] + "<a title=\"3线上\"  >👑</a>";
-            }
-            */
-
-
-
-
 
 
             bool jumpEmpty = false;
@@ -609,20 +603,11 @@
                 }
             }
 
-            if (!jumpEmpty)
-            {
-                dr["信号"] = "📈";
-            }
+     
 
-            if (line3Price <= currentPrice)
-            {
-                dr["信号"] = dr["信号"].ToString().Trim() + "🌟";
-            }
+       
 
-            if (stock.kLineDay[highIndex].volume / avarageVolume >= 2.5 && stock.kLineDay[highIndex].volume / avarageVolume <= 3.5)
-            {
-                dr["信号"] = dr["信号"] + "👍";
-            }
+         
 
             dr["调整"] = currentIndex - limitUpIndex;
             dr["缩量"] = volumeReduce;
@@ -641,10 +626,7 @@
                 dr["价差"] = stock.kLineDay[currentIndex].lowestPrice - f5;
                 supportPrice = f5;
                 dr["类型"] = "F5";
-                if (width  > 25 && line3Price <= f5)
-                {
-                    dr["信号"] = dr["信号"].ToString().Trim() + "🔥";
-                }
+            
             }
             else
             {
@@ -684,13 +666,18 @@
                 maxPrice = Math.Max(maxPrice, highPrice);
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
             }
+            if (haveHourKdjCross)
+            {
+                dr["信号"] = "🔥";
+            }
+            if (haveHalfHourKdjCross)
+            {
+                dr["信号"] = "📈";
+            }
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
 
 
-            if (currentIndex > 0 && (stock.kLineDay[currentIndex - 1].volume / maxVolume) < 0.65)
-            {
-                dr["信号"] = dr["信号"].ToString() + "📍";
-            }
+            
 
 
 
@@ -937,7 +924,7 @@
                 <Columns>
                     <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
-                    
+                    <asp:BoundColumn DataField="信号" HeaderText="信号"></asp:BoundColumn>
                     <asp:BoundColumn DataField="缩量" HeaderText="缩量"></asp:BoundColumn>
                     <asp:BoundColumn DataField="始盘比" HeaderText="始盘比"></asp:BoundColumn>
                     <asp:BoundColumn DataField="终盘比" HeaderText="终盘比"></asp:BoundColumn>
