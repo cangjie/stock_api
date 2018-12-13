@@ -12,6 +12,8 @@
 
     public static Thread t = new Thread(ts);
 
+    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+
     protected void Page_Load(object sender, EventArgs e)
     {
         sort = Util.GetSafeRequestValue(Request, "sort", "幅度 desc");
@@ -199,7 +201,9 @@
                     dr[i] = drOri[i].ToString();
                 }
             }
+            string gid = dr["代码"].ToString();
             dr["代码"] = "<a href=\"show_K_line_day.aspx?gid=" + dr["代码"].ToString() + "\" target=\"_blank\" >" + dr["代码"].ToString() + "</a>";
+            dr["名称"] = "<a href=\"io_volume_detail.aspx?gid=" + gid.Trim() + "&date=" + calendar.SelectedDate.ToShortDateString() + "\" target=\"_blank\" >" + dr["名称"].ToString() + "</a>";
             dt.Rows.Add(dr);
         }
         AddTotal(drArr, dt);
@@ -237,8 +241,8 @@
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
-
-            stock.LoadKLineDay();
+            stock.LoadKLineDay(rc);
+            //stock.LoadKLineDay();
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
             int currentIndex = stock.GetItemIndex(currentDate);

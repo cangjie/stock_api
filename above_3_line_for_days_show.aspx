@@ -16,6 +16,7 @@
 
     public static Thread tQ = new Thread(tsQ);
 
+    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
 
     public static void RunData()
     {
@@ -303,7 +304,7 @@
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
-            stock.LoadKLineDay();
+            stock.LoadKLineDay(rc);
             int currentIndex = stock.GetItemIndex(currentDate);
             if (currentIndex == -1)
             {
