@@ -213,6 +213,7 @@
     public static DataTable GetData(DateTime currentDate)
     {
         currentDate = Util.GetDay(currentDate);
+        DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor_new '" + currentDate.ToShortDateString() + "' ");
         DataTable dtOri = new DataTable();
         SqlDataAdapter da = new SqlDataAdapter(" select * from alert_kdj where alert_time = '" + currentDate.ToShortDateString() + " 15:00' ", Util.conStr);
         da.Fill(dtOri);
@@ -384,6 +385,10 @@
             if (macdHours > -1 && macdHours <= 4 && (double)dr["今涨"] <= 0.09)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"开盘价距离F3有1.5%的上涨空间\" >📈</a>";
+            }
+            if (dtIOVolume.Select("gid = '" + stock.gid.Trim() + "' ").Length > 0)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"外盘高\" >✅</a>";
             }
             KLine.ComputeMACD(stock.kLineDay);
             if (Math.Abs(stock.kLineDay[currentIndex].dea - 0) < 0.05 && Math.Abs(stock.kLineDay[currentIndex].dif - 0) < 0.05)
