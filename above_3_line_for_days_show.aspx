@@ -30,27 +30,8 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        /*
-        for (DateTime startDate = DateTime.Parse("2017-11-22"); startDate >= DateTime.Parse("2017-8-1"); startDate = startDate.AddDays(-1))
-        {
-            if (Util.IsTransacDay(startDate))
-            {
-                for (int i = 15; i >= 5; i--)
-                {
-                    LogAbove3LineForDays(startDate, i);
-                }
-            }
-        }
-
-        Response.End();
-        */
-
-        //ThreadStart ts = new ThreadStart(RunData);
-        //Thread t = new Thread(ts);
-        //t.Start();
-
-
-        sort = Util.GetSafeRequestValue(Request, "sort", "放量 desc");
+        
+        sort = Util.GetSafeRequestValue(Request, "sort", "KDJ,MACD,3线日,放量 desc");
         if (!IsPostBack)
         {
             try
@@ -91,7 +72,7 @@
         DateTime currentDate = calendar.SelectedDate;
         if (currentDate.Year < 2000)
             currentDate = DateTime.Now;
-        DataTable dtOri = GetData(currentDate, Util.GetSafeRequestValue(Request, "days", "6,7,8,9,10,11,12,13,14,15"));
+        DataTable dtOri = GetData(currentDate, Util.GetSafeRequestValue(Request, "days", "3,4,5"));
         DataRow[] drOriArr = dtOri.Select(Util.GetSafeRequestValue(Request, "whereclause", "   ").Trim(), sort);
         return RenderHtml(drOriArr);
     }
@@ -647,8 +628,6 @@
                     <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号" SortExpression="信号|desc" ></asp:BoundColumn>
-                    <asp:BoundColumn DataField="综指" HeaderText="综指" SortExpression="综指|desc" ></asp:BoundColumn>
-                    <asp:BoundColumn DataField="今涨" HeaderText="今涨" SortExpression="今涨|desc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="放量" HeaderText="放量" SortExpression="放量|desc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ" HeaderText="KDJ" SortExpression="KDJ|desc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="MACD" HeaderText="MACD" SortExpression="MACD|desc"></asp:BoundColumn>
