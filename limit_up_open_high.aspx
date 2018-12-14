@@ -280,7 +280,9 @@
 
     public static DataTable GetData(DateTime currentDate)
     {
+
         currentDate = Util.GetDay(currentDate);
+        DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor_new '" + currentDate.ToShortDateString() + "' ");
         DataTable dt = new DataTable();
         dt.Columns.Add("代码", Type.GetType("System.String"));
         dt.Columns.Add("名称", Type.GetType("System.String"));
@@ -523,7 +525,10 @@
             {
                 dr["信号"] = dr["信号"].ToString().Trim() + "<a title='无影脚' >👣</a>";
             }
-
+            if (dtIOVolume.Select("gid = '" + stock.gid.Trim() + "' ").Length > 0)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"外盘高\" >✅</a>";
+            }
             dr["现高"] = highest;
             dr["F3"] = f3;
             dr["F5"] = f5;
