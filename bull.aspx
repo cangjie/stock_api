@@ -26,7 +26,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "放量 desc");
+        sort = Util.GetSafeRequestValue(Request, "sort", "MACD日,KDJ日,放量 desc");
         if (!IsPostBack)
         {
             try
