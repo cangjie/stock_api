@@ -430,7 +430,7 @@
                 buyPrice = double.Parse(lowPriceDrArr[0]["price"].ToString());
             }
 
-
+            buyPrice = stock.kLineDay[currentIndex].endPrice;
 
             string memo = "";
 
