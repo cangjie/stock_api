@@ -305,7 +305,7 @@
         //dt.Columns.Add("F3折返", Type.GetType("System.Double"));
 
 
-        for (int i = 1; i <= 5; i++)
+        for (int i = 0; i <= 5; i++)
         {
             dt.Columns.Add(i.ToString() + "日", Type.GetType("System.Double"));
         }
@@ -420,17 +420,9 @@
 
             bool foot = false;
 
-            buyPrice = stock.kLineDay[currentIndex].lowestPrice; //Math.Max(stock.kLineDay[limitUpIndex].highestPrice, stock.kLineDay[currentIndex].lowestPrice);
+         
 
-            DataRow[] lowPriceDrArr = dtDtl.Select(" gid = '" + drOri["gid"].ToString().Trim() + "' ", " alert_date desc ");
-            if (lowPriceDrArr.Length > 0)
-            {
-                //dr["信号"] = dr["信号"].ToString().Trim() + "<a title='无影脚' >👣</a>";
-                foot = true;
-                buyPrice = double.Parse(lowPriceDrArr[0]["price"].ToString());
-            }
-
-            buyPrice = stock.kLineDay[currentIndex].endPrice;
+            buyPrice = stock.kLineDay[currentIndex - 1].endPrice;
 
             string memo = "";
 
@@ -546,6 +538,7 @@
             dr["KDJ日"] = stock.kdjDays(currentIndex);
             dr["MACD日"] = stock.macdDays(currentIndex);
             dr["高开"] = openRaise;
+            dr["0日"] = (currentPrice - buyPrice) / buyPrice;
             double maxPrice = 0;
             for (int i = 1; i <= 5; i++)
             {
@@ -736,6 +729,7 @@
                     <asp:BoundColumn DataField="现价" HeaderText="现价"></asp:BoundColumn>
                 
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="0日" HeaderText="0日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日" SortExpression="1日|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="2日" HeaderText="2日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3日" HeaderText="3日"></asp:BoundColumn>
