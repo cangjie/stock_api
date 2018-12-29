@@ -676,9 +676,9 @@
             }
 
 
-            if (stock.kLineDay[highIndex].volume / avarageVolume >= 2.5 && stock.kLineDay[highIndex].volume / avarageVolume <= 3.5  && (double)dr["价差"] < 0.01)
+            if (f5 >= line3Price)
             {
-                dr["信号"] = dr["信号"] + "<a title=\"量比\" >3⃣️</a>";
+                dr["信号"] = dr["信号"] + "<a title=\"3线上f5支撑\" >3⃣️</a>";
             }
 
             dr["价差abs"] = Math.Abs((double)dr["价差"]);
