@@ -708,7 +708,7 @@
             dr["无影"] = todayLowestPrice;
             double maxPrice = 0;
             //buyPrice = supportPrice;
-            dr["买入"] = buyPrice;
+            dr["买入"] = stock.kLineDay[currentIndex].startPrice;
 
             dr["涨幅"] = (currentPrice - buyPrice) / buyPrice;
 
@@ -721,7 +721,7 @@
                     break;
                 double highPrice = stock.kLineDay[currentIndex + i].highestPrice;
                 maxPrice = Math.Max(maxPrice, highPrice);
-                dr[i.ToString() + "日"] = (highPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice;
+                dr[i.ToString() + "日"] = (highPrice - stock.kLineDay[currentIndex].startPrice) / stock.kLineDay[currentIndex].startPrice;
             }
             dr["总计"] = (maxPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice;
 
