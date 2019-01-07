@@ -358,7 +358,7 @@
         DataTable dtOri = DBHelper.GetDataTable(" select gid, alert_date from limit_up where alert_date >= '" + limitUpStartDate.ToShortDateString()
             + "' and alert_date <= '" + lastTransactDate.ToShortDateString() + "' order by alert_date desc ");
         DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor '" + currentDate.ToShortDateString() + "' ");
-        
+
         DataTable dtFoot = DBHelper.GetDataTable(" select * from alert_foot where alert_date > '" + currentDate.Date.ToShortDateString() + "' and alert_date < '" + currentDate.AddDays(1).ToShortDateString() + "' ");
 
         //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
@@ -383,7 +383,7 @@
             if (currentIndex < 0)
                 continue;
 
-
+            
 
             int limitUpIndex = stock.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
             int highIndex = 0;
@@ -444,7 +444,7 @@
                 switch (tochSupportStatus)
                 {
                     case 0:
-                        if (stock.kLineDay[i].lowestPrice > buyPrice * 1.01)
+                        if (stock.kLineDay[i].lowestPrice > buyPrice * 1.005)
                         {
                             tochSupportStatus++;
                         }
@@ -454,7 +454,7 @@
                         }
                         break;
                     case 1:
-                        if (stock.kLineDay[i].lowestPrice < buyPrice * 1.01)
+                        if (stock.kLineDay[i].lowestPrice < buyPrice * 1.005)
                         {
                             tochSupportStatus++;
                         }
@@ -470,7 +470,7 @@
 
             if (tochSupportStatus == 2 && width < 40)
             {
-                continue;
+                //continue;
             }
 
 
