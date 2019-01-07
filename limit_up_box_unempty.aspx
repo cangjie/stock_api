@@ -449,7 +449,7 @@
 
 
             int tochSupportStatus = 0;
-            for (int i = currentIndex - 1; i >= highIndex; i--)
+            for (int i = currentIndex - 1; i > highIndex; i--)
             {
                 switch (tochSupportStatus)
                 {
