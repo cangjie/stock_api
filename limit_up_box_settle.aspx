@@ -442,12 +442,12 @@
 
 
             int tochSupportStatus = 0;
-            for (int i = currentIndex - 1; i >= highIndex; i--)
+            for (int i = currentIndex - 1; i > highIndex; i--)
             {
                 switch (tochSupportStatus)
                 {
                     case 0:
-                        if (stock.kLineDay[i].lowestPrice > buyPrice * 0.99 && stock.kLineDay[i].lowestPrice < buyPrice * 1.01)
+                        if (stock.kLineDay[i].lowestPrice > buyPrice * 1.005)
                         {
                             tochSupportStatus++;
                         }
@@ -457,7 +457,7 @@
                         }
                         break;
                     case 1:
-                        if (stock.kLineDay[i].lowestPrice > buyPrice * 0.99 && stock.kLineDay[i].lowestPrice < buyPrice * 1.01)
+                        if (stock.kLineDay[i].lowestPrice < buyPrice * 1.005)
                         {
                             tochSupportStatus++;
                         }
