@@ -383,7 +383,10 @@
             if (currentIndex < 0)
                 continue;
 
-            
+            if (stock.gid.Trim().Equals("sz000682"))
+            {
+                t.Abort();
+            }
 
             int limitUpIndex = stock.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
             int highIndex = 0;
@@ -444,7 +447,7 @@
                 switch (tochSupportStatus)
                 {
                     case 0:
-                        if (stock.kLineDay[i].lowestPrice > buyPrice * 1.005)
+                        if (stock.kLineDay[i].lowestPrice > buyPrice * 0.99 && stock.kLineDay[i].lowestPrice < buyPrice * 1.01)
                         {
                             tochSupportStatus++;
                         }
@@ -454,7 +457,7 @@
                         }
                         break;
                     case 1:
-                        if (stock.kLineDay[i].lowestPrice < buyPrice * 1.005)
+                        if (stock.kLineDay[i].lowestPrice > buyPrice * 0.99 && stock.kLineDay[i].lowestPrice < buyPrice * 1.01)
                         {
                             tochSupportStatus++;
                         }
