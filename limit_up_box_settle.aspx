@@ -470,7 +470,7 @@
 
             if (tochSupportStatus == 2 && width < 40)
             {
-                //continue;
+                continue;
             }
 
 
