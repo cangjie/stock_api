@@ -635,7 +635,7 @@
 
 
 
-            dr["调整"] = currentIndex - limitUpIndex;
+            dr["调整"] = currentIndex - highIndex;
             dr["缩量"] = volumeReduce;
             dr["现高"] = highest;
             dr["F3"] = f3;
