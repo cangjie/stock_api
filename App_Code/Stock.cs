@@ -67,7 +67,14 @@ public class Stock
     public Stock(string gid, Core.RedisClient rc)
     {
         this.gid = gid;
-        this.name = rc.redisDb.HashGet("gid_name", gid.Trim()).ToString() ;
+        try
+        {
+            this.name = rc.redisDb.HashGet("gid_name", gid.Trim()).ToString();
+        }
+        catch
+        {
+
+        }
     }
 
     public void LoadKLineDay()

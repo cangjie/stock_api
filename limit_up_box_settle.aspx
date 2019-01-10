@@ -383,9 +383,9 @@
             if (currentIndex < 0)
                 continue;
 
-            if (stock.gid.Trim().Equals("sz000682"))
+            if (stock.gid.Trim().Equals("sz300095"))
             {
-                t.Abort();
+                //t.Abort();
             }
 
             int limitUpIndex = stock.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
