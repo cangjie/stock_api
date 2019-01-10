@@ -732,7 +732,7 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"无影脚\" >🦶</a>";
             }
-            if (dr["类型"].ToString().Equals("F5") && (int)dr["KDJ日"] >= 0 && (int)dr["MACD日"] >= 0 && buyPrice >= line3Price)
+            if (dr["类型"].ToString().Equals("F5") &&  (int)dr["MACD日"] >= 0 && buyPrice >= line3Price)
             {
                 dr["信号"] = dr["信号"] + "🌟";
             }
