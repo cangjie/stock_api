@@ -620,11 +620,18 @@
             {
                 dr["信号"] = dr["信号"].ToString().Trim() + "🌟";
             }
-
+            /*
             if (stock.kLineDay[highIndex].volume / avarageVolume >= 2.5 && stock.kLineDay[highIndex].volume / avarageVolume <= 3.5)
             {
                 dr["信号"] = dr["信号"] + "3⃣️";
             }
+            */
+
+            if (stock.kLineDay[stock.kLineDay.Length - 1].endPrice >= highest)
+            {
+                dr["信号"] = dr["信号"] + "<a title='过前高' >🚩</a>";
+            }
+
 
             dr["调整"] = currentIndex - limitUpIndex;
             dr["缩量"] = volumeReduce;
