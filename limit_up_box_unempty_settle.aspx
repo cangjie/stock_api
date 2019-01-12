@@ -708,7 +708,10 @@
             dr["买入"] = buyPrice;
 
             dr["涨幅"] = (currentPrice - buyPrice) / buyPrice;
-
+            if (stock.kLineDay[stock.kLineDay.Length - 1].endPrice >= highest)
+            {
+                dr["信号"] = dr["信号"] + "<a title='过前高' >🚩</a>";
+            }
             dr["0日"] = (currentPrice - supportPrice) / supportPrice;
             for (int i = 1; i <= 5; i++)
             {

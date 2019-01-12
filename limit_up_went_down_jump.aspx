@@ -633,7 +633,10 @@
                 //dr["信号"] = dr["信号"].ToString() + "💩";
             }
 
-
+            if (stock.kLineDay[stock.kLineDay.Length - 1].endPrice >= highest)
+            {
+                dr["信号"] = dr["信号"] + "<a title='过前高' >🚩</a>";
+            }
 
             dr["调整"] = currentIndex - limitUpIndex - 1;
             dr["缩量"] = volumeReduce;
