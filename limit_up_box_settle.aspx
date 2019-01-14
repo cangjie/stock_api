@@ -22,7 +22,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "价差abs, 幅度 desc,MACD日,KDJ日");
+        sort = Util.GetSafeRequestValue(Request, "sort", "幅度 desc");
         if (!IsPostBack)
         {
             try
