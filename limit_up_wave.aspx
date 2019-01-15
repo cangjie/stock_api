@@ -164,6 +164,7 @@
                         case "现高":
                         case "3线":
                         case "无影":
+                        case "止盈":
                             double currentValuePrice = (double)drOri[i];
                             dr[i] = "<font color=\"" + (currentValuePrice > currentPrice ? "red" : (currentValuePrice == currentPrice ? "gray" : "green")) + "\"  >"
                                 + Math.Round(currentValuePrice, 2).ToString() + "</font>";
@@ -588,6 +589,11 @@
             if (f5 >= line3Price)
             {
                 dr["信号"] = dr["信号"] + "<a title=\"3线上f5支撑\" >3⃣️</a>";
+            }
+
+            if ((double)dr["价差"] > 0.01)
+            {
+                continue;
             }
 
             dr["价差abs"] = Math.Abs((double)dr["价差"]);
