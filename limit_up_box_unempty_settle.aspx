@@ -80,7 +80,7 @@
             selectFilter = " 类型 = '" + filter.Trim() + "' ";
         }
         //return RenderHtml(dtOri.Select(" 信号 like '%📈%' ", sort));
-        return RenderHtml(dtOri.Select(filter, sort));
+        return RenderHtml(dtOri.Select(selectFilter, sort));
     }
 
     protected void calendar_SelectionChanged(object sender, EventArgs e)
