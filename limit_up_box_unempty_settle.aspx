@@ -20,9 +20,12 @@
 
     public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
 
+    public static string filter = "";
+
     protected void Page_Load(object sender, EventArgs e)
     {
         sort = Util.GetSafeRequestValue(Request, "sort", "幅度 desc");
+        filter = Util.GetSafeRequestValue(Request, "filter", "");
         if (!IsPostBack)
         {
             try
@@ -71,14 +74,10 @@
         else
             currentDate = Util.GetDay(calendar.SelectedDate);
         DataTable dtOri = GetData(currentDate);
-        string filter = "";
-        if (Util.GetSafeRequestValue(Request, "goldcross", "0").Trim().Equals("0"))
+        string selectFilter = "";
+        if (!filter.Trim().Equals(""))
         {
-            filter = "";
-        }
-        else
-        {
-            filter = " (KDJ日 >= 0 and MACD日 >= 0)";
+            selectFilter = " 类型 = '" + filter.Trim() + "' ";
         }
         //return RenderHtml(dtOri.Select(" 信号 like '%📈%' ", sort));
         return RenderHtml(dtOri.Select(filter, sort));
@@ -647,7 +646,7 @@
             double f3ReverseRate = (stock.kLineDay[currentIndex].lowestPrice - f3) / f3;
             double f5ReverseRate = (stock.kLineDay[currentIndex].lowestPrice - f5) / f5;
             double supportPrice = 0;
-            
+
             if (Math.Abs(f3ReverseRate) > Math.Abs(f5ReverseRate))
             {
                 dr["价差"] = (stock.kLineDay[currentIndex].lowestPrice - f5)/f5;
@@ -674,7 +673,7 @@
                 //continue;
             }
 
-        
+
             if (stock.kLineDay[currentIndex].startPrice < supportPrice * 0.995 || stock.kLineDay[currentIndex].highestPrice < supportPrice * 0.995)
             {
                 continue;
