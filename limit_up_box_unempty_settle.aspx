@@ -647,6 +647,7 @@
             double f3ReverseRate = (stock.kLineDay[currentIndex].lowestPrice - f3) / f3;
             double f5ReverseRate = (stock.kLineDay[currentIndex].lowestPrice - f5) / f5;
             double supportPrice = 0;
+            /*
             if (Math.Abs(f3ReverseRate) > Math.Abs(f5ReverseRate))
             {
                 dr["价差"] = (stock.kLineDay[currentIndex].lowestPrice - f5)/f5;
@@ -669,7 +670,7 @@
                 //continue;
             }
 
-
+        */
             if (stock.kLineDay[currentIndex].startPrice < supportPrice * 0.995 || stock.kLineDay[currentIndex].highestPrice < supportPrice * 0.995)
             {
                 continue;
@@ -744,7 +745,7 @@
                 && (stock.kLineDay[currentIndex].highestPrice - stock.kLineDay[currentIndex].endPrice)*2 <
                 (stock.kLineDay[currentIndex].startPrice - stock.kLineDay[currentIndex].lowestPrice) )
             {
-                dr["信号"] = dr["信号"] + "<a title='上影线短' >👍</a>";
+                dr["信号"] = dr["信号"] + "<a title='上影线短' >🔥</a>";
             }
 
             dt.Rows.Add(dr);
