@@ -647,30 +647,34 @@
             double f3ReverseRate = (stock.kLineDay[currentIndex].lowestPrice - f3) / f3;
             double f5ReverseRate = (stock.kLineDay[currentIndex].lowestPrice - f5) / f5;
             double supportPrice = 0;
-            /*
+            
             if (Math.Abs(f3ReverseRate) > Math.Abs(f5ReverseRate))
             {
                 dr["价差"] = (stock.kLineDay[currentIndex].lowestPrice - f5)/f5;
                 supportPrice = f5;
                 dr["类型"] = "F5";
+                /*
                 if (width  > 25 && line3Price <= f5)
                 {
                     dr["信号"] = dr["信号"].ToString().Trim() + "🔥";
                 }
+                */
             }
             else
             {
                 dr["价差"] = (stock.kLineDay[currentIndex].lowestPrice - f3)/f3;
                 supportPrice = f3;
                 dr["类型"] = "F3";
+                /*
                 if (width  > 25 && line3Price <= f3)
                 {
                     dr["信号"] = dr["信号"].ToString().Trim() + "🔥";
                 }
+                */
                 //continue;
             }
 
-        */
+        
             if (stock.kLineDay[currentIndex].startPrice < supportPrice * 0.995 || stock.kLineDay[currentIndex].highestPrice < supportPrice * 0.995)
             {
                 continue;
