@@ -739,6 +739,14 @@
             {
                 dr["信号"] = dr["信号"] + "🌟";
             }
+
+            if (stock.kLineDay[currentIndex].startPrice > stock.kLineDay[currentIndex].endPrice
+                && (stock.kLineDay[currentIndex].highestPrice - stock.kLineDay[currentIndex].endPrice) <
+                (stock.kLineDay[currentIndex].startPrice - stock.kLineDay[currentIndex].lowestPrice) * 2)
+            {
+                dr["信号"] = dr["信号"] + "<a title='上影线短' >👍</a>";
+            }
+
             dt.Rows.Add(dr);
 
         }
