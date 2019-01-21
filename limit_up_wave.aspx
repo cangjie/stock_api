@@ -410,6 +410,9 @@
             {
                 avarageVolume = avarageVolume + stock.kLineDay[i].volume;
             }
+
+            int maxIndex = Math.Min(stock.kLineDay.Length - 1, currentIndex + 5);
+
             avarageVolume = (int)Math.Round((double)avarageVolume / (double)(highIndex - lowestIndex), 0);
             double f3 = highest - (highest - lowest) * 0.382;
             double f5 = highest - (highest - lowest) * 0.618;
@@ -656,6 +659,24 @@
             {
                 continue;
             }
+
+
+            bool overPreviousHigh = false;
+            for (int i = currentIndex + 1; i < stock.kLineDay.Length && i < maxIndex; i++)
+            {
+                if (stock.kLineDay[i].highestPrice > highest)
+                {
+                    overPreviousHigh = true;
+                    break;
+                }
+            }
+
+            if (overPreviousHigh)
+            {
+                dr["信号"] = "<a title=\"过前高\">🚩</a>";
+            }
+
+
             dt.Rows.Add(dr);
 
         }

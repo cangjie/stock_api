@@ -387,6 +387,7 @@
 
             if (currentIndex < 0)
                 continue;
+            int maxIndex = Math.Min(stock.kLineDay.Length - 1, currentIndex + 5);
 
 
             if (stock.gid.Trim().Equals("sz002464"))
@@ -749,6 +750,22 @@
                 (stock.kLineDay[currentIndex].startPrice - stock.kLineDay[currentIndex].lowestPrice) )
             {
                 dr["信号"] = dr["信号"] + "<a title='上影线短' >🔥</a>";
+            }
+
+
+            bool overPreviousHigh = false;
+            for (int i = currentIndex + 1; i < stock.kLineDay.Length && i < maxIndex; i++)
+            {
+                if (stock.kLineDay[i].highestPrice > highest)
+                {
+                    overPreviousHigh = true;
+                    break;
+                }
+            }
+
+            if (overPreviousHigh)
+            {
+                dr["信号"] = "<a title=\"过前高\">🚩</a>";
             }
 
             dt.Rows.Add(dr);
