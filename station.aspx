@@ -276,6 +276,10 @@
             {
                 continue;
             }
+
+            int maxIndex = Math.Min(stock.kLineDay.Length - 1, currentIndex + 5);
+
+
             double line3Price = stock.GetAverageSettlePrice(currentIndex, 3, 3);
             if (stock.kLineDay[currentIndex].lowestPrice < line3Price)
             {
@@ -358,6 +362,22 @@
             if (dtIOVolume.Select("gid = '" + stock.gid.Trim() + "' ").Length > 0)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"外盘高\" >✅</a>";
+            }
+
+            double comingLowestPrice = double.MaxValue;
+            bool findComingSupport = false;
+            for (int i = currentIndex + 1; i <= maxIndex && i < stock.kLineDay.Length; i++)
+            {
+                if (Math.Abs(stock.kLineDay[i].lowestPrice - comingLowestPrice) / stock.kLineDay[i].lowestPrice < 0.005)
+                {
+                    findComingSupport = true;
+                }
+                comingLowestPrice = Math.Min(comingLowestPrice, stock.kLineDay[i].lowestPrice);
+            }
+
+            if (findComingSupport)
+            {
+                dr["信号"] = dr["信号"] + "<a title=\"发现支撑\" >🚩</a>";
             }
 
             dt.Rows.Add(dr);
