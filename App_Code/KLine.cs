@@ -539,7 +539,6 @@ public class KLine
         return subArr;
     }
 
-
     public static void ComputeRSV(KLine[] kArr)
     {
         int valueN = 8;
@@ -571,9 +570,6 @@ public class KLine
         }
     }
 
-
-
-
     public static double ema(double[] xArr, int currentIndex, int n)
     {
         try
@@ -597,6 +593,7 @@ public class KLine
             return xArr[0];
         }
     }
+
     public static void ComputeMACD(KLine[] kArr)
     {
         int shortDays = 8;
