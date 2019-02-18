@@ -262,6 +262,11 @@
 
         DataTable dtOri = DBHelper.GetDataTable(" select * from limit_up where alert_date >= '" + startDate.ToShortDateString()
             + "' and alert_date < '" + endDate.AddDays(1) + "' ");
+
+        
+        DataTable dtMonthGold = DBHelper.GetDataTable(" select * from  alert_month_k_line_gold ");// where alert_date = '" + currentDate.ToShortDateString() + "' ");
+
+
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim(), rc);
@@ -378,6 +383,11 @@
             if (findComingSupport)
             {
                 dr["信号"] = dr["信号"] + "<a title=\"发现支撑\" >🚩</a>";
+            }
+
+            if (dtMonthGold.Select(" gid = '" + stock.gid.Trim() + "'").Length > 0)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"月双金叉\" >月</a>";
             }
 
             dt.Rows.Add(dr);
