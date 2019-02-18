@@ -600,6 +600,60 @@ public class Stock
     }
 
 
+    public static KLine[] LoadMonthKLine(string gid, Core.RedisClient rc)
+    {
+        Stock stock = new Stock(gid);
+        stock.LoadKLineDay(rc);
+        DateTime currentMonth = DateTime.Parse(stock.kLineDay[0].startDateTime.Year.ToString() 
+            + "-" + stock.kLineDay[0].startDateTime.Month.ToString() + "-1");
+        bool startANewMonth = true;
+        ArrayList monthKLineList = new ArrayList();
+        KLine currentMonthKLine = new KLine();
+        for (int i = 0; i < stock.kLineDay.Length; i++)
+        {
+            if (currentMonth != DateTime.Parse(stock.kLineDay[i].startDateTime.Year.ToString()
+                + "-" + stock.kLineDay[i].startDateTime.Month.ToString() + "-1"))
+            {
+                startANewMonth = true;
+                currentMonth = DateTime.Parse(stock.kLineDay[i].startDateTime.Year.ToString()
+                    + "-" + stock.kLineDay[i].startDateTime.Month.ToString() + "-1");
+            }
+            if (startANewMonth)
+            {
+                startANewMonth = false;
+                if (i > 0)
+                {
+                    monthKLineList.Add(currentMonthKLine);
+                }
+                currentMonthKLine = new KLine();
+                currentMonthKLine.gid = gid.Trim();
+                currentMonthKLine.type = "month";
+                currentMonthKLine.startDateTime = currentMonth;
+                currentMonthKLine.startPrice = stock.kLineDay[i].startPrice;
+                currentMonthKLine.endPrice = stock.kLineDay[i].endPrice;
+                currentMonthKLine.highestPrice = stock.kLineDay[i].highestPrice;
+                currentMonthKLine.lowestPrice = stock.kLineDay[i].lowestPrice;
+                currentMonthKLine.volume = stock.kLineDay[i].volume;
+                currentMonthKLine.amount = stock.kLineDay[i].amount;
+            }
+            else
+            {
+                currentMonthKLine.endPrice = stock.kLineDay[i].endPrice;
+                currentMonthKLine.highestPrice = Math.Max(currentMonthKLine.highestPrice, stock.kLineDay[i].highestPrice);
+                currentMonthKLine.lowestPrice = Math.Min(currentMonthKLine.lowestPrice, stock.kLineDay[i].lowestPrice);
+                currentMonthKLine.volume += stock.kLineDay[i].volume;
+                currentMonthKLine.amount += stock.kLineDay[i].amount;
+            }
+        }
+        monthKLineList.Add(currentMonthKLine);
+        KLine[] monthKLineArr = new KLine[monthKLineList.Count];
+        for (int i = 0; i < monthKLineList.Count; i++)
+        {
+            monthKLineArr[i] = (KLine)monthKLineList[i];
+        }
+        return monthKLineArr;
+    }
+
     public static KLine[] LoadRedisKLine(string gid, string type, Core.RedisClient rc)
     {
         //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");

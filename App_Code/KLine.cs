@@ -77,6 +77,9 @@ public class KLine
                 case "1min":
                     endTime = startDateTime.AddMinutes(1);
                     break;
+                case "month":
+                    endTime = startDateTime.AddMonths(1).AddDays(-1);
+                    break;
                 default:
                     endTime = startDateTime;
                     break;
