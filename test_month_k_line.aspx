@@ -9,6 +9,7 @@
     protected void Page_Load(object sender, EventArgs e)
     {
         KLine[] klineMonth = Stock.LoadMonthKLine(Util.GetSafeRequestValue(Request, "gid", "sh600031"), rc);
+
         DataTable dt = new DataTable();
         dt.Columns.Add("month");
         dt.Columns.Add("open");
