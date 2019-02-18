@@ -713,7 +713,7 @@
             }
             if (dtMonthGold.Select(" gid = '" + stock.gid.Trim() + "'").Length > 0)
             {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"月双金叉\" >👑</a>";
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"月双金叉\" >月</a>";
             }
 
             dt.Rows.Add(dr);
