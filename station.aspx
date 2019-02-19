@@ -263,8 +263,8 @@
         DataTable dtOri = DBHelper.GetDataTable(" select * from limit_up where alert_date >= '" + startDate.ToShortDateString()
             + "' and alert_date < '" + endDate.AddDays(1) + "' ");
 
-        
-        DataTable dtMonthGold = DBHelper.GetDataTable(" select * from  alert_month_k_line_gold ");// where alert_date = '" + currentDate.ToShortDateString() + "' ");
+        DataTable dtMonthGold = DBHelper.GetDataTable(" select * from  alert_month_k_line_gold  where alert_date = '" + Util.GetLastTransactDate(currentDate, 1).ToShortDateString() + "' ");
+
         DataTable dtWeekGold = DBHelper.GetDataTable(" select * from  alert_week_k_line_gold ");
 
         foreach (DataRow drOri in dtOri.Rows)
