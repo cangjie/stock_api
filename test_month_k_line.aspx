@@ -8,7 +8,8 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        KLine[] klineMonth = Stock.LoadMonthKLine(Util.GetSafeRequestValue(Request, "gid", "sh600031"), rc);
+        
+        KLine[] klineMonth = Stock.LoadWeekKLine(Util.GetSafeRequestValue(Request, "gid", "sh600031"), rc);
 
         DataTable dt = new DataTable();
         dt.Columns.Add("month");
@@ -28,6 +29,8 @@
         }
         dg.DataSource = dt;
         dg.DataBind();
+        
+        //Response.Write(Core.Util.GetWeekNumber(DateTime.Parse("2019-1-18")));
     }
 </script>
 

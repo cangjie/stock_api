@@ -363,6 +363,8 @@
 
         DataTable dtMonthGold = DBHelper.GetDataTable(" select * from  alert_month_k_line_gold ");// where alert_date = '" + currentDate.ToShortDateString() + "' ");
 
+        DataTable dtWeekGold = DBHelper.GetDataTable(" select * from  alert_week_k_line_gold ");
+
         //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
         foreach (DataRow drOri in dtOri.Rows)
         {
@@ -715,7 +717,10 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"月双金叉\" >月</a>";
             }
-
+            if (dtWeekGold.Select(" gid = '" + stock.gid.Trim() + "'").Length > 0)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"周双金叉\" >周</a>";
+            }
             dt.Rows.Add(dr);
 
         }

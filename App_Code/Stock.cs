@@ -599,6 +599,56 @@ public class Stock
         }
     }
 
+    public static KLine[] LoadWeekKLine(string gid, Core.RedisClient rc)
+    {
+        Stock stock = new Stock(gid);
+        stock.LoadKLineDay(rc);
+        int currentWeekNo = Core.Util.GetWeekNumber(stock.kLineDay[0].startDateTime);
+        bool startANewWeek = true;
+        ArrayList weekKLineList = new ArrayList();
+        KLine currentWeekKLine = new KLine();
+        for (int i = 0; i < stock.kLineDay.Length; i++)
+        {
+            if (currentWeekNo != Core.Util.GetWeekNumber(stock.kLineDay[i].startDateTime))
+            {
+                startANewWeek = true;
+                currentWeekNo = Core.Util.GetWeekNumber(stock.kLineDay[i].startDateTime);
+            }
+            if (startANewWeek)
+            {
+                startANewWeek = false;
+                if (i > 0)
+                {
+                    weekKLineList.Add(currentWeekKLine);
+                }
+                currentWeekKLine = new KLine();
+                currentWeekKLine.gid = gid.Trim();
+                currentWeekKLine.type = "week";
+                currentWeekKLine.startDateTime = stock.kLineDay[i].startDateTime;
+                currentWeekKLine.startPrice = stock.kLineDay[i].startPrice;
+                currentWeekKLine.endPrice = stock.kLineDay[i].endPrice;
+                currentWeekKLine.highestPrice = stock.kLineDay[i].highestPrice;
+                currentWeekKLine.lowestPrice = stock.kLineDay[i].lowestPrice;
+                currentWeekKLine.volume = stock.kLineDay[i].volume;
+                currentWeekKLine.amount = stock.kLineDay[i].amount;
+            }
+            else
+            {
+                currentWeekKLine.endPrice = stock.kLineDay[i].endPrice;
+                currentWeekKLine.highestPrice = Math.Max(currentWeekKLine.highestPrice, stock.kLineDay[i].highestPrice);
+                currentWeekKLine.lowestPrice = Math.Min(currentWeekKLine.lowestPrice, stock.kLineDay[i].lowestPrice);
+                currentWeekKLine.volume += stock.kLineDay[i].volume;
+                currentWeekKLine.amount += stock.kLineDay[i].amount;
+            }
+        }
+        weekKLineList.Add(currentWeekKLine);
+        KLine[] weekKLineArr = new KLine[weekKLineList.Count];
+        for (int i = 0; i < weekKLineList.Count; i++)
+        {
+            weekKLineArr[i] = (KLine)weekKLineList[i];
+        }
+        return weekKLineArr;
+    }
 
     public static KLine[] LoadMonthKLine(string gid, Core.RedisClient rc)
     {

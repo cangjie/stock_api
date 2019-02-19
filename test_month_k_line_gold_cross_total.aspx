@@ -17,6 +17,7 @@
             KLine.ComputeMACD(klineMonth);
             KLine.ComputeRSV(klineMonth);
             KLine.ComputeKDJ(klineMonth);
+
             KLine lastKLine = klineMonth[klineMonth.Length - 1];
             if (lastKLine.macd > 0 && lastKLine.j > lastKLine.d)
             {
@@ -46,7 +47,6 @@
                 {
                     Response.Write(gid.Trim() + "<br/>");
                 }%>
-            
         </div>
     </form>
 </body>

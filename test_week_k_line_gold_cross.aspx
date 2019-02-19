@@ -13,7 +13,7 @@
         string[] gidArr = Util.GetAllGids();
         foreach (string gid in gidArr)
         {
-            KLine[] klineMonth = Stock.LoadMonthKLine(gid, rc);
+            KLine[] klineMonth = Stock.LoadWeekKLine(gid, rc);
             KLine.ComputeMACD(klineMonth);
             KLine.ComputeRSV(klineMonth);
             KLine.ComputeKDJ(klineMonth);
@@ -23,7 +23,7 @@
                 gidGoldArr.Add(gid);
                 try
                 {
-                    DBHelper.InsertData("alert_month_k_line_gold", new string[,] { {"alert_date", "datetime", DateTime.Now.ToShortDateString() },
+                    DBHelper.InsertData("alert_week_k_line_gold", new string[,] { {"alert_date", "datetime", DateTime.Now.ToShortDateString() },
                         {"gid", "varchar", gid } });
                 }
                 catch
