@@ -365,7 +365,7 @@
 
         DataTable dtOri = DBHelper.GetDataTable(" select gid, alert_date from limit_up where alert_date >= '" + limitUpStartDate.ToShortDateString()
             + "' and alert_date <= '" + lastTransactDate.ToShortDateString() + "' order by alert_date desc ");
-        DataTable dtIOVolume = DBHelper.GetDataTable(" select  distinct gid from io_volume where in_volume > 0 and out_volume / in_volume >= 3 "
+        DataTable dtIOVolume = DBHelper.GetDataTable(" select  distinct gid from io_volume where in_volume > 0 and out_volume / in_volume >= 1.5 "
             + " and trans_date_time > '" + currentDate.ToShortDateString() + "' and trans_date_time < '" + currentDate.ToShortDateString() + " 23:00' " );
         //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
         foreach (DataRow drOri in dtIOVolume.Rows)
