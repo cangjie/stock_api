@@ -196,19 +196,19 @@ public class Stock
         return ret;
     }
 
-    public double TotalStockCount
+    public double TotalStockCount(DateTime date)
     {
-        get
+    
+        double ret = 0;
+        DataTable dt = DBHelper.GetDataTable("  select top 1 * from stock_info where gid = '" + gid.Trim() + "'  and info_date <= '" 
+            + date.ToShortDateString() + "' order by info_date desc ");
+        if (dt.Rows.Count > 0)
         {
-            double ret = 0;
-            DataTable dt = DBHelper.GetDataTable("  select top 1 * from stock_info where gid = '" + gid.Trim() + "' order by info_date desc ");
-            if (dt.Rows.Count > 0)
-            {
-                ret = (double)dt.Rows[0]["total_stock_num"];
-            }
-            dt.Dispose();
-            return ret;
+            ret = (double)dt.Rows[0]["total_stock_num"];
         }
+        dt.Dispose();
+        return ret;
+        
     }
 
     public double LastTrade

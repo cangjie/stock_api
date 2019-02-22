@@ -717,7 +717,7 @@
                 dr["信号"] = "<a title=\"过前高\">🚩</a>";
             }
 
-            dr["总换手"] = totalVolume / stock.TotalStockCount;
+            dr["总换手"] = totalVolume / stock.TotalStockCount(currentDate);
 
             dt.Rows.Add(dr);
 
