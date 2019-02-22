@@ -196,6 +196,21 @@ public class Stock
         return ret;
     }
 
+    public double TotalStockCount
+    {
+        get
+        {
+            double ret = 0;
+            DataTable dt = DBHelper.GetDataTable("  select top 1 * from stock_info where gid = '" + gid.Trim() + "' order by info_date desc ");
+            if (dt.Rows.Count > 0)
+            {
+                ret = (double)dt.Rows[0]["total_stock_num"];
+            }
+            dt.Dispose();
+            return ret;
+        }
+    }
+
     public double LastTrade
     {
         get
