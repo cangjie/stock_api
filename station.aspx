@@ -242,6 +242,8 @@
         dt.Columns.Add("买入", Type.GetType("System.Double"));
         dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
+        dt.Columns.Add("总换手", Type.GetType("System.Double"));
+
         for (int i = 0; i <= 5; i++)
         {
             dt.Columns.Add(i.ToString() + "日", Type.GetType("System.Double"));
@@ -379,11 +381,14 @@
                 }
                 comingLowestPrice = Math.Min(comingLowestPrice, stock.kLineDay[i].lowestPrice);
             }
-
+            /*
             if (findComingSupport)
             {
                 dr["信号"] = dr["信号"] + "<a title=\"发现支撑\" >🚩</a>";
             }
+            */
+
+
 
             if (dtMonthGold.Select(" gid = '" + stock.gid.Trim() + "'").Length > 0)
             {
@@ -393,6 +398,28 @@
             if (dtWeekGold.Select(" gid = '" + stock.gid.Trim() + "'").Length > 0)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"周双金叉\" >周</a>";
+            }
+
+
+            if (stock.kLineDay[stock.kLineDay.Length - 1].endPrice >= highest)
+            {
+                dr["信号"] = dr["信号"] + "<a title='过前高' >🚩</a>";
+            }
+    
+            double totalVolume = 0;
+            for (int i = lowestIndex; i < currentIndex; i++)
+            {
+                totalVolume += stock.kLineDay[i].volume;
+            }
+
+            double totalStockCount = stock.TotalStockCount(currentDate);
+            if (totalStockCount > 0)
+            {
+                dr["总换手"] = totalVolume / totalStockCount;
+            }
+            else
+            {
+                dr["总换手"] = 0;
             }
 
             dt.Rows.Add(dr);
@@ -464,6 +491,7 @@
                     <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号" SortExpression="信号|desc" ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="总换手" HeaderText="总换手"></asp:BoundColumn>
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD日|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
