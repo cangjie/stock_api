@@ -337,6 +337,7 @@
         dt.Columns.Add("3线", Type.GetType("System.Double"));
         dt.Columns.Add("现价", Type.GetType("System.Double"));
         dt.Columns.Add("评级", Type.GetType("System.String"));
+        dt.Columns.Add("盘比", Type.GetType("System.Double"));
         dt.Columns.Add("买入", Type.GetType("System.Double"));
         dt.Columns.Add("始盘比", Type.GetType("System.Double"));
         dt.Columns.Add("终盘比", Type.GetType("System.Double"));
@@ -611,11 +612,11 @@
                 }
             }
 
-     
 
-       
 
-         
+
+
+
 
             dr["调整"] = currentIndex - limitUpIndex;
             dr["缩量"] = volumeReduce;
@@ -634,7 +635,7 @@
                 dr["价差"] = stock.kLineDay[currentIndex].lowestPrice - f5;
                 supportPrice = f5;
                 dr["类型"] = "F5";
-            
+
             }
             else
             {
@@ -666,6 +667,26 @@
             dr["无影"] = todayLowestPrice;
             double maxPrice = 0;
             dr["0日"] = (buyPrice - stock.kLineDay[currentIndex].startPrice) / stock.kLineDay[currentIndex].startPrice;
+
+            DataTable dtIORate = DBHelper.GetDataTable(" select top 1 * from io_volume where gid = '" + stock.gid.Trim() + "' and trans_date_time > '" + currentDate.ToShortDateString() + "' "
+                + " and trans_date_time < '" + currentDate.ToShortDateString() + " 23:59:59' order by  trans_date_time desc ");
+            if (dtIORate.Rows.Count > 0)
+            {
+                try
+                {
+
+                    dr["盘比"] = (double)dtIORate.Rows[0]["out_volume"] / (double)dtIORate.Rows[0]["in_volume"];
+                }
+                catch
+                {
+                    dr["盘比"] = 0;
+                }
+            }
+            else
+            {
+                dr["盘比"] = 0;
+            }
+
             for (int i = 1; i <= 5; i++)
             {
                 if (currentIndex + i >= stock.kLineDay.Length)
@@ -929,6 +950,7 @@
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号"></asp:BoundColumn>
                     <asp:BoundColumn DataField="缩量" HeaderText="缩量"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="盘比" HeaderText="盘比"></asp:BoundColumn>
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD日|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>
                    
