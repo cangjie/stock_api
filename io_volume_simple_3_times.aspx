@@ -169,11 +169,13 @@
                         case "现高":
                         case "3线":
                         case "无影":
+                        case "盘比":
                             double currentValuePrice = (double)drOri[i];
                             dr[i] = "<font color=\"" + (currentValuePrice > currentPrice ? "red" : (currentValuePrice == currentPrice ? "gray" : "green")) + "\"  >"
                                 + Math.Round(currentValuePrice, 2).ToString() + "</font>";
                             break;
                         case "价差":
+                        
                             double currentValuePrice1 = (double)drOri[i];
                             dr[i] = Math.Round(currentValuePrice1, 2).ToString();
                             break;
