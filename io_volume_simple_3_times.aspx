@@ -144,7 +144,7 @@
                             dr[i] = Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2).ToString();
                             break;
                         case "买入":
-                        case "盘比":
+                        
                             double buyPrice = Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2);
                             dr[i] = "<font color=\"" + ((buyPrice > currentPrice) ? "red" : ((buyPrice == currentPrice) ? "gray" : "green")) + "\" >" + Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2).ToString() + "</font>";
                             break;
@@ -176,7 +176,7 @@
                                 + Math.Round(currentValuePrice, 2).ToString() + "</font>";
                             break;
                         case "价差":
-                        
+                        case "盘比":
                             double currentValuePrice1 = (double)drOri[i];
                             dr[i] = Math.Round(currentValuePrice1, 2).ToString();
                             break;
