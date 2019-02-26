@@ -490,7 +490,7 @@
                     break;
                 }
             }
-            
+
 
 
 
@@ -616,6 +616,10 @@
                 dr["价差"] = (stock.kLineDay[currentIndex].lowestPrice - f3)/f3;
                 supportPrice = f3;
                 dr["类型"] = "F3";
+                if ((double)dr["价差"] >= 0.01)
+                {
+                    continue;
+                }
                 /*
                 if (width  > 25 && line3Price <= f3)
                 {
