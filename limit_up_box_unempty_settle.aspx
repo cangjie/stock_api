@@ -391,9 +391,16 @@
             int maxIndex = Math.Min(stock.kLineDay.Length - 1, currentIndex + 5);
 
 
-            if (stock.gid.Trim().Equals("sz002464"))
+            if (stock.gid.Trim().Equals("sh603882"))
             {
-                //t.Suspend();
+                try
+                {
+                    t.Suspend();
+                }
+                catch
+                {
+
+                }
 
             }
 
@@ -413,7 +420,7 @@
 
             if (stock.kLineDay[currentIndex].highestPrice >= highest)
             {
-                continue;
+                //continue;
             }
 
 
