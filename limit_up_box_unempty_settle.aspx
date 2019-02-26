@@ -490,11 +490,7 @@
                     break;
                 }
             }
-            if (tochSupportStatus == 2)
-            {
-                continue;
-            }
-
+            
 
 
 
@@ -609,12 +605,11 @@
                 dr["价差"] = (stock.kLineDay[currentIndex].lowestPrice - f5)/f5;
                 supportPrice = f5;
                 dr["类型"] = "F5";
-                /*
-                if (width  > 25 && line3Price <= f5)
+
+                if (tochSupportStatus >= 2)
                 {
-                    dr["信号"] = dr["信号"].ToString().Trim() + "🔥";
+                    continue;
                 }
-                */
             }
             else
             {
