@@ -375,6 +375,12 @@
         DataTable dtIOVolume = DBHelper.GetDataTable(" select  distinct gid from io_volume where in_volume > 0 and out_volume / in_volume >= " + times.ToString()
             + " and trans_date_time > '" + currentDate.ToShortDateString() + "' and trans_date_time < '" + currentDate.ToShortDateString() + " 23:00' "
             + " and (out_volume > 1000000 or in_volume >  1000000) ");
+
+        DataTable dtMonthGold = DBHelper.GetDataTable(" select * from  alert_month_k_line_gold  where alert_date = '" + Util.GetLastTransactDate(currentDate, 1).ToShortDateString() + "' ");
+
+        DataTable dtWeekGold = DBHelper.GetDataTable(" select * from  alert_week_k_line_gold  where alert_date = '" + Util.GetLastTransactDate(currentDate, 1).ToShortDateString() + "' ");
+
+
         //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
         foreach (DataRow drOri in dtIOVolume.Rows)
         {
@@ -707,6 +713,16 @@
             {
                 dr["信号"] = dr["信号"].ToString().Trim() + "📈";
             }
+
+            if (dtMonthGold.Select(" gid = '" + stock.gid.Trim() + "'").Length > 0)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"月双金叉\" >月</a>";
+            }
+            if (dtWeekGold.Select(" gid = '" + stock.gid.Trim() + "'").Length > 0)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"周双金叉\" >周</a>";
+            }
+
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
             dt.Rows.Add(dr);
 
