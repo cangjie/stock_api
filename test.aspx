@@ -10,7 +10,9 @@
 
 
 
-        StockWatcher.SendAlertMessage("oeC_l1Zn1ineEuGmDl6hgE5ixPCw", "sh600031", "三一重工", 10, "bull");
+        //StockWatcher.SendAlertMessage("oeC_l1Zn1ineEuGmDl6hgE5ixPCw", "sh600031", "三一重工", 10, "bull");
+
+        Response.Write(Stock.GetCurrentKLineEndDateTime(DateTime.Now, 30).ToString());
 
 
         Response.End();

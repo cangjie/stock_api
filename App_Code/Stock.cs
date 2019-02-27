@@ -146,6 +146,29 @@ public class Stock
         return k;
     }
 
+    public static DateTime GetCurrentKLineEndDateTime(DateTime currentDate, int stepMinutes)
+    {
+        if (currentDate.Date < DateTime.Now.Date)
+        {
+            return currentDate.Date.AddHours(15);
+        }
+        else
+        {
+            DateTime returnDateTime = currentDate.Date.AddHours(9).AddMinutes(30).AddMinutes(stepMinutes);
+            for (; returnDateTime < DateTime.Now; returnDateTime = returnDateTime.AddMinutes(stepMinutes)) { }
+            if (returnDateTime > returnDateTime.Date.AddHours(11).AddMinutes(30) && returnDateTime <= returnDateTime.AddHours(13))
+            {
+                returnDateTime = returnDateTime.Date.AddHours(11).AddMinutes(30);
+            }
+            if (returnDateTime > returnDateTime.Date.AddHours(15))
+            {
+                returnDateTime = returnDateTime.Date.AddHours(15);
+            }
+            return returnDateTime;
+        }
+    }
+   
+
     public static int GetItemIndex(KLine[] kArr, DateTime currentDateTime)
     {
         int ret = -1;
@@ -159,6 +182,8 @@ public class Stock
         }
         return ret;
     }
+
+
 
     public static int GetItemIndex(DateTime currentDateTime, KLine[] kArr)
     {
@@ -319,6 +344,30 @@ public class Stock
         }
 
         return itmes;
+    }
+
+    public static int KDJIndex(KLine[] kArr, int index)
+    {
+        int days = -1;
+        KLine.ComputeRSV(kArr);
+        KLine.ComputeKDJ(kArr);
+        for (int i = index; i > 0; i--)
+        {
+            if (StockWatcher.IsKdjFolk(kArr, i))
+            {
+                days++;
+                break;
+            }
+            else if (kArr[i].j > kArr[i].k && kArr[i].k > kArr[i].d)
+            {
+                days++;
+            }
+            else
+            {
+                break;
+            }
+        }
+        return days;
     }
 
     public int kdjDays(int index)
