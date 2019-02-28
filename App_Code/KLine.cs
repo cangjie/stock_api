@@ -72,6 +72,7 @@ public class KLine
                     endTime = startDateTime.Add(new TimeSpan(0, 30, 0));
                     break;
                 case "1hr":
+                case "60min":
                     endTime = startDateTime.Add(new TimeSpan(1, 0, 0));
                     break;
                 case "1min":
