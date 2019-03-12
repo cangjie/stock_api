@@ -180,6 +180,10 @@
                             double currentValuePrice1 = (double)drOri[i];
                             dr[i] = Math.Round(currentValuePrice1, 2).ToString();
                             break;
+                        case "幅度":
+                        case "总换手":
+                            dr[i] = drOri[i].ToString() + "%";
+                            break;
                         default:
                             if (System.Text.RegularExpressions.Regex.IsMatch(drArr[0].Table.Columns[i].Caption.Trim(), "\\d日")
                                 || drArr[0].Table.Columns[i].Caption.Trim().Equals("总计"))
@@ -336,7 +340,7 @@
         dt.Columns.Add("F3", Type.GetType("System.Double"));
         dt.Columns.Add("F5", Type.GetType("System.Double"));
         dt.Columns.Add("前低", Type.GetType("System.Double"));
-        dt.Columns.Add("幅度", Type.GetType("System.String"));
+        dt.Columns.Add("幅度", Type.GetType("System.Double"));
         dt.Columns.Add("3线", Type.GetType("System.Double"));
         dt.Columns.Add("现价", Type.GetType("System.Double"));
         dt.Columns.Add("评级", Type.GetType("System.String"));
@@ -353,6 +357,10 @@
         dt.Columns.Add("价差", Type.GetType("System.Double"));
         dt.Columns.Add("价差abs", Type.GetType("System.Double"));
         dt.Columns.Add("类型", Type.GetType("System.String"));
+        dt.Columns.Add("总换手", Type.GetType("System.Double"));
+        dt.Columns.Add("KDJ60", Type.GetType("System.Int32"));
+        dt.Columns.Add("KDJ30", Type.GetType("System.Int32"));
+
 
         for (int i = 0; i <= 5; i++)
         {
@@ -391,6 +399,13 @@
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
+
+            KLine[] kArrHour = Stock.LoadRedisKLine(stock.gid, "60min", rc);
+            KLine[] kArrHalfHour = Stock.LoadRedisKLine(stock.gid, "30min", rc);
+            DateTime currentHalfHourTime = Stock.GetCurrentKLineEndDateTime(currentDate, 30);
+            DateTime currentHourTime = Stock.GetCurrentKLineEndDateTime(currentDate, 60);
+            int currentIndexHour = Stock.GetItemIndex(kArrHour, currentHourTime);
+            int currentIndexHalfHour = Stock.GetItemIndex(kArrHalfHour, currentHalfHourTime);
 
             if (dtOri.Select(" gid = '" + stock.gid.Trim() + "'").Length == 0)
             {
@@ -504,6 +519,11 @@
             }
             avarageVolume = (int)Math.Round((double)avarageVolume / (double)(highIndex - lowestIndex), 0);
 
+            double totalVolume = 0;
+            for (int i = lowestIndex; i < currentIndex; i++)
+            {
+                totalVolume += stock.kLineDay[i].volume;
+            }
 
             double f3 = highest - (highest - lowest) * 0.382;
             double f5 = highest - (highest - lowest) * 0.618;
@@ -639,7 +659,7 @@
             dr["F3"] = f3;
             dr["F5"] = f5;
             dr["前低"] = lowest;
-            dr["幅度"] = width.ToString() + "%";
+            dr["幅度"] = width;//.ToString() + "%";
 
 
             double f3ReverseRate = (stock.kLineDay[currentIndex].lowestPrice - f3) / f3;
@@ -730,6 +750,19 @@
             }
 
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
+            double totalStockCount = stock.TotalStockCount(currentDate);
+            if (totalStockCount > 0)
+            {
+                dr["总换手"] = Math.Round(100 * totalVolume / totalStockCount, 2);
+            }
+            else
+            {
+                dr["总换手"] = 0;
+            }
+
+            dr["KDJ30"] = Stock.KDJIndex(kArrHalfHour, currentIndexHalfHour);
+            dr["KDJ60"] = Stock.KDJIndex(kArrHour, currentIndexHour);
+
             dt.Rows.Add(dr);
 
         }
@@ -976,9 +1009,11 @@
                     <asp:BoundColumn DataField="信号" HeaderText="信号"></asp:BoundColumn>
                     <asp:BoundColumn DataField="缩量" HeaderText="缩量"></asp:BoundColumn>
                     <asp:BoundColumn DataField="盘比" HeaderText="盘比"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="总换手" HeaderText="总换手"></asp:BoundColumn>
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD日|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>
-                   
+                    <asp:BoundColumn DataField="KDJ60" HeaderText="KDJ60" SortExpression="KDJ率|asc"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="KDJ30" HeaderText="KDJ30" SortExpression="KDJ率|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
                     
                     <asp:BoundColumn DataField="现价" HeaderText="现价"></asp:BoundColumn>
