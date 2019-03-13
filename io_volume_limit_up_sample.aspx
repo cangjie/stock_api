@@ -748,7 +748,7 @@
                 dr["总换手"] = 0;
             }
 
-            if (((double)dr["总换手"] > 0.1 && (double)dr["总换手"] < 0.9) || (double)dr["总换手"] > 1.1)
+            if (((double)dr["总换手"] > 10 && (double)dr["总换手"] < 90) || (double)dr["总换手"] > 110)
             {
                 continue;
             }
