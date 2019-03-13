@@ -156,7 +156,7 @@ public class Stock
         {
             DateTime returnDateTime = currentDate.Date.AddHours(9).AddMinutes(30).AddMinutes(stepMinutes);
             for (; returnDateTime < DateTime.Now; returnDateTime = returnDateTime.AddMinutes(stepMinutes)) { }
-            if (returnDateTime > returnDateTime.Date.AddHours(11).AddMinutes(30) && returnDateTime <= returnDateTime.AddHours(13))
+            if (returnDateTime > returnDateTime.Date.AddHours(11).AddMinutes(30) && returnDateTime <= returnDateTime.Date.AddHours(13))
             {
                 returnDateTime = returnDateTime.Date.AddHours(11).AddMinutes(30);
             }
