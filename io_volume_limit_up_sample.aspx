@@ -74,7 +74,7 @@
         else
             currentDate = Util.GetDay(calendar.SelectedDate);
         DataTable dtOri = GetData(currentDate, double.Parse(Util.GetSafeRequestValue(Request, "rate", "0.01")));
-        string filter = Util.GetSafeRequestValue(Request, "filter", " 缩量 >= 1 ");
+        string filter = Util.GetSafeRequestValue(Request, "filter", "");
         /*
         if (Util.GetSafeRequestValue(Request, "goldcross", "0").Trim().Equals("0"))
         {
