@@ -400,12 +400,17 @@
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
 
+
             KLine[] kArrHour = Stock.LoadRedisKLine(stock.gid, "60min", rc);
             KLine[] kArrHalfHour = Stock.LoadRedisKLine(stock.gid, "30min", rc);
             DateTime currentHalfHourTime = Stock.GetCurrentKLineEndDateTime(currentDate, 30);
             DateTime currentHourTime = Stock.GetCurrentKLineEndDateTime(currentDate, 60);
             int currentIndexHour = Stock.GetItemIndex(kArrHour, currentHourTime);
             int currentIndexHalfHour = Stock.GetItemIndex(kArrHalfHour, currentHalfHourTime);
+            KLine.ComputeRSV(kArrHour);
+            KLine.ComputeKDJ(kArrHour);
+            KLine.ComputeRSV(kArrHalfHour);
+            KLine.ComputeKDJ(kArrHalfHour);
 
             if (dtOri.Select(" gid = '" + stock.gid.Trim() + "'").Length == 0)
             {
