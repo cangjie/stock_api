@@ -771,7 +771,7 @@
             dr["KDJ30"] = Stock.KDJIndex(kArrHalfHour, currentIndexHalfHour);
             dr["KDJ60"] = Stock.KDJIndex(kArrHour, currentIndexHour);
 
-            if ((int)dr["KDJ60"] > 0 &&  kArrHour[currentIndexHour].j < 40)
+            if ((int)dr["KDJ60"] >= 0 &&  kArrHour[currentIndexHour].j < 50)
             {
                 dr["信号"] = "<a title='小时KDJ低位金叉' >🌟</a>" + dr["信号"].ToString().Trim();
             }
