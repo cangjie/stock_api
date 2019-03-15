@@ -773,7 +773,7 @@
 
             if ((int)dr["KDJ60"] > 0 &&  kArrHour[currentIndexHour].j < 40)
             {
-                dr["信号"] = "<a title='小时KDJ低位金叉' >👍</a>" + dr["信号"].ToString().Trim();
+                dr["信号"] = "<a title='小时KDJ低位金叉' >🌟</a>" + dr["信号"].ToString().Trim();
             }
 
             dt.Rows.Add(dr);
