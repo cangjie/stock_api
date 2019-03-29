@@ -351,11 +351,22 @@
             }
             Stock stock = new Stock(drOri["gid"].ToString().Trim(), rc);
             stock.LoadKLineDay(rc);
+            
+            KLine[] kArrHour = Stock.LoadRedisKLine(stock.gid, "60min", rc);
+            KLine[] kArrHalfHour = Stock.LoadRedisKLine(stock.gid, "30min", rc);
+
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
-            KLine[] kArrHour = Stock.LoadRedisKLine(stock.gid, "60min", rc);
-            KLine[] kArrHalfHour = Stock.LoadRedisKLine(stock.gid, "30min", rc);
+
+            KLine.ComputeMACD(kArrHour);
+            KLine.ComputeRSV(kArrHour);
+            KLine.ComputeKDJ(kArrHour);
+
+            KLine.ComputeMACD(kArrHalfHour);
+            KLine.ComputeRSV(kArrHalfHour);
+            KLine.ComputeKDJ(kArrHalfHour);
+
 
             int kArrHourTodayLastIndex = kArrHour.Length - 1;
             int kArrHalfHourTodayLastIndex = kArrHalfHour.Length - 1;
