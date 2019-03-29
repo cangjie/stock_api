@@ -418,8 +418,8 @@
             dr["3线"] = line3Price;
             dr["KDJ日"] = stock.kdjDays(currentIndex);
             dr["MACD日"] = stock.macdDays(currentIndex);
-            dr["KDJ30"] = Stock.KDJIndex(kArrHalfHour, stock.kLineHalfHour.Length - 1);
-            dr["KDJ60"] = Stock.KDJIndex(kArrHour, stock.kLineHour.Length - 1);
+            dr["KDJ30"] = Stock.KDJIndex(kArrHalfHour, kArrHalfHour.Length - 1);
+            dr["KDJ60"] = Stock.KDJIndex(kArrHour, kArrHour.Length - 1);
             double maxPrice = 0;
             //buyPrice = supportPrice;
             dr["买入"] = buyPrice;
