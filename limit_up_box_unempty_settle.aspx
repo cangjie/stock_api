@@ -355,6 +355,8 @@
             return dt;
         }
 
+        DataTable dtBreadPool = DBHelper.GetDataTable(" select * from bread_pool where alert_date = '" + currentDate.ToShortDateString() + "' ");
+
         DateTime lastTransactDate = Util.GetLastTransactDate(currentDate, 1);
         DateTime limitUpStartDate = Util.GetLastTransactDate(lastTransactDate, 10);
 
@@ -395,7 +397,7 @@
             int currentIndexHour = Stock.GetItemIndex(kArrHour, currentHourTime);
             int currentIndexHalfHour = Stock.GetItemIndex(kArrHalfHour, currentHalfHourTime);
 
-            
+
 
             if (currentIndex < 0)
                 continue;
@@ -710,7 +712,7 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"无影脚\" >🦶</a>";
             }
-            
+
 
             if (stock.kLineDay[currentIndex].startPrice < stock.kLineDay[currentIndex].endPrice
                 && (stock.kLineDay[currentIndex].highestPrice - stock.kLineDay[currentIndex].endPrice)*2 <
@@ -751,6 +753,13 @@
             if ((int)dr["KDJ60"] >= 0 &&  kArrHour[currentIndexHour-(int)dr["KDJ60"]].j < 40)
             {
                 dr["信号"] = "<a title='小时KDJ低位金叉' >🌟</a>" + dr["信号"].ToString().Trim();
+            }
+
+
+            if (dtBreadPool.Select(" gid = '" + stock.gid.Trim() + "' ").Length == 0)
+            {
+                DBHelper.InsertData("bread_pool", new string[,] { { "gid", "varchar", stock.gid.Trim()}, {"alert_date", "datetime", currentDate.ToShortDateString() },
+                    {"exchange", "float", dr["总换手"].ToString() }, {"lowest", "float", dr["前低"].ToString() }, { "highest", "flaot", dr["现高"].ToString()} });
             }
 
             dt.Rows.Add(dr);
