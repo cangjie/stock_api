@@ -126,7 +126,6 @@
             double hightPrice =  Math.Round((double)drOri["现高"], 2);
             for (int i = 0; i < drArr[0].Table.Columns.Count; i++)
             {
-
                 if (drArr[0].Table.Columns[i].DataType.FullName.ToString().Equals("System.Double"))
                 {
                     switch (drArr[0].Table.Columns[i].Caption.Trim())
@@ -154,7 +153,6 @@
                                 dr[i] = "<font color=\"green\"  >"
                                 + Math.Round(currentValuePrice2, 2).ToString() + "</font>";
                             }
-
                             break;
                         case "今开":
                         case "现价":
@@ -167,12 +165,6 @@
                             dr[i] = "<font color=\"" + (currentValuePrice > currentPrice ? "red" : (currentValuePrice == currentPrice ? "gray" : "green")) + "\"  >"
                                 + Math.Round(currentValuePrice, 2).ToString() + "</font>";
                             break;
-                        /*
-                    case "价差":
-                        double currentValuePrice1 = (double)drOri[i];
-                        dr[i] = Math.Round(currentValuePrice1, 2).ToString();
-                        break;
-                        */
                         default:
                             if (System.Text.RegularExpressions.Regex.IsMatch(drArr[0].Table.Columns[i].Caption.Trim(), "\\d日")
                                 || drArr[0].Table.Columns[i].Caption.Trim().Equals("总计"))
@@ -195,11 +187,6 @@
                             }
                             break;
                     }
-                }
-                else if (drArr[0].Table.Columns[i].DataType.FullName.ToString().Equals("System.DateTime"))
-                {
-                    DateTime footTime = (DateTime)drOri[i];
-                    dr[i] = footTime.Hour.ToString() + ":" + footTime.Minute.ToString();
                 }
                 else
                 {
@@ -355,9 +342,6 @@
 
         foreach (DataRow drOri in dtOri.Rows)
         {
-
-
-
             DateTime alertDate = DateTime.Parse(drOri["alert_date"].ToString().Trim());
             DataRow[] drArrExists = dtOri.Select(" gid = '" + drOri["gid"].ToString() + "' and alert_date > '" + alertDate.ToShortDateString() + "'  ");
             if (drArrExists.Length > 0)
@@ -371,27 +355,16 @@
             KLine.ComputeKDJ(stock.kLineDay);
             KLine[] kArrHour = Stock.LoadRedisKLine(stock.gid, "60min", rc);
             KLine[] kArrHalfHour = Stock.LoadRedisKLine(stock.gid, "30min", rc);
-
             int currentIndex = stock.GetItemIndex(currentDate);
             DateTime currentHalfHourTime = Stock.GetCurrentKLineEndDateTime(currentDate, 30);
             DateTime currentHourTime = Stock.GetCurrentKLineEndDateTime(currentDate, 60);
             int currentIndexHour = Stock.GetItemIndex(kArrHour, currentHourTime);
             int currentIndexHalfHour = Stock.GetItemIndex(kArrHalfHour, currentHalfHourTime);
-
-
-
             if (currentIndex < 0)
                 continue;
             int maxIndex = Math.Min(stock.kLineDay.Length - 1, currentIndex + 5);
-
-
-
-
             double lowest = double.Parse(drOri["lowest"].ToString());
             double highest = double.Parse(drOri["highest"].ToString());
-
-
-
             double f3 = highest - (highest - lowest) * 0.382;
             double f5 = highest - (highest - lowest) * 0.618;
             double line3Price = KLine.GetAverageSettlePrice(stock.kLineDay, currentIndex, 3, 3);
@@ -421,7 +394,6 @@
             dr["KDJ30"] = Stock.KDJIndex(kArrHalfHour, kArrHalfHour.Length - 1);
             dr["KDJ60"] = Stock.KDJIndex(kArrHour, kArrHour.Length - 1);
             double maxPrice = 0;
-            //buyPrice = supportPrice;
             dr["买入"] = buyPrice;
 
             dr["涨幅"] = (currentPrice - buyPrice) / buyPrice;
