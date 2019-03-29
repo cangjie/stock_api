@@ -351,7 +351,12 @@
             }
             Stock stock = new Stock(drOri["gid"].ToString().Trim(), rc);
             stock.LoadKLineDay(rc);
-            
+
+            if (stock.gid.Trim().Equals("sh603569"))
+            {
+                continue;
+            }
+
             KLine[] kArrHour = Stock.LoadRedisKLine(stock.gid, "60min", rc);
             KLine[] kArrHalfHour = Stock.LoadRedisKLine(stock.gid, "30min", rc);
 
@@ -450,7 +455,17 @@
             dr["3线"] = line3Price;
             dr["KDJ日"] = stock.kdjDays(currentIndex);
             dr["MACD日"] = stock.macdDays(currentIndex);
+
+            if (kArrHour[kArrHourTodayLastIndex].d > kArrHour[kArrHourTodayLastIndex].k
+                && kArrHour[kArrHourTodayLastIndex].k > kArrHour[kArrHourTodayLastIndex].j)
+            {
+                continue;
+            }
+
+
+
             int kdjHours = Stock.KDJIndex(kArrHour, kArrHourTodayLastIndex);
+
             if (kdjHours < 0)
             {
                 continue;
@@ -458,13 +473,11 @@
 
             dr["KDJ30"] = Stock.KDJIndex(kArrHalfHour, kArrHalfHourTodayLastIndex);
             dr["KDJ60"] = kdjHours;
-
-            DateTime hourKDJCrossTime = kArrHour[kArrHour.Length - 1 - kdjHours].endDateTime;
-
-            if (hourKDJCrossTime.Date != currentDate.Date)
+            if (kdjHours > 3)
             {
                 continue;
             }
+
             buyPrice = kArrHour[kArrHour.Length - 1 - kdjHours].endPrice;
             double maxPrice = 0;
             dr["买入"] = buyPrice;
