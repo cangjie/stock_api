@@ -356,13 +356,38 @@
             KLine.ComputeKDJ(stock.kLineDay);
             KLine[] kArrHour = Stock.LoadRedisKLine(stock.gid, "60min", rc);
             KLine[] kArrHalfHour = Stock.LoadRedisKLine(stock.gid, "30min", rc);
+
+            int kArrHourTodayLastIndex = kArrHour.Length - 1;
+            int kArrHalfHourTodayLastIndex = kArrHalfHour.Length - 1;
+
+            if (currentDate.Date < DateTime.Now.Date)
+            {
+                for (int i = kArrHour.Length - 1; i >= 0; i--)
+                {
+                    if (kArrHour[i].endDateTime.Date == currentDate.Date)
+                    {
+                        kArrHourTodayLastIndex = kArrHour.Length - 1 - i;
+                        break;
+                    }
+                }
+                for (int i = kArrHalfHour.Length - 1; i >= 0; i--)
+                {
+                    if (kArrHalfHour[i].endDateTime.Date == currentDate.Date)
+                    {
+                        kArrHalfHourTodayLastIndex = kArrHalfHour.Length - 1 - i;
+                        break;
+                    }
+                }
+            }
+
             int currentIndex = stock.GetItemIndex(currentDate);
+            if (currentIndex < 0)
+            {
+                continue;
+            }
             DateTime currentHalfHourTime = Stock.GetCurrentKLineEndDateTime(currentDate, 30);
             DateTime currentHourTime = Stock.GetCurrentKLineEndDateTime(currentDate, 60);
-            int currentIndexHour = Stock.GetItemIndex(kArrHour, currentHourTime);
-            int currentIndexHalfHour = Stock.GetItemIndex(kArrHalfHour, currentHalfHourTime);
-            if (currentIndex < 0)
-                continue;
+
             int maxIndex = Math.Min(stock.kLineDay.Length - 1, currentIndex + 5);
             double lowest = double.Parse(drOri["lowest"].ToString());
             double highest = double.Parse(drOri["highest"].ToString());
@@ -386,14 +411,14 @@
                 supportPrice = f5;
                 dr["类型"] = "F5";
 
-                
+
             }
             else
             {
                 supportPrice = f3;
                 dr["类型"] = "F3";
-                
-                
+
+
             }
 
 
@@ -414,13 +439,13 @@
             dr["3线"] = line3Price;
             dr["KDJ日"] = stock.kdjDays(currentIndex);
             dr["MACD日"] = stock.macdDays(currentIndex);
-            int kdjHours = Stock.KDJIndex(kArrHour, currentIndexHour);
+            int kdjHours = Stock.KDJIndex(kArrHour, kArrHourTodayLastIndex);
             if (kdjHours < 0)
             {
                 continue;
             }
 
-            dr["KDJ30"] = Stock.KDJIndex(kArrHalfHour, currentIndexHalfHour);
+            dr["KDJ30"] = Stock.KDJIndex(kArrHalfHour, kArrHalfHourTodayLastIndex);
             dr["KDJ60"] = kdjHours;
 
             DateTime hourKDJCrossTime = kArrHour[kArrHour.Length - 1 - kdjHours].endDateTime;
@@ -481,8 +506,8 @@
             }
 
 
-            
-            if ((int)dr["KDJ60"] >= 0 &&  kArrHour[currentIndexHour-(int)dr["KDJ60"]].j < 40)
+
+            if ((int)dr["KDJ60"] >= 0 &&  kArrHour[kArrHourTodayLastIndex-(int)dr["KDJ60"]].j < 40)
             {
                 dr["信号"] = "<a title='小时KDJ低位金叉' >🌟</a>" + dr["信号"].ToString().Trim();
             }
