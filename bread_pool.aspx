@@ -366,7 +366,7 @@
                 {
                     if (kArrHour[i].endDateTime.Date == currentDate.Date)
                     {
-                        kArrHourTodayLastIndex = kArrHour.Length - 1 - i;
+                        kArrHourTodayLastIndex = i;
                         break;
                     }
                 }
@@ -374,7 +374,7 @@
                 {
                     if (kArrHalfHour[i].endDateTime.Date == currentDate.Date)
                     {
-                        kArrHalfHourTodayLastIndex = kArrHalfHour.Length - 1 - i;
+                        kArrHalfHourTodayLastIndex = i;
                         break;
                     }
                 }
