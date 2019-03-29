@@ -679,7 +679,7 @@
                     <asp:BoundColumn DataField="F5" HeaderText="F5"></asp:BoundColumn>
                     <asp:BoundColumn DataField="前低" HeaderText="前低"></asp:BoundColumn>
                     <asp:BoundColumn DataField="幅度" HeaderText="幅度"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="现价" HeaderText="现价"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="买入" HeaderText="买入"></asp:BoundColumn>
                     <asp:BoundColumn DataField="涨幅" HeaderText="涨幅"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="0日" HeaderText="0日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日"  ></asp:BoundColumn>
