@@ -24,7 +24,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "幅度 desc");
+        sort = Util.GetSafeRequestValue(Request, "sort", "总换手");
         filter = Util.GetSafeRequestValue(Request, "filter", "");
         if (!IsPostBack)
         {
@@ -324,6 +324,7 @@
         dt.Columns.Add("KDJ60", Type.GetType("System.Int32"));
         dt.Columns.Add("KDJ30", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
+        dt.Columns.Add("类型", Type.GetType("System.String"));
         for (int i = 0; i <= 5; i++)
         {
             dt.Columns.Add(i.ToString() + "日", Type.GetType("System.Double"));
@@ -375,6 +376,28 @@
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
 
+
+            double f3ReverseRate = (stock.kLineDay[currentIndex].lowestPrice - f3) / f3;
+            double f5ReverseRate = (stock.kLineDay[currentIndex].lowestPrice - f5) / f5;
+            double supportPrice = 0;
+
+            if (Math.Abs(f3ReverseRate) > Math.Abs(f5ReverseRate))
+            {
+                supportPrice = f5;
+                dr["类型"] = "F5";
+
+                
+            }
+            else
+            {
+                supportPrice = f3;
+                dr["类型"] = "F3";
+                
+                
+            }
+
+
+
             double width = Math.Round(100 * (highest - lowest) / lowest, 2);
 
             dr["现价"] = stock.kLineDay[currentIndex].endPrice;
@@ -391,11 +414,25 @@
             dr["3线"] = line3Price;
             dr["KDJ日"] = stock.kdjDays(currentIndex);
             dr["MACD日"] = stock.macdDays(currentIndex);
-            dr["KDJ30"] = Stock.KDJIndex(kArrHalfHour, kArrHalfHour.Length - 1);
-            dr["KDJ60"] = Stock.KDJIndex(kArrHour, kArrHour.Length - 1);
+            int kdjHours = Stock.KDJIndex(kArrHour, currentIndexHour);
+            if (kdjHours < 0)
+            {
+                continue;
+            }
+
+            dr["KDJ30"] = Stock.KDJIndex(kArrHalfHour, currentIndexHalfHour);
+            dr["KDJ60"] = kdjHours;
+
+            DateTime hourKDJCrossTime = kArrHour[kArrHour.Length - 1 - kdjHours].endDateTime;
+
+            if (hourKDJCrossTime.Date != currentDate.Date)
+            {
+                continue;
+            }
+            buyPrice = kArrHour[kArrHour.Length - 1 - kdjHours].endPrice;
             double maxPrice = 0;
             dr["买入"] = buyPrice;
-
+            dr["总换手"] = double.Parse(drOri["exchange"].ToString());
             dr["涨幅"] = (currentPrice - buyPrice) / buyPrice;
             if (stock.kLineDay[stock.kLineDay.Length - 1].endPrice >= highest)
             {
@@ -444,10 +481,7 @@
             }
 
 
-
-            dr["KDJ30"] = Stock.KDJIndex(kArrHalfHour, currentIndexHalfHour);
-            dr["KDJ60"] = Stock.KDJIndex(kArrHour, currentIndexHour);
-
+            
             if ((int)dr["KDJ60"] >= 0 &&  kArrHour[currentIndexHour-(int)dr["KDJ60"]].j < 40)
             {
                 dr["信号"] = "<a title='小时KDJ低位金叉' >🌟</a>" + dr["信号"].ToString().Trim();
@@ -534,97 +568,12 @@
                     {
                         StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(),
                                 dr["名称"].ToString() + " " + message, price, "limit_up_box");
-
-
-                        /*
-                        //老马
-                        StockWatcher.SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", dr["代码"].ToString().Trim(),
-                                dr["名称"].ToString() + " " + message, price, "limit_up_box");
-                        //老马的朋友
-                        StockWatcher.SendAlertMessage("oqrMvt7eGkY9UejlTH1i8d-oD-V0", dr["代码"].ToString().Trim(),
-                                dr["名称"].ToString() + " " + message, price, "limit_up_box");
-                        StockWatcher.SendAlertMessage("oqrMvtwvHer0l3SJGYP73ioQeuVo", dr["代码"].ToString().Trim(),
-                                dr["名称"].ToString() + " " + message, price, "limit_up_box");
-
-                    */
-
                     }
-                    /*
-                    if (dr["信号"].ToString().IndexOf("🛍️") >= 0 &&
-                        (dr["信号"].ToString().IndexOf("📈") >= 0 || dr["信号"].ToString().IndexOf("🔥") >= 0 || dr["信号"].ToString().IndexOf("🌟") >= 0))
-                    {
-
-                        double f3 = Math.Round(double.Parse(dr["F3"].ToString()), 2);
-                        double line3 = Math.Round(double.Parse(dr["3线"].ToString()), 2);
-                        //string message = "F3:" + f3.ToString() + " " + ((f3 >= line3) ? "🐂高于" : "🐻低于") + "3线：" + line3.ToString() + " 现高：" + high.ToString() + " 前低：" + low.ToString();
-                        string message = ((f3 >= line3) ? "🐂高于3线" : "");
-                        message = message.Trim() + "  " + ((int.Parse(dr["KDJ日"].ToString()) >= 0) ? "👑KDJ" : "");
-                        message = message.Trim() + "  幅度：" + Math.Round(100 * (high - low) / low, 2).ToString() + "%";
-                        double price = Math.Round(double.Parse(dr["现价"].ToString()), 2);
-                        if (StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()),
-                                dr["代码"].ToString().Trim(),
-                                "limit_up_box_f3",
-                                dr["名称"].ToString().Trim(),
-                                "现价：" + price.ToString() + " " + message.Trim()))
-                        {
-                            string message_ext = message.Replace("👑KDJ", "👑KDJ" + dr["KDJ日"].ToString().Trim()) + " 调整：" + dr["调整"].ToString().Trim();
-                            StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(),
-                                dr["名称"].ToString() + " " + message_ext, f3, "limit_up_box_f3");
-                            StockWatcher.SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", dr["代码"].ToString().Trim(),
-                                dr["名称"].ToString() + " " + message_ext, f3, "limit_up_box_f3");
-
-
-                            StockWatcher.SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", dr["代码"].ToString().Trim(),
-                                dr["名称"].ToString() + " " + message, f3, "limit_up_box_f3");
-                            StockWatcher.SendAlertMessage("oqrMvt2RxLEM7B8a3H6BYD5tXEiY", dr["代码"].ToString().Trim(),
-                                dr["名称"].ToString() + " " + message, f3, "limit_up_box_f3");
-                            StockWatcher.SendAlertMessage("oqrMvt1-mTlYx0c9qr7EM9ryA6-I", dr["代码"].ToString().Trim(),
-                                dr["名称"].ToString() + " " + message, f3, "limit_up_box_f3");
-                            StockWatcher.SendAlertMessage("oqrMvtxeGio8mZcm3U69TtcDu9XY", dr["代码"].ToString().Trim(),
-                                dr["名称"].ToString() + " " + message, f3, "limit_up_box_f3");
-
-                        }
-                    }
-                    else
-                    {
-                        double high = Math.Round(double.Parse(dr["现高"].ToString()), 2);
-                        double low = Math.Round(double.Parse(dr["前低"].ToString()), 2);
-                        double f5 = Math.Round(double.Parse(dr["F5"].ToString()), 2);
-                        double line3 = Math.Round(double.Parse(dr["3线"].ToString()), 2);
-                        string message = "F5:" + f5.ToString() + " " + ((f5 >= line3) ? "🐂高于" : "🐻低于") + "3线：" + line3.ToString() + " 现高：" + high.ToString() + " 前低：" + low.ToString();
-                        double price = Math.Round(double.Parse(dr["买入"].ToString()), 2);
-                        if (StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()),
-                                dr["代码"].ToString().Trim(),
-                                "limit_up_box_f5",
-                                dr["名称"].ToString().Trim(),
-                                "买入价：" + price.ToString() + " " + message.Trim()))
-                        {
-
-                            StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(),
-                                dr["名称"].ToString() + " " + message, price, "limit_up_box_f5");
-
-                            StockWatcher.SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", dr["代码"].ToString().Trim(),
-                                dr["名称"].ToString() + " " + message, price, "limit_up_box_f5");
-                            StockWatcher.SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", dr["代码"].ToString().Trim(),
-                                dr["名称"].ToString() + " " + message, price, "limit_up_box_f5");
-                            StockWatcher.SendAlertMessage("oqrMvt2RxLEM7B8a3H6BYD5tXEiY", dr["代码"].ToString().Trim(),
-                                dr["名称"].ToString() + " " + message, price, "limit_up_box_f5");
-
-
-
-                        }
-
-                    }
-                    */
                 }
-
             }
             Thread.Sleep(30000);
         }
     }
-
-
-
 
     public static bool foot(Core.Timeline[] tArr, out double lowestPrice, out double displayLowPrice, out DateTime footTime)
     {
@@ -704,7 +653,6 @@
                     <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F5" HeaderText="F5"></asp:BoundColumn>
                     <asp:BoundColumn DataField="前低" HeaderText="前低"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="价差" HeaderText="价差"></asp:BoundColumn>
                     <asp:BoundColumn DataField="幅度" HeaderText="幅度"></asp:BoundColumn>
                     <asp:BoundColumn DataField="现价" HeaderText="现价"></asp:BoundColumn>
                     <asp:BoundColumn DataField="涨幅" HeaderText="涨幅"  ></asp:BoundColumn>
