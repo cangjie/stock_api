@@ -378,21 +378,28 @@
 
             if (currentDate.Date < DateTime.Now.Date)
             {
-                for (int i = kArrHour.Length - 1; i >= 0; i--)
+                try
                 {
-                    if (kArrHour[i].endDateTime.Date == currentDate.Date)
+                    for (int i = kArrHour.Length - 1; i >= 0; i--)
                     {
-                        kArrHourTodayLastIndex = i;
-                        break;
+                        if (kArrHour[i].endDateTime.Date == currentDate.Date)
+                        {
+                            kArrHourTodayLastIndex = i;
+                            break;
+                        }
+                    }
+                    for (int i = kArrHalfHour.Length - 1; i >= 0; i--)
+                    {
+                        if (kArrHalfHour[i].endDateTime.Date == currentDate.Date)
+                        {
+                            kArrHalfHourTodayLastIndex = i;
+                            break;
+                        }
                     }
                 }
-                for (int i = kArrHalfHour.Length - 1; i >= 0; i--)
+                catch
                 {
-                    if (kArrHalfHour[i].endDateTime.Date == currentDate.Date)
-                    {
-                        kArrHalfHourTodayLastIndex = i;
-                        break;
-                    }
+                    continue;
                 }
             }
 
