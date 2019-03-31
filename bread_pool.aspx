@@ -376,31 +376,31 @@
             int kArrHourTodayLastIndex = kArrHour.Length - 1;
             int kArrHalfHourTodayLastIndex = kArrHalfHour.Length - 1;
 
+            if (kArrHalfHourTodayLastIndex < 0 || kArrHalfHourTodayLastIndex < 0)
+            {
+                continue;
+            }
+
             if (currentDate.Date < DateTime.Now.Date)
             {
-                try
+
+                for (int i = kArrHour.Length - 1; i >= 0; i--)
                 {
-                    for (int i = kArrHour.Length - 1; i >= 0; i--)
+                    if (kArrHour[i].endDateTime.Date == currentDate.Date)
                     {
-                        if (kArrHour[i].endDateTime.Date == currentDate.Date)
-                        {
-                            kArrHourTodayLastIndex = i;
-                            break;
-                        }
-                    }
-                    for (int i = kArrHalfHour.Length - 1; i >= 0; i--)
-                    {
-                        if (kArrHalfHour[i].endDateTime.Date == currentDate.Date)
-                        {
-                            kArrHalfHourTodayLastIndex = i;
-                            break;
-                        }
+                        kArrHourTodayLastIndex = i;
+                        break;
                     }
                 }
-                catch
+                for (int i = kArrHalfHour.Length - 1; i >= 0; i--)
                 {
-                    continue;
+                    if (kArrHalfHour[i].endDateTime.Date == currentDate.Date)
+                    {
+                        kArrHalfHourTodayLastIndex = i;
+                        break;
+                    }
                 }
+
             }
 
             int currentIndex = stock.GetItemIndex(currentDate);
