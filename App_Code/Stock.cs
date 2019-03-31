@@ -794,6 +794,7 @@ public class Stock
 
     public static KLine[] LoadLocalKLine(string gid, string type)
     {
+
         if (type.Trim().Equals("day"))
         {
             CachedKLine c = KLineCache.GetKLineCache(gid);
