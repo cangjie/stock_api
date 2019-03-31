@@ -376,10 +376,7 @@
             int kArrHourTodayLastIndex = kArrHour.Length - 1;
             int kArrHalfHourTodayLastIndex = kArrHalfHour.Length - 1;
 
-            if (kArrHalfHourTodayLastIndex < 0 || kArrHalfHourTodayLastIndex < 0)
-            {
-                continue;
-            }
+            
 
             if (currentDate.Date < DateTime.Now.Date)
             {
@@ -401,6 +398,15 @@
                     }
                 }
 
+            }
+            if (kArrHalfHourTodayLastIndex < 0 || kArrHalfHourTodayLastIndex < 0)
+            {
+                continue;
+            }
+            if (kArrHour[kArrHourTodayLastIndex].d > kArrHour[kArrHourTodayLastIndex].k
+                && kArrHour[kArrHourTodayLastIndex].k > kArrHour[kArrHourTodayLastIndex].j)
+            {
+                continue;
             }
 
             int currentIndex = stock.GetItemIndex(currentDate);
@@ -463,11 +469,7 @@
             dr["KDJ日"] = stock.kdjDays(currentIndex);
             dr["MACD日"] = stock.macdDays(currentIndex);
 
-            if (kArrHour[kArrHourTodayLastIndex].d > kArrHour[kArrHourTodayLastIndex].k
-                && kArrHour[kArrHourTodayLastIndex].k > kArrHour[kArrHourTodayLastIndex].j)
-            {
-                continue;
-            }
+            
 
 
 
