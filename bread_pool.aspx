@@ -496,7 +496,7 @@
                 maxPrice = Math.Max(maxPrice, highPrice);
                 dr[i.ToString() + "日"] = (highPrice - stock.kLineDay[currentIndex].endPrice) / buyPrice;
             }
-            dr["总计"] = (maxPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice;
+            dr["总计"] = (maxPrice - stock.kLineDay[currentIndex].endPrice) / buyPrice;
 
 
             if (dtIOVolume.Select("gid = '" + stock.gid.Trim() + "' ").Length > 0)
