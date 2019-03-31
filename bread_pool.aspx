@@ -376,7 +376,7 @@
             int kArrHourTodayLastIndex = kArrHour.Length - 1;
             int kArrHalfHourTodayLastIndex = kArrHalfHour.Length - 1;
 
-            
+
 
             if (currentDate.Date < DateTime.Now.Date)
             {
@@ -416,7 +416,6 @@
             }
             DateTime currentHalfHourTime = Stock.GetCurrentKLineEndDateTime(currentDate, 30);
             DateTime currentHourTime = Stock.GetCurrentKLineEndDateTime(currentDate, 60);
-
             int maxIndex = Math.Min(stock.kLineDay.Length - 1, currentIndex + 5);
             double lowest = double.Parse(drOri["lowest"].ToString());
             double highest = double.Parse(drOri["highest"].ToString());
@@ -454,7 +453,7 @@
 
             double width = Math.Round(100 * (highest - lowest) / lowest, 2);
 
-            dr["现价"] = stock.kLineDay[currentIndex].endPrice;
+            dr["现价"] = currentPrice;
 
             dr["现高"] = highest;
             dr["F3"] = f3;
@@ -469,7 +468,7 @@
             dr["KDJ日"] = stock.kdjDays(currentIndex);
             dr["MACD日"] = stock.macdDays(currentIndex);
 
-            
+
 
 
 
@@ -713,7 +712,7 @@
                     <asp:BoundColumn DataField="前低" HeaderText="前低"></asp:BoundColumn>
                     <asp:BoundColumn DataField="幅度" HeaderText="幅度"></asp:BoundColumn>
                     <asp:BoundColumn DataField="买入" HeaderText="买入"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="涨幅" HeaderText="涨幅"  ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="现价" HeaderText="现价"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="0日" HeaderText="0日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="2日" HeaderText="2日"></asp:BoundColumn>
