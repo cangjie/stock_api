@@ -486,7 +486,7 @@
                 continue;
             }
 
-            buyPrice = kArrHour[kArrHour.Length - 1 - kdjHours].endPrice;
+            buyPrice = kArrHour[kArrHourTodayLastIndex - kdjHours].endPrice;
             double maxPrice = 0;
             dr["买入"] = buyPrice;
             dr["总换手"] = double.Parse(drOri["exchange"].ToString());
