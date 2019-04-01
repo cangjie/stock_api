@@ -23,6 +23,10 @@
             Stock s = new Stock(gid);
             s.LoadKLineDay(rc);
             int currentIndex = s.GetItemIndex(currentDate);
+            if (currentIndex < 2)
+            {
+                continue;
+            }
             if (s.kLineDay[currentIndex - 2].lowestPrice > s.kLineDay[currentIndex - 1].lowestPrice
                 && s.kLineDay[currentIndex].lowestPrice > s.kLineDay[currentIndex - 2].lowestPrice
                 && s.kLineDay[currentIndex].endPrice > Math.Max(s.kLineDay[currentIndex - 1].highestPrice, s.kLineDay[currentIndex - 2].highestPrice)
