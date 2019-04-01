@@ -31,7 +31,9 @@
                 && s.kLineDay[currentIndex].lowestPrice > s.kLineDay[currentIndex - 2].lowestPrice
                 && s.kLineDay[currentIndex].endPrice > Math.Max(s.kLineDay[currentIndex - 1].highestPrice, s.kLineDay[currentIndex - 2].highestPrice)
                 && s.kLineDay[currentIndex - 2].highestPrice > s.kLineDay[currentIndex - 1].highestPrice
-                && s.kLineDay[currentIndex].startPrice < s.kLineDay[currentIndex].endPrice)
+                && s.kLineDay[currentIndex].startPrice < s.kLineDay[currentIndex].endPrice
+                && s.kLineDay[currentIndex - 1].endPrice < KLine.GetAverageSettlePrice(s.kLineDay, currentIndex - 1, 3, 3)
+                && s.kLineDay[currentIndex - 2].endPrice < KLine.GetAverageSettlePrice(s.kLineDay, currentIndex - 2, 3, 3))
             {
                 try
                 {
