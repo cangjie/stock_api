@@ -324,6 +324,7 @@
         dt.Columns.Add("KDJ60", Type.GetType("System.Int32"));
         dt.Columns.Add("KDJ30", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
+        dt.Columns.Add("预警日", Type.GetType("System.Int32"));
         dt.Columns.Add("类型", Type.GetType("System.String"));
         for (int i = 0; i <= 5; i++)
         {
@@ -467,11 +468,7 @@
             dr["3线"] = line3Price;
             dr["KDJ日"] = stock.kdjDays(currentIndex);
             dr["MACD日"] = stock.macdDays(currentIndex);
-
-
-
-
-
+            dr["预警日"] = TransDaysDiff(DateTime.Parse(drOri["alert_date"].ToString()), currentDate);
             int kdjHours = Stock.KDJIndex(kArrHour, kArrHourTodayLastIndex);
 
             if (kdjHours < 0)
@@ -671,6 +668,19 @@
         return noShadow;
     }
 
+    public static int TransDaysDiff(DateTime startDate, DateTime endDate)
+    {
+        int days = 0;
+        for (DateTime i = startDate; i < endDate; i = i.AddDays(1))
+        {
+            if (Util.IsTransacDay(i))
+            {
+                days++;
+            }
+        }
+        return days;
+    }
+
 
 </script>
 
@@ -701,6 +711,7 @@
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="总换手" HeaderText="总换手"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="预警日" HeaderText="预警日"></asp:BoundColumn>
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ60" HeaderText="KDJ60" ></asp:BoundColumn>
