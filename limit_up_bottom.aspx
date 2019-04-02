@@ -345,7 +345,7 @@
         dt.Columns.Add("价差abs", Type.GetType("System.Double"));
         dt.Columns.Add("类型", Type.GetType("System.String"));
         dt.Columns.Add("涨幅", Type.GetType("System.Double"));
-        for (int i = 0; i <= 5; i++)
+        for (int i = 0; i <= 10; i++)
         {
             dt.Columns.Add(i.ToString() + "日", Type.GetType("System.Double"));
         }
@@ -687,7 +687,7 @@
                 dr["信号"] = dr["信号"] + "<a title='过前高' >🚩</a>";
             }
             dr["0日"] = (currentPrice - supportPrice) / supportPrice;
-            for (int i = 1; i <= 5; i++)
+            for (int i = 1; i <= 10; i++)
             {
                 if (currentIndex + i >= stock.kLineDay.Length)
                     break;
@@ -1017,6 +1017,11 @@
                     <asp:BoundColumn DataField="3日" HeaderText="3日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="4日" HeaderText="4日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="5日" HeaderText="5日"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="6日" HeaderText="6日"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="7日" HeaderText="7日"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="8日" HeaderText="8日"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="9日" HeaderText="9日"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="10日" HeaderText="10日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="总计" HeaderText="总计"  ></asp:BoundColumn>
                 </Columns>
                 <FooterStyle BackColor="#CCCCCC" ForeColor="Black" />
