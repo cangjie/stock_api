@@ -542,7 +542,7 @@
 
             if (lowest == 0 || line3Price == 0)
             {
-                continue;
+                //continue;
             }
             //buyPrice = Math.Max(f3, stock.kLineDay[currentIndex].lowestPrice);
             string memo = "";
@@ -622,7 +622,7 @@
 
                 if (tochSupportStatus >= 2)
                 {
-                    continue;
+                    //continue;
                 }
             }
             else
@@ -632,7 +632,7 @@
                 dr["类型"] = "F3";
                 if ((double)dr["价差"] >= 0.01)
                 {
-                    continue;
+                    //continue;
                 }
                 /*
                 if (width  > 25 && line3Price <= f3)
@@ -646,7 +646,7 @@
 
             if (stock.kLineDay[currentIndex].startPrice < supportPrice * 0.995 || stock.kLineDay[currentIndex].highestPrice < supportPrice * 0.995)
             {
-                continue;
+                //continue;
             }
 
 
@@ -675,10 +675,7 @@
             dr["KDJ30"] = Stock.KDJIndex(kArrHalfHour, currentIndexHalfHour);
             dr["KDJ60"] = Stock.KDJIndex(kArrHour, currentIndexHour);
 
-            if ((int)dr["MACD日"] == -1)
-            {
-                continue;
-            }
+           
             dr["无影时"] = footTime;
             dr["无影"] = todayLowestPrice;
             double maxPrice = 0;
