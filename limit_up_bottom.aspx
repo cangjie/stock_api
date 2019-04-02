@@ -374,10 +374,6 @@
         //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
         foreach (DataRow drOri in dtOri.Rows)
         {
-
-
-
-            DateTime alertDate = DateTime.Parse(drOri["alert_date"].ToString().Trim());
             DataRow[] drArrExists = dtOri.Select(" gid = '" + drOri["gid"].ToString() + "' and alert_date > '" + alertDate.ToShortDateString() + "'  ");
             if (drArrExists.Length > 0)
             {
