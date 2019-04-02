@@ -360,10 +360,11 @@
         DateTime lastTransactDate = Util.GetLastTransactDate(currentDate, 2);
         DateTime limitUpStartDate = Util.GetLastTransactDate(lastTransactDate, 10);
 
-        
-        DataTable dtOri = DBHelper.GetDataTable(" select * from alert_bottom left join limit_up on alert_bottom.gid = limit_up.gid  "
-            + " where alert_bottom.alert_date = '" + currentDate.ToShortDateString() + "' and limit_up.alert_date < '" + lastTransactDate.ToShortDateString() 
-            + "' and limit_up.alert_date > '" + limitUpStartDate.ToShortDateString() + "' order by limit_up.alert_date desc");
+        //DataTable dtDtl = DBHelper.GetDataTable(" select gid, alert_date, price from alert_foot where alert_date > '"
+        //    + currentDate.ToShortDateString() + "' and alert_date < '" + currentDate.AddDays(1).ToShortDateString() + "'  order by alert_date desc ");
+
+        DataTable dtOri = DBHelper.GetDataTable(" select gid, alert_date from limit_up where alert_date >= '" + limitUpStartDate.ToShortDateString()
+            + "' and alert_date <= '" + lastTransactDate.ToShortDateString() + "' order by alert_date desc ");
 
         DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor_new '" + currentDate.ToShortDateString() + "' ");
 
