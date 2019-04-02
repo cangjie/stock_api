@@ -362,13 +362,13 @@
         DataTable dtDtl = DBHelper.GetDataTable(" select gid, alert_date, price from alert_foot where alert_date > '"
             + currentDate.ToShortDateString() + "' and alert_date < '" + currentDate.AddDays(1).ToShortDateString() + "'  order by alert_date desc ");
 
-        DataTable dtOri = DBHelper.GetDataTable(" select * from alert_bottom left join limit_up on alert_bottom.gid = limit_up.gid  "
+        DataTable dtOri = DBHelper.GetDataTable(" select *, alert_bottom.alert_date as bottom_date, limit_up.alert_date as limitup_date from alert_bottom left join limit_up on alert_bottom.gid = limit_up.gid  "
             + "where alert_bottom.alert_date = '" + currentDate.ToShortDateString() + "' and limit_up.alert_date < '" + lastTransactDate.ToShortDateString() 
             + "' and limit_up.alert_date > '" + limitUpStartDate.ToShortDateString() + "' order by limit_up.alert_date desc ");
 
-        DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor_new '" + currentDate.ToShortDateString() + "' ");
+        //DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor_new '" + currentDate.ToShortDateString() + "' ");
 
-        DataTable dtFoot = DBHelper.GetDataTable(" select * from alert_foot where alert_date > '" + currentDate.Date.ToShortDateString() + "' and alert_date < '" + currentDate.AddDays(1).ToShortDateString() + "' ");
+        //DataTable dtFoot = DBHelper.GetDataTable(" select * from alert_foot where alert_date > '" + currentDate.Date.ToShortDateString() + "' and limitup_date < '" + currentDate.AddDays(1).ToShortDateString() + "' ");
 
 
         //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
@@ -377,8 +377,8 @@
 
 
 
-            DateTime alertDate = DateTime.Parse(drOri["alert_date"].ToString().Trim());
-            DataRow[] drArrExists = dtOri.Select(" gid = '" + drOri["gid"].ToString() + "' and alert_date > '" + alertDate.ToShortDateString() + "'  ");
+            DateTime alertDate = DateTime.Parse(drOri["limitup_date"].ToString().Trim());
+            DataRow[] drArrExists = dtOri.Select(" gid = '" + drOri["gid"].ToString() + "' and limitup_date > '" + alertDate.ToShortDateString() + "'  ");
             if (drArrExists.Length > 0)
             {
                 continue;
@@ -701,15 +701,17 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "📍";
             }
+            /*
             if (dtIOVolume.Select("gid = '" + stock.gid.Trim() + "' ").Length > 0)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"外盘高\" >✅</a>";
             }
+            
             if (dtFoot.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"无影脚\" >🦶</a>";
             }
-
+            */
 
             if (stock.kLineDay[currentIndex].startPrice < stock.kLineDay[currentIndex].endPrice
                 && (stock.kLineDay[currentIndex].highestPrice - stock.kLineDay[currentIndex].endPrice)*2 <
