@@ -335,10 +335,6 @@
         {
             return dt;
         }
-
-
-
-
         DataTable dtOri = DBHelper.GetDataTable(" select * from alert_bottom left join limit_up on alert_bottom.gid = limit_up.gid  "
             + " where alert_bottom.alert_date = '" + lastDate.ToShortDateString() + "' and limit_up.alert_date = '" + lastDate.ToShortDateString() + "' ");
 
