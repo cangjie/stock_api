@@ -355,7 +355,6 @@
             return dt;
         }
 
-        DataTable dtBreadPool = DBHelper.GetDataTable(" select * from bread_pool where alert_date = '" + currentDate.ToShortDateString() + "' ");
 
         DateTime lastTransactDate = Util.GetLastTransactDate(currentDate, 2);
         DateTime limitUpStartDate = Util.GetLastTransactDate(lastTransactDate, 10);
@@ -754,12 +753,7 @@
             }
 
 
-            if (dtBreadPool.Select(" gid = '" + stock.gid.Trim() + "' ").Length == 0)
-            {
-                DBHelper.InsertData("bread_pool", new string[,] { { "gid", "varchar", stock.gid.Trim()}, {"alert_date", "datetime", currentDate.ToShortDateString() },
-                    {"exchange", "float", dr["总换手"].ToString() }, {"lowest", "float", dr["前低"].ToString() }, { "highest", "flaot", dr["现高"].ToString()} });
-            }
-
+           
             dt.Rows.Add(dr);
 
         }
