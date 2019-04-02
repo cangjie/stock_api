@@ -404,12 +404,12 @@
             }
             if (kArrHalfHourTodayLastIndex < 0 || kArrHalfHourTodayLastIndex < 0)
             {
-                continue;
+                //continue;
             }
             if (kArrHour[kArrHourTodayLastIndex].d > kArrHour[kArrHourTodayLastIndex].k
                 && kArrHour[kArrHourTodayLastIndex].k > kArrHour[kArrHourTodayLastIndex].j)
             {
-                continue;
+                //continue;
             }
 
             int currentIndex = stock.GetItemIndex(currentDate);
@@ -475,14 +475,14 @@
 
             if (kdjHours < 0)
             {
-                continue;
+                //continue;
             }
 
             dr["KDJ30"] = Stock.KDJIndex(kArrHalfHour, kArrHalfHourTodayLastIndex);
             dr["KDJ60"] = kdjHours;
             if (kdjHours > 3)
             {
-                continue;
+                //continue;
             }
 
             //buyPrice = kArrHour[kArrHourTodayLastIndex - kdjHours].endPrice;
