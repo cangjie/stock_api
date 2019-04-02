@@ -420,8 +420,25 @@
             DateTime currentHalfHourTime = Stock.GetCurrentKLineEndDateTime(currentDate, 30);
             DateTime currentHourTime = Stock.GetCurrentKLineEndDateTime(currentDate, 60);
             int maxIndex = Math.Min(stock.kLineDay.Length - 1, currentIndex + 5);
-            double lowest = double.Parse(drOri["lowest"].ToString());
-            double highest = double.Parse(drOri["highest"].ToString());
+
+            int limitUpIndex = stock.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
+            int highIndex = 0;
+            int lowestIndex = 0;
+            double lowest = GetFirstLowestPrice(stock.kLineDay, limitUpIndex, out lowestIndex);
+            double highest = 0;
+            for (int i = limitUpIndex; i < currentIndex; i++)
+            {
+                if (highest < stock.kLineDay[i].highestPrice)
+                {
+                    highest = stock.kLineDay[i].highestPrice;
+                    highIndex = i;
+                }
+            }
+
+
+
+
+
             double f3 = highest - (highest - lowest) * 0.382;
             double f5 = highest - (highest - lowest) * 0.618;
             double line3Price = KLine.GetAverageSettlePrice(stock.kLineDay, currentIndex, 3, 3);
@@ -470,7 +487,7 @@
             dr["3线"] = line3Price;
             dr["KDJ日"] = stock.kdjDays(currentIndex);
             dr["MACD日"] = stock.macdDays(currentIndex);
-            dr["预警日"] = TransDaysDiff(DateTime.Parse(drOri["alert_date"].ToString()), currentDate);
+            //dr["预警日"] = TransDaysDiff(DateTime.Parse(drOri["alert_date"].ToString()), currentDate);
             int kdjHours = Stock.KDJIndex(kArrHour, kArrHourTodayLastIndex);
 
             if (kdjHours < 0)
@@ -488,7 +505,21 @@
             //buyPrice = kArrHour[kArrHourTodayLastIndex - kdjHours].endPrice;
             double maxPrice = 0;
             dr["买入"] = buyPrice;
-            dr["总换手"] = double.Parse(drOri["exchange"].ToString());
+            double totalVolume = 0;
+            for (int i = lowestIndex; i < currentIndex; i++)
+            {
+                totalVolume += stock.kLineDay[i].volume;
+            }
+
+            double totalStockCount = stock.TotalStockCount(currentDate);
+            if (totalStockCount > 0)
+            {
+                dr["总换手"] = totalVolume / totalStockCount;
+            }
+            else
+            {
+                dr["总换手"] = 0;
+            }
             dr["涨幅"] = (currentPrice - buyPrice) / buyPrice;
             if (stock.kLineDay[stock.kLineDay.Length - 1].endPrice >= highest)
             {
