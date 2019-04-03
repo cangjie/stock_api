@@ -9,6 +9,7 @@
     protected void Page_Load(object sender, EventArgs e)
     {
         DateTime currentDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "date", DateTime.Now.ToShortDateString()));
+        //currentDate = DateTime.Parse("2019-4-3");
         if (Util.IsTransacDay(currentDate))
             SearchBottom(currentDate);
         /*
