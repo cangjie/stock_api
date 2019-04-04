@@ -344,11 +344,25 @@
             }
             Stock stock = new Stock(drOri["gid"].ToString().Trim(), rc);
             stock.LoadKLineDay(rc);
+            int currentIndex = stock.GetItemIndex(currentDate);
+            if (currentIndex < 0)
+            {
+                continue;
+            }
+
+            if (stock.kLineDay[currentIndex - 1].endPrice >= KLine.GetAverageSettlePrice(stock.kLineDay, currentIndex - 1, 3, 3)
+                || stock.kLineDay[currentIndex - 2].endPrice >= KLine.GetAverageSettlePrice(stock.kLineDay, currentIndex - 2, 3, 3))
+            {
+                continue;
+            }
 
             if (stock.gid.Trim().Equals("sh603569"))
             {
                 continue;
             }
+
+
+
 
             KLine[] kArrHour = Stock.LoadRedisKLine(stock.gid, "60min", rc);
             KLine[] kArrHalfHour = Stock.LoadRedisKLine(stock.gid, "30min", rc);
@@ -402,14 +416,10 @@
                 //continue;
             }
 
-            int currentIndex = stock.GetItemIndex(currentDate);
-            if (currentIndex < 0)
-            {
-                continue;
-            }
+
             DateTime currentHalfHourTime = Stock.GetCurrentKLineEndDateTime(currentDate, 30);
             DateTime currentHourTime = Stock.GetCurrentKLineEndDateTime(currentDate, 60);
-            
+
             double line3Price = KLine.GetAverageSettlePrice(stock.kLineDay, currentIndex, 3, 3);
             double currentPrice = stock.kLineDay[currentIndex].endPrice;
             //double buyPrice = stock.kLineDay[currentIndex].startPrice;
@@ -419,11 +429,11 @@
             dr["名称"] = stock.Name.Trim();
 
 
-           
+
 
             dr["现价"] = currentPrice;
 
-            
+
             dr["3线"] = line3Price;
             dr["KDJ日"] = stock.kdjDays(currentIndex);
             dr["MACD日"] = stock.macdDays(currentIndex);
@@ -445,9 +455,9 @@
             double buyPrice = kArrHour[kArrHourTodayLastIndex - kdjHours].endPrice;
             double maxPrice = 0;
             dr["买入"] = buyPrice;
-            
+
             dr["涨幅"] = (buyPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
-            
+
             dr["0日"] = (currentPrice - buyPrice) / buyPrice;
             for (int i = 1; i <= 5; i++)
             {
