@@ -436,6 +436,10 @@
                 //continue;
             }
 
+            if (lowestIndex != currentIndex - 1)
+            {
+                continue;
+            }
 
 
             double avarageVolume = 0;
@@ -522,6 +526,8 @@
             {
                 continue;
             }
+
+
 
 
 
