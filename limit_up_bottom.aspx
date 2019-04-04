@@ -436,16 +436,27 @@
                 //continue;
             }
 
-            double lowerIndex = limitUpIndex;
 
-            for (int i = limitUpIndex; i < currentIndex; i++)
+            if (stock.gid.Trim().Equals("sh600683"))
             {
-                if (stock.kLineDay[i + 1].lowestPrice < stock.kLineDay[i].lowestPrice)
+                string aa = "aa";
+            }
+
+
+            int lowerIndex = highIndex;
+
+
+
+            for (int i = highIndex; i < currentIndex; i++)
+            {
+                if (stock.kLineDay[i + 1].lowestPrice < stock.kLineDay[lowerIndex].lowestPrice)
                 {
                     lowerIndex = i + 1;
                 }
 
             }
+
+            
 
             if (lowerIndex != currentIndex - 1)
             {
