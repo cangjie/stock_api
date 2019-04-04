@@ -363,7 +363,7 @@
             + currentDate.ToShortDateString() + "' and alert_date < '" + currentDate.AddDays(1).ToShortDateString() + "'  order by alert_date desc ");
 
         DataTable dtOri = DBHelper.GetDataTable(" select *, alert_bottom.alert_date as bottom_date, limit_up.alert_date as limitup_date from alert_bottom left join limit_up on alert_bottom.gid = limit_up.gid  "
-            + "where alert_bottom.alert_date = '" + currentDate.ToShortDateString() + "' and limit_up.alert_date < '" + lastTransactDate.ToShortDateString() 
+            + "where alert_bottom.alert_date = '" + currentDate.ToShortDateString() + "' and limit_up.alert_date < '" + lastTransactDate.ToShortDateString()
             + "' and limit_up.alert_date > '" + limitUpStartDate.ToShortDateString() + "' order by limit_up.alert_date desc ");
 
         //DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor_new '" + currentDate.ToShortDateString() + "' ");
@@ -656,6 +656,10 @@
 
             dr["价差abs"] = Math.Abs((double)dr["价差"]);
 
+            if (Math.Abs((double)dr["价差"]) > 0.02)
+            {
+                continue;
+            }
 
 
             dr["F3折返"] = (stock.kLineDay[currentIndex].lowestPrice - f3) / f3;
@@ -674,7 +678,7 @@
             dr["KDJ30"] = Stock.KDJIndex(kArrHalfHour, currentIndexHalfHour);
             dr["KDJ60"] = Stock.KDJIndex(kArrHour, currentIndexHour);
 
-           
+
             dr["无影时"] = footTime;
             dr["无影"] = todayLowestPrice;
             double maxPrice = 0;
@@ -755,7 +759,7 @@
             }
 
 
-           
+
             dt.Rows.Add(dr);
 
         }
