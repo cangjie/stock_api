@@ -8,16 +8,16 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        DateTime currentDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "date", DateTime.Now.ToShortDateString()));
+        //DateTime currentDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "date", DateTime.Now.ToShortDateString()));
         //currentDate = DateTime.Parse("2019-4-3");
-        if (Util.IsTransacDay(currentDate))
-            SearchBottom(currentDate);
-        /*
+        //if (Util.IsTransacDay(currentDate))
+        //    SearchBottom(currentDate);
+        
         for (DateTime i = DateTime.Now.Date; i >= DateTime.Parse("2017-7-1"); i = i.AddDays(-1))
         {
             SearchBottom(i);
         }
-        */
+        
     }
 
     public static void SearchBottom(DateTime currentDate)
@@ -40,8 +40,8 @@
                 && s.kLineDay[currentIndex].endPrice > Math.Max(s.kLineDay[currentIndex - 1].highestPrice, s.kLineDay[currentIndex - 2].highestPrice)
                 && s.kLineDay[currentIndex - 2].highestPrice > s.kLineDay[currentIndex - 1].highestPrice
                 && s.kLineDay[currentIndex].startPrice < s.kLineDay[currentIndex].endPrice
-                && s.kLineDay[currentIndex - 1].endPrice < KLine.GetAverageSettlePrice(s.kLineDay, currentIndex - 1, 3, 3)
-                && s.kLineDay[currentIndex - 2].endPrice < KLine.GetAverageSettlePrice(s.kLineDay, currentIndex - 2, 3, 3)
+                //&& s.kLineDay[currentIndex - 1].endPrice < KLine.GetAverageSettlePrice(s.kLineDay, currentIndex - 1, 3, 3)
+                //&& s.kLineDay[currentIndex - 2].endPrice < KLine.GetAverageSettlePrice(s.kLineDay, currentIndex - 2, 3, 3)
                 )
             {
                 try
