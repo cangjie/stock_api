@@ -436,11 +436,21 @@
                 //continue;
             }
 
-            if (lowestIndex != currentIndex - 1)
+            double lowerIndex = limitUpIndex;
+
+            for (int i = limitUpIndex; i < currentIndex; i++)
+            {
+                if (stock.kLineDay[i + 1].lowestPrice < stock.kLineDay[i].lowestPrice)
+                {
+                    lowerIndex = i + 1;
+                }
+
+            }
+
+            if (lowerIndex != currentIndex - 1)
             {
                 continue;
             }
-
 
             double avarageVolume = 0;
             for (int i = lowestIndex; i < highIndex; i++)
