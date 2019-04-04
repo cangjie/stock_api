@@ -24,7 +24,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "幅度 desc");
+        sort = Util.GetSafeRequestValue(Request, "sort", "总换手");
         filter = Util.GetSafeRequestValue(Request, "filter", "");
         if (!IsPostBack)
         {
@@ -436,16 +436,7 @@
                 //continue;
             }
 
-
-            if (stock.gid.Trim().Equals("sh600683"))
-            {
-                string aa = "aa";
-            }
-
-
             int lowerIndex = highIndex;
-
-
 
             for (int i = highIndex; i < currentIndex; i++)
             {
