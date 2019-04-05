@@ -254,7 +254,10 @@ public class Util
             || (Util.GetDay(date) >= DateTime.Parse("2018-2-15") && Util.GetDay(date) <= DateTime.Parse("2018-2-21")) 
             || (date.Date >= DateTime.Parse("2018-4-5") && date.Date <= DateTime.Parse("2018-4-8")) || date.Date == DateTime.Parse("2018-4-30") || (date.Date.Month == 5 && date.Date.Day == 1)
             || date.Date == DateTime.Parse("2018-6-18") || date.Date == DateTime.Parse("2018-9-24") || (date.Date >= DateTime.Parse("2018-10-1") && date.Date <= DateTime.Parse("2018-10-7"))
-            || (date.Date >= DateTime.Parse("2019-2-4") && (date.Date <= DateTime.Parse("2019-2-10"))))
+            || (date.Date >= DateTime.Parse("2019-2-4") && (date.Date <= DateTime.Parse("2019-2-10")))
+            || (date.Date >= DateTime.Parse("2019-4-5") && (date.Date <= DateTime.Parse("2019-4-7")))
+            || (date.Date >= DateTime.Parse("2019-5-1") && (date.Date <= DateTime.Parse("2019-5-4")))
+            )
             ret = false;
         return ret;
     }
