@@ -446,7 +446,7 @@
             double f1 = lowestPrice + (highestPrice - lowestPrice) * 0.236;
             double f3 = lowestPrice + (highestPrice - lowestPrice) * 0.382;
             double f5 = lowestPrice + (highestPrice - lowestPrice) * 0.618;
-            double buyPrice = ma5 * 1.005;
+            double buyPrice = stock.kLineDay[currentIndex].endPrice;
             if (stock.kLineDay[currentIndex].lowestPrice > buyPrice)
             {
                 continue;
@@ -460,41 +460,7 @@
             double kdjDegree = KLine.ComputeKdjDegree(stock.kLineDay, currentIndex);
             double upSpace = 0;
             double downSpace = 0;
-            //buyPrice = Math.Max(macdPrice, line3Price);
-            //buyPrice = Math.Max(stock.kLineDay[currentIndex].startPrice, buyPrice);
-            /*
-            if (buyPrice <= lowestPrice)
-            {
-                downSpace = 0.1;
-                upSpace = (lowestPrice - buyPrice) / buyPrice;
-            }
-            else if (buyPrice <= f1)
-            {
-                downSpace = (buyPrice - lowestPrice) / buyPrice;
-                upSpace = (f1 - buyPrice) / buyPrice;
-            }
-            else if (buyPrice <= f3)
-            {
-                downSpace = (buyPrice - f1) / buyPrice;
-                upSpace = (f3 - buyPrice) / buyPrice;
-            }
-            else if (buyPrice <= f5)
-            {
-                downSpace = (buyPrice - f3) / buyPrice;
-                upSpace = (f5 - buyPrice) / buyPrice;
-            }
-            else if (buyPrice <= highestPrice)
-            {
-                downSpace = (buyPrice - f5) / buyPrice;
-                upSpace = (highestPrice - buyPrice) / buyPrice;
-            }
-            else
-            {
-                upSpace = 0.1;
-                downSpace = (buyPrice - highestPrice) / buyPrice;
-            }*/
-            //if (kdjDays < 0)
-            //    continue;
+            
 
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
@@ -620,11 +586,7 @@
             {
                 totalPressure = Math.Max(pressure, highPointPressure);
             }
-            if (buyPrice == 0)
-            {
-                buyPrice = currentPrice;
-            }
-            buyPrice = buyPrice + 0.02;
+            
 
             if (stock.kLineDay[currentIndex - 2].volume * 1.25 < stock.kLineDay[currentIndex - 1].volume
                 //&& stock.kLineDay[currentIndex - 3].volume * 1.25 < stock.kLineDay[currentIndex - 2].volume 
