@@ -188,7 +188,7 @@
             string gid = dr["代码"].ToString();
             dr["代码"] = "<a href=\"show_K_line_day.aspx?gid=" + dr["代码"].ToString() + "\" target=\"_blank\" >" + dr["代码"].ToString() + "</a>";
             dr["名称"] = "<a href=\"io_volume_detail.aspx?gid=" + gid.Trim() + "&date=" + calendar.SelectedDate.ToShortDateString() + "\" target=\"_blank\" >" + dr["名称"].ToString() + "</a>";
-            
+
 
             dt.Rows.Add(dr);
         }
@@ -451,6 +451,10 @@
             {
                 continue;
             }
+            if (stock.kLineDay[currentIndex].endPrice < ma5)
+            {
+                continue;
+            }
             double macdPrice = KLine.GetMACDFolkPrice(stock.kLineDay, currentIndex);
             double macdDegree = KLine.ComputeMacdDegree(stock.kLineDay, currentIndex)*1000;
             double kdjDegree = KLine.ComputeKdjDegree(stock.kLineDay, currentIndex);
@@ -649,6 +653,23 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"大于5 10日均量线\" >🔥</a>";
             }
+
+            if (currentIndex < 2)
+            {
+                continue;
+            }
+
+            double last2DayHighPrice = stock.kLineDay[currentIndex - 2].highestPrice;
+            double last2DayLowPrice = stock.kLineDay[currentIndex - 2].lowestPrice;
+            double lastDayHighPrice = stock.kLineDay[currentIndex - 1].highestPrice;
+            double lastDayLowPrice = stock.kLineDay[currentIndex - 1].lowestPrice;
+            if (last2DayHighPrice > lastDayHighPrice && last2DayLowPrice > lastDayLowPrice
+                && lastDayLowPrice < stock.kLineDay[currentIndex].lowestPrice && stock.kLineDay[currentIndex].endPrice > last2DayHighPrice)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"底部形态\" >🔥</a>";
+            }
+
+
             /*
             if (currentPrice > line3Price && stock.kLineDay[currentIndex - 1].endPrice < previous3LinePrice)
             {
@@ -657,24 +678,12 @@
             */
             //buyPrice = Math.Max(currentPrice, buyPrice);
 
-            /*
+
             if ((int)dr["KDJ日"] == 0 && (int)dr["MACD日"] == 0 && (double)dr["今涨"] <= 0.0618 && (double)dr["放量"] > 1.5)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"同日双金叉\" >👑</a>";
             }
-            */
 
-            /*
-            if ((int)dr["MACD时"] >= 0 && (int)dr["KDJ日"] >= 0 && currentPrice <= f5 && currentPrice >= f1 && currentVolume / lastDayVolume >= 0.85)
-            {
-                dr["信号"] = dr["信号"].ToString() + "🔥";
-            }
-            
-            if (stock.kLineDay[currentIndex].lowestPrice > stock.kLineDay[currentIndex - 1].highestPrice && (double)dr["今涨"] <= 0.095 )
-            {
-                dr["信号"] = dr["信号"].ToString() + "🌟";
-            }
-            */
 
             double maxMa = Math.Max(ma5, ma10);
             maxMa = Math.Max(maxMa, ma20);
