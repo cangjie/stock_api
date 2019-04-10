@@ -9,15 +9,14 @@
     protected void Page_Load(object sender, EventArgs e)
     {
         DateTime currentDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "date", DateTime.Now.ToShortDateString()));
-        //currentDate = DateTime.Parse("2019-4-3");
-        //if (Util.IsTransacDay(currentDate))
-        //    SearchBottom(currentDate);
-        
+        if (Util.IsTransacDay(currentDate))
+            SearchBottom(currentDate);
+        /*
         for (DateTime i = DateTime.Now.Date; i >= DateTime.Parse("2019-4-4"); i = i.AddDays(-1))
         {
             SearchBottom(i);
         }
-        
+        */
     }
 
     public static void SearchBottom(DateTime currentDate)
