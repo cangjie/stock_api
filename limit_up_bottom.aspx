@@ -250,7 +250,7 @@
                 }
                 for (int i = 1; i <12; i++)
                 {
-                    string colName = ((i == 6) ? "总计" : i.ToString() + "日");
+                    string colName = ((i == 11) ? "总计" : i.ToString() + "日");
                     if (!drOri[colName].ToString().Equals("") && (double)(drOri[colName]) >= 0.01)
                     {
                         totalSum[i - 1]++;
