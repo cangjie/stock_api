@@ -297,9 +297,9 @@
         drStar["信号"] = "🌟";
         drStar["MACD日"] = starCount.ToString();
 
-        for (int i = 1; i < 7; i++)
+        for (int i = 1; i < 12; i++)
         {
-            string columeCaption = ((i == 6) ? "总计" : i.ToString() + "日");
+            string columeCaption = ((i == 11) ? "总计" : i.ToString() + "日");
             drTotal[columeCaption] = Math.Round(100 * (double)totalSum[i - 1] / (double)totalCount, 2).ToString() + "%";
             drFire[columeCaption] = Math.Round(100 * (double)fireSum[i-1] / (double)fireCount, 2).ToString() + "%";
             drRaise[columeCaption] = Math.Round(100 * (double)raiseSum[i-1] / (double)raiseCount, 2).ToString() + "%";
@@ -447,7 +447,7 @@
 
             }
 
-            
+
 
             if (lowerIndex != currentIndex - 1)
             {
@@ -740,6 +740,11 @@
                 (stock.kLineDay[currentIndex].startPrice - stock.kLineDay[currentIndex].lowestPrice) )
             {
                 dr["信号"] = dr["信号"] + "<a title='上影线短' >🔥</a>";
+            }
+
+            if (stock.kLineDay[currentIndex].endPrice < stock.kLineDay[currentIndex - 2].highestPrice)
+            {
+                dr["信号"] = dr["信号"] + "💩";
             }
 
 
