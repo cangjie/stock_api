@@ -386,6 +386,12 @@
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
+            KLine[] kArrHour = Stock.LoadRedisKLine(stock.gid, "60min", rc);
+            KLine[] kArrHalfHour = Stock.LoadRedisKLine(stock.gid, "30min", rc);
+            KLine.ComputeMACD(kArrHour);
+            KLine.ComputeMACD(kArrHalfHour);
+
+
             int currentIndex = stock.GetItemIndex(currentDate);
 
             if (currentIndex < 0)
@@ -726,9 +732,15 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"月双金叉\" >月</a>";
             }
-            if (dtWeekGold.Select(" gid = '" + stock.gid.Trim() + "'").Length > 0)
+
+            if (kArrHour[kArrHour.Length - 1].macd >= 0)
             {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"周双金叉\" >周</a>";
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"60分钟MACD金叉\" >时</a>";
+            }
+
+            if (kArrHalfHour[kArrHalfHour.Length - 1].macd >= 0)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"30分钟MACD金叉\" >30min</a>";
             }
 
             double totalStockCount = stock.TotalStockCount(currentDate);
