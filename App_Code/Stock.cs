@@ -45,6 +45,8 @@ public class Stock
 
     public static string[] allGid = Util.GetAllGids();
 
+    public static DataTable stockInfo = DBHelper.GetDataTable(" select * from stock_info ");
+
     public string name = "";
 
     public Stock()
@@ -223,7 +225,15 @@ public class Stock
 
     public double TotalStockCount(DateTime date)
     {
-    
+
+        double ret = 0;
+        DataRow[] drArr = stockInfo.Select(" gid = '" + gid + "'", "info_date desc");
+        if (drArr.Length > 0)
+        {
+            ret = double.Parse(drArr[0]["total_stock_num"].ToString());
+        }
+        return ret;
+        /*
         double ret = 0;
         DataTable dt = DBHelper.GetDataTable("  select top 1 * from stock_info where gid = '" + gid.Trim() + "'  and info_date <= '" 
             + date.ToShortDateString() + "' order by info_date desc ");
@@ -233,7 +243,7 @@ public class Stock
         }
         dt.Dispose();
         return ret;
-        
+        */
     }
 
     public double LastTrade
