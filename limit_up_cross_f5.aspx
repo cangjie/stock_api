@@ -450,7 +450,7 @@
             double f3 = highest - (highest - lowest) * 0.382;
             double f5 = highest - (highest - lowest) * 0.618;
             double line3Price = KLine.GetAverageSettlePrice(stock.kLineDay, currentIndex, 3, 3);
-            double currentPrice = stock.kLineDay[currentIndex].endPrice;
+            double currentPrice = stock.kLineDay[currentIndex+1].endPrice;
             double buyPrice = 0;
             if (stock.kLineDay[currentIndex].lowestPrice >= f3 * 0.99 && stock.kLineDay[currentIndex].lowestPrice <= f3 * 1.01)
             {
