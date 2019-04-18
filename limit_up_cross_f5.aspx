@@ -392,6 +392,7 @@
             KLine[] kArrHalfHour = Stock.LoadRedisKLine(stock.gid, "30min", rc);
 
             int currentIndex = stock.GetItemIndex(currentDate);
+            currentIndex--;
             DateTime currentHalfHourTime = Stock.GetCurrentKLineEndDateTime(currentDate, 30);
             DateTime currentHourTime = Stock.GetCurrentKLineEndDateTime(currentDate, 60);
             int currentIndexHour = Stock.GetItemIndex(kArrHour, currentHourTime);
@@ -630,11 +631,15 @@
                 continue;
             }
 
-            if (f5 < stock.kLineDay[currentIndex].lowestPrice || f5 > stock.kLineDay[currentIndex].endPrice)
+            if (f5 < stock.kLineDay[currentIndex].endPrice)
             {
                 continue;
             }
 
+            if (f5 > stock.kLineDay[currentIndex + 1].endPrice)
+            {
+                continue;
+            }
 
             if (stock.kLineDay[currentIndex].startPrice < supportPrice * 0.995 || stock.kLineDay[currentIndex].highestPrice < supportPrice * 0.995)
             {
