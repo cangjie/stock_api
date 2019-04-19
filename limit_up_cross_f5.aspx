@@ -467,7 +467,7 @@
             if (buyPrice == 0)
             {
                 //continue;
-                buyPrice = stock.kLineDay[currentIndex].lowestPrice;
+                buyPrice = stock.kLineDay[currentIndex+1].lowestPrice;
             }
 
             double maxVolume = 0;
@@ -690,9 +690,9 @@
             dr["0日"] = (currentPrice - supportPrice) / supportPrice;
             for (int i = 1; i <= 5; i++)
             {
-                if (currentIndex + i >= stock.kLineDay.Length)
+                if (currentIndex + i + 1 >= stock.kLineDay.Length)
                     break;
-                double highPrice = stock.kLineDay[currentIndex + i].highestPrice;
+                double highPrice = stock.kLineDay[currentIndex + i + 1].highestPrice;
                 maxPrice = Math.Max(maxPrice, highPrice);
                 dr[i.ToString() + "日"] = (highPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice;
             }
