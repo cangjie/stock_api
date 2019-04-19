@@ -451,24 +451,8 @@
             double f5 = highest - (highest - lowest) * 0.618;
             double line3Price = KLine.GetAverageSettlePrice(stock.kLineDay, currentIndex, 3, 3);
             double currentPrice = stock.kLineDay[currentIndex+1].endPrice;
-            double buyPrice = 0;
-            if (stock.kLineDay[currentIndex].lowestPrice >= f3 * 0.99 && stock.kLineDay[currentIndex].lowestPrice <= f3 * 1.01)
-            {
-                buyPrice = Math.Max(f3, stock.kLineDay[currentIndex].lowestPrice);
-            }
-            else if (stock.kLineDay[currentIndex].lowestPrice <= f5 * 1.01 && stock.kLineDay[currentIndex].startPrice >= f5 * 1.01)
-            {
-                buyPrice = Math.Max(f5, stock.kLineDay[currentIndex].lowestPrice);
-            }
-            else
-            {
-                buyPrice = 0;
-            }
-            if (buyPrice == 0)
-            {
-                //continue;
-                buyPrice = stock.kLineDay[currentIndex+1].lowestPrice;
-            }
+            double buyPrice = stock.kLineDay[currentIndex+1].endPrice;
+            
 
             double maxVolume = 0;
             for (int i = lowestIndex; i < currentIndex; i++)
