@@ -680,7 +680,7 @@
                 maxPrice = Math.Max(maxPrice, highPrice);
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
             }
-            dr["总计"] = (maxPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice;
+            dr["总计"] = (maxPrice - buyPrice) / buyPrice;
 
             if (currentIndex > 0 && (stock.kLineDay[currentIndex - 1].volume / maxVolume) < 0.65)
             {
