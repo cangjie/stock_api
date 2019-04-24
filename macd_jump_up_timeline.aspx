@@ -24,7 +24,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "总换手");
+        sort = Util.GetSafeRequestValue(Request, "sort", "放量");
         filter = Util.GetSafeRequestValue(Request, "filter", "");
         if (!IsPostBack)
         {
@@ -365,7 +365,7 @@
             + currentDate.ToShortDateString() + "' and alert_date < '" + currentDate.AddDays(1).ToShortDateString() + "'  order by alert_date desc ");
 
         DataTable dtOri = DBHelper.GetDataTable(" select * from alert_predict_macd where alert_predict_macd.alert_date = '" + Util.GetLastTransactDate(currentDate, 1).ToShortDateString() + "'  "
-            + "and exists ( select 'a' from limit_up where limit_up.gid = alert_predict_macd.gid and limit_up.alert_date >= '" + Util.GetLastTransactDate(currentDate, 10).ToShortDateString() 
+            + "and exists ( select 'a' from limit_up where limit_up.gid = alert_predict_macd.gid and limit_up.alert_date >= '" + Util.GetLastTransactDate(currentDate, 10).ToShortDateString()
             + "' and limit_up.alert_date < '" + currentDate.Date.ToShortDateString() + "' ) " );
 
         DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor_new '" + currentDate.ToShortDateString() + "' ");
@@ -776,7 +776,7 @@
             try
             {
                 DBHelper.InsertData("alert_cross_macd", new string[,] { {"alert_date", "datetime",  currentDate.ToShortDateString() },
-                    {"gid", "varchar", stock.gid.Trim() }, {"current_price", "float", dr["现价"].ToString() } });
+                    {"gid", "varchar", stock.gid.Trim() }, {"current_price", "float", dr["现价"].ToString() }, {"current_volume_rate", "float", dr["放量"].ToString() } });
             }
             catch
             {
