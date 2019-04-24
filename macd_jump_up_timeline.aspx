@@ -419,7 +419,7 @@
                 }
             }
 
-            
+
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
@@ -772,7 +772,15 @@
                 dr["信号"] = "<a title='小时KDJ低位金叉' >🌟</a>" + dr["信号"].ToString().Trim();
             }
 
+            try
+            {
+                DBHelper.InsertData("alert_cross_macd", new string[,] { {"alert_date", "datetime",  currentDate.ToShortDateString() },
+                    {"gid", "varchar", stock.gid.Trim() }, {"current_price", "float", dr["现价"].ToString() } });
+            }
+            catch
+            {
 
+            }
 
             dt.Rows.Add(dr);
 
