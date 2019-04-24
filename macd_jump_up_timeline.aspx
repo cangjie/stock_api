@@ -407,7 +407,7 @@
                 {
                     stock.kLineDay[stock.kLineDay.Length - 1] = currentKLine;
                 }
-                else
+                else if (stock.kLineDay[stock.kLineDay.Length - 1].startDateTime.Date < currentDate.Date)
                 {
                     KLine[] newKArr = new KLine[stock.kLineDay.Length + 1];
                     for (int i = 0; i < stock.kLineDay.Length; i++)
