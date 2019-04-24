@@ -386,7 +386,6 @@
             }
 
             Core.Timeline[] timelineArr = Core.Timeline.LoadTimelineArrayFromRedis(drOri["gid"].ToString(), currentDate, rc);
-
             if (timelineArr.Length > 0 && timelineArr[timelineArr.Length - 1].todayHighestPrice < double.Parse(drOri["predict_macd_price"].ToString()))
             {
                 continue;
@@ -394,13 +393,33 @@
 
             Stock stock = new Stock(drOri["gid"].ToString().Trim(), rc);
             stock.LoadKLineDay(rc);
-            if (timelineArr.Length > 0 && stock.kLineDay[stock.kLineDay.Length - 1].startDateTime.Date == currentDate.Date)
+            if (timelineArr.Length > 0)
             {
-                stock.kLineDay[stock.kLineDay.Length - 1].highestPrice = timelineArr[timelineArr.Length - 1].todayHighestPrice;
-                stock.kLineDay[stock.kLineDay.Length - 1].endPrice = timelineArr[timelineArr.Length - 1].todayEndPrice;
-                stock.kLineDay[stock.kLineDay.Length - 1].startPrice = timelineArr[timelineArr.Length - 1].todayStartPrice;
-                stock.kLineDay[stock.kLineDay.Length - 1].lowestPrice = timelineArr[timelineArr.Length - 1].todayLowestPrice;
+                KLine currentKLine = new KLine();
+                currentKLine.startDateTime = currentDate.Date.AddHours(9).AddMinutes(30);
+                currentKLine.highestPrice = timelineArr[timelineArr.Length - 1].todayHighestPrice;
+                currentKLine.endPrice = timelineArr[timelineArr.Length - 1].todayEndPrice;
+                currentKLine.startPrice = timelineArr[timelineArr.Length - 1].todayStartPrice;
+                currentKLine.lowestPrice = timelineArr[timelineArr.Length - 1].todayLowestPrice;
+                currentKLine.volume = timelineArr[timelineArr.Length - 1].volume;
+                currentKLine.amount = timelineArr[timelineArr.Length - 1].amount;
+                if (stock.kLineDay[stock.kLineDay.Length - 1].startDateTime.Date == currentDate.Date)
+                {
+                    stock.kLineDay[stock.kLineDay.Length - 1] = currentKLine;
+                }
+                else
+                {
+                    KLine[] newKArr = new KLine[stock.kLineDay.Length + 1];
+                    for (int i = 0; i < stock.kLineDay.Length; i++)
+                    {
+                        newKArr[i] = stock.kLineDay[i];
+                    }
+                    newKArr[newKArr.Length - 1] = currentKLine;
+                    stock.kLineDay = newKArr;
+                }
             }
+
+            
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
