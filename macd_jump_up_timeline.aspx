@@ -24,7 +24,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "MACD差 desc");
+        sort = Util.GetSafeRequestValue(Request, "sort", "KDJ日,缩量 desc");
         filter = Util.GetSafeRequestValue(Request, "filter", "");
         if (!IsPostBack)
         {
@@ -665,7 +665,7 @@
             dr["前低"] = lowest;
             dr["幅度"] = width.ToString() + "%";
 
-            dr["MACD差"] = maxMacd - minMacd;
+            dr["MACD差"] = Math.Abs(maxMacd/(maxMacd - minMacd));
 
             double f3ReverseRate = (stock.kLineDay[currentIndex].lowestPrice - f3) / f3;
             double f5ReverseRate = (stock.kLineDay[currentIndex].lowestPrice - f5) / f5;
