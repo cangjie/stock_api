@@ -434,6 +434,13 @@
             int currentIndexHalfHour = Stock.GetItemIndex(kArrHalfHour, currentHalfHourTime);
 
 
+            if (!(stock.kLineDay[currentIndex - 1].macd > stock.kLineDay[currentIndex - 2].macd
+                && stock.kLineDay[currentIndex - 2].macd > stock.kLineDay[currentIndex - 3].macd
+                && stock.kLineDay[currentIndex - 3].macd > stock.kLineDay[currentIndex - 4].macd ))
+            {
+                continue;
+            }
+
 
             if (currentIndex < 0)
                 continue;
