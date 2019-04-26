@@ -365,7 +365,7 @@
             + currentDate.ToShortDateString() + "' and alert_date < '" + currentDate.AddDays(1).ToShortDateString() + "'  order by alert_date desc ");
 
         DataTable dtOri = DBHelper.GetDataTable(" select * from alert_predict_macd where alert_predict_macd.alert_date = '" + Util.GetLastTransactDate(currentDate, 1).ToShortDateString() + "'  "
-            + "and exists ( select 'a' from limit_up where limit_up.gid = alert_predict_macd.gid and limit_up.alert_date >= '" + Util.GetLastTransactDate(currentDate, 10).ToShortDateString()
+            + "and exists ( select 'a' from limit_up where limit_up.gid = alert_predict_macd.gid and limit_up.alert_date >= '" + Util.GetLastTransactDate(currentDate, 15).ToShortDateString()
             + "' and limit_up.alert_date < '" + currentDate.Date.ToShortDateString() + "' ) " );
 
         DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor_new '" + currentDate.ToShortDateString() + "' ");
