@@ -439,8 +439,12 @@
             DateTime lastDate = DateTime.Parse(stock.kLineDay[currentIndex - 1].startDateTime.ToShortDateString());
             double lastDayVolume = stock.kLineDay[currentIndex - 1].VirtualVolume;//Stock.GetVolumeAndAmount(stock.gid, lastDate)[0];
             double currentVolume = stock.kLineDay[currentIndex].VirtualVolume;//Stock.GetVolumeAndAmount(stock.gid, currentDate)[0];
-            int kdjDays = stock.kdjDays(currentIndex - 1);
-            int macdDays = stock.macdDays(currentIndex - 1);
+            int kdjDays = stock.kdjDays(currentIndex);
+            int macdDays = stock.macdDays(currentIndex);
+            if (macdDays < 0)
+            {
+                continue;
+            }
             double lowestPrice = stock.LowestPrice(currentDate, 20);
             double highestPrice = stock.HighestPrice(currentDate, 40);
             double f1 = lowestPrice + (highestPrice - lowestPrice) * 0.236;
@@ -460,7 +464,7 @@
             double kdjDegree = KLine.ComputeKdjDegree(stock.kLineDay, currentIndex);
             double upSpace = 0;
             double downSpace = 0;
-            
+
 
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
@@ -586,7 +590,7 @@
             {
                 totalPressure = Math.Max(pressure, highPointPressure);
             }
-            
+
 
             if (stock.kLineDay[currentIndex - 2].volume * 1.25 < stock.kLineDay[currentIndex - 1].volume
                 //&& stock.kLineDay[currentIndex - 3].volume * 1.25 < stock.kLineDay[currentIndex - 2].volume 
@@ -609,7 +613,7 @@
             }
 
 
-            
+
             if (currentIndex < 2)
             {
                 continue;
