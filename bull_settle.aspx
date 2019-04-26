@@ -318,7 +318,7 @@
         dt.Columns.Add("均线压力", Type.GetType("System.Double"));
         dt.Columns.Add("前高压力", Type.GetType("System.Double"));
         dt.Columns.Add("均线支撑", Type.GetType("System.Double"));
-
+        dt.Columns.Add("MACD差", Type.GetType("System.Double"));
         dt.Columns.Add("TD", Type.GetType("System.Int32"));
         dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
         dt.Columns.Add("KDJ率", Type.GetType("System.Double"));
@@ -404,6 +404,23 @@
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
+
+
+
+            double maxMacd = stock.kLineDay[currentIndex].macd;
+            double minMacd = double.MaxValue;
+            int macdGreenStartIndex = currentIndex-1;
+            for (; macdGreenStartIndex >= 0 && stock.kLineDay[macdGreenStartIndex].macd <= 0; macdGreenStartIndex--)
+            {
+
+            }
+            macdGreenStartIndex++;
+            for (int k = macdGreenStartIndex; k < currentIndex; k++)
+            {
+                minMacd = Math.Min(minMacd, stock.kLineDay[k].macd);
+            }
+
+
 
             bool correctKlineStyle = true;
 
@@ -620,7 +637,7 @@
 
             dr["均线支撑"] = buyPrice;
 
-
+            dr["MACD差"] = Math.Abs(maxMacd/(maxMacd - minMacd));
 
             dr["前高压力"] = highPointPressure;
             /*
@@ -852,10 +869,7 @@
                     <asp:BoundColumn DataField="今涨" HeaderText="今涨" SortExpression="今涨|desc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="放量" HeaderText="放量" SortExpression="放量|desc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="量比" HeaderText="量比" ></asp:BoundColumn>
-                    <asp:BoundColumn DataField="前高压力" HeaderText="前高压力"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="均线压力" HeaderText="均线压力"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="均线支撑" HeaderText="均线支撑"></asp:BoundColumn>
-
+                     <asp:BoundColumn DataField="MACD差" HeaderText="MACD差"></asp:BoundColumn>
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD日|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>
                     
