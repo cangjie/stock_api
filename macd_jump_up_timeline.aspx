@@ -543,7 +543,7 @@
                 continue;
             }
 
-            if (stock.kLineDay[limitUpIndex].endPrice <= 1.095 && stock.kLineDay[limitUpIndex-1].endPrice)
+            if (stock.kLineDay[limitUpIndex].endPrice <= 1.095 * stock.kLineDay[limitUpIndex-1].endPrice)
             {
                 continue;
             }
