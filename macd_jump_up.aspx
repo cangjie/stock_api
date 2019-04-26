@@ -365,7 +365,7 @@
             + currentDate.ToShortDateString() + "' and alert_date < '" + currentDate.AddDays(1).ToShortDateString() + "'  order by alert_date desc ");
 
         DataTable dtOri = DBHelper.GetDataTable(" select * from alert_predict_macd where alert_predict_macd.alert_date = '" + Util.GetLastTransactDate(currentDate, 1).ToShortDateString() + "'  "
-            + "and exists ( select 'a' from limit_up where limit_up.gid = alert_predict_macd.gid and limit_up.alert_date >= '" + Util.GetLastTransactDate(currentDate, 10).ToShortDateString() 
+            + "and exists ( select 'a' from limit_up where limit_up.gid = alert_predict_macd.gid and limit_up.alert_date >= '" + Util.GetLastTransactDate(currentDate, 10).ToShortDateString()
             + "' and limit_up.alert_date < '" + currentDate.Date.ToShortDateString() + "' ) " );
 
         DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor_new '" + currentDate.ToShortDateString() + "' ");
@@ -385,8 +385,42 @@
             {
                 continue;
             }
+
+            Core.Timeline[] timelineArr = Core.Timeline.LoadTimelineArrayFromRedis(drOri["gid"].ToString(), currentDate, rc);
+            if (timelineArr.Length > 0 && timelineArr[timelineArr.Length - 1].todayHighestPrice < double.Parse(drOri["predict_macd_price"].ToString()))
+            {
+                continue;
+            }
+
             Stock stock = new Stock(drOri["gid"].ToString().Trim(), rc);
             stock.LoadKLineDay(rc);
+            if (timelineArr.Length > 0)
+            {
+                KLine currentKLine = new KLine();
+                currentKLine.startDateTime = currentDate.Date.AddHours(9).AddMinutes(30);
+                currentKLine.highestPrice = timelineArr[timelineArr.Length - 1].todayHighestPrice;
+                currentKLine.endPrice = timelineArr[timelineArr.Length - 1].todayEndPrice;
+                currentKLine.startPrice = timelineArr[timelineArr.Length - 1].todayStartPrice;
+                currentKLine.lowestPrice = timelineArr[timelineArr.Length - 1].todayLowestPrice;
+                currentKLine.volume = timelineArr[timelineArr.Length - 1].volume;
+                currentKLine.amount = timelineArr[timelineArr.Length - 1].amount;
+                if (stock.kLineDay[stock.kLineDay.Length - 1].startDateTime.Date == currentDate.Date)
+                {
+                    stock.kLineDay[stock.kLineDay.Length - 1] = currentKLine;
+                }
+                else if (stock.kLineDay[stock.kLineDay.Length - 1].startDateTime.Date < currentDate.Date)
+                {
+                    KLine[] newKArr = new KLine[stock.kLineDay.Length + 1];
+                    for (int i = 0; i < stock.kLineDay.Length; i++)
+                    {
+                        newKArr[i] = stock.kLineDay[i];
+                    }
+                    newKArr[newKArr.Length - 1] = currentKLine;
+                    stock.kLineDay = newKArr;
+                }
+            }
+
+
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
@@ -739,7 +773,15 @@
                 dr["信号"] = "<a title='小时KDJ低位金叉' >🌟</a>" + dr["信号"].ToString().Trim();
             }
 
-            
+            try
+            {
+                DBHelper.InsertData("alert_cross_macd", new string[,] { {"alert_date", "datetime",  currentDate.ToShortDateString() },
+                    {"gid", "varchar", stock.gid.Trim() }, {"current_price", "float", dr["现价"].ToString() }, {"current_volume_rate", "float", dr["缩量"].ToString() } });
+            }
+            catch
+            {
+
+            }
 
             dt.Rows.Add(dr);
 
