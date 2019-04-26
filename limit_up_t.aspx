@@ -384,6 +384,14 @@
                 continue;
             }
             Stock stock = new Stock(drOri["gid"].ToString().Trim(), rc);
+
+            if (stock.gid.Trim().Equals("sz000702"))
+            {
+                string aa = "aa";
+            }
+
+
+
             stock.LoadKLineDay(rc);
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
@@ -397,7 +405,7 @@
             {
                 //continue;
             }
-            if ((stock.kLineDay[currentIndex].startPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice < 0.99)
+            if ((stock.kLineDay[currentIndex].startPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice < 0.099)
             {
                 continue;
             }
