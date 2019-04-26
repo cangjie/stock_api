@@ -428,6 +428,12 @@
             KLine[] kArrHalfHour = Stock.LoadRedisKLine(stock.gid, "30min", rc);
 
             int currentIndex = stock.GetItemIndex(currentDate);
+
+            if (currentIndex < 5)
+                continue;
+
+
+
             DateTime currentHalfHourTime = Stock.GetCurrentKLineEndDateTime(currentDate, 30);
             DateTime currentHourTime = Stock.GetCurrentKLineEndDateTime(currentDate, 60);
             int currentIndexHour = Stock.GetItemIndex(kArrHour, currentHourTime);
@@ -442,9 +448,7 @@
             }
 
 
-            if (currentIndex < 5)
-                continue;
-
+            
 
             if (stock.kLineDay[currentIndex].highestPrice < double.Parse(drOri["predict_macd_price"].ToString()))
             {
