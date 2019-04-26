@@ -24,7 +24,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "KDJ日,缩量 desc");
+        sort = Util.GetSafeRequestValue(Request, "sort", "MACD差");
         filter = Util.GetSafeRequestValue(Request, "filter", "");
         if (!IsPostBack)
         {
@@ -135,6 +135,7 @@
                         case "昨收":
                         case "MACD率":
                         case "KDJ率":
+                        case "MACD差":
                             dr[i] = Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2).ToString();
                             break;
                         case "买入":
@@ -163,6 +164,7 @@
                         case "现高":
                         case "3线":
                         case "无影":
+                       
                             double currentValuePrice = (double)drOri[i];
                             dr[i] = "<font color=\"" + (currentValuePrice > currentPrice ? "red" : (currentValuePrice == currentPrice ? "gray" : "green")) + "\"  >"
                                 + Math.Round(currentValuePrice, 2).ToString() + "</font>";
@@ -327,6 +329,7 @@
         dt.Columns.Add("总换手", Type.GetType("System.Double"));
         dt.Columns.Add("调整", Type.GetType("System.Int32"));
         dt.Columns.Add("现高", Type.GetType("System.Double"));
+        dt.Columns.Add("MACD差", Type.GetType("System.Double"));
         dt.Columns.Add("F3", Type.GetType("System.Double"));
         dt.Columns.Add("F5", Type.GetType("System.Double"));
         dt.Columns.Add("前低", Type.GetType("System.Double"));
@@ -364,9 +367,18 @@
         DataTable dtDtl = DBHelper.GetDataTable(" select gid, alert_date, price from alert_foot where alert_date > '"
             + currentDate.ToShortDateString() + "' and alert_date < '" + currentDate.AddDays(1).ToShortDateString() + "'  order by alert_date desc ");
 
+        /*
         DataTable dtOri = DBHelper.GetDataTable(" select * from alert_predict_macd where alert_predict_macd.alert_date = '" + Util.GetLastTransactDate(currentDate, 1).ToShortDateString() + "'  "
             + "and exists ( select 'a' from limit_up where limit_up.gid = alert_predict_macd.gid and limit_up.alert_date >= '" + Util.GetLastTransactDate(currentDate, 15).ToShortDateString()
             + "' and limit_up.alert_date < '" + currentDate.Date.ToShortDateString() + "' ) " );
+        */
+
+        DataTable dtOri = DBHelper.GetDataTable(" select alert_predict_macd.gid, alert_predict_macd.alert_date, limit_up.alert_date as limit_up_date, predict_macd_price from alert_predict_macd "
+            + " join limit_up on limit_up.gid = alert_predict_macd.gid and alert_predict_macd.alert_date >= limit_up.alert_date  "
+            + " where limit_up.alert_date >= '" + Util.GetLastTransactDate(currentDate, 15).ToShortDateString() + "' and alert_predict_macd.alert_date = '" + Util.GetLastTransactDate(currentDate, 1).ToShortDateString() + "'  "
+            + " order by limit_up.alert_date desc ");
+
+
 
         DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor_new '" + currentDate.ToShortDateString() + "' ");
 
@@ -380,7 +392,7 @@
 
 
             DateTime alertDate = DateTime.Parse(drOri["alert_date"].ToString().Trim());
-            DataRow[] drArrExists = dtOri.Select(" gid = '" + drOri["gid"].ToString() + "' and alert_date > '" + alertDate.ToShortDateString() + "'  ");
+            DataRow[] drArrExists = dt.Select(" 代码 = '" + drOri["gid"].ToString() + "'   ");
             if (drArrExists.Length > 0)
             {
                 continue;
@@ -393,6 +405,9 @@
             }
 
             Stock stock = new Stock(drOri["gid"].ToString().Trim(), rc);
+
+
+
             stock.LoadKLineDay(rc);
             if (timelineArr.Length > 0)
             {
@@ -447,7 +462,7 @@
             }
 
 
-            
+
 
             if (stock.kLineDay[currentIndex].highestPrice < double.Parse(drOri["predict_macd_price"].ToString()))
             {
@@ -457,7 +472,22 @@
             int maxIndex = Math.Min(stock.kLineDay.Length - 1, currentIndex + 5);
 
 
-            int limitUpIndex = stock.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
+            int limitUpIndex = stock.GetItemIndex(DateTime.Parse(drOri["limit_up_date"].ToString()));
+
+            double maxMacd = stock.kLineDay[currentIndex].macd;
+            double minMacd = double.MaxValue;
+            int macdGreenStartIndex = currentIndex-1;
+            for (; macdGreenStartIndex >= 0 && stock.kLineDay[macdGreenStartIndex].macd <= 0; macdGreenStartIndex--)
+            {
+
+            }
+            macdGreenStartIndex++;
+            for (int k = macdGreenStartIndex; k < currentIndex; k++)
+            {
+                minMacd = Math.Min(minMacd, stock.kLineDay[k].macd);
+            }
+
+
             int highIndex = 0;
             int lowestIndex = 0;
             double lowest = GetFirstLowestPrice(stock.kLineDay, limitUpIndex, out lowestIndex);
@@ -635,6 +665,7 @@
             dr["前低"] = lowest;
             dr["幅度"] = width.ToString() + "%";
 
+            dr["MACD差"] = maxMacd - minMacd;
 
             double f3ReverseRate = (stock.kLineDay[currentIndex].lowestPrice - f3) / f3;
             double f5ReverseRate = (stock.kLineDay[currentIndex].lowestPrice - f5) / f5;
@@ -1041,6 +1072,7 @@
                     <asp:BoundColumn DataField="信号" HeaderText="信号"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="缩量" HeaderText="放量"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="总换手" HeaderText="总换手"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="MACD差" HeaderText="MACD差" ></asp:BoundColumn>
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ60" HeaderText="KDJ60" ></asp:BoundColumn>
