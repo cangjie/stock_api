@@ -139,6 +139,7 @@
                         case "昨收":
                         case "MACD率":
                         case "KDJ率":
+                        case "MACD差":
                         case "量比":
                             dr[i] = Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2).ToString();
                             break;
