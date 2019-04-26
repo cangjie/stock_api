@@ -463,7 +463,7 @@
             int kdjDays = stock.kdjDays(currentIndex - 1);
             int macdDays = stock.macdDays(currentIndex - 1);
 
-            if (macdDays < 0 || kdjDays < 0)
+            if (macdDays < 0 )
             {
                 continue;
             }
