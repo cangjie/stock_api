@@ -442,7 +442,7 @@
             }
 
 
-            if (currentIndex < 0)
+            if (currentIndex < 5)
                 continue;
 
 
@@ -540,9 +540,13 @@
 
             if (limitUpIndex == -1)
             {
-                //continue;
+                continue;
             }
 
+            if (stock.kLineDay[limitUpIndex].endPrice <= 1.095 && stock.kLineDay[limitUpIndex-1].endPrice)
+            {
+                continue;
+            }
 
 
             //double f3Distance = 0.382 - (highest - stock.kLineDay[currentIndex].lowestPrice) / (highest - lowest);
