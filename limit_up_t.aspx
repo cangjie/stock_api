@@ -418,6 +418,11 @@
                 continue;
             }
 
+            if (stock.kLineDay[currentIndex].startPrice != stock.kLineDay[currentIndex].endPrice)
+            {
+                continue;
+            }
+
             KLine[] kArrHour = Stock.LoadRedisKLine(stock.gid, "60min", rc);
             KLine[] kArrHalfHour = Stock.LoadRedisKLine(stock.gid, "30min", rc);
 
