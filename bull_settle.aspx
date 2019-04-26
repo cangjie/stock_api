@@ -463,7 +463,7 @@
             int kdjDays = stock.kdjDays(currentIndex - 1);
             int macdDays = stock.macdDays(currentIndex - 1);
 
-            if (macdDays < 0 )
+            if (!(stock.kLineDay[currentIndex - 1].macd <= 0 && stock.kLineDay[currentIndex].macd >= 0))
             {
                 continue;
             }
@@ -601,7 +601,7 @@
             dr["高点"] = highestPrice;
 
             dr["KDJ日"] = kdjDays;
-            dr["MACD日"] = macdDays; //stock.macdDays(currentIndex);
+            dr["MACD日"] = macdDays;
             dr["MACD率"] = macdDegree;
             dr["KDJ率"] = kdjDegree;
             dr["涨幅"] = upSpace;
@@ -726,7 +726,7 @@
 
                 maxPrice = Math.Max(maxPrice, highPrice);
 
-                
+
 
                 dr[i.ToString() + "日"] = (highPrice - todaySettlePrice) /todaySettlePrice;
             }
