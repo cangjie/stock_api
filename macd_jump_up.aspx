@@ -767,9 +767,9 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title='跳空金叉' >📍</a>";
             }
-            if (dtIOVolume.Select("gid = '" + stock.gid.Trim() + "' ").Length > 0)
+            if (buyPrice > supportPrice)
             {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"外盘高\" >✅</a>";
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"买入大于支撑\" >✅</a>";
             }
             if (dtFoot.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
             {
