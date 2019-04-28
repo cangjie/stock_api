@@ -374,7 +374,7 @@
         */
 
         DataTable dtOri = DBHelper.GetDataTable(" select alert_predict_macd.gid, alert_predict_macd.alert_date, limit_up.alert_date as limit_up_date, predict_macd_price from alert_predict_macd "
-            + " join limit_up on limit_up.gid = alert_predict_macd.gid and alert_predict_macd.alert_date >= limit_up.alert_date  "
+            + " join limit_up on limit_up.gid = alert_predict_macd.gid and alert_predict_macd.alert_date >= limit_up.alert_date and limit_price > predict_macd_price "
             + " where limit_up.alert_date >= '" + Util.GetLastTransactDate(currentDate, 15).ToShortDateString() + "' and alert_predict_macd.alert_date = '" + Util.GetLastTransactDate(currentDate, 1).ToShortDateString() + "'  "
             + " order by limit_up.alert_date desc ");
 
