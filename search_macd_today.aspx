@@ -12,13 +12,29 @@
         {
             currentDate = DateTime.Parse(dr["alert_date"].ToString());
             Stock s = new Stock(dr["gid"].ToString().Trim());
-            s.LoadKLineDay(rc);
-            int currentIndex = s.GetItemIndex(currentDate);
-            if (currentIndex < 0)
+            double highPrice = 0;
+            if (currentDate.Date == DateTime.Now.Date)
             {
-                continue;
+                Core.Timeline[] timelineArr = Core.Timeline.LoadTimelineArrayFromRedis(s.gid, currentDate, rc);
+                if (timelineArr.Length > 0)
+                {
+                    highPrice = timelineArr[timelineArr.Length - 1].todayHighestPrice;
+                }
             }
-            if (s.kLineDay[currentIndex].highestPrice > double.Parse(dr["predict_macd_price"].ToString()))
+
+            if (highPrice == 0)
+            {
+                s.LoadKLineDay(rc);
+                int currentIndex = s.GetItemIndex(currentDate);
+                if (currentIndex < 0)
+                {
+                    continue;
+                }
+                highPrice = s.kLineDay[currentIndex].highestPrice;
+            }
+            
+
+            if (highPrice > double.Parse(dr["predict_macd_price"].ToString()))
             {
                 try
                 {
