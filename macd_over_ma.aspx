@@ -50,7 +50,7 @@
                 {
                     t.Abort();
                     t = new Thread(ts);
-                    t.Start();
+                    //t.Start();
 
                 }
             }
@@ -302,7 +302,7 @@
     {
         currentDate = Util.GetDay(currentDate);
         DateTime prevDate = Util.GetLastTransactDate(currentDate, 1);
-        DataTable dtOri = DBHelper.GetDataTable(" select * from alert_bull where alert_date = '" + currentDate + "' ");
+        DataTable dtOri = DBHelper.GetDataTable(" select * from alert_predict_macd where alert_date = '" + Util.GetLastTransactDate(currentDate, 1).ToShortDateString() + "' ");
         DataTable dtAlert = DBHelper.GetDataTable(" select * from stock_alert_message where alert_date = '" + currentDate.ToShortDateString() + "' and alert_type = 'bull' ");
         DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor_new '" + currentDate.ToShortDateString() + "' ");
 
@@ -354,17 +354,16 @@
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
+
+
             Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
-            if (timelineArray.Length <= 0)
+            /*
+            if (timelineArray.Length > 0 && timelineArray[timelineArray.Length - 1].todayHighestPrice < double.Parse(drOri["predict_macd_price"].ToString()))
             {
                 continue;
             }
-    
+            */
             stock.LoadKLineDay(rc);
-            int currentIndex = stock.GetItemIndex(currentDate);
-            if (currentIndex < 1)
-                continue;
-            /*
             if (timelineArray.Length > 0)
             {
                 KLine currentKLine = new KLine();
@@ -390,7 +389,21 @@
                     stock.kLineDay = newKArr;
                 }
             }
-            */
+            int currentIndex = stock.GetItemIndex(currentDate);
+            if (currentIndex < 1)
+                continue;
+            KLine.ComputeMACD(stock.kLineDay);
+            KLine.ComputeRSV(stock.kLineDay);
+            KLine.ComputeKDJ(stock.kLineDay);
+            int kdjDays = stock.kdjDays(currentIndex);
+            int macdDays = stock.macdDays(currentIndex);
+            if (macdDays != 0)
+            {
+                continue;
+            }
+
+
+
 
             //stock.kLineDay[currentIndex].endPrice = 5.98;
 
@@ -400,30 +413,11 @@
             double ma20 = stock.GetAverageSettlePrice(currentIndex, 20, 0);
             double ma30 = stock.GetAverageSettlePrice(currentIndex, 30, 0);
 
-            /*
-            if (ma5 <= ma10 || ma10 <= ma20 || ma20 <= ma30)
+            if (stock.kLineDay[currentIndex].highestPrice < ma5 || stock.kLineDay[currentIndex].highestPrice < ma10
+                || stock.kLineDay[currentIndex].highestPrice < ma20 || stock.kLineDay[currentIndex].highestPrice < ma30)
             {
                 continue;
             }
-            */
-
-
-            if (!((ma5 > ma10 && ma10 > ma20 && ma20 > ma30) || (ma5 > ma10 && ma10 > ma20 && ma30 < ma5)))
-            {
-                continue;
-            }
-
-            if (stock.kLineDay[currentIndex].highestPrice < ma5)
-            {
-                continue;
-            }
-
-
-            //stock.kLineDay[currentIndex].endPrice = 6.19;
-
-            KLine.ComputeMACD(stock.kLineDay);
-            KLine.ComputeRSV(stock.kLineDay);
-            KLine.ComputeKDJ(stock.kLineDay);
 
 
 
@@ -466,12 +460,6 @@
 
 
 
-            if (!correctKlineStyle)
-            {
-                continue;
-            }
-
-
             double current3LinePrice = stock.GetAverageSettlePrice(currentIndex, 3, 3);
             double previous3LinePrice = 0;
             int adjustDays = 0;
@@ -497,8 +485,7 @@
             DateTime lastDate = DateTime.Parse(stock.kLineDay[currentIndex - 1].startDateTime.ToShortDateString());
             double lastDayVolume = stock.kLineDay[currentIndex - 1].VirtualVolume;//Stock.GetVolumeAndAmount(stock.gid, lastDate)[0];
             double currentVolume = stock.kLineDay[currentIndex].VirtualVolume;//Stock.GetVolumeAndAmount(stock.gid, currentDate)[0];
-            int kdjDays = stock.kdjDays(currentIndex);
-            int macdDays = stock.macdDays(currentIndex);
+
 
             if (macdDays < 0)
             {
@@ -525,20 +512,7 @@
                 continue;
             }
             */
-            DateTime ma5Time = DateTime.Now;
-
-            if (timelineArray.Length == 0)
-            {
-                timelineArray = Core.Timeline.LoadTimelineArrayFromSqlServer(stock.gid, currentDate);
-            }
-            for (int i = 0; i < timelineArray.Length; i++)
-            {
-                if (timelineArray[i].todayLowestPrice < ma5 * 1.005 && timelineArray[i].todayEndPrice > ma5 * 1.005)
-                {
-                    ma5Time = timelineArray[i].tickTime;
-                    break;
-                }
-            }
+            
 
             double lowestPrice = stock.LowestPrice(currentDate, 20);
             double highestPrice = stock.HighestPrice(currentDate, 40);
@@ -554,12 +528,9 @@
 
 
 
-            double buyPrice = ma5 * 1.005;
+            double buyPrice = Math.Max(Math.Max(Math.Max(Math.Max(ma5, ma10), ma20), ma30), double.Parse(drOri["predict_macd_price"].ToString()));
 
-            if (stock.kLineDay[currentIndex].highestPrice < buyPrice || stock.kLineDay[currentIndex].lowestPrice > buyPrice)
-            {
-                continue;
-            }
+            
 
             bool waitLowPrice = false;
 
@@ -628,14 +599,8 @@
             dr["今收"] = currentPrice;
             dr["今涨"] = (stock.kLineDay[currentIndex].startPrice - settlePrice) / settlePrice;
             dr["放量"] = currentVolume / lastDayVolume;
-            if (timelineArray != null)
-            {
-                dr["量比"] = Stock.ComputeQuantityRelativeRatio(stock.kLineDay, timelineArray, ma5Time);
-            }
-            else
-            {
-                dr["量比"] = 0;
-            }
+            dr["量比"] = 0;
+           
             dr["3线"] = line3Price;
             dr["低点"] = lowestPrice;
             dr["调整日"] = adjustDays.ToString();// currentIndex - previous3LineIndex;

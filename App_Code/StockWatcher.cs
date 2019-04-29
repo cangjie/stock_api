@@ -164,6 +164,7 @@ public class StockWatcher
 
 
 
+
                                 double minMa = Math.Min(ma5, ma10);
                                 minMa = Math.Min(minMa, ma20);
                                 minMa = Math.Min(minMa, ma30);
