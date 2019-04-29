@@ -10,7 +10,7 @@
         DataTable dt = DBHelper.GetDataTable(" select * from alert_predict_macd where alert_date = '" + Util.GetLastTransactDate(currentDate, 1) + "' ");
         foreach (DataRow dr in dt.Rows)
         {
-            currentDate = DateTime.Parse(dr["alert_date"].ToString());
+            DateTime lastDate = DateTime.Parse(dr["alert_date"].ToString());
             Stock s = new Stock(dr["gid"].ToString().Trim());
             double highPrice = 0;
             if (currentDate.Date == DateTime.Now.Date)
@@ -39,7 +39,7 @@
                 try
                 {
                     DBHelper.UpdateData("alert_predict_macd", new string[,] { { "valid", "int", "1" } },
-                        new string[,] { { "alert_date", "datetime", currentDate.ToShortDateString() }, { "gid", "varchar", s.gid } }, Util.conStr);
+                        new string[,] { { "alert_date", "datetime", lastDate.ToShortDateString() }, { "gid", "varchar", s.gid } }, Util.conStr);
                 }
                 catch
                 {
