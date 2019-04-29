@@ -354,23 +354,42 @@
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
-
-            if (stock.gid.Trim().Equals("sh600769"))
+            Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
+            if (timelineArray.Length <= 0)
             {
-                //t.Suspend();
+                continue;
             }
-            else
-            {
-                //continue;
-            }
-
-
-
-
+    
             stock.LoadKLineDay(rc);
             int currentIndex = stock.GetItemIndex(currentDate);
             if (currentIndex < 1)
                 continue;
+
+            if (timelineArray.Length > 0)
+            {
+                KLine currentKLine = new KLine();
+                currentKLine.startDateTime = currentDate.Date.AddHours(9).AddMinutes(30);
+                currentKLine.highestPrice = timelineArray[timelineArray.Length - 1].todayHighestPrice;
+                currentKLine.endPrice = timelineArray[timelineArray.Length - 1].todayEndPrice;
+                currentKLine.startPrice = timelineArray[timelineArray.Length - 1].todayStartPrice;
+                currentKLine.lowestPrice = timelineArray[timelineArray.Length - 1].todayLowestPrice;
+                currentKLine.volume = timelineArray[timelineArray.Length - 1].volume;
+                currentKLine.amount = timelineArray[timelineArray.Length - 1].amount;
+                if (stock.kLineDay[stock.kLineDay.Length - 1].startDateTime.Date == currentDate.Date)
+                {
+                    stock.kLineDay[stock.kLineDay.Length - 1] = currentKLine;
+                }
+                else if (stock.kLineDay[stock.kLineDay.Length - 1].startDateTime.Date < currentDate.Date)
+                {
+                    KLine[] newKArr = new KLine[stock.kLineDay.Length + 1];
+                    for (int i = 0; i < stock.kLineDay.Length; i++)
+                    {
+                        newKArr[i] = stock.kLineDay[i];
+                    }
+                    newKArr[newKArr.Length - 1] = currentKLine;
+                    stock.kLineDay = newKArr;
+                }
+            }
 
 
             //stock.kLineDay[currentIndex].endPrice = 5.98;
@@ -507,7 +526,7 @@
             }
             */
             DateTime ma5Time = DateTime.Now;
-            Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
+
             if (timelineArray.Length == 0)
             {
                 timelineArray = Core.Timeline.LoadTimelineArrayFromSqlServer(stock.gid, currentDate);
