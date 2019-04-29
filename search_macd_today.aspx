@@ -7,7 +7,7 @@
     protected void Page_Load(object sender, EventArgs e)
     {
         DateTime currentDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "date", DateTime.Now.ToShortDateString()));
-        DataTable dt = DBHelper.GetDataTable(" select * from alert_predict_macd where alert_date = '" + Util.GetLastTransactDate(currentDate, 1) + "' ");
+        DataTable dt = DBHelper.GetDataTable(" select * from alert_predict_macd where valid = 0 and alert_date = '" + Util.GetLastTransactDate(currentDate, 1) + "' ");
         foreach (DataRow dr in dt.Rows)
         {
             DateTime lastDate = DateTime.Parse(dr["alert_date"].ToString());
