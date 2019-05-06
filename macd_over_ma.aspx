@@ -77,7 +77,7 @@
             currentDate = Util.GetDay(calendar.SelectedDate);
         DataTable dtOri = GetData(currentDate);
         string filter = "";
-        string option = Util.GetSafeRequestValue(Request, "option", "openlow").Trim();
+        string option = Util.GetSafeRequestValue(Request, "option", "").Trim();
         if (option.Equals("openhigh"))
         {
             filter = "信号 like '%🔺%'";
@@ -85,6 +85,10 @@
         else if (option.Equals("openlow"))
         {
             filter = "信号 not like '%🔺%'";
+        }
+        else
+        {
+            filter = "";
         }
         return RenderHtml(dtOri.Select(filter, sort));
     }
@@ -195,6 +199,10 @@
                 }
             }
             string gid = dr["代码"].ToString();
+            if (gid.Trim().Equals("sz300405"))
+            {
+                string a = "";
+            }
             dr["代码"] = "<a href=\"show_K_line_day.aspx?gid=" + dr["代码"].ToString() + "\" target=\"_blank\" >" + dr["代码"].ToString() + "</a>";
             dr["名称"] = "<a href=\"io_volume_detail.aspx?gid=" + gid.Trim() + "&date=" + calendar.SelectedDate.ToShortDateString() + "\" target=\"_blank\" >" + dr["名称"].ToString() + "</a>";
             dt.Rows.Add(dr);
@@ -355,11 +363,7 @@
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
 
-            if (stock.gid.Trim().Equals("sz300405"))
-            {
-                string a = "";
-            }
-
+            
             Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
             /*
             if (timelineArray.Length > 0 && timelineArray[timelineArray.Length - 1].todayHighestPrice < double.Parse(drOri["predict_macd_price"].ToString()))
