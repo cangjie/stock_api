@@ -363,7 +363,7 @@
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
 
-            
+
             Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
             /*
             if (timelineArray.Length > 0 && timelineArray[timelineArray.Length - 1].todayHighestPrice < double.Parse(drOri["predict_macd_price"].ToString()))
@@ -404,6 +404,10 @@
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
             int kdjDays = stock.kdjDays(currentIndex);
+            if (kdjDays < 0)
+            {
+                continue;
+            }
             int macdDays = stock.macdDays(currentIndex);
             if (macdDays != 0)
             {
