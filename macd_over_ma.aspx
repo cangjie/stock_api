@@ -357,9 +357,8 @@
 
             if (stock.gid.Trim().Equals("sz300405"))
             {
-                string aa = "";
+                string a = "";
             }
-
 
             Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
             /*
@@ -501,7 +500,7 @@
                 && stock.kLineDay[currentIndex - 2].macd > stock.kLineDay[currentIndex - 3].macd
                 && stock.kLineDay[currentIndex - 3].macd > stock.kLineDay[currentIndex - 4].macd ))
             {
-                continue;
+                //continue;
             }
 
             /*
