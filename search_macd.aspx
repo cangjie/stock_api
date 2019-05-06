@@ -7,13 +7,21 @@
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        DataTable dt = DBHelper.GetDataTable(" select * from alert_predict_macd ");
+        DataTable dt = DBHelper.GetDataTable(" select * from alert_predict_macd where valid = 0  order by alert_date desc");
         foreach (DataRow dr in dt.Rows)
         {
             DateTime currentDate = DateTime.Parse(dr["alert_date"].ToString());
+
+
+
             Stock s = new Stock(dr["gid"].ToString().Trim());
             s.LoadKLineDay(rc);
             int currentIndex = s.GetItemIndex(currentDate);
+            currentIndex++;
+            if (currentIndex > s.kLineDay.Length - 1)
+            {
+                continue;
+            }
             if (currentIndex < 0)
             {
                 continue;

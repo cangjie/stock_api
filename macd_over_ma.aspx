@@ -355,6 +355,11 @@
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
 
+            if (stock.gid.Trim().Equals("sz300405"))
+            {
+                string aa = "";
+            }
+
 
             Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
             /*
@@ -512,7 +517,7 @@
                 continue;
             }
             */
-            
+
 
             double lowestPrice = stock.LowestPrice(currentDate, 20);
             double highestPrice = stock.HighestPrice(currentDate, 40);
@@ -530,7 +535,7 @@
 
             double buyPrice = Math.Max(Math.Max(Math.Max(Math.Max(ma5, ma10), ma20), ma30), double.Parse(drOri["predict_macd_price"].ToString()));
 
-            
+
 
             bool waitLowPrice = false;
 
@@ -600,7 +605,7 @@
             dr["今涨"] = (stock.kLineDay[currentIndex].startPrice - settlePrice) / settlePrice;
             dr["放量"] = currentVolume / lastDayVolume;
             dr["量比"] = 0;
-           
+
             dr["3线"] = line3Price;
             dr["低点"] = lowestPrice;
             dr["调整日"] = adjustDays.ToString();// currentIndex - previous3LineIndex;

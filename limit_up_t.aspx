@@ -385,7 +385,7 @@
             }
             Stock stock = new Stock(drOri["gid"].ToString().Trim(), rc);
 
-            if (stock.gid.Trim().Equals("sh600751"))
+            if (stock.gid.Trim().Equals("sz300042"))
             {
                 string aa = "aa";
             }
