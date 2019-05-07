@@ -669,6 +669,11 @@
 
             dr["KDJ日"] = stock.kdjDays(currentIndex);
 
+            if ((int)dr["KDJ日"] == -1)
+            {
+                continue;
+            }
+
             dr["MACD日"] = stock.macdDays(currentIndex);
 
             dr["KDJ30"] = Stock.KDJIndex(kArrHalfHour, currentIndexHalfHour);
