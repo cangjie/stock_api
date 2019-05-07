@@ -500,10 +500,7 @@
             int kdjDays = stock.kdjDays(currentIndex);
             int macdDays = stock.macdDays(currentIndex);
 
-            if (macdDays < 0)
-            {
-                continue;
-            }
+          
 
             if (!(stock.kLineDay[currentIndex - 1].macd > stock.kLineDay[currentIndex - 2].macd
                 && stock.kLineDay[currentIndex - 2].macd > stock.kLineDay[currentIndex - 3].macd
@@ -512,12 +509,12 @@
                 continue;
             }
 
-            /*
-            if (!(macdDays <= kdjDays && kdjDays <= 1 && Math.Abs(macdDays - kdjDays) < 2))
+            
+            if (kdjDays < 0 || macdDays > kdjDays)
             {
                 continue;
             }
-            */
+            
 
             /*
             if ((macdDays > kdjDays && kdjDays == -1) || (macdDays > -1 && kdjDays > -1 && macdDays > kdjDays))
