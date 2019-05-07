@@ -468,6 +468,10 @@
             dr["3线"] = line3Price;
             dr["KDJ日"] = stock.kdjDays(currentIndex);
             dr["MACD日"] = stock.macdDays(currentIndex);
+            if ((int)dr["KDJ日"] < 0 || (int)dr["KDJ日"] < (int)dr["MACD日"])
+            {
+                continue;
+            }
             dr["预警日"] = TransDaysDiff(DateTime.Parse(drOri["alert_date"].ToString()), currentDate);
             int kdjHours = Stock.KDJIndex(kArrHour, kArrHourTodayLastIndex);
 
