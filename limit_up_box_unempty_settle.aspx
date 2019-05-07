@@ -686,6 +686,12 @@
 
             dr["MACD日"] = stock.macdDays(currentIndex);
 
+            if ((int)dr["KDJ日"] < (int)dr["MACD日"])
+            {
+                continue;
+            }
+
+
             dr["KDJ30"] = Stock.KDJIndex(kArrHalfHour, currentIndexHalfHour);
             dr["KDJ60"] = Stock.KDJIndex(kArrHour, currentIndexHour);
             dr["无影时"] = footTime;
