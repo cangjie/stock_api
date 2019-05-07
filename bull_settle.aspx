@@ -355,10 +355,7 @@
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
             Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
-            if (timelineArray.Length <= 0)
-            {
-                continue;
-            }
+           
     
             stock.LoadKLineDay(rc);
             int currentIndex = stock.GetItemIndex(currentDate);
@@ -407,7 +404,7 @@
             }
             */
 
-
+            /*
             if (!((ma5 > ma10 && ma10 > ma20 && ma20 > ma30) || (ma5 > ma10 && ma10 > ma20 && ma30 < ma5)))
             {
                 continue;
@@ -417,7 +414,7 @@
             {
                 continue;
             }
-
+            */
 
             //stock.kLineDay[currentIndex].endPrice = 6.19;
 
@@ -468,7 +465,7 @@
 
             if (!correctKlineStyle)
             {
-                continue;
+                //continue;
             }
 
 
