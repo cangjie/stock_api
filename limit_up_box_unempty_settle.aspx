@@ -5,7 +5,6 @@
 <!DOCTYPE html>
 
 <script runat="server">
-
     public DateTime currentDate = Util.GetDay(DateTime.Now);
 
     public string sort = "缩量";
