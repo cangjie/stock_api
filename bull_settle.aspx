@@ -322,6 +322,8 @@
         dt.Columns.Add("MACD差", Type.GetType("System.Double"));
         dt.Columns.Add("TD", Type.GetType("System.Int32"));
         dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
+        dt.Columns.Add("KDJ30", Type.GetType("System.Int32"));
+        dt.Columns.Add("KDJ60", Type.GetType("System.Int32"));
         dt.Columns.Add("KDJ率", Type.GetType("System.Double"));
         dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD率", Type.GetType("System.Double"));
@@ -358,6 +360,49 @@
            
     
             stock.LoadKLineDay(rc);
+            KLine[] kArrHour = Stock.LoadRedisKLine(stock.gid, "60min", rc);
+            KLine[] kArrHalfHour = Stock.LoadRedisKLine(stock.gid, "30min", rc);
+
+            KLine.ComputeMACD(kArrHour);
+            KLine.ComputeRSV(kArrHour);
+            KLine.ComputeKDJ(kArrHour);
+
+            KLine.ComputeMACD(kArrHalfHour);
+            KLine.ComputeRSV(kArrHalfHour);
+            KLine.ComputeKDJ(kArrHalfHour);
+            int kArrHourTodayLastIndex = kArrHour.Length - 1;
+            int kArrHalfHourTodayLastIndex = kArrHalfHour.Length - 1;
+
+
+
+            if (currentDate.Date < DateTime.Now.Date)
+            {
+
+                for (int i = kArrHour.Length - 1; i >= 0; i--)
+                {
+                    if (kArrHour[i].endDateTime.Date == currentDate.Date)
+                    {
+                        kArrHourTodayLastIndex = i;
+                        break;
+                    }
+                }
+                for (int i = kArrHalfHour.Length - 1; i >= 0; i--)
+                {
+                    if (kArrHalfHour[i].endDateTime.Date == currentDate.Date)
+                    {
+                        kArrHalfHourTodayLastIndex = i;
+                        break;
+                    }
+                }
+
+            }
+            if (kArrHalfHourTodayLastIndex < 0 || kArrHalfHourTodayLastIndex < 0)
+            {
+                continue;
+            }
+
+
+
             int currentIndex = stock.GetItemIndex(currentDate);
             if (currentIndex < 1)
                 continue;
@@ -630,6 +675,24 @@
             {
                 dr["量比"] = 0;
             }
+
+
+            int kdjHours = Stock.KDJIndex(kArrHour, kArrHourTodayLastIndex);
+
+            if (kdjHours < 0)
+            {
+                continue;
+            }
+
+            dr["KDJ30"] = Stock.KDJIndex(kArrHalfHour, kArrHalfHourTodayLastIndex);
+            dr["KDJ60"] = kdjHours;
+            if (kdjHours > 3)
+            {
+                continue;
+            }
+
+
+
             dr["3线"] = line3Price;
             dr["低点"] = lowestPrice;
             dr["调整日"] = adjustDays.ToString();// currentIndex - previous3LineIndex;
@@ -886,8 +949,8 @@
                      <asp:BoundColumn DataField="MACD差" HeaderText="MACD差"></asp:BoundColumn>
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD日|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>
-                    
-                   
+                    <asp:BoundColumn DataField="KDJ60" HeaderText="KDJ60" ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="KDJ30" HeaderText="KDJ30" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="0日" HeaderText="0日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日" SortExpression="1日|desc" ></asp:BoundColumn>
