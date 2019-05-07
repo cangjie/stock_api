@@ -688,7 +688,7 @@
             dr["KDJ60"] = kdjHours;
             if (kdjHours > 3)
             {
-                continue;
+                //continue;
             }
 
 
