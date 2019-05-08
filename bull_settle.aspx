@@ -77,7 +77,7 @@
             currentDate = Util.GetDay(calendar.SelectedDate);
         DataTable dtOri = GetData(currentDate);
         string filter = "";
-        string option = Util.GetSafeRequestValue(Request, "option", "openlow").Trim();
+        string option = Util.GetSafeRequestValue(Request, "option", "").Trim();
         if (option.Equals("openhigh"))
         {
             filter = "信号 like '%🔺%'";
@@ -695,7 +695,7 @@
 
             if (kdjHours < 0)
             {
-                continue;
+                //continue;
             }
 
             dr["KDJ30"] = Stock.KDJIndex(kArrHalfHour, kArrHalfHourTodayLastIndex);
