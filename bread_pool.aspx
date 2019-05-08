@@ -316,6 +316,8 @@
         dt.Columns.Add("现价", Type.GetType("System.Double"));
         dt.Columns.Add("F3", Type.GetType("System.Double"));
         dt.Columns.Add("F5", Type.GetType("System.Double"));
+        dt.Columns.Add("PF3", Type.GetType("System.Double"));
+        dt.Columns.Add("PF5", Type.GetType("System.Double"));
         dt.Columns.Add("前低", Type.GetType("System.Double"));
         dt.Columns.Add("幅度", Type.GetType("System.String"));
         dt.Columns.Add("3线", Type.GetType("System.Double"));
@@ -326,7 +328,7 @@
         dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
         dt.Columns.Add("预警日", Type.GetType("System.Int32"));
         dt.Columns.Add("类型", Type.GetType("System.String"));
-  
+
         dt.Columns.Add("MK差", Type.GetType("System.Int32"));
         for (int i = 0; i <= 5; i++)
         {
@@ -422,6 +424,18 @@
             int maxIndex = Math.Min(stock.kLineDay.Length - 1, currentIndex + 5);
             double lowest = double.Parse(drOri["lowest"].ToString());
             double highest = double.Parse(drOri["highest"].ToString());
+
+            int highestIndex = currentIndex;
+            for (; stock.kLineDay[highestIndex].highestPrice < highest; highestIndex--)
+            {
+
+            }
+
+            if (highest == currentIndex)
+            {
+                continue;
+            }
+
             double f3 = highest - (highest - lowest) * 0.382;
             double f5 = highest - (highest - lowest) * 0.618;
             double line3Price = KLine.GetAverageSettlePrice(stock.kLineDay, currentIndex, 3, 3);
@@ -456,7 +470,7 @@
 
             double width = Math.Round(100 * (highest - lowest) / lowest, 2);
 
-           
+
 
             dr["现价"] = currentPrice;
 
@@ -496,6 +510,26 @@
             }
 
             buyPrice = kArrHour[kArrHourTodayLastIndex - kdjHours].endPrice;
+
+
+            int reverseIndex = 0;
+            double reversePrice = double.MaxValue;
+
+            for (int m = highestIndex + 1; m <= currentIndex; m++)
+            {
+                if (reversePrice > stock.kLineDay[m].lowestPrice)
+                {
+                    reversePrice = stock.kLineDay[m].lowestPrice;
+                    reverseIndex = m;
+                }
+            }
+
+            if (reverseIndex == 0 )
+            {
+                continue;
+            }
+
+
             double maxPrice = 0;
             dr["买入"] = buyPrice;
             dr["总换手"] = double.Parse(drOri["exchange"].ToString());
@@ -556,13 +590,8 @@
             {
                 dr["信号"] = "<a title='小时KDJ低位金叉' >🌟</a>" + dr["信号"].ToString().Trim();
             }
-
-
-            
-
-
-
-
+            dr["PF3"] = ((highest - reversePrice) * 0.382 + reversePrice - buyPrice) / buyPrice;
+            dr["PF5"] = ((highest - reversePrice) * 0.618 + reversePrice - buyPrice) / buyPrice;
             dt.Rows.Add(dr);
 
         }
