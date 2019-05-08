@@ -360,7 +360,7 @@
 
             if (stock.gid.Trim().Equals("sz300338"))
             {
-                //t.Abort();
+                t.Abort();
             }
 
             Core.Timeline[] timelineArray = new Core.Timeline[0];
@@ -611,7 +611,7 @@
 
             if (stock.kLineDay[currentIndex].highestPrice < buyPrice || stock.kLineDay[currentIndex].lowestPrice > buyPrice)
             {
-                continue;
+                //continue;
             }
 
             bool waitLowPrice = false;
