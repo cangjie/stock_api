@@ -356,9 +356,23 @@
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
-            Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
-           
-    
+
+
+            if (stock.gid.Trim().Equals("sz300338"))
+            {
+                //t.Abort();
+            }
+
+            Core.Timeline[] timelineArray = new Core.Timeline[0];
+            try
+            {
+                timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
+            }
+            catch
+            {
+
+            }
+
             stock.LoadKLineDay(rc);
             KLine[] kArrHour = Stock.LoadRedisKLine(stock.gid, "60min", rc);
             KLine[] kArrHalfHour = Stock.LoadRedisKLine(stock.gid, "30min", rc);
@@ -542,21 +556,21 @@
             int kdjDays = stock.kdjDays(currentIndex);
             int macdDays = stock.macdDays(currentIndex);
 
-          
+
 
             if (!(stock.kLineDay[currentIndex - 1].macd > stock.kLineDay[currentIndex - 2].macd
                 && stock.kLineDay[currentIndex - 2].macd > stock.kLineDay[currentIndex - 3].macd
-                && stock.kLineDay[currentIndex - 3].macd > stock.kLineDay[currentIndex - 4].macd ))
+                ))
             {
                 continue;
             }
 
-            
+
             if (kdjDays < 0 || macdDays > kdjDays)
             {
                 continue;
             }
-            
+
 
             /*
             if ((macdDays > kdjDays && kdjDays == -1) || (macdDays > -1 && kdjDays > -1 && macdDays > kdjDays))

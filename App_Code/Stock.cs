@@ -782,24 +782,31 @@ public class Stock
     {
         //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
         string key = gid + "_kline_" + type;
-        StackExchange.Redis.RedisValue[] rvArr = rc.redisDb.SortedSetRangeByScore((StackExchange.Redis.RedisKey)key);
-        KLine[] kArr = new KLine[rvArr.Length];
-        for (int i = 0; i < rvArr.Length; i++)
+        try
         {
-            string[] rvItems = rvArr[i].ToString().Trim().Split(',');
-            kArr[i] = new KLine();
-            kArr[i].gid = gid.Trim();
-            kArr[i].type = type.Trim();
-            kArr[i].startDateTime = DateTime.Parse(rvItems[1].Trim());
-            kArr[i].startPrice = double.Parse(rvItems[2].Trim());
-            kArr[i].endPrice = double.Parse(rvItems[3].Trim());
-            kArr[i].highestPrice = double.Parse(rvItems[4].Trim());
-            kArr[i].lowestPrice = double.Parse(rvItems[5].Trim());
-            kArr[i].volume = int.Parse(rvItems[6].Trim());
-            kArr[i].amount = double.Parse(rvItems[7].Trim());
+            StackExchange.Redis.RedisValue[] rvArr = rc.redisDb.SortedSetRangeByScore((StackExchange.Redis.RedisKey)key);
+            KLine[] kArr = new KLine[rvArr.Length];
+            for (int i = 0; i < rvArr.Length; i++)
+            {
+                string[] rvItems = rvArr[i].ToString().Trim().Split(',');
+                kArr[i] = new KLine();
+                kArr[i].gid = gid.Trim();
+                kArr[i].type = type.Trim();
+                kArr[i].startDateTime = DateTime.Parse(rvItems[1].Trim());
+                kArr[i].startPrice = double.Parse(rvItems[2].Trim());
+                kArr[i].endPrice = double.Parse(rvItems[3].Trim());
+                kArr[i].highestPrice = double.Parse(rvItems[4].Trim());
+                kArr[i].lowestPrice = double.Parse(rvItems[5].Trim());
+                kArr[i].volume = int.Parse(rvItems[6].Trim());
+                kArr[i].amount = double.Parse(rvItems[7].Trim());
+            }
+            //rc.Dispose();
+            return kArr;
         }
-        //rc.Dispose();
-        return kArr;
+        catch
+        {
+            return new KLine[0];
+        }
     }
 
     public static KLine[] LoadLocalKLine(string gid, string type)
