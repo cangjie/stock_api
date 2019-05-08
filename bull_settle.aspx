@@ -456,7 +456,8 @@
             double ma20 = stock.GetAverageSettlePrice(currentIndex, 20, 0);
             double ma30 = stock.GetAverageSettlePrice(currentIndex, 30, 0);
 
-            if (stock.kLineDay[currentIndex - 1].endPrice > Math.Max(Math.Max(Math.Max(ma5, ma10), ma20), ma30))
+            if (stock.kLineDay[currentIndex - 1].endPrice > Math.Max(Math.Max(Math.Max(ma5, ma10), ma20), ma30) 
+                && stock.kLineDay[currentIndex - 1].macd > 0)
             {
                 continue;
             }
