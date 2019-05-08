@@ -23,7 +23,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "总换手");
+        sort = Util.GetSafeRequestValue(Request, "sort", "MK差,MACD日,总换手");
         filter = Util.GetSafeRequestValue(Request, "filter", "");
         if (!IsPostBack)
         {
@@ -327,6 +327,8 @@
         dt.Columns.Add("现高", Type.GetType("System.Double"));
         dt.Columns.Add("F3", Type.GetType("System.Double"));
         dt.Columns.Add("F5", Type.GetType("System.Double"));
+        dt.Columns.Add("PF3", Type.GetType("System.Double"));
+        dt.Columns.Add("PF5", Type.GetType("System.Double"));
         dt.Columns.Add("前低", Type.GetType("System.Double"));
         dt.Columns.Add("幅度", Type.GetType("System.String"));
         dt.Columns.Add("3线", Type.GetType("System.Double"));
@@ -334,6 +336,7 @@
         dt.Columns.Add("评级", Type.GetType("System.String"));
         dt.Columns.Add("买入", Type.GetType("System.Double"));
         dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
+        dt.Columns.Add("MK差", Type.GetType("System.Int32"));
         dt.Columns.Add("KDJ60", Type.GetType("System.Int32"));
         dt.Columns.Add("KDJ30", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
@@ -435,7 +438,22 @@
                 //continue;
             }
 
+            int reverseIndex = 0;
+            double reversePrice = double.MaxValue;
 
+            for (int m = highIndex + 1; m <= currentIndex; m++)
+            {
+                if (reversePrice > stock.kLineDay[m].lowestPrice)
+                {
+                    reversePrice = stock.kLineDay[m].lowestPrice;
+                    reverseIndex = m;
+                }
+            }
+
+            if (reverseIndex == 0 )
+            {
+                continue;
+            }
 
             double avarageVolume = 0;
             for (int i = lowestIndex; i < highIndex; i++)
@@ -618,6 +636,7 @@
             dr["前低"] = lowest;
             dr["幅度"] = width.ToString() + "%";
 
+            
 
             double f3ReverseRate = (stock.kLineDay[currentIndex].lowestPrice - f3) / f3;
             double f5ReverseRate = (stock.kLineDay[currentIndex].lowestPrice - f5) / f5;
@@ -690,6 +709,7 @@
             {
                 continue;
             }
+            dr["MK差"] = (int)dr["KDJ日"] - (int)dr["MACD日"];
 
 
             dr["KDJ30"] = Stock.KDJIndex(kArrHalfHour, currentIndexHalfHour);
@@ -777,7 +797,8 @@
                 DBHelper.InsertData("bread_pool", new string[,] { { "gid", "varchar", stock.gid.Trim()}, {"alert_date", "datetime", currentDate.ToShortDateString() },
                     {"exchange", "float", dr["总换手"].ToString() }, {"lowest", "float", dr["前低"].ToString() }, { "highest", "flaot", dr["现高"].ToString()} });
             }
-
+            dr["PF3"] = ((highest - reversePrice) * 0.382 + reversePrice - buyPrice) / buyPrice;
+            dr["PF5"] = ((highest - reversePrice) * 0.618 + reversePrice - buyPrice) / buyPrice;
             dt.Rows.Add(dr);
 
         }
@@ -1021,6 +1042,7 @@
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="总换手" HeaderText="总换手"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="MK差" HeaderText="MK差" ></asp:BoundColumn>
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ60" HeaderText="KDJ60" ></asp:BoundColumn>
@@ -1034,6 +1056,8 @@
                     <asp:BoundColumn DataField="幅度" HeaderText="幅度"></asp:BoundColumn>
                     <asp:BoundColumn DataField="现价" HeaderText="现价"></asp:BoundColumn>
                     <asp:BoundColumn DataField="涨幅" HeaderText="涨幅"  ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="PF3" HeaderText="PF3"  ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="PF5" HeaderText="PF5"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="0日" HeaderText="0日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="2日" HeaderText="2日"></asp:BoundColumn>
