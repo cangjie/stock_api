@@ -24,7 +24,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "总换手");
+        sort = Util.GetSafeRequestValue(Request, "sort", "MK差,MACD日");
         filter = Util.GetSafeRequestValue(Request, "filter", "");
         if (!IsPostBack)
         {
@@ -326,6 +326,8 @@
         dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
         dt.Columns.Add("预警日", Type.GetType("System.Int32"));
         dt.Columns.Add("类型", Type.GetType("System.String"));
+  
+        dt.Columns.Add("MK差", Type.GetType("System.Int32"));
         for (int i = 0; i <= 5; i++)
         {
             dt.Columns.Add(i.ToString() + "日", Type.GetType("System.Double"));
@@ -454,6 +456,8 @@
 
             double width = Math.Round(100 * (highest - lowest) / lowest, 2);
 
+           
+
             dr["现价"] = currentPrice;
 
             dr["现高"] = highest;
@@ -472,6 +476,10 @@
             {
                 continue;
             }
+
+            dr["MK差"] = (int)dr["KDJ日"] - (int)dr["MACD日"];
+
+
             dr["预警日"] = TransDaysDiff(DateTime.Parse(drOri["alert_date"].ToString()), currentDate);
             int kdjHours = Stock.KDJIndex(kArrHour, kArrHourTodayLastIndex);
 
@@ -533,6 +541,10 @@
                 }
             }
 
+
+
+
+
             if (overPreviousHigh)
             {
                 dr["信号"] = "<a title=\"过前高\">🚩</a>";
@@ -544,6 +556,13 @@
             {
                 dr["信号"] = "<a title='小时KDJ低位金叉' >🌟</a>" + dr["信号"].ToString().Trim();
             }
+
+
+            
+
+
+
+
             dt.Rows.Add(dr);
 
         }
@@ -716,6 +735,7 @@
                     <asp:BoundColumn DataField="信号" HeaderText="信号"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="总换手" HeaderText="总换手"></asp:BoundColumn>
                     <asp:BoundColumn DataField="预警日" HeaderText="预警日"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="MK差" HeaderText="MK差" ></asp:BoundColumn>
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ60" HeaderText="KDJ60" ></asp:BoundColumn>
