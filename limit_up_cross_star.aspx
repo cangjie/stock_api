@@ -20,7 +20,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "调整, 缩量, MACD日, KDJ日");
+        sort = Util.GetSafeRequestValue(Request, "sort", "MACD日, KDJ日");
         if (!IsPostBack)
         {
             try
@@ -69,7 +69,7 @@
         else
             currentDate = Util.GetDay(calendar.SelectedDate);
         DataTable dtOri = GetData(currentDate);
-        return RenderHtml(dtOri.Select(" 信号 like '%📈%' ", sort));
+        return RenderHtml(dtOri.Select("", sort));
     }
 
     protected void calendar_SelectionChanged(object sender, EventArgs e)
@@ -306,7 +306,7 @@
             return dt;
         }
 
-        DateTime lastTransactDate = Util.GetLastTransactDate(currentDate, 1);
+        DateTime lastTransactDate = Util.GetLastTransactDate(currentDate, 2);
         //DateTime limitUpStartDate = Util.GetLastTransactDate(lastTransactDate, 4);
 
 
@@ -346,13 +346,12 @@
                 continue;
             }
 
-            double lastSettle = stock.kLineDay[currentIndex].endPrice;
+            double supportSettle = stock.kLineDay[currentIndex-2].endPrice;
 
-            if (stock.kLineDay[currentIndex].startPrice < lastSettle || stock.kLineDay[currentIndex].endPrice < lastSettle)
+            if (!(stock.kLineDay[currentIndex].lowestPrice > supportSettle && stock.kLineDay[currentIndex - 1].endPrice > supportSettle))
             {
                 continue;
             }
-
 
             int highIndex = 0;
             int lowestIndex = 0;
@@ -367,8 +366,7 @@
                 }
             }
             double f3 = highest - (highest - lowest) * 0.382;
-            if (stock.kLineDay[currentIndex].startPrice < f3)
-                continue;
+  
             double f5 = highest - (highest - lowest) * 0.618;
             double line3Price = KLine.GetAverageSettlePrice(stock.kLineDay, currentIndex, 3, 3);
             double currentPrice = stock.kLineDay[currentIndex].endPrice;
@@ -386,10 +384,7 @@
 
             double volumeReduce = volumeToday / volumeYesterday;
 
-            if (lowest == 0 || line3Price == 0)
-            {
-                continue;
-            }
+    
             buyPrice = stock.kLineDay[currentIndex].endPrice;
 
             /*
