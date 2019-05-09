@@ -409,7 +409,7 @@
             */
             if (stock.kLineDay[currentIndex].macd < 0)
             {
-                continue;
+                //continue;
             }
 
             if (stock.kLineDay[currentIndex].startPrice != stock.kLineDay[currentIndex].endPrice)
