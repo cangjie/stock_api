@@ -412,6 +412,10 @@
             {
                 dr["信号"] = dr["信号"] + "🛍️";
             }
+
+
+
+
             dr["调整"] = currentIndex - limitUpIndex;
             dr["缩量"] = volumeReduce;
             dr["现高"] = highest;
@@ -425,6 +429,10 @@
             dr["买入"] = buyPrice;
             dr["KDJ日"] = stock.kdjDays(currentIndex);
             dr["MACD日"] = stock.macdDays(currentIndex);
+            if ((int)dr["MACD日"] >= 0)
+            {
+                dr["信号"] = dr["信号"].ToString() + "🌟";
+            }
             //dr["今涨"] = (stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
             dr["今涨"] = (stock.kLineDay[currentIndex].endPrice - supportSettle) / supportSettle;
             double maxPrice = 0;
