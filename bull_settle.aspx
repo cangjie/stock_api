@@ -302,7 +302,7 @@
     {
         currentDate = Util.GetDay(currentDate);
         DateTime prevDate = Util.GetLastTransactDate(currentDate, 1);
-        DataTable dtOri = DBHelper.GetDataTable(" select * from alert_bull where alert_date = '" + currentDate + "' ");
+        DataTable dtOri = DBHelper.GetDataTable(" select * from alert_over_ma where alert_date = '" + currentDate + "' ");
         DataTable dtAlert = DBHelper.GetDataTable(" select * from stock_alert_message where alert_date = '" + currentDate.ToShortDateString() + "' and alert_type = 'bull' ");
         DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor_new '" + currentDate.ToShortDateString() + "' ");
 
