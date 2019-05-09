@@ -349,7 +349,7 @@
 
             double supportSettle = stock.kLineDay[currentIndex-2].endPrice;
 
-            if (!(stock.kLineDay[currentIndex].lowestPrice > supportSettle && stock.kLineDay[currentIndex - 1].endPrice > supportSettle))
+            if (!(stock.kLineDay[currentIndex].lowestPrice > supportSettle && stock.kLineDay[currentIndex - 1].lowestPrice > supportSettle))
             {
                 continue;
             }
