@@ -347,6 +347,7 @@
         dt.Columns.Add("价差abs", Type.GetType("System.Double"));
         dt.Columns.Add("类型", Type.GetType("System.String"));
         dt.Columns.Add("涨幅", Type.GetType("System.Double"));
+        dt.Columns.Add("折返", Type.GetType("System.Double"));
         for (int i = 0; i <= 5; i++)
         {
             dt.Columns.Add(i.ToString() + "日", Type.GetType("System.Double"));
@@ -797,6 +798,7 @@
                 DBHelper.InsertData("bread_pool", new string[,] { { "gid", "varchar", stock.gid.Trim()}, {"alert_date", "datetime", currentDate.ToShortDateString() },
                     {"exchange", "float", dr["总换手"].ToString() }, {"lowest", "float", dr["前低"].ToString() }, { "highest", "flaot", dr["现高"].ToString()} });
             }
+            dr["折返"] = reversePrice;
             dr["PF3"] = ((highest - reversePrice) * 0.382 + reversePrice - buyPrice) / buyPrice;
             dr["PF5"] = ((highest - reversePrice) * 0.618 + reversePrice - buyPrice) / buyPrice;
             dt.Rows.Add(dr);
@@ -1054,6 +1056,7 @@
                     <asp:BoundColumn DataField="前低" HeaderText="前低"></asp:BoundColumn>
                     <asp:BoundColumn DataField="价差" HeaderText="价差"></asp:BoundColumn>
                     <asp:BoundColumn DataField="幅度" HeaderText="幅度"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="折返" HeaderText="折返"></asp:BoundColumn>
                     <asp:BoundColumn DataField="现价" HeaderText="现价"></asp:BoundColumn>
                     <asp:BoundColumn DataField="PF3" HeaderText="PF3"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="PF5" HeaderText="PF5"  ></asp:BoundColumn>
