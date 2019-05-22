@@ -49,8 +49,7 @@
         double currentPrice = stock.kLineDay[currentIndex].endPrice;
         if (currentPrice > ma5 && currentPrice > ma10 && currentPrice > ma20 && currentPrice > ma30
             && stock.kLineDay[currentIndex - 1].d > stock.kLineDay[currentIndex - 1].k && stock.kLineDay[currentIndex - 1].k > stock.kLineDay[currentIndex - 1].j
-            && stock.kLineDay[currentIndex].d < stock.kLineDay[currentIndex].k && stock.kLineDay[currentIndex].k < stock.kLineDay[currentIndex].j
-            && stock.kLineDay[currentIndex].macd <= 0)
+            && stock.kLineDay[currentIndex].d < stock.kLineDay[currentIndex].k && stock.kLineDay[currentIndex].k < stock.kLineDay[currentIndex].j)
         {
             try
             {
