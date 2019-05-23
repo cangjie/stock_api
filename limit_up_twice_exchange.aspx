@@ -345,6 +345,7 @@
         dt.Columns.Add("价差abs", Type.GetType("System.Double"));
         dt.Columns.Add("类型", Type.GetType("System.String"));
         dt.Columns.Add("涨幅", Type.GetType("System.Double"));
+        dt.Columns.Add("连板", Type.GetType("System.Int32"));
         for (int i = 0; i <= 5; i++)
         {
             dt.Columns.Add(i.ToString() + "日", Type.GetType("System.Double"));
@@ -406,7 +407,7 @@
                 continue;
             }
 
-            
+
 
             if ((stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice > 0.0995)
             {
@@ -760,6 +761,14 @@
                     {"exchange", "float", dr["总换手"].ToString() }, {"lowest", "float", dr["前低"].ToString() }, { "highest", "flaot", dr["现高"].ToString()} });
             }
 
+
+            int limitUpTimes = 2;
+            for (int lc = currentIndex - 3; lc > 0
+                && (stock.kLineDay[lc].endPrice - stock.kLineDay[lc - 1].endPrice) / stock.kLineDay[lc - 1].endPrice > 0.095; lc--)
+            {
+                limitUpTimes++;
+            }
+            dr["连板"] = limitUpTimes;
             dt.Rows.Add(dr);
 
         }
@@ -1002,11 +1011,10 @@
                     <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号"  ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="连板" HeaderText="连板"></asp:BoundColumn>
                     <asp:BoundColumn DataField="总换手" HeaderText="总换手"></asp:BoundColumn>
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" ></asp:BoundColumn>
-                    <asp:BoundColumn DataField="KDJ60" HeaderText="KDJ60" ></asp:BoundColumn>
-                    <asp:BoundColumn DataField="KDJ30" HeaderText="KDJ30" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
                     <asp:BoundColumn DataField="现高" HeaderText="现高"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>
