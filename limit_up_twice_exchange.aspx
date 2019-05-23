@@ -419,6 +419,12 @@
                 //continue;
             }
 
+            if (stock.kLineDay[currentIndex].VirtualVolume > stock.kLineDay[currentIndex - 1].volume * 1.5
+                && stock.kLineDay[currentIndex].VirtualVolume > stock.kLineDay[currentIndex - 2].volume * 1.5)
+            {
+                continue;
+            }
+
 
             KLine[] kArrHour = Stock.LoadRedisKLine(stock.gid, "60min", rc);
             KLine[] kArrHalfHour = Stock.LoadRedisKLine(stock.gid, "30min", rc);
