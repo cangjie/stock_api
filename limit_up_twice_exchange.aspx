@@ -416,7 +416,7 @@
 
             if (stock.kLineDay[currentIndex].endPrice >= stock.kLineDay[currentIndex].startPrice)
             {
-                //continue;
+                continue;
             }
 
             if (stock.kLineDay[currentIndex].VirtualVolume > stock.kLineDay[currentIndex - 1].volume * 1.5
