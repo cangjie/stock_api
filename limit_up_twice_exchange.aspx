@@ -416,7 +416,7 @@
 
             if (stock.kLineDay[currentIndex].endPrice >= stock.kLineDay[currentIndex].startPrice)
             {
-                continue;
+                //continue;
             }
 
 
