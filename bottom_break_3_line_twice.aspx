@@ -22,7 +22,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "信号,KDJ日,MACD日");
+        sort = Util.GetSafeRequestValue(Request, "sort", "MACD日,KDJ日,放量 desc");
         if (!IsPostBack)
         {
             try
@@ -360,6 +360,45 @@
                 continue;
             if (!KLine.IsCros3LineTwice(stock.kLineDay, currentIndex, 20))
                 continue;
+            int under3LineDays = 0;
+            for (int i = currentIndex - 1; i >= 0 && stock.GetAverageSettlePrice(i, 3, 3) > stock.kLineDay[i].endPrice ; i--)
+            {
+                under3LineDays++;
+            }
+
+            if (under3LineDays == 0 || under3LineDays >= 5)
+            {
+                continue;
+            }
+
+            int under3LineTimes = 0;
+            int fallDays = 0;
+            for (int i = currentIndex - 1; i >= 0; i--)
+            {
+                if (stock.kLineDay[i].endPrice < stock.GetAverageSettlePrice(i, 3, 3)
+                    && stock.kLineDay[i+1].endPrice >= stock.GetAverageSettlePrice(i+1, 3, 3))
+                {
+                    under3LineTimes++;
+                }
+                if (under3LineTimes >= 2)
+                {
+                    if (stock.kLineDay[i].endPrice < stock.GetAverageSettlePrice(i, 3, 3))
+                    {
+                        fallDays++;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+            if (fallDays <= 9)
+            {
+                continue;
+            }
+
+
+
             double current3LinePrice = stock.GetAverageSettlePrice(currentIndex, 3, 3);
             double previous3LinePrice = 0;
             //double previous3LineIndex = 0;
@@ -389,6 +428,17 @@
                 }
             }
             adjustDays++;
+
+            int lastCross3LineIndex = 0;
+
+            for (int j = currentIndex - 1; j >= currentIndex - 6; j--)
+            {
+                if (KLine.IsCross3Line(stock.kLineDay, j))
+                {
+                    lastCross3LineIndex = j;
+                    break;
+                }
+            }
 
 
             /*
@@ -520,9 +570,9 @@
 
             double pressure = stock.GetMaPressure(currentIndex, currentPrice);
             double highPointPressure = 0;
-            
 
-            
+
+
             KeyValuePair<DateTime, double>[] highPoints = Stock.GetHighPoints(stock.kLineDay, currentIndex);
             for (int i = 0; i < highPoints.Length; i++)
             {
@@ -537,7 +587,7 @@
             buyPrice = stock.GetMaSupport(currentIndex, currentPrice);
             dr["均线支撑"] = buyPrice;
 
-   
+
 
             dr["前高压力"] = highPointPressure;
             buyPrice = Math.Max(buyPrice, stock.kLineDay[currentIndex].lowestPrice);
