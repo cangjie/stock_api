@@ -744,9 +744,13 @@
             }
 
             double totalStockCount = stock.TotalStockCount(currentDate);
+            if (highIndex == limitUpIndex)
+            {
+                highIndex++;
+            }
             if (totalStockCount > 0)
             {
-                dr["总换手"] = totalVolume / totalStockCount;
+                dr["总换手"] = stock.kLineDay[highIndex].VirtualVolume / totalStockCount;
             }
             else
             {
@@ -998,7 +1002,7 @@
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号" SortExpression="信号|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="缩量" HeaderText="缩量"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="总换手" HeaderText="总换手"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="总换手" HeaderText="换手"></asp:BoundColumn>
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD日|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="调整" HeaderText="调整" SortExpression="调整|asc"></asp:BoundColumn>
