@@ -671,7 +671,7 @@
                 dr["类型"] = "F5";
                 if (width  > 25 && line3Price <= f5)
                 {
-                    dr["信号"] = dr["信号"].ToString().Trim() + "🔥";
+                    //dr["信号"] = dr["信号"].ToString().Trim() + "🔥";
                 }
             }
             else
@@ -747,6 +747,16 @@
             if (highIndex == limitUpIndex)
             {
                 highIndex++;
+            }
+            else
+            {
+                if (stock.kLineDay[highIndex].startPrice >= stock.kLineDay[limitUpIndex].endPrice
+                    && stock.kLineDay[highIndex].endPrice >= stock.kLineDay[limitUpIndex].endPrice
+                    && stock.kLineDay[highIndex].VirtualVolume / totalStockCount > 0.1
+                    && stock.kLineDay[highIndex].VirtualVolume / totalStockCount < 0.25)
+                {
+                    dr["信号"] = dr["信号"].ToString().Trim() + "🔥";
+                }
             }
             if (totalStockCount > 0)
             {
