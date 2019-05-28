@@ -412,7 +412,7 @@
             }
             if (kArrHalfHourTodayLastIndex < 0 || kArrHalfHourTodayLastIndex < 0)
             {
-                continue;
+                //continue;
             }
 
 
