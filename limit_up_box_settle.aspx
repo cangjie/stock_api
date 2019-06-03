@@ -397,7 +397,7 @@
             if (currentIndex < 0)
                 continue;
 
-            if (stock.gid.Trim().Equals("sz300095"))
+            if (stock.gid.Trim().Equals("sz300366"))
             {
                 //t.Abort();
             }
