@@ -408,7 +408,7 @@
             int maxIndex = Math.Min(stock.kLineDay.Length - 1, currentIndex + 5);
 
 
-            if (stock.gid.Trim().Equals("sh603882"))
+            if (stock.gid.Trim().Equals("sh603619"))
             {
                 try
                 {
@@ -702,14 +702,14 @@
 
             if ((int)dr["KDJ日"] == -1)
             {
-                continue;
+                //continue;
             }
 
             dr["MACD日"] = stock.macdDays(currentIndex);
 
             if ((int)dr["KDJ日"] < (int)dr["MACD日"])
             {
-                continue;
+                //continue;
             }
             dr["MK差"] = (int)dr["KDJ日"] - (int)dr["MACD日"];
 
