@@ -6,13 +6,14 @@
     protected void Page_Load(object sender, EventArgs e)
     {
         DateTime currentDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "date", DateTime.Now.ToShortDateString()));
-        currentDate = DateTime.Parse("1999-1-1");
+        //currentDate = DateTime.Parse("2019-6-3");
         DateTime startDate = currentDate;
         DateTime endDate = currentDate;
         if (currentDate == DateTime.Parse("1999-1-1"))
         {
             endDate = DateTime.Now;
         }
+        //foreach(string gid in new string[] { "sz300768"})
         foreach (string gid in Util.GetAllGids())
         {
             Stock s = new Stock(gid.Trim());
