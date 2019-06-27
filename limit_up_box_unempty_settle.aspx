@@ -638,7 +638,7 @@
             dr["前低"] = lowest;
             dr["幅度"] = width.ToString() + "%";
 
-            
+
 
             double f3ReverseRate = (stock.kLineDay[currentIndex].lowestPrice - f3) / f3;
             double f5ReverseRate = (stock.kLineDay[currentIndex].lowestPrice - f5) / f5;
@@ -750,6 +750,13 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"无影脚\" >🦶</a>";
             }
+
+            if ((Math.Min(stock.kLineDay[currentIndex].startPrice, stock.kLineDay[currentIndex].endPrice)
+                - stock.kLineDay[currentIndex].lowestPrice) / stock.kLineDay[currentIndex].lowestPrice > 0.2)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"大长腿\" >🦵</a>";
+            }
+
 
 
             if (stock.kLineDay[currentIndex].startPrice < stock.kLineDay[currentIndex].endPrice
