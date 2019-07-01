@@ -757,8 +757,6 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"大长腿\" >🦵</a>";
             }
 
-
-
             if (stock.kLineDay[currentIndex].startPrice < stock.kLineDay[currentIndex].endPrice
                 && (stock.kLineDay[currentIndex].highestPrice - stock.kLineDay[currentIndex].endPrice)*2 <
                 (stock.kLineDay[currentIndex].startPrice - stock.kLineDay[currentIndex].lowestPrice) )

@@ -19,7 +19,7 @@
         sort = Util.GetSafeRequestValue(Request, "sort", "幅度 desc");
         if (!IsPostBack)
         {
-            
+
             /*
             try
             {
@@ -251,6 +251,13 @@
                 continue;
 
             stock.kLineHour = KLine.GetLocalKLine(stock.gid, "1hr");
+
+
+            if (stock.kLineDay[currentIndex].d > 20)
+            {
+                continue;
+            }
+
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
@@ -280,7 +287,7 @@
             if (macdHours > 8)
                 continue;
             dr["MACD"] = macdHours.ToString();
-            
+
             dr["3线"] = stock.GetAverageSettlePrice(currentIndex, 3, 3);
             double lowestPrice = stock.LowestPrice(currentDate, 20);
             double highestPrice = stock.HighestPrice(currentDate, 40);
@@ -393,7 +400,7 @@
             KLine.ComputeMACD(stock.kLineDay);
             if (Math.Abs(stock.kLineDay[currentIndex].dea - 0) < 0.05 && Math.Abs(stock.kLineDay[currentIndex].dif - 0) < 0.05)
             {
-               // dr["信号"] = dr["信号"].ToString() + "🔥";
+                // dr["信号"] = dr["信号"].ToString() + "🔥";
             }
 
             dt.Rows.Add(dr);
