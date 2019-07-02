@@ -346,6 +346,7 @@
 
             buyPrice = Math.Max(buyPrice, double.Parse(drOri["alert_price"].ToString()));
             buyPrice = Math.Round(buyPrice, 2);
+            buyPrice = stock.kLineDay[currentIndex].endPrice;
             /*
             if (openPrice < lowestPrice * 0.985 && todayHigh >= lowestPrice * 0.985)
             {
