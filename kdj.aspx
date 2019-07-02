@@ -250,6 +250,30 @@
             if (currentIndex < 1 || stock.kLineDay[currentIndex].k >= 30 || stock.kLineDay[currentIndex].d >= 30 )
                 continue;
 
+            double lowestPrice5Day = double.MaxValue;
+            double lowestPrice20Day = double.MaxValue;
+
+            for (int i = currentIndex; i >= currentIndex - 5; i--)
+            {
+                if (lowestPrice5Day > stock.kLineDay[i].lowestPrice)
+                {
+                    lowestPrice5Day = stock.kLineDay[i].lowestPrice;
+                }
+            }
+
+            for (int i = currentIndex; i >= currentIndex - 20; i--)
+            {
+                if (lowestPrice20Day > stock.kLineDay[i].lowestPrice)
+                {
+                    lowestPrice20Day = stock.kLineDay[i].lowestPrice;
+                }
+            }
+
+            if (lowestPrice5Day > lowestPrice20Day)
+            {
+                continue;
+            }
+
             stock.kLineHour = KLine.GetLocalKLine(stock.gid, "1hr");
 
 
@@ -402,6 +426,8 @@
             {
                 // dr["信号"] = dr["信号"].ToString() + "🔥";
             }
+
+
 
             dt.Rows.Add(dr);
         }
