@@ -739,6 +739,11 @@
             {
                 dr["信号"] = dr["信号"] + "🌟";
             }
+            if ((Math.Min(stock.kLineDay[currentIndex].startPrice, stock.kLineDay[currentIndex].endPrice)
+                - stock.kLineDay[currentIndex].lowestPrice) / stock.kLineDay[currentIndex].lowestPrice > 0.02)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"大长腿\" >腿</a>";
+            }
             dt.Rows.Add(dr);
 
         }
