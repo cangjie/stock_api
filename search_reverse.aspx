@@ -87,9 +87,9 @@
         double f5, double lowestPrice, double currentLowestPrice, string type)
     {
         DataTable dt = DBHelper.GetDataTable(" select * from alert_reverse where  gid = '" + gid.Trim()
-            + "' and alert_type = '" + type.Trim() + "' and high = '" + highestPrice.ToString() + "' and low ='" + lowestPrice.ToString()
+            + "' and alert_type = '" + type.Trim() + "' and high = " + highestPrice.ToString() + " and low = " + lowestPrice.ToString()
             + "' and alert_date >= '" + Util.GetLastTransactDate(logDate, 10).ToShortDateString()
-            + "' and alert_date <= '" + logDate.AddDays(10).ToShortDateString() + "' ");
+            + " and alert_date <= '" + logDate.AddDays(10).ToShortDateString() + "' ");
         if (dt.Rows.Count == 0)
         {
             try
