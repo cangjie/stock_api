@@ -92,7 +92,9 @@
             + "' and alert_date <= '" + logDate.AddDays(10) + "' ");
         if (dt.Rows.Count == 0)
         {
-            DBHelper.InsertData("alert_reverse", new string[,] {
+            try
+            {
+                DBHelper.InsertData("alert_reverse", new string[,] {
                 {"gid", "varchar", gid.Trim() },
                 {"alert_date", "datetime", logDate.ToShortDateString() },
                 {"alert_type", "varchar", type.Trim() },
@@ -102,7 +104,12 @@
                 {"low", "float", lowestPrice.ToString() },
                 {"current_lowest_price", "float", currentLowestPrice.ToString() },
                 {"range", "float", ((highestPrice - lowestPrice)/lowestPrice).ToString() }
-            });
+                });
+            }
+            catch
+            {
+
+            }
         }
         dt.Dispose();
     }
