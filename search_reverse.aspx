@@ -86,15 +86,18 @@
     public static void SaveLowestPoint(DateTime logDate, string gid, double highestPrice, double f3,
         double f5, double lowestPrice, double currentLowestPrice, string type)
     {
-        DataTable dt = DBHelper.GetDataTable(" select * from alert_reverse where  gid = '" + gid.Trim()
+        string sql = " select * from alert_reverse where  gid = '" + gid.Trim()
             + "' and alert_type = '" + type.Trim() + "' and high = " + Math.Round(highestPrice, 4).ToString() + " and low = " + Math.Round(lowestPrice, 4).ToString()
             + " and alert_date >= '" + Util.GetLastTransactDate(logDate, 10).ToShortDateString()
-            + "' and alert_date <= '" + logDate.AddDays(10).ToShortDateString() + "' ");
-        if (dt.Rows.Count == 0)
+            + "' and alert_date <= '" + logDate.AddDays(10).ToShortDateString() + "' ";
+        try
         {
-            try
+            DataTable dt = DBHelper.GetDataTable(sql);
+            if (dt.Rows.Count == 0)
             {
-                DBHelper.InsertData("alert_reverse", new string[,] {
+                try
+                {
+                    DBHelper.InsertData("alert_reverse", new string[,] {
                 {"gid", "varchar", gid.Trim() },
                 {"alert_date", "datetime", logDate.ToShortDateString() },
                 {"alert_type", "varchar", type.Trim() },
@@ -105,13 +108,18 @@
                 {"current_lowest_price", "float", currentLowestPrice.ToString() },
                 {"range", "float", Math.Round(((highestPrice - lowestPrice)/lowestPrice), 4).ToString() }
                 });
-            }
-            catch
-            {
+                }
+                catch
+                {
 
+                }
             }
+            dt.Dispose();
         }
-        dt.Dispose();
+        catch
+        {
+            System.Console.WriteLine(sql);
+        }
     }
 
     public static double GetFirstLowestPrice(KLine[] kArr, int index, out int lowestIndex)
