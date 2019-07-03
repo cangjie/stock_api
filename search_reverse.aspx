@@ -98,10 +98,10 @@
                 {"gid", "varchar", gid.Trim() },
                 {"alert_date", "datetime", logDate.ToShortDateString() },
                 {"alert_type", "varchar", type.Trim() },
-                {"high", "float", highestPrice.ToString() },
-                {"f3", "float", f3.ToString() },
-                {"f5", "float", f5.ToString() },
-                {"low", "float", lowestPrice.ToString() },
+                {"high", "float", Math.Round(highestPrice, 4).ToString() },
+                {"f3", "float", Math.Round(f3, 4).ToString() },
+                {"f5", "float", Math.Round(f5, 4).ToString() },
+                {"low", "float", Math.Round(lowestPrice, 4).ToString() },
                 {"current_lowest_price", "float", currentLowestPrice.ToString() },
                 {"range", "float", Math.Round(((highestPrice - lowestPrice)/lowestPrice), 4).ToString() }
                 });
