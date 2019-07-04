@@ -51,8 +51,6 @@
             {
                 continue;
             }
-            int lowestIndex = 0;
-            double lowestPrice = GetFirstLowestPrice(stock.kLineDay, limitUpIndex, out lowestIndex);
 
             int highIndex = 0;
             double highestPrice = 0;
@@ -64,6 +62,15 @@
                     highIndex = i;
                 }
             }
+
+            int lowestIndex = 0;
+            double lowestPrice = GetFirstLowestPrice(stock.kLineDay, highIndex, out lowestIndex);
+
+            if (lowestPrice == double.MaxValue)
+            {
+                continue;
+            }
+
             double f3 = highestPrice - (highestPrice - lowestPrice) * 0.382;
             double f5 = highestPrice - (highestPrice - lowestPrice) * 0.618;
             string type = "";
@@ -118,7 +125,7 @@
         }
         catch
         {
-            System.Console.WriteLine(sql);
+            System.Diagnostics.Debug.WriteLine(sql);
         }
     }
 
@@ -127,7 +134,7 @@
         double ret = double.MaxValue;
         int find = 0;
         lowestIndex = 0;
-        for (int i = index - 1; i > 0 && find < 2; i--)
+        for (int i = index; i > 0 && find < 2; i--)
         {
             double line3Pirce = KLine.GetAverageSettlePrice(kArr, i, 3, 3);
             ret = Math.Min(ret, kArr[i].lowestPrice);
@@ -181,7 +188,7 @@
                 startDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "date", ""));
                 if (startDate == DateTime.Parse("1900-1-1"))
                 {
-                    startDate = DateTime.Now;
+                    startDate = DateTime.Now.Date;
                 }
             }
             catch
@@ -189,6 +196,7 @@
 
             }
         }
+        //startDate = DateTime.Parse("2019-6-11");
         return startDate;
     }
 
