@@ -102,7 +102,7 @@
             DataRow dr = dt.NewRow();
             dr["日期"] = s.kLineDay[limitUpEntityIndex + 2].startDateTime.ToShortDateString();
             dr["代码"] = s.gid.Trim();
-            dr["名称"] = s.name.Trim();
+            dr["名称"] = s.Name.Trim();
             double highestPrice = 0;
             dr["1日"] = (s.kLineDay[limitUpEntityIndex + 3].highestPrice - buyPrice) / buyPrice;
             highestPrice = Math.Max(highestPrice, s.kLineDay[limitUpEntityIndex + 3].highestPrice);
