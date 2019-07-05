@@ -67,7 +67,7 @@
         dt.Columns.Add("总计", Type.GetType("System.Double"));
 
         DataTable dtLimitUp = DBHelper.GetDataTable(" select * from limit_up where alert_date <= '"
-            + Util.GetLastTransactDate(DateTime.Now.Date, 8) + "' order by alert_date desc ");
+            + Util.GetLastTransactDate(DateTime.Now.Date, 7) + "' order by alert_date desc ");
         foreach (DataRow drLimitUp in dtLimitUp.Rows)
         {
             Stock s = GetStock(drLimitUp["gid"].ToString().Trim());
