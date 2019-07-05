@@ -29,7 +29,7 @@
 
             foreach (DataRow drOri in dtOri.Rows)
             {
-                if (((double)drOri["总计"]) > 0.01)
+                if (((double)drOri["总计"]) > 0.05)
                 {
                     successCount++;
                 }
