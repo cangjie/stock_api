@@ -64,7 +64,7 @@
             }
 
             int lowestIndex = 0;
-            double lowestPrice = GetFirstLowestPrice(stock.kLineDay, highIndex, out lowestIndex);
+            double lowestPrice = GetFirstLowestPrice(stock.kLineDay, limitUpIndex, out lowestIndex);
 
             if (lowestPrice == double.MaxValue)
             {
