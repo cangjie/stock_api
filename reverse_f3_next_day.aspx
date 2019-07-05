@@ -384,7 +384,7 @@
         DataTable dtDtl = DBHelper.GetDataTable(" select gid, alert_date, price from alert_foot where alert_date > '"
             + currentDate.ToShortDateString() + "' and alert_date < '" + currentDate.AddDays(1).ToShortDateString() + "'  order by alert_date desc ");
 
-        DataTable dtOri = DBHelper.GetDataTable(" select *  from alert_reverse where alert_type= 'f5' and alert_date = '" + lastTransactDate.ToShortDateString()  + "'  ");
+        DataTable dtOri = DBHelper.GetDataTable(" select *  from alert_reverse where alert_type= 'f3' and alert_date = '" + lastTransactDate.ToShortDateString()  + "'  ");
 
         DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor_new '" + currentDate.ToShortDateString() + "' ");
 
@@ -426,7 +426,7 @@
             double f3 = double.Parse(drOri["f3"].ToString());
             double f5 = double.Parse(drOri["f5"].ToString());
             double range = double.Parse(drOri["range"].ToString());
-            if (!(stock.kLineDay[currentIndex - 1].endPrice < f5 && stock.kLineDay[currentIndex].endPrice >= f5))
+            if (!(stock.kLineDay[currentIndex - 1].endPrice < f3 && stock.kLineDay[currentIndex].endPrice >= f3))
             {
                 continue;
             }
@@ -543,9 +543,9 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"大长腿\" >腿</a>";
             }
 
-            if (stock.kLineDay[currentIndex].startPrice >= f5)
+            if (stock.kLineDay[currentIndex].startPrice >= f3)
             {
-                dr["信号"] = dr["信号"] + "<a title='跳空F5' >🔥</a>";
+                dr["信号"] = dr["信号"] + "<a title='跳空F3' >🔥</a>";
             }
 
 
