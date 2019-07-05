@@ -34,7 +34,7 @@
                     successCount++;
                 }
                 DataRow dr = dt.NewRow();
-                dr["日期"] = ((DateTime)drOri["日期"]).ToShortDateString();
+                dr["日期"] = drOri["日期"].ToString();
                 dr["代码"] = drOri["代码"].ToString();
                 dr["名称"] = drOri["名称"].ToString();
                 double v = 0;
