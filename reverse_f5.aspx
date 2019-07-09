@@ -108,7 +108,6 @@
 
     public DataTable RenderHtml(DataRow[] drArr)
     {
-
         DataTable dt = new DataTable();
         if (drArr.Length == 0)
             return dt;
@@ -394,9 +393,6 @@
         //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
         foreach (DataRow drOri in dtOri.Rows)
         {
-
-
-
             DateTime alertDate = DateTime.Parse(drOri["alert_date"].ToString().Trim());
             DataRow[] drArrExists = dtOri.Select(" gid = '" + drOri["gid"].ToString() + "' and alert_date > '" + alertDate.ToShortDateString() + "'  ");
             if (drArrExists.Length > 0)
@@ -449,7 +445,7 @@
 
 
 
-            dr["调整"] = 0;
+            dr["调整"] = currentIndex - GetHighestIndex(stock.kLineDay, currentIndex, highestPrice);
 
 
 
@@ -592,50 +588,14 @@
         return dt;
     }
 
-
-    public static double GetFirstLowestPrice1(KLine[] kArr, int index, out int lowestIndex)
+    public static int GetHighestIndex(KLine[] kArr, int currentIndex, double highestPrice)
     {
-        double ret = double.MaxValue;
-        lowestIndex = 0;
-        for (int i = index; i > 0 ; i--)
+        int i = currentIndex;
+        for (; Math.Round(kArr[i].highestPrice, 2) < Math.Round(highestPrice, 2); i--)
         {
-            if (i < kArr.Length - 1)
-            {
-                if (kArr[i].lowestPrice <= kArr[i + 1].lowestPrice && kArr[i].lowestPrice <= kArr[i - 1].lowestPrice)
-                {
-                    ret = kArr[i].lowestPrice;
-                    lowestIndex = i;
-                    break;
-                }
-            }
-        }
-        return ret;
-    }
 
-
-    public static double GetFirstLowestPrice(KLine[] kArr, int index, out int lowestIndex)
-    {
-        double ret = double.MaxValue;
-        int find = 0;
-        lowestIndex = 0;
-        for (int i = index - 1; i > 0 && find < 2; i--)
-        {
-            double line3Pirce = KLine.GetAverageSettlePrice(kArr, i, 3, 3);
-            ret = Math.Min(ret, kArr[i].lowestPrice);
-            if (ret == kArr[i].lowestPrice)
-            {
-                lowestIndex = i;
-            }
-            if (kArr[i].endPrice < line3Pirce)
-            {
-                find = 1;
-            }
-            if (kArr[i].lowestPrice >= line3Pirce && find == 1)
-            {
-                find = 2;
-            }
         }
-        return ret;
+        return i;
     }
 
 
@@ -827,7 +787,7 @@
                     <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号"  ></asp:BoundColumn>
-                    <asp:BoundColumn DataField="总换手" HeaderText="总换手"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="调整" HeaderText="调整"></asp:BoundColumn>
                     <asp:BoundColumn DataField="MK差" HeaderText="MK差" ></asp:BoundColumn>
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" ></asp:BoundColumn>
