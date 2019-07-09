@@ -142,7 +142,7 @@
         {
             return false;
         }
-        if ((kArr[currentIndex].endPrice - kArr[currentIndex].endPrice) / kArr[currentIndex].endPrice > 0.095)
+        if ((kArr[currentIndex].endPrice - kArr[currentIndex-1].endPrice) / kArr[currentIndex-1].endPrice > 0.095)
         {
             return true;
         }
