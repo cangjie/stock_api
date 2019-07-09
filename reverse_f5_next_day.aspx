@@ -332,6 +332,16 @@
 
     }
 
+    public static int GetHighestIndex(KLine[] kArr, int currentIndex, double highestPrice)
+    {
+        int i = currentIndex;
+        for (; Math.Round(kArr[i].highestPrice, 2) < Math.Round(highestPrice, 2); i--)
+        {
+
+        }
+        return i;
+    }
+
     public static DataTable GetData(DateTime currentDate)
     {
         currentDate = Util.GetDay(currentDate);
@@ -449,7 +459,7 @@
 
 
 
-            dr["调整"] = 0;
+            dr["调整"] = currentIndex - GetHighestIndex(stock.kLineDay, currentIndex, highestPrice);
 
 
 
