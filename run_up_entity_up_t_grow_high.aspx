@@ -97,6 +97,20 @@
             {
                 continue;
             }
+            bool isBottom = true;
+            for (int i = limitUpEntityIndex - 1; i >= limitUpEntityIndex - 10; i--)
+            {
+                if (SearchLimitUp(s.kLineDay, i))
+                {
+                    isBottom = false;
+                    break;
+                }
+            }
+            if (!isBottom)
+            {
+                continue;
+            }
+
 
             double buyPrice = s.kLineDay[limitUpEntityIndex + 2].startPrice;
             DataRow dr = dt.NewRow();
@@ -120,6 +134,22 @@
         }
 
         return dt;
+    }
+
+    public static bool SearchLimitUp(KLine[] kArr, int currentIndex)
+    {
+        if (currentIndex <= 0)
+        {
+            return false;
+        }
+        if ((kArr[currentIndex].endPrice - kArr[currentIndex].endPrice) / kArr[currentIndex].endPrice > 0.095)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     public static Stock GetStock(string gid)
