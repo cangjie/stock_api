@@ -111,22 +111,23 @@
             {
                 continue;
             }
+            double newHighestPrice = 0;
             DataRow dr = dt.NewRow();
             dr["日期"] = s.kLineDay[highestIndex + 5].startDateTime.ToShortDateString();
             dr["代码"] = s.gid.Trim();
             dr["名称"] = s.Name.Trim();
 
             dr["1日"] = (s.kLineDay[highestIndex + 6].highestPrice - buyPrice) / buyPrice;
-            highestPrice = Math.Max(highestPrice, s.kLineDay[highestIndex + 6].highestPrice);
+            newHighestPrice = Math.Max(newHighestPrice, s.kLineDay[highestIndex + 6].highestPrice);
             dr["2日"] = (s.kLineDay[highestIndex + 7].highestPrice - buyPrice) / buyPrice;
-            highestPrice = Math.Max(highestPrice, s.kLineDay[highestIndex + 7].highestPrice);
+            newHighestPrice = Math.Max(newHighestPrice, s.kLineDay[highestIndex + 7].highestPrice);
             dr["3日"] = (s.kLineDay[highestIndex + 8].highestPrice - buyPrice) / buyPrice;
-            highestPrice = Math.Max(highestPrice, s.kLineDay[highestIndex + 8].highestPrice);
+            newHighestPrice = Math.Max(newHighestPrice, s.kLineDay[highestIndex + 8].highestPrice);
             dr["4日"] = (s.kLineDay[highestIndex + 9].highestPrice - buyPrice) / buyPrice;
-            highestPrice = Math.Max(highestPrice, s.kLineDay[highestIndex + 9].highestPrice);
+            newHighestPrice = Math.Max(newHighestPrice, s.kLineDay[highestIndex + 9].highestPrice);
             dr["5日"] = (s.kLineDay[highestIndex + 10].highestPrice - buyPrice) / buyPrice;
-            highestPrice = Math.Max(highestPrice, s.kLineDay[highestIndex + 10].highestPrice);
-            dr["总计"] = (highestPrice - buyPrice) / buyPrice;
+            newHighestPrice = Math.Max(newHighestPrice, s.kLineDay[highestIndex + 10].highestPrice);
+            dr["总计"] = (newHighestPrice - buyPrice) / buyPrice;
             dt.Rows.Add(dr);
 
         }
