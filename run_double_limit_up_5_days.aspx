@@ -87,6 +87,29 @@
                     highestIndex = i;
                 }
             }
+
+            int lowestPriceIndex = 0;
+            double lowestPrice = double.MaxValue;
+
+            for (int i = limitUpIndex; i >= 1; i--)
+            {
+                if (s.kLineDay[i].endPrice < s.GetAverageSettlePrice(i, 3, 3)
+                    && s.kLineDay[i].lowestPrice < s.kLineDay[i - 1].lowestPrice
+                    && s.kLineDay[i].lowestPrice < s.kLineDay[i + 1].lowestPrice)
+                {
+                    lowestPriceIndex = i;
+                    lowestPrice = s.kLineDay[i].lowestPrice;
+                    break;
+                }
+            }
+            if (lowestPriceIndex == 0)
+            {
+                continue;
+            }
+            if ((highestPrice - lowestPrice) / lowestPrice >= 0.8)
+            {
+                continue;
+            }
             if (highestIndex + 6 >= s.kLineDay.Length || highestIndex == 0)
             {
                 continue;
@@ -115,6 +138,13 @@
             DataRow dr = dt.NewRow();
             dr["日期"] = s.kLineDay[highestIndex + 5].startDateTime.ToShortDateString();
             dr["代码"] = s.gid.Trim();
+
+            if (dt.Select(" 日期 = '" + dr["日期"].ToString().Trim() + "' and 代码 = '" + dr["代码"].ToString().Trim() + "' ").Length > 0)
+            {
+                continue;
+            }
+
+
             dr["名称"] = s.Name.Trim();
 
             dr["1日"] = (s.kLineDay[highestIndex + 6].highestPrice - buyPrice) / buyPrice;
