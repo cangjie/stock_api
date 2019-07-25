@@ -778,12 +778,10 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title='跳空金叉' >📍</a>";
             }
-            /*
-            if (buyPrice > supportPrice)
+            if (stock.kLineDay[currentIndex].startPrice > stock.kLineDay[currentIndex - 1].highestPrice)
             {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"买入大于支撑\" >✅</a>";
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"跳空缺口\" >📈</a>";
             }
-            */
             if (dtFoot.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"无影脚\" >🦶</a>";
