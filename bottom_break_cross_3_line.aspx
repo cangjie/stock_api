@@ -13,6 +13,8 @@
 
     public static Thread t = new Thread(ts);
 
+    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+
     protected void Page_Load(object sender, EventArgs e)
     {
         try
@@ -137,7 +139,7 @@
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
             //allGids = allGids + "," + stock.gid.Trim();
-            stock.LoadKLineDay();
+            stock.LoadKLineDay(rc);
             int currentIndex = stock.GetItemIndex(date);
             if (currentIndex < 6)
                 continue;
