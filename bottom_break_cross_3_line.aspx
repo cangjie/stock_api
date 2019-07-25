@@ -209,7 +209,8 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"买入价上涨超3%\" >🔥</a>";
             }
 
-            if (stock.kLineDay[currentIndex].startPrice > stock.kLineDay[currentIndex - 1].highestPrice)
+            if (stock.kLineDay[currentIndex].startPrice > stock.kLineDay[currentIndex - 1].highestPrice
+                && stock.kLineDay[currentIndex].startPrice > today3LinePrice)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"跳空3线\" >🌟</a>";
             }
