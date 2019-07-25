@@ -22,7 +22,7 @@
                 t.Abort();
                 ts = new ThreadStart(PageWatcher);
                 t = new Thread(ts);
-                t.Start();
+                //t.Start();
             }
         }
         catch(Exception err)
@@ -144,9 +144,7 @@
             double startPrice = stock.kLineDay[currentIndex].startPrice;
             double today3LinePrice = stock.GetAverageSettlePrice(currentIndex, 3, 3);
             double buyPrice = Math.Max(startPrice, today3LinePrice);
-            double currentPrice
-                = stock.kLineDay[currentIndex].startDateTime.ToShortDateString().Equals(DateTime.Now.ToShortDateString()) ?
-                stock.LastTrade: stock.kLineDay[currentIndex].endPrice ;
+            double currentPrice = stock.kLineDay[currentIndex].endPrice;
             KeyValuePair<string, double>[] quotaArr = stock.GetSortedQuota(currentIndex);
             //bool jumpEmpty3Line = startPrice > today3LinePrice;
             double newBuyPrice = 0;
