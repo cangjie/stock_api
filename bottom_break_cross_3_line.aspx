@@ -131,7 +131,7 @@
         dt.Columns.Add("总计", Type.GetType("System.Double"));
 
         DataTable dtOri = DBHelper.GetDataTable(" select * from dbo.bottom_break_cross_3_line where suggest_date = '"
-            + date.ToShortDateString() + "' and ( going_down_3_line_days >= 4 and under_3_line_days >= 4 and (going_down_3_line_days >= 5 or  under_3_line_days >= 5  )  ) order by  going_down_3_line_days desc, under_3_line_days desc ");
+            + date.ToShortDateString() + "' and  going_down_3_line_days >= 5 or under_3_line_days >= 5  order by  going_down_3_line_days desc, under_3_line_days desc ");
 
         foreach (DataRow drOri in dtOri.Rows)
         {
