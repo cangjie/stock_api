@@ -721,7 +721,8 @@
 
             dr["F3折返"] = (stock.kLineDay[currentIndex].lowestPrice - f3) / f3;
             */
-            dr["3线"] = stock.GetAverageSettlePrice(currentIndex, 3, 3);
+            double line3Price = stock.GetAverageSettlePrice(currentIndex, 3, 3)
+            dr["3线"] = line3Price;
             dr["现价"] = stock.kLineDay[currentIndex].endPrice;
 
             dr["评级"] = "";
@@ -793,9 +794,10 @@
                 dr["信号"] = dr["信号"] + "<a title='上影线短' >🔥</a>";
             }
 
-            if (stock.kLineDay[currentIndex].startPrice > stock.kLineDay[currentIndex - 1].highestPrice)
+            if (stock.kLineDay[currentIndex].startPrice > stock.kLineDay[currentIndex - 1].highestPrice 
+                && stock.kLineDay[currentIndex].startPrice > double.Parse(drOri["start_price"].ToString()))
             {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"跳空缺口\" >📈</a>";
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"跳空缺口\" >🌟</a>";
             }
 
             /*
@@ -831,7 +833,7 @@
 
             if ((int)dr["KDJ60"] >= 0 &&  kArrHour[currentIndexHour-(int)dr["KDJ60"]].j < 40)
             {
-                dr["信号"] = "<a title='小时KDJ低位金叉' >🌟</a>" + dr["信号"].ToString().Trim();
+                dr["信号"] = "<a title='小时KDJ低位金叉' >📈</a>" + dr["信号"].ToString().Trim();
             }
 
             try
