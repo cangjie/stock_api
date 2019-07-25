@@ -721,7 +721,7 @@
 
             dr["F3折返"] = (stock.kLineDay[currentIndex].lowestPrice - f3) / f3;
             */
-            double line3Price = stock.GetAverageSettlePrice(currentIndex, 3, 3)
+            double line3Price = stock.GetAverageSettlePrice(currentIndex, 3, 3);
             dr["3线"] = line3Price;
             dr["现价"] = stock.kLineDay[currentIndex].endPrice;
 
