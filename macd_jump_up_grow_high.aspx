@@ -793,6 +793,11 @@
                 dr["信号"] = dr["信号"] + "<a title='上影线短' >🔥</a>";
             }
 
+            if (stock.kLineDay[currentIndex].startPrice > stock.kLineDay[currentIndex - 1].highestPrice)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"跳空缺口\" >💰</a>";
+            }
+
             /*
             bool overPreviousHigh = false;
             for (int i = currentIndex + 1; i < stock.kLineDay.Length && i < maxIndex; i++)
