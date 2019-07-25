@@ -365,6 +365,11 @@
 
     public DataTable GetHtmlData(DataRow[] drOriArr)
     {
+
+        return RenderHtml(drOriArr);
+
+
+
         if (drOriArr.Length == 0)
             return null;
         DataTable dt = new DataTable();
