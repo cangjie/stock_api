@@ -725,7 +725,9 @@
 
             dr["F3折返"] = (stock.kLineDay[currentIndex].lowestPrice - f3) / f3;
             */
-            dr["3线"] = stock.GetAverageSettlePrice(currentIndex, 3, 3);
+            double line3Price = stock.GetAverageSettlePrice(currentIndex, 3, 3);
+            double line3PriceYesterday = stock.GetAverageSettlePrice(currentIndex - 1, 3, 3);
+            dr["3线"] = line3Price;
             dr["现价"] = stock.kLineDay[currentIndex].endPrice;
 
             dr["评级"] = "";
@@ -783,6 +785,13 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"跳空缺口\" >🌟</a>";
             }
+
+            if (stock.kLineDay[currentIndex].startPrice > line3Price && stock.kLineDay[currentIndex - 1].endPrice < line3PriceYesterday)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"跳空3线\" >3⃣️</a>";
+            }
+
+
             if (dtFoot.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"无影脚\" >🦶</a>";
