@@ -245,6 +245,124 @@
         return dt;
     }
 
+    public DataTable RenderHtml(DataRow[] drArr)
+    {
+
+        DataTable dt = new DataTable();
+        if (drArr.Length == 0)
+            return dt;
+        for (int i = 0; i < drArr[0].Table.Columns.Count; i++)
+        {
+            dt.Columns.Add(drArr[0].Table.Columns[i].Caption.Trim(), Type.GetType("System.String"));
+        }
+        foreach (DataRow drOri in drArr)
+        {
+            DataRow dr = dt.NewRow();
+            //double settle = Math.Round((double)drOri["昨收"], 2);
+            double currentPrice = Math.Round((double)drOri["现价"], 2);
+            double lowPrice = Math.Round((double)drOri["前低"], 2);
+            double hightPrice =  Math.Round((double)drOri["现高"], 2);
+            for (int i = 0; i < drArr[0].Table.Columns.Count; i++)
+            {
+
+                if (drArr[0].Table.Columns[i].DataType.FullName.ToString().Equals("System.Double"))
+                {
+                    switch (drArr[0].Table.Columns[i].Caption.Trim())
+                    {
+                        case "综指":
+                        case "昨收":
+                        case "MACD率":
+                        case "KDJ率":
+                        case "MACD差":
+                            dr[i] = Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2).ToString();
+                            break;
+                        case "买入":
+                            double buyPrice = Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2);
+                            dr[i] = "<font color=\"" + ((buyPrice > currentPrice) ? "red" : ((buyPrice == currentPrice) ? "gray" : "green")) + "\" >" + Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2).ToString() + "</font>";
+                            break;
+                        case "F3":
+                        case "F5":
+                            double currentValuePrice2 = (double)drOri[i];
+                            if (drOri["类型"].ToString().Trim().Equals(drArr[0].Table.Columns[i].Caption.Trim()))
+                            {
+                                dr[i] = "<font color=\"red\"  >"
+                                + Math.Round(currentValuePrice2, 2).ToString() + "</font>";
+                            }
+                            else
+                            {
+                                dr[i] = "<font color=\"green\"  >"
+                                + Math.Round(currentValuePrice2, 2).ToString() + "</font>";
+                            }
+
+                            break;
+                        case "今开":
+                        case "现价":
+                        case "前低":
+                        case "F1":
+                        case "现高":
+                        case "3线":
+                        case "无影":
+
+                            double currentValuePrice = (double)drOri[i];
+                            dr[i] = "<font color=\"" + (currentValuePrice > currentPrice ? "red" : (currentValuePrice == currentPrice ? "gray" : "green")) + "\"  >"
+                                + Math.Round(currentValuePrice, 2).ToString() + "</font>";
+                            break;
+                        /*
+                    case "价差":
+                        double currentValuePrice1 = (double)drOri[i];
+                        dr[i] = Math.Round(currentValuePrice1, 2).ToString();
+                        break;
+                        */
+                        default:
+                            if (System.Text.RegularExpressions.Regex.IsMatch(drArr[0].Table.Columns[i].Caption.Trim(), "\\d日")
+                                || drArr[0].Table.Columns[i].Caption.Trim().Equals("总计"))
+                            {
+                                if (!drOri[i].ToString().Equals(""))
+                                {
+                                    double currentValue = (double)drOri[i];
+                                    currentValue = Math.Round(currentValue * 100, 2);
+                                    dr[i] = "<font color=\"" + (currentValue >= 1 ? "red" : "green") + "\" >" + currentValue.ToString().Trim() + "%</font>";
+                                }
+                                else
+                                {
+                                    dr[i] = "--";
+                                }
+                            }
+                            else
+                            {
+                                try
+                                {
+                                    double currentValue = (double)drOri[i];
+                                    dr[i] = Math.Round(currentValue * 100, 2).ToString() + "%";
+                                }
+                                catch
+                                {
+
+                                }
+                            }
+                            break;
+                    }
+                }
+                else if (drArr[0].Table.Columns[i].DataType.FullName.ToString().Equals("System.DateTime"))
+                {
+                    DateTime footTime = (DateTime)drOri[i];
+                    dr[i] = footTime.Hour.ToString() + ":" + footTime.Minute.ToString();
+                }
+                else
+                {
+                    dr[i] = drOri[i].ToString();
+                }
+            }
+            string gid = dr["代码"].ToString();
+            dr["代码"] = "<a href=\"show_K_line_day.aspx?gid=" + gid.Trim() + "&maxprice=" + hightPrice.ToString() + "&minprice=" + lowPrice.ToString() + "\" target=\"_blank\" >" + dr["代码"].ToString() + "</a>";
+            dr["名称"] = "<a href=\"io_volume_detail.aspx?gid=" + gid.Trim() + "&date=" + calendar.SelectedDate.ToShortDateString() + "\" target=\"_blank\" >" + dr["名称"].ToString() + "</a>";
+            dt.Rows.Add(dr);
+        }
+        AddTotal(drArr, dt);
+        return dt;
+    }
+
+
     public DataTable GetHtmlData(DataRow[] drOriArr)
     {
         if (drOriArr.Length == 0)
@@ -296,11 +414,112 @@
             dt.Rows.Add(dr);
 
         }
-        AddTotal(dt);
+        AddTotal(drOriArr, dt);
         return dt;
     }
 
-    public void AddTotal(DataTable dt)
+    public void AddTotal(DataRow[] drOriArr, DataTable dt)
+    {
+        int totalCount = 0;
+        int[] totalSum = new int[] { 0, 0, 0, 0, 0, 0 };
+
+        int raiseCount = 0;
+        int[] raiseSum = new int[] { 0, 0, 0, 0, 0, 0 };
+
+        int fireCount = 0;
+        int[] fireSum = new int[] { 0, 0, 0, 0, 0, 0 };
+
+        int starCount = 0;
+        int[] starSum = new int[] { 0, 0, 0, 0, 0, 0 };
+
+        int shitCount = 0;
+
+        foreach (DataRow drOri in drOriArr)
+        {
+            if (drOri["信号"].ToString().IndexOf("💩") < 0)
+            {
+                totalCount++;
+                if (drOri["信号"].ToString().IndexOf("📈") >= 0)
+                {
+                    raiseCount++;
+                }
+                if (drOri["信号"].ToString().IndexOf("🔥") >= 0)
+                {
+                    fireCount++;
+                }
+                if (drOri["信号"].ToString().IndexOf("🌟") >= 0)
+                {
+                    starCount++;
+                }
+                for (int i = 1; i < 7; i++)
+                {
+                    string colName = ((i == 6) ? "总计" : i.ToString() + "日");
+                    if (!drOri[colName].ToString().Equals("") && (double)(drOri[colName]) >= 0.01)
+                    {
+                        totalSum[i - 1]++;
+                        if (drOri["信号"].ToString().IndexOf("📈") >= 0)
+                        {
+                            raiseSum[i - 1]++;
+                        }
+                        if (drOri["信号"].ToString().IndexOf("🔥") >= 0)
+                        {
+                            fireSum[i - 1]++;
+                        }
+                        if (drOri["信号"].ToString().IndexOf("🌟") >= 0)
+                        {
+                            starSum[i - 1]++;
+                        }
+                    }
+                }
+
+            }
+            else
+            {
+                shitCount++;
+            }
+        }
+
+
+
+        DataRow drTotal = dt.NewRow();
+        drTotal["信号"] = "总计";
+        drTotal["MACD日"] = totalCount.ToString();
+
+        DataRow drShit = dt.NewRow();
+        drShit["信号"] = "💩";
+        drShit["MACD日"] = shitCount.ToString();
+        drShit["KDJ日"] = Math.Round(100 * (double)shitCount / (double)drOriArr.Length, 2).ToString() + "%";
+
+        DataRow drRaise = dt.NewRow();
+        drRaise["信号"] = "📈";
+        drRaise["MACD日"] = raiseCount.ToString();
+        DataRow drFire = dt.NewRow();
+        drFire["信号"] = "🔥";
+        drFire["MACD日"] = fireCount.ToString();
+        DataRow drStar = dt.NewRow();
+        drStar["信号"] = "🌟";
+        drStar["MACD日"] = starCount.ToString();
+
+        for (int i = 1; i < 7; i++)
+        {
+            string columeCaption = ((i == 6) ? "总计" : i.ToString() + "日");
+            drTotal[columeCaption] = Math.Round(100 * (double)totalSum[i - 1] / (double)totalCount, 2).ToString() + "%";
+            drFire[columeCaption] = Math.Round(100 * (double)fireSum[i-1] / (double)fireCount, 2).ToString() + "%";
+            drRaise[columeCaption] = Math.Round(100 * (double)raiseSum[i-1] / (double)raiseCount, 2).ToString() + "%";
+            drStar[columeCaption] = Math.Round(100 * (double)starSum[i - 1] / (double)starCount, 2).ToString() + "%";
+        }
+
+        dt.Rows.Add(drTotal);
+        dt.Rows.Add(drShit);
+        dt.Rows.Add(drRaise);
+        dt.Rows.Add(drFire);
+        dt.Rows.Add(drStar);
+
+
+    }
+
+
+    public void AddTotal1(DataTable dt)
     {
         double totalCount = dt.Rows.Count;
         double shitCount = 0;
