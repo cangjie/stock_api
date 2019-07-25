@@ -125,6 +125,10 @@
         dt.Columns.Add("放量", Type.GetType("System.Double"));
         dt.Columns.Add("3线势", Type.GetType("System.Int32"));
         dt.Columns.Add("K线势", Type.GetType("System.Int32"));
+
+        dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
+        dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
+
         dt.Columns.Add("1日", Type.GetType("System.Double"));
         dt.Columns.Add("2日", Type.GetType("System.Double"));
         dt.Columns.Add("3日", Type.GetType("System.Double"));
@@ -226,6 +230,8 @@
             dr["均线压力"] = pressure;
             dr["上涨空间"] = upSpacePercent;
             dr["均线支撑"] = supportPrice;
+            dr["KDJ日"] = stock.kdjDays(currentIndex);
+            dr["MACD日"] = stock.macdDays(currentIndex);
             double maxIncreaseRate = 0;
             for (int i = 1; i <= 5 && i + currentIndex < stock.kLineDay.Length ; i++)
             {
@@ -275,6 +281,7 @@
             dr["均线压力"] = Math.Round((double)drOri["均线压力"], 2).ToString();
             dr["上涨空间"] = Math.Round(100 * (double)drOri["上涨空间"], 2).ToString() + "%";
             dr["均线支撑"] = Math.Round((double)drOri["均线支撑"], 2).ToString();
+           
             for (int i = 1; i <= 5; i++)
             {
                 if (drOri[i.ToString() + "日"].GetType().Name.Trim().Equals("DBNull"))
@@ -442,16 +449,16 @@
                     <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号"></asp:BoundColumn>
+
+                    <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="MACD日" HeaderText="MACD日"></asp:BoundColumn>
+
                     <asp:BoundColumn DataField="今开" HeaderText="今开"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线价" HeaderText="3线价"></asp:BoundColumn>
                     <asp:BoundColumn DataField="买入价" HeaderText="买入价"></asp:BoundColumn>
                     <asp:BoundColumn DataField="收盘价" HeaderText="收盘价"></asp:BoundColumn>
                     <asp:BoundColumn DataField="放量" HeaderText="放量" SortExpression="放量|desc"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="均线压力" HeaderText="均线压力"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="上涨空间" HeaderText="上涨空间" SortExpression="上涨空间|desc"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="均线支撑" HeaderText="均线支撑"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="3线势" HeaderText="3线势"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="K线势" HeaderText="K线势"></asp:BoundColumn>
+                    
                     <asp:BoundColumn DataField="1日" HeaderText="1日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="2日" HeaderText="2日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3日" HeaderText="3日"></asp:BoundColumn>
