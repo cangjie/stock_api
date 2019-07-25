@@ -779,7 +779,7 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title='跳空金叉' >📍</a>";
             }
             if (stock.kLineDay[currentIndex].startPrice > stock.kLineDay[currentIndex - 1].highestPrice 
-                && stock.kLineDay[currentIndex].startPrice > double.Parse(drOri["start_price"].ToString()))
+                && stock.kLineDay[currentIndex].startPrice >= double.Parse(drOri["start_price"].ToString()))
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"跳空缺口\" >🌟</a>";
             }
