@@ -126,6 +126,11 @@
         dt.Columns.Add("3线势", Type.GetType("System.Int32"));
         dt.Columns.Add("K线势", Type.GetType("System.Int32"));
 
+
+        dt.Columns.Add("现价", Type.GetType("System.Double"));
+        dt.Columns.Add("前低", Type.GetType("System.Double"));
+        dt.Columns.Add("现高", Type.GetType("System.Double"));
+
         dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
 
@@ -218,6 +223,10 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"跳空3线\" >🌟</a>";
             }
+
+            dr["现价"] = stock.kLineDay[currentIndex].endPrice;
+            dr["前低"] = 0;
+            dr["现高"] = 0;
 
             dr["今开"] = startPrice;
             dr["3线价"] = today3LinePrice;
@@ -368,59 +377,6 @@
 
         return RenderHtml(drOriArr);
 
-
-
-        if (drOriArr.Length == 0)
-            return null;
-        DataTable dt = new DataTable();
-        foreach (DataColumn c in drOriArr[0].Table.Columns)
-        {
-            dt.Columns.Add(c.Caption.Trim(), Type.GetType("System.String"));
-        }
-        foreach (DataRow drOri in drOriArr)
-        {
-            allGids = allGids + "," + drOri["代码"].ToString();
-        }
-        if (!allGids.Trim().Equals(""))
-        {
-            allGids = allGids.Remove(0, 1);
-        }
-        foreach (DataRow drOri in drOriArr)
-        {
-            DataRow dr = dt.NewRow();
-            dr["代码"] = "<a href=\"show_k_line_day.aspx?gid=" + drOri["代码"].ToString().Trim() + "&name="
-                + Server.UrlEncode(drOri["名称"].ToString().Trim()) + "&gids=" + allGids.Trim() + "\" target=\"_blank\" >"
-                +  drOri["代码"].ToString().Trim().Remove(0, 2) + "</a>";
-            dr["名称"] = "<a href=\"https://touzi.sina.com.cn/public/xray/details/" + drOri["代码"].ToString().Trim()
-                + "\" target=\"_blank\"  >" + drOri["名称"].ToString().Trim() + "</a>";
-            dr["信号"] = drOri["信号"].ToString();
-            dr["今开"] = Math.Round(((double)drOri["今开"]), 2).ToString();
-            dr["3线价"] = Math.Round(((double)drOri["3线价"]), 2).ToString();
-            dr["买入价"] = Math.Round(((double)drOri["买入价"]), 2).ToString();
-            dr["收盘价"] = Math.Round(((double)drOri["收盘价"]), 2).ToString();
-            dr["放量"] = Math.Round(((double)drOri["放量"]) * 100, 2).ToString() + "%";
-            dr["3线势"] = drOri["3线势"].ToString().Trim();
-            dr["K线势"] = drOri["K线势"].ToString().Trim();
-            dr["均线压力"] = Math.Round((double)drOri["均线压力"], 2).ToString();
-            dr["上涨空间"] = Math.Round(100 * (double)drOri["上涨空间"], 2).ToString() + "%";
-            dr["均线支撑"] = Math.Round((double)drOri["均线支撑"], 2).ToString();
-           
-            for (int i = 1; i <= 5; i++)
-            {
-                if (drOri[i.ToString() + "日"].GetType().Name.Trim().Equals("DBNull"))
-                    break;
-                double rate = (double)drOri[i.ToString() + "日"];
-                dr[i.ToString() + "日"] = "<font color=\"" + ((rate >= 0.01) ? "red" : "green") + "\" >"
-                    + Math.Round((rate * 100), 2).ToString() + "%</font>";
-            }
-            double rateTotal = (double)drOri["总计"];
-            dr["总计"] = "<font color=\"" + ((rateTotal >= 0.01) ? "red" : "green") + "\" >"
-                    + Math.Round((rateTotal * 100), 2).ToString() + "%</font>";
-            dt.Rows.Add(dr);
-
-        }
-        AddTotal(drOriArr, dt);
-        return dt;
     }
 
     public void AddTotal(DataRow[] drOriArr, DataTable dt)
