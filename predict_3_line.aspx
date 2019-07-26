@@ -168,7 +168,7 @@
                 continue;
             }
 
-            if (startPrice <= stock.kLineDay[currentIndex - 1].highestPrice)
+            if (startPrice <= stock.kLineDay[currentIndex - 1].endPrice)
             {
                 continue;
             }
