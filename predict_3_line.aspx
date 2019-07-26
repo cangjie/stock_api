@@ -174,7 +174,7 @@
             }
 
 
-            double buyPrice = Math.Max(startPrice, today3LinePrice);
+            double buyPrice = startPrice;
             double currentPrice = stock.kLineDay[currentIndex].endPrice;
             KeyValuePair<string, double>[] quotaArr = stock.GetSortedQuota(currentIndex);
             //bool jumpEmpty3Line = startPrice > today3LinePrice;
