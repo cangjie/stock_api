@@ -163,12 +163,12 @@
             double startPrice = stock.kLineDay[currentIndex].startPrice;
             double today3LinePrice = stock.GetAverageSettlePrice(currentIndex, 3, 3);
 
-            if (startPrice < today3LinePrice)
+            if (startPrice <= today3LinePrice)
             {
                 continue;
             }
 
-            if (startPrice < stock.kLineDay[currentIndex - 1].highestPrice)
+            if (startPrice <= stock.kLineDay[currentIndex - 1].highestPrice)
             {
                 continue;
             }
@@ -243,6 +243,7 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"跳空3线\" >🌟</a>";
             }
+            
 
             dr["现价"] = stock.kLineDay[currentIndex].endPrice;
             dr["前低"] = 0;
