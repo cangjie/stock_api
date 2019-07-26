@@ -53,7 +53,7 @@
             {
 
             }
-            if (below3LineDays < 10)
+            if (below3LineDays < 5)
             {
                 continue;
             }
