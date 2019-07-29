@@ -16,6 +16,7 @@
         {
             DataTable dtOri = GetData();
             int successCount = 0;
+            int successCount2 = 0;
             DataTable dt = new DataTable();
             dt.Columns.Add("日期");
             dt.Columns.Add("代码");
@@ -38,6 +39,10 @@
                 {
                     successCount++;
                 }
+                if (((double)drOri["总计"]) >= 0.05)
+                {
+                    successCount2++;
+                }
                 DataRow dr = dt.NewRow();
                 dr["日期"] = drOri["日期"].ToString();
                 dr["代码"] = drOri["代码"].ToString();
@@ -52,7 +57,8 @@
                 dr["总计"] = "<font color='" + ((v > 0.01)? "red" : "green") + "' >" + Math.Round(v * 100, 2).ToString() + "%</font>";
                 dt.Rows.Add(dr);
             }
-            LblCount.Text = Math.Round(100 * (double)successCount / (double)(dt.Rows.Count), 2).ToString();
+            LblCount.Text = Math.Round(100 * (double)successCount / (double)(dt.Rows.Count), 2).ToString() 
+                + "    " + Math.Round(100 * (double)successCount2 / (double)(dt.Rows.Count), 2).ToString()  ;
             dg.DataSource = dt;
             dg.DataBind();
         }
@@ -83,7 +89,7 @@
             Stock s = GetStock(drLimitUp["gid"].ToString().Trim());
             DateTime limitUpDate = DateTime.Parse(drLimitUp["alert_date"].ToString());
             int limitUpIndex = s.GetItemIndex(limitUpDate);
-            if (!SearchLimitUp(s.kLineDay, limitUpIndex) || !SearchLimitUp(s.kLineDay, limitUpIndex+1) 
+            if (!SearchLimitUp(s.kLineDay, limitUpIndex) || !SearchLimitUp(s.kLineDay, limitUpIndex+1)
                 || s.kLineDay[limitUpIndex+2].startPrice <= s.kLineDay[limitUpIndex + 1].endPrice)
             {
                 continue;
