@@ -9,7 +9,7 @@
         //currentDate = DateTime.Parse("2019-6-3");
         DateTime startDate = currentDate;
         DateTime endDate = currentDate;
-        if (currentDate == DateTime.Parse("1999-1-1"))
+        if (currentDate == DateTime.Parse("1900-1-1"))
         {
             endDate = DateTime.Now;
         }
@@ -31,13 +31,36 @@
                             s.kLineDay[currentIndex].endPrice = s.kLineDay[currentIndex].startPrice;
                             KLine.ComputeMACD(s.kLineDay);
                             if (s.kLineDay[currentIndex - 1].macd < 0 && s.kLineDay[currentIndex].macd > 0
-                                && (currentSettlePrice - s.kLineDay[currentIndex - 1].endPrice) / s.kLineDay[currentIndex - 1].endPrice >= 0.06)
+                                && s.kLineDay[currentIndex].startPrice > s.kLineDay[currentIndex - 1].highestPrice)
+                            //&& (currentSettlePrice - s.kLineDay[currentIndex - 1].endPrice) / s.kLineDay[currentIndex - 1].endPrice >= 0.06)
                             {
                                 //log alert
-                                DBHelper.InsertData("alert_macd_jump_empty", new string[,] { {"alert_date", "datetime", i.ToShortDateString() },
+                                try
+                                {
+                                    DBHelper.InsertData("alert_macd_jump_empty", new string[,] { {"alert_date", "datetime", i.ToShortDateString() },
                                     {"gid", "varchar", s.gid.Trim() }, { "start_price", "float", s.kLineDay[currentIndex].startPrice.ToString()} });
+                                }
+                                catch
+                                {
+
+                                }
                             }
-                            s.kLineDay[currentIndex].endPrice = currentSettlePrice;
+                            s.kLineDay[currentIndex].endPrice = s.kLineDay[currentIndex].highestPrice;
+                            KLine.ComputeMACD(s.kLineDay);
+                            if (s.kLineDay[currentIndex - 1].macd < 0 && s.kLineDay[currentIndex].macd > 0
+                                && (currentSettlePrice - s.kLineDay[currentIndex - 1].endPrice) / s.kLineDay[currentIndex - 1].endPrice >= 0.06)
+                            {
+                                try
+                                {
+                                    DBHelper.InsertData("alert_macd_jump_empty", new string[,] { {"alert_date", "datetime", i.ToShortDateString() },
+                                    {"gid", "varchar", s.gid.Trim() }, { "start_price", "float", s.kLineDay[currentIndex].startPrice.ToString()} });
+                                }
+                                catch
+                                {
+
+                                }
+
+                            }
                         }
                     }
                     catch
