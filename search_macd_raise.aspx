@@ -45,22 +45,26 @@
 
                                 }
                             }
-                            s.kLineDay[currentIndex].endPrice = s.kLineDay[currentIndex].highestPrice;
-                            KLine.ComputeMACD(s.kLineDay);
-                            if (s.kLineDay[currentIndex - 1].macd < 0 && s.kLineDay[currentIndex].macd > 0
-                                && (currentSettlePrice - s.kLineDay[currentIndex - 1].endPrice) / s.kLineDay[currentIndex - 1].endPrice >= 0.06)
+                            else
                             {
-                                try
+                                s.kLineDay[currentIndex].endPrice = s.kLineDay[currentIndex].highestPrice;
+                                KLine.ComputeMACD(s.kLineDay);
+                                if (s.kLineDay[currentIndex - 1].macd < 0 && s.kLineDay[currentIndex].macd > 0
+                                    && (currentSettlePrice - s.kLineDay[currentIndex - 1].endPrice) / s.kLineDay[currentIndex - 1].endPrice >= 0.06)
                                 {
-                                    DBHelper.InsertData("alert_macd_jump_empty", new string[,] { {"alert_date", "datetime", i.ToShortDateString() },
-                                    {"gid", "varchar", s.gid.Trim() }, { "start_price", "float", s.kLineDay[currentIndex].startPrice.ToString()} });
-                                }
-                                catch
-                                {
+                                    try
+                                    {
+                                        DBHelper.InsertData("alert_macd_jump_empty", new string[,] { {"alert_date", "datetime", i.ToShortDateString() },
+                                        {"gid", "varchar", s.gid.Trim() }, { "start_price", "float", s.kLineDay[currentIndex].startPrice.ToString()} });
+                                    }
+                                    catch
+                                    {
+
+                                    }
 
                                 }
-
                             }
+                            
                             s.kLineDay[currentIndex].endPrice = currentSettlePrice;
                         }
                     }
