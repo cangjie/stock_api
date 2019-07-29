@@ -61,6 +61,7 @@
                                 }
 
                             }
+                            s.kLineDay[currentIndex].endPrice = currentSettlePrice;
                         }
                     }
                     catch
