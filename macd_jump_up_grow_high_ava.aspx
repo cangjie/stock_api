@@ -753,7 +753,7 @@
             dr["无影时"] = footTime;
             dr["无影"] = todayLowestPrice;
             //buyPrice = supportPrice;
-            double buyPrice = stock.kLineDay[currentIndex].endPrice;
+            double buyPrice = stock.kLineDay[currentIndex].startPrice;
             double currentPrice = buyPrice;
             dr["买入"] = buyPrice;
 
