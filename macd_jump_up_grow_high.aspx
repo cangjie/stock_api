@@ -811,6 +811,11 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"跳空缺口\" >🌟</a>";
             }
+            else if ((int)dr["KDJ60"] > 4)
+            {
+                continue;
+            }
+
 
             if (stock.kLineDay[currentIndex].startPrice > line3Price && stock.kLineDay[currentIndex - 1].endPrice < line3PriceYesterday)
             {
