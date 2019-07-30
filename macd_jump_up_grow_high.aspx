@@ -419,7 +419,10 @@
             */
             Stock stock = new Stock(drOri["gid"].ToString().Trim(), rc);
 
-
+            if (!stock.gid.Trim().Equals("sh600939"))
+            {
+                continue;
+            }
 
             stock.LoadKLineDay(rc);
 
@@ -738,10 +741,6 @@
 
             dr["KDJ日"] = stock.kdjDays(currentIndex);
 
-            if ((int)dr["KDJ日"] > 1)
-            {
-                continue;
-            }
 
             if ((int)dr["KDJ日"] < 0)
             {
@@ -860,6 +859,11 @@
             catch
             {
 
+            }
+
+            if ((int)dr["KDJ日"] > 1)
+            {
+                dr["信号"] = dr["信号"] + "💩";
             }
 
             dt.Rows.Add(dr);
