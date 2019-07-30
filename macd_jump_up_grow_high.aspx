@@ -811,7 +811,7 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"跳空缺口\" >🌟</a>";
             }
-            else if ((int)dr["KDJ60"] > 4 || (int)dr["KDJ60"] == -1)
+            else if ((int)dr["KDJ60"] > 4 )
             {
                 continue;
             }
@@ -821,7 +821,7 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"跳空3线\" >3⃣️</a>";
             }
-
+            
             /*
             bool overPreviousHigh = false;
             for (int i = currentIndex + 1; i < stock.kLineDay.Length && i < maxIndex; i++)
