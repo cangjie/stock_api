@@ -24,7 +24,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "KDJ日,MACD差 desc");
+        sort = Util.GetSafeRequestValue(Request, "sort", "KDJ日,今涨");
         filter = Util.GetSafeRequestValue(Request, "filter", "");
         if (!IsPostBack)
         {
@@ -336,6 +336,7 @@
         dt.Columns.Add("总换手", Type.GetType("System.Double"));
         dt.Columns.Add("调整", Type.GetType("System.Int32"));
         dt.Columns.Add("现高", Type.GetType("System.Double"));
+        dt.Columns.Add("今涨", Type.GetType("System.Double"));
         dt.Columns.Add("MACD差", Type.GetType("System.Double"));
         dt.Columns.Add("F3", Type.GetType("System.Double"));
         dt.Columns.Add("F5", Type.GetType("System.Double"));
@@ -672,7 +673,7 @@
             dr["F5"] = 0;
             dr["前低"] = 0;
             dr["幅度"] =  "0%";
-
+            dr["今涨"] = (stock.kLineDay[currentIndex].startPrice - stock.kLineDay[currentIndex-1].endPrice) / stock.kLineDay[currentIndex-1].endPrice;
             dr["MACD差"] = Math.Abs(maxMacd/(maxMacd - minMacd));
             /*
             double f3ReverseRate = (stock.kLineDay[currentIndex].lowestPrice - f3) / f3;
@@ -1122,6 +1123,7 @@
                     <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="今涨" HeaderText="今涨" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="MACD差" HeaderText="MACD差" ></asp:BoundColumn>
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" ></asp:BoundColumn>
