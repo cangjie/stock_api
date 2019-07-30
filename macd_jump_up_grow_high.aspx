@@ -737,6 +737,11 @@
 
             dr["KDJ日"] = stock.kdjDays(currentIndex);
 
+            if ((int)dr["KDJ日"] > 1)
+            {
+                continue;
+            }
+
             if ((int)dr["KDJ日"] < 0)
             {
                 continue;
