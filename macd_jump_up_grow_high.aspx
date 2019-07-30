@@ -471,11 +471,7 @@
             int currentIndexHour = Stock.GetItemIndex(kArrHour, currentHourTime);
             int currentIndexHalfHour = Stock.GetItemIndex(kArrHalfHour, currentHalfHourTime);
             bool isJumpMacd = IsJumpEmptyMacd(stock, currentIndex);
-            if (((stock.kLineDay[currentIndex].highestPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice < 0.06)
-                && !isJumpMacd)
-            {
-                continue;
-            }
+
 
 
             int maxIndex = Math.Min(stock.kLineDay.Length - 1, currentIndex + 5);
