@@ -809,30 +809,19 @@
 
             if (isJumpMacd)
             {
-                //dr["信号"] = dr["信号"].ToString() + "<a title=\"跳空缺口\" >🌟</a>";
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"跳空缺口\" >🌟</a>";
             }
             else if ((int)dr["KDJ60"] > 4 )
             {
                 continue;
             }
 
-            if (isJumpMacd
-                && ((stock.kLineDay[currentIndex].startPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice) < 0.06)
-            {
-                continue;
-            }
-
-            if (!isJumpMacd
-                && ((stock.kLineDay[currentIndex].highestPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice) < 0.06)
-            {
-                continue;
-            }
 
             if (stock.kLineDay[currentIndex].startPrice > line3Price && stock.kLineDay[currentIndex - 1].endPrice < line3PriceYesterday)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"跳空3线\" >3⃣️</a>";
             }
-
+            
             /*
             bool overPreviousHigh = false;
             for (int i = currentIndex + 1; i < stock.kLineDay.Length && i < maxIndex; i++)
