@@ -419,7 +419,7 @@
             */
             Stock stock = new Stock(drOri["gid"].ToString().Trim(), rc);
 
-            
+
 
             stock.LoadKLineDay(rc);
 
@@ -756,7 +756,12 @@
             dr["无影时"] = footTime;
             dr["无影"] = todayLowestPrice;
             //buyPrice = supportPrice;
+
             double buyPrice = stock.kLineDay[currentIndex].startPrice;
+            if (!isJumpMacd)
+            {
+                buyPrice = stock.kLineDay[currentIndex - 1].endPrice * 1.06;
+            }
             double currentPrice = buyPrice;
             dr["买入"] = buyPrice;
 
