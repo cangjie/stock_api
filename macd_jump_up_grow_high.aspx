@@ -421,6 +421,9 @@
 
 
             stock.LoadKLineDay(rc);
+
+
+            /*
             if (timelineArr.Length > 0)
             {
                 KLine currentKLine = new KLine();
@@ -446,6 +449,7 @@
                     stock.kLineDay = newKArr;
                 }
             }
+            */
 
 
             KLine.ComputeMACD(stock.kLineDay);
@@ -466,7 +470,8 @@
             int currentIndexHour = Stock.GetItemIndex(kArrHour, currentHourTime);
             int currentIndexHalfHour = Stock.GetItemIndex(kArrHalfHour, currentHalfHourTime);
 
-            if ((stock.kLineDay[currentIndex].highestPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice < 0.06)
+            if (((stock.kLineDay[currentIndex].highestPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice < 0.06)
+                && !IsJumpEmptyMacd(stock, currentIndex))
             {
                 continue;
             }
@@ -902,6 +907,25 @@
             }
         }
         return ret;
+    }
+
+    public static bool IsJumpEmptyMacd(Stock s, int currentIndex)
+    {
+        bool isMacdCross = false;
+        if (currentIndex >= s.kLineDay.Length || currentIndex == 0)
+        {
+            return false;
+        }
+        double endPrice = s.kLineDay[currentIndex].endPrice;
+        s.kLineDay[currentIndex].endPrice = s.kLineDay[currentIndex].startPrice;
+        KLine.ComputeMACD(s.kLineDay);
+        if (s.kLineDay[currentIndex].macd > 0 && s.kLineDay[currentIndex - 1].macd < 0
+            && s.kLineDay[currentIndex].startPrice > s.kLineDay[currentIndex - 1].highestPrice)
+        {
+            isMacdCross = true;
+        }
+        s.kLineDay[currentIndex].endPrice = endPrice;
+        return isMacdCross;
     }
 
 

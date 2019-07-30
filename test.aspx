@@ -4,18 +4,17 @@
 <%@ Import Namespace="System.Data" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
 <script runat="server">
+
+    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        Stock s = new Stock("sz300656");
-        s.LoadKLineDay();
-        int currentIndex = s.GetItemIndex(DateTime.Parse("2019-6-10"));
-
-        int outIndex = 0;
-
-        double price = GetFirstLowestPrice(s.kLineDay, currentIndex, out outIndex);
-        double price2 = GetFirstLowestPrice(s.kLineDay, currentIndex, out outIndex);
-        Response.Write(price.ToString() + "!" + price2.ToString());
+        Stock s = new Stock("sz000993");
+        s.LoadKLineDay(rc);
+        s.kLineDay[s.kLineDay.Length - 1].endPrice = s.kLineDay[s.kLineDay.Length - 1].startPrice;
+        KLine.ComputeMACD(s.kLineDay);
+        Response.Write(s.kLineDay[s.kLineDay.Length - 2].macd.ToString());
     }
 
     public static double GetFirstLowestPrice(KLine[] kArr, int index, out int lowestIndex)
