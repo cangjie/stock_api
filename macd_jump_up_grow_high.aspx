@@ -667,7 +667,7 @@
         */
 
             dr["调整"] = 0;
-            dr["缩量"] = stock.kLineDay[currentIndex].VirtualVolume / stock.kLineDay[currentIndex - 1].volume;
+            dr["缩量"] = stock.kLineDay[currentIndex].VirtualVolume / Stock.GetAvarageVolume(stock.kLineDay, currentIndex, 20);
             dr["现高"] = 0;
             dr["F3"] = 0;
             dr["F5"] = 0;
