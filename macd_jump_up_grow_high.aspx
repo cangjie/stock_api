@@ -470,9 +470,9 @@
             DateTime currentHourTime = Stock.GetCurrentKLineEndDateTime(currentDate, 60);
             int currentIndexHour = Stock.GetItemIndex(kArrHour, currentHourTime);
             int currentIndexHalfHour = Stock.GetItemIndex(kArrHalfHour, currentHalfHourTime);
-
+            bool isJumpMacd = IsJumpEmptyMacd(stock, currentIndex);
             if (((stock.kLineDay[currentIndex].highestPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice < 0.06)
-                && !IsJumpEmptyMacd(stock, currentIndex))
+                && !isJumpMacd)
             {
                 continue;
             }
@@ -806,7 +806,7 @@
                 dr["信号"] = dr["信号"] + "<a title='上影线短' >🔥</a>";
             }
 
-            if (stock.kLineDay[currentIndex].startPrice > stock.kLineDay[currentIndex - 1].highestPrice)
+            if (isJumpMacd)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"跳空缺口\" >🌟</a>";
             }
