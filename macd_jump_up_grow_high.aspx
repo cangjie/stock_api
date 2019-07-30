@@ -811,7 +811,7 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"跳空缺口\" >🌟</a>";
             }
-            else if ((int)dr["KDJ60"] > 4)
+            else if ((int)dr["KDJ60"] > 4 || (int)dr["KDJ60"] == -1)
             {
                 continue;
             }
