@@ -784,10 +784,7 @@
             }
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
 
-            if (stock.kLineDay[currentIndex].startPrice > buyPrice)
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title='跳空金叉' >📍</a>";
-            }
+            
             /*
             if (buyPrice > supportPrice)
             {
@@ -804,16 +801,16 @@
                 && (stock.kLineDay[currentIndex].highestPrice - stock.kLineDay[currentIndex].endPrice)*2 <
                 (stock.kLineDay[currentIndex].startPrice - stock.kLineDay[currentIndex].lowestPrice) )
             {
-                dr["信号"] = dr["信号"] + "<a title='上影线短' >🔥</a>";
+                dr["信号"] = dr["信号"] + "<a title='上影线短' >🌟</a>";
             }
 
             if (isJumpMacd)
             {
-                //dr["信号"] = dr["信号"].ToString() + "<a title=\"跳空缺口\" >🌟</a>";
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"跳空缺口\" >🔥</a>";
             }
             else if ((int)dr["KDJ60"] > 4 )
             {
-                continue;
+                //continue;
             }
 
             if (isJumpMacd
