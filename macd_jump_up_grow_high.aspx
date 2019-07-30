@@ -667,7 +667,7 @@
         */
 
             dr["调整"] = 0;
-            dr["缩量"] = 0;
+            dr["缩量"] = stock.kLineDay[currentIndex].VirtualVolume / stock.kLineDay[currentIndex - 1].volume;
             dr["现高"] = 0;
             dr["F3"] = 0;
             dr["F5"] = 0;
@@ -1123,6 +1123,7 @@
                     <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="缩量" HeaderText="缩量" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="今涨" HeaderText="今涨" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="MACD差" HeaderText="MACD差" ></asp:BoundColumn>
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" ></asp:BoundColumn>
