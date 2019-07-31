@@ -855,6 +855,7 @@
             {
                 buyPrice = stock.kLineDay[currentIndex].highestPrice;
             }
+            buyPrice = stock.kLineDay[currentIndex].endPrice;
             if (stock.kLineDay[currentIndex].startPrice > line3Price && stock.kLineDay[currentIndex - 1].endPrice < line3PriceYesterday)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"跳空3线\" >3⃣️</a>";
