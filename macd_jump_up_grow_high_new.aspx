@@ -828,7 +828,7 @@
             }
             else
             {
-                buyPrice = stock.kLineDay[currentIndex - 1].endPrice * 0.06;
+                buyPrice = Math.Max(stock.kLineDay[currentIndex - 1].endPrice * 0.06, stock.kLineDay[currentIndex].startPrice);
             }
 
             if (isJumpMacd && ((stock.kLineDay[currentIndex].highestPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice) < 0.03)
@@ -837,7 +837,7 @@
             }
             else
             {
-                buyPrice = stock.kLineDay[currentIndex - 1].endPrice * 0.03;
+                buyPrice = Math.Max(stock.kLineDay[currentIndex - 1].endPrice * 0.03, stock.kLineDay[currentIndex].startPrice);
             }
 
             if (stock.kLineDay[currentIndex].startPrice > line3Price && stock.kLineDay[currentIndex - 1].endPrice < line3PriceYesterday)
