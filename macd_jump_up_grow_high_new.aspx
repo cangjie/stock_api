@@ -419,11 +419,13 @@
             */
             Stock stock = new Stock(drOri["gid"].ToString().Trim(), rc);
 
+            if (!stock.gid.Trim().Equals("sh601595"))
+            {
+                //continue;
+            }
 
 
             stock.LoadKLineDay(rc);
-
-
             /*
             if (timelineArr.Length > 0)
             {
@@ -471,11 +473,7 @@
             int currentIndexHour = Stock.GetItemIndex(kArrHour, currentHourTime);
             int currentIndexHalfHour = Stock.GetItemIndex(kArrHalfHour, currentHalfHourTime);
             bool isJumpMacd = IsJumpEmptyMacd(stock, currentIndex);
-            if (((stock.kLineDay[currentIndex].highestPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice < 0.06)
-                && !isJumpMacd)
-            {
-                continue;
-            }
+
 
 
             int maxIndex = Math.Min(stock.kLineDay.Length - 1, currentIndex + 5);
@@ -741,7 +739,7 @@
 
             if ((int)dr["KDJ日"] < 0)
             {
-                continue;
+                //continue;
             }
 
             dr["MACD日"] = stock.macdDays(currentIndex);
@@ -758,10 +756,13 @@
             //buyPrice = supportPrice;
 
             double buyPrice = stock.kLineDay[currentIndex].startPrice;
+            buyPrice = stock.kLineDay[currentIndex - 1].endPrice * 1.06;
+            /*
             if (!isJumpMacd)
             {
                 buyPrice = stock.kLineDay[currentIndex - 1].endPrice * 1.06;
             }
+            */
             double currentPrice = buyPrice;
             dr["买入"] = buyPrice;
 
@@ -784,10 +785,7 @@
             }
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
 
-            if (stock.kLineDay[currentIndex].startPrice > buyPrice)
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title='跳空金叉' >📍</a>";
-            }
+
             /*
             if (buyPrice > supportPrice)
             {
@@ -804,24 +802,49 @@
                 && (stock.kLineDay[currentIndex].highestPrice - stock.kLineDay[currentIndex].endPrice)*2 <
                 (stock.kLineDay[currentIndex].startPrice - stock.kLineDay[currentIndex].lowestPrice) )
             {
-                dr["信号"] = dr["信号"] + "<a title='上影线短' >🔥</a>";
+                dr["信号"] = dr["信号"] + "<a title='上影线短' >🌟</a>";
             }
 
             if (isJumpMacd)
             {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"跳空缺口\" >🌟</a>";
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"跳空缺口\" >🔥</a>";
             }
             else if ((int)dr["KDJ60"] > 4 )
             {
-                continue;
+                //continue;
             }
 
+            /*
+            if (isJumpMacd
+                && ((stock.kLineDay[currentIndex].startPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice) < 0.06)
+            {
+                continue;
+            }
+            */
+
+            if (!isJumpMacd && ((stock.kLineDay[currentIndex].highestPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice) < 0.06)
+            {
+                continue;
+            }
+            else
+            {
+                buyPrice = stock.kLineDay[currentIndex - 1].endPrice * 0.06;
+            }
+
+            if (isJumpMacd && ((stock.kLineDay[currentIndex].highestPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice) < 0.03)
+            {
+                continue;
+            }
+            else
+            {
+                buyPrice = stock.kLineDay[currentIndex - 1].endPrice * 0.03;
+            }
 
             if (stock.kLineDay[currentIndex].startPrice > line3Price && stock.kLineDay[currentIndex - 1].endPrice < line3PriceYesterday)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"跳空3线\" >3⃣️</a>";
             }
-            
+
             /*
             bool overPreviousHigh = false;
             for (int i = currentIndex + 1; i < stock.kLineDay.Length && i < maxIndex; i++)
@@ -868,10 +891,7 @@
 
             }
 
-            if ((int)dr["KDJ日"] > 0)
-            {
-                dr["信号"] = dr["信号"] + "💩";
-            }
+
 
             dt.Rows.Add(dr);
 
