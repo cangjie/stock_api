@@ -419,11 +419,13 @@
             */
             Stock stock = new Stock(drOri["gid"].ToString().Trim(), rc);
 
+            if (!stock.gid.Trim().Equals("sh601595"))
+            {
+                //continue;
+            }
 
 
             stock.LoadKLineDay(rc);
-
-
             /*
             if (timelineArr.Length > 0)
             {
@@ -737,7 +739,7 @@
 
             if ((int)dr["KDJ日"] < 0)
             {
-                continue;
+                //continue;
             }
 
             dr["MACD日"] = stock.macdDays(currentIndex);
@@ -780,7 +782,7 @@
             }
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
 
-            
+
             /*
             if (buyPrice > supportPrice)
             {
@@ -809,14 +811,15 @@
                 //continue;
             }
 
+            /*
             if (isJumpMacd
                 && ((stock.kLineDay[currentIndex].startPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice) < 0.06)
             {
                 continue;
             }
+            */
 
-            if (!isJumpMacd
-                && ((stock.kLineDay[currentIndex].highestPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice) < 0.06)
+            if ( ((stock.kLineDay[currentIndex].highestPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice) < 0.06)
             {
                 continue;
             }
@@ -872,7 +875,7 @@
 
             }
 
-            
+
 
             dt.Rows.Add(dr);
 
