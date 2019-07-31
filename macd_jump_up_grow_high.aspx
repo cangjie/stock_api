@@ -421,7 +421,7 @@
 
             if (!stock.gid.Trim().Equals("sh601595"))
             {
-                //continue;
+               continue;
             }
 
 
@@ -756,10 +756,13 @@
             //buyPrice = supportPrice;
 
             double buyPrice = stock.kLineDay[currentIndex].startPrice;
+            buyPrice = stock.kLineDay[currentIndex - 1].endPrice * 1.06;
+            /*
             if (!isJumpMacd)
             {
                 buyPrice = stock.kLineDay[currentIndex - 1].endPrice * 1.06;
             }
+            */
             double currentPrice = buyPrice;
             dr["买入"] = buyPrice;
 
