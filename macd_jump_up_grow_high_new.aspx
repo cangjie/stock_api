@@ -828,7 +828,8 @@
             }
             else
             {
-                buyPrice = Math.Max(stock.kLineDay[currentIndex - 1].endPrice * 0.06, stock.kLineDay[currentIndex].startPrice);
+                buyPrice = stock.kLineDay[currentIndex - 1].endPrice * 0.06;
+                
             }
 
             if (isJumpMacd && ((stock.kLineDay[currentIndex].highestPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice) < 0.03)
@@ -837,9 +838,16 @@
             }
             else
             {
-                buyPrice = Math.Max(stock.kLineDay[currentIndex - 1].endPrice * 0.03, stock.kLineDay[currentIndex].startPrice);
+                buyPrice = stock.kLineDay[currentIndex - 1].endPrice * 0.03;
             }
-
+            if (buyPrice < stock.kLineDay[currentIndex].startPrice)
+            {
+                buyPrice = stock.kLineDay[currentIndex].startPrice;
+            }
+            if (buyPrice > stock.kLineDay[currentIndex].highestPrice)
+            {
+                buyPrice = stock.kLineDay[currentIndex].highestPrice;
+            }
             if (stock.kLineDay[currentIndex].startPrice > line3Price && stock.kLineDay[currentIndex - 1].endPrice < line3PriceYesterday)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"跳空3线\" >3⃣️</a>";
