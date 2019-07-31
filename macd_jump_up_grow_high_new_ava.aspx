@@ -770,10 +770,8 @@
                 buyPrice = stock.kLineDay[currentIndex - 1].endPrice * 1.06;
             }
             */
-            double currentPrice = buyPrice;
-            dr["买入"] = buyPrice;
-
-            dr["涨幅"] = (currentPrice - buyPrice) / buyPrice;
+            
+            
             /*
             if (stock.kLineDay[stock.kLineDay.Length - 1].endPrice >= highest)
             {
@@ -856,6 +854,9 @@
                 buyPrice = stock.kLineDay[currentIndex].highestPrice;
             }
             buyPrice = stock.kLineDay[currentIndex].endPrice;
+            dr["买入"] = buyPrice;
+            dr["涨幅"] = (stock.kLineDay[currentIndex].endPrice - buyPrice) / buyPrice;
+
             if (stock.kLineDay[currentIndex].startPrice > line3Price && stock.kLineDay[currentIndex - 1].endPrice < line3PriceYesterday)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"跳空3线\" >3⃣️</a>";
