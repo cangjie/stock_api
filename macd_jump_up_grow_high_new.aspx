@@ -419,7 +419,7 @@
             */
             Stock stock = new Stock(drOri["gid"].ToString().Trim(), rc);
 
-            if (!stock.gid.Trim().Equals("sh601595"))
+            if (!stock.gid.Trim().Equals("sz002144"))
             {
                 //continue;
             }
@@ -828,7 +828,7 @@
             }
             else
             {
-                buyPrice = stock.kLineDay[currentIndex - 1].endPrice * 0.06;
+                buyPrice = stock.kLineDay[currentIndex - 1].endPrice * 1.06;
                 
             }
 
@@ -838,7 +838,7 @@
             }
             else
             {
-                buyPrice = stock.kLineDay[currentIndex - 1].endPrice * 0.03;
+                buyPrice = stock.kLineDay[currentIndex - 1].endPrice * 1.03;
             }
             if (buyPrice < stock.kLineDay[currentIndex].startPrice)
             {
