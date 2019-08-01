@@ -638,16 +638,7 @@ public class StockWatcher
         {
 
         }
-        try
-        {
-            Util.GetWebContent("https://weixin-new-time-english.chinacloudsites.cn/api/send_template_message.aspx", "POST",
-                json.Replace(templateId, "yNg8gCkQmAZJxoy0KG8xDFz6cEF5zclfWpgu4XOpzw4"), "application/raw");
-        }
-        catch
-        {
-
-        }
-
+       
     }
    
     public static DataTable GetTimeLineTradeAndVolumeTable(string gid, DateTime date)
