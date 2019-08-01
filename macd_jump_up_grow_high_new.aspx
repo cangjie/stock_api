@@ -889,6 +889,9 @@
                     //            dr["名称"].ToString() + " " + message, stock.kLineDay[currentIndex].endPrice, "macd");
                     StockWatcher.SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", dr["代码"].ToString().Trim(),
                                 dr["名称"].ToString() + " " + message, stock.kLineDay[currentIndex].endPrice, "macd");
+                    //老马
+                    StockWatcher.SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", dr["代码"].ToString().Trim(),
+                                dr["名称"].ToString() + " " + message, stock.kLineDay[currentIndex].endPrice, "macd");
                     
 
                 }
