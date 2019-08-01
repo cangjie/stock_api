@@ -893,8 +893,8 @@
 
             try
             {
-                DBHelper.InsertData("alert_cross_macd", new string[,] { {"alert_date", "datetime",  currentDate.ToShortDateString() },
-                    {"gid", "varchar", stock.gid.Trim() }, {"current_price", "float", dr["现价"].ToString() }, {"current_volume_rate", "float", dr["缩量"].ToString() } });
+                //DBHelper.InsertData("alert_cross_macd", new string[,] { {"alert_date", "datetime",  currentDate.ToShortDateString() },
+                //    {"gid", "varchar", stock.gid.Trim() }, {"current_price", "float", dr["现价"].ToString() }, {"current_volume_rate", "float", dr["缩量"].ToString() } });
             }
             catch
             {
