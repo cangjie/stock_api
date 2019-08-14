@@ -814,13 +814,14 @@
 
             }
 
-            if (isJumpMacd && ((stock.kLineDay[currentIndex].highestPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice) < 0.03)
+            if (isJumpMacd 
+                && ((stock.kLineDay[currentIndex].highestPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice) < 0.06)
             {
                 continue;
             }
             else
             {
-                buyPrice = stock.kLineDay[currentIndex - 1].endPrice * 1.03;
+                buyPrice = stock.kLineDay[currentIndex - 1].endPrice * 1.06;
             }
             if (buyPrice < stock.kLineDay[currentIndex].startPrice)
             {
