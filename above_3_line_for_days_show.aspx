@@ -32,7 +32,7 @@
     protected void Page_Load(object sender, EventArgs e)
     {
         
-        sort = Util.GetSafeRequestValue(Request, "sort", "MACD,KDJ,3线日,放量 desc");
+        sort = Util.GetSafeRequestValue(Request, "sort", "KDJ,MACD,放量 desc");
         if (!IsPostBack)
         {
             try
@@ -295,6 +295,8 @@
         dt.Columns.Add("涨幅", Type.GetType("System.Double"));
         dt.Columns.Add("跌幅", Type.GetType("System.Double"));
         dt.Columns.Add("震幅", Type.GetType("System.Double"));
+        dt.Columns.Add("KDJ60", Type.GetType("System.Int32"));
+        dt.Columns.Add("KDJ30", Type.GetType("System.Int32"));
         for (int i = 0; i <= 10; i++)
         {
             dt.Columns.Add(i.ToString() + "日", Type.GetType("System.Double"));
@@ -320,6 +322,17 @@
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
+
+            
+            KLine[] kArrHour = Stock.LoadRedisKLine(stock.gid, "60min", rc);
+            KLine[] kArrHalfHour = Stock.LoadRedisKLine(stock.gid, "30min", rc);
+            DateTime currentHalfHourTime = Stock.GetCurrentKLineEndDateTime(currentDate, 30);
+            DateTime currentHourTime = Stock.GetCurrentKLineEndDateTime(currentDate, 60);
+            int currentIndexHour = Stock.GetItemIndex(kArrHour, currentHourTime);
+            int currentIndexHalfHour = Stock.GetItemIndex(kArrHalfHour, currentHalfHourTime);
+            
+
+
 
 
 
@@ -353,15 +366,17 @@
             dr["今涨"] = todayRaise;
 
             DateTime lastDate = DateTime.Parse(stock.kLineDay[currentIndex - 1].startDateTime.ToShortDateString());
-            double lastDayVolume = stock.kLineDay[currentIndex-1].VirtualVolume;//Stock.GetVolumeAndAmount(stock.gid, lastDate)[0];
-            double currentVolume = stock.kLineDay[currentIndex].VirtualVolume;//Stock.GetVolumeAndAmount(stock.gid, currentDate)[0];
-            double volumeIncrease = (currentVolume - lastDayVolume) / lastDayVolume;
-            dr["放量"] = currentVolume / lastDayVolume;
+
+            dr["放量"] = stock.kLineDay[currentIndex].VirtualVolume / Stock.GetAvarageVolume(stock.kLineDay, currentIndex, 20);
             int kdjDays = stock.kdjDays(currentIndex);
             if (kdjDays == -1 || macdDays == -1)
                 continue;
 
             dr["kdj"] = kdjDays.ToString();
+
+            dr["KDJ30"] = Stock.KDJIndex(kArrHalfHour, currentIndexHalfHour);
+            dr["KDJ60"] = Stock.KDJIndex(kArrHour, currentIndexHour);
+
 
             int days3Line = KLine.Above3LineDays(stock, currentIndex);
             dr["3线日"] = daysAbove3Line;
@@ -628,32 +643,35 @@
                 <Columns>
                     <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="信号" HeaderText="信号" SortExpression="信号|desc" ></asp:BoundColumn>
-                    <asp:BoundColumn DataField="放量" HeaderText="放量" SortExpression="放量|desc"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="KDJ" HeaderText="KDJ" SortExpression="KDJ|desc"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="MACD" HeaderText="MACD" SortExpression="MACD|desc"></asp:BoundColumn>
-					<asp:BoundColumn DataField="3线日" HeaderText="3线日" SortExpression="3线日|asc" ></asp:BoundColumn>
-                    <asp:BoundColumn DataField="日均涨幅" HeaderText="日均涨幅" SortExpression="日均涨幅|asc" ></asp:BoundColumn>
-                    <asp:BoundColumn DataField="KDJ率" HeaderText="KDJ率" SortExpression="KDJ率|asc"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="MACD率" HeaderText="MACD率" SortExpression="MACD率|asc"></asp:BoundColumn>			
+                    <asp:BoundColumn DataField="信号" HeaderText="信号"  ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="放量" HeaderText="放量" ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="KDJ" HeaderText="KDJ" ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="MACD" HeaderText="MACD" ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="KDJ60" HeaderText="KDJ60" ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="KDJ30" HeaderText="KDJ30" ></asp:BoundColumn>
+
+
+                    <asp:BoundColumn DataField="3线" HeaderText="3线" ></asp:BoundColumn>
+					<asp:BoundColumn DataField="3线日" HeaderText="3线日" ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="日均涨幅" HeaderText="日均涨幅"  ></asp:BoundColumn>
+    
+                   			
                     <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F5" HeaderText="F5"></asp:BoundColumn>
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
-			        <asp:BoundColumn DataField="涨幅" HeaderText="涨幅"  ></asp:BoundColumn>
-					<asp:BoundColumn DataField="跌幅" HeaderText="跌幅"  ></asp:BoundColumn>
-                    <asp:BoundColumn DataField="震幅" HeaderText="震幅"  ></asp:BoundColumn>
+			  
                     <asp:BoundColumn DataField="0日" HeaderText="0日" ></asp:BoundColumn>
-                    <asp:BoundColumn DataField="1日" HeaderText="1日" SortExpression="1日|desc" ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="1日" HeaderText="1日"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="2日" HeaderText="2日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3日" HeaderText="3日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="4日" HeaderText="4日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="5日" HeaderText="5日"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="6日" HeaderText="6日" SortExpression="1日|desc" ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="6日" HeaderText="6日" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="7日" HeaderText="7日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="8日" HeaderText="8日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="9日" HeaderText="9日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="10日" HeaderText="10日"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="总计" HeaderText="总计" SortExpression="总计|desc" ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="总计" HeaderText="总计"  ></asp:BoundColumn>
                 </Columns>
                 <FooterStyle BackColor="#CCCCCC" ForeColor="Black" />
                 <HeaderStyle BackColor="#000084" Font-Bold="True" ForeColor="White" />
