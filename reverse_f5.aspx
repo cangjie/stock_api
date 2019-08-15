@@ -449,7 +449,7 @@
             int firstTimeOverSupportIndex = 0;
             for (int i = highestIndex; i < currentIndex; i++)
             {
-                if (stock.kLineDay[i].endPrice < f5)
+                if (stock.kLineDay[i].lowestPrice < f5)
                 {
                     firstTimeOverSupportIndex = i;
                     break;
