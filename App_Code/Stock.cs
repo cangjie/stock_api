@@ -157,8 +157,14 @@ public class Stock
         else
         {
             DateTime returnDateTime = currentDate.Date.AddHours(9).AddMinutes(30).AddMinutes(stepMinutes);
-            for (; returnDateTime < DateTime.Now; returnDateTime = returnDateTime.AddMinutes(stepMinutes)) { }
-            if (returnDateTime > returnDateTime.Date.AddHours(11).AddMinutes(30) && returnDateTime <= returnDateTime.Date.AddHours(13))
+            for (; returnDateTime < DateTime.Now; ) {
+                returnDateTime = returnDateTime.AddMinutes(stepMinutes);
+                if (DateTime.Now.Hour >= 13 && returnDateTime.Hour < 13)
+                {
+                    returnDateTime = returnDateTime.Date.AddHours(13);
+                }
+            }
+            if (DateTime.Now > returnDateTime.Date.AddHours(11).AddMinutes(30) && DateTime.Now <= returnDateTime.Date.AddHours(13))
             {
                 returnDateTime = returnDateTime.Date.AddHours(11).AddMinutes(30);
             }
