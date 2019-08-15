@@ -436,6 +436,39 @@
             double buyPrice = currentPrice;
 
 
+            
+            int highestIndex = 0;
+            for (int i = currentIndex; i >= currentIndex - 10; i--)
+            {
+                if (stock.kLineDay[i].highestPrice - highestPrice <= 0.01)
+                {
+                    highestIndex = i;
+                    break;
+                }
+            }
+
+            if (highestIndex == 0)
+            {
+                continue;
+            }
+
+            int firstTimeOverSupportIndex = 0;
+            for (int i = highestIndex; i < currentIndex; i++)
+            {
+                if (stock.kLineDay[i].endPrice < f3)
+                {
+                    firstTimeOverSupportIndex = i;
+                    break;
+                }
+            }
+
+            if (currentIndex - firstTimeOverSupportIndex > 2)
+            {
+                continue;
+            }
+
+
+
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
