@@ -384,7 +384,7 @@
         DataTable dtDtl = DBHelper.GetDataTable(" select gid, alert_date, price from alert_foot where alert_date > '"
             + currentDate.ToShortDateString() + "' and alert_date < '" + currentDate.AddDays(1).ToShortDateString() + "'  order by alert_date desc ");
 
-        DataTable dtOri = DBHelper.GetDataTable(" select *  from alert_reverse where alert_type= '3' and alert_date = '" + currentDate.ToShortDateString()  + "'  ");
+        DataTable dtOri = DBHelper.GetDataTable(" select *  from alert_reverse where alert_type= 'f3' and alert_date = '" + currentDate.ToShortDateString()  + "'  ");
 
         DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor_new '" + currentDate.ToShortDateString() + "' ");
 
