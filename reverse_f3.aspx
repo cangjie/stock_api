@@ -482,7 +482,7 @@
 
 
 
-            dr["调整"] = 0;
+            dr["调整"] = currentIndex - GetHighestIndex(stock.kLineDay, currentIndex, highestPrice);
 
 
 
@@ -830,7 +830,15 @@
         }
         return noShadow;
     }
+    public static int GetHighestIndex(KLine[] kArr, int currentIndex, double highestPrice)
+    {
+        int i = currentIndex;
+        for (; Math.Round(kArr[i].highestPrice, 2) < Math.Round(highestPrice, 2); i--)
+        {
 
+        }
+        return i;
+    }
 
 </script>
 
@@ -860,6 +868,7 @@
                     <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号"  ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="调整" HeaderText="调整"></asp:BoundColumn>
                     <asp:BoundColumn DataField="总换手" HeaderText="总换手"></asp:BoundColumn>
                     <asp:BoundColumn DataField="MK差" HeaderText="MK差" ></asp:BoundColumn>
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" ></asp:BoundColumn>
