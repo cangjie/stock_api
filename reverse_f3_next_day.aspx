@@ -865,6 +865,7 @@
                     <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号"  ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="调整" HeaderText="调整"></asp:BoundColumn>
                     <asp:BoundColumn DataField="总换手" HeaderText="总换手"></asp:BoundColumn>
                     <asp:BoundColumn DataField="MK差" HeaderText="MK差" ></asp:BoundColumn>
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" ></asp:BoundColumn>
