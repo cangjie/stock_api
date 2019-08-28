@@ -406,7 +406,7 @@
             Stock stock = new Stock(drOri["gid"].ToString().Trim(), rc);
 
 
-            if (stock.gid.Trim().Equals("sz300090"))
+            if (stock.gid.Trim().Equals("sz000017"))
             {
                 string aa = "aa";
             }
@@ -447,7 +447,7 @@
             int highestIndex = 0;
             for (int i = currentIndex; i >= currentIndex - 10; i--)
             {
-                if (stock.kLineDay[i].highestPrice - highestPrice <= 0.01)
+                if (Math.Abs(stock.kLineDay[i].highestPrice - highestPrice) <= 0.01)
                 {
                     highestIndex = i;
                     break;

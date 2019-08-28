@@ -434,7 +434,7 @@
             int highestIndex = 0;
             for (int i = currentIndex; i >= currentIndex - 10; i--)
             {
-                if (stock.kLineDay[i].highestPrice - highestPrice <= 0.01)
+                if (Math.Abs(stock.kLineDay[i].highestPrice - highestPrice) <= 0.01)
                 {
                     highestIndex = i;
                     break;
