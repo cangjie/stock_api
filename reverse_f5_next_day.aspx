@@ -472,7 +472,7 @@
                 }
             }
 
-            if (currentIndex - firstTimeOverSupportIndex > 2)
+            if (currentIndex - firstTimeOverSupportIndex > 2 && firstTimeOverSupportIndex!=0 )
             {
                 continue;
             }

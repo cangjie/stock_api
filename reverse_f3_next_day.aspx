@@ -436,7 +436,7 @@
             double buyPrice = currentPrice;
 
 
-            
+
             int highestIndex = 0;
             for (int i = currentIndex; i >= currentIndex - 10; i--)
             {
@@ -462,7 +462,7 @@
                 }
             }
 
-            if (currentIndex - firstTimeOverSupportIndex > 2)
+            if (currentIndex - firstTimeOverSupportIndex > 2 && firstTimeOverSupportIndex != 0)
             {
                 continue;
             }
