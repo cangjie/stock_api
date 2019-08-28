@@ -441,7 +441,7 @@
             double line3Price = KLine.GetAverageSettlePrice(stock.kLineDay, currentIndex, 3, 3);
             double currentPrice = stock.kLineDay[currentIndex].endPrice;
             double buyPrice = stock.kLineDay[currentIndex].startPrice;
-            
+
             double maxVolume = 0;
             for (int i = lowestIndex; i < currentIndex; i++)
             {
@@ -682,6 +682,11 @@
             else
             {
                 dr["总换手"] = 0;
+            }
+
+            if (stock.kLineDay[currentIndex - 1].volume / totalStockCount >= 0.1)
+            {
+                continue;
             }
 
             dr["KDJ30"] = Stock.KDJIndex(kArrHalfHour, currentIndexHalfHour);

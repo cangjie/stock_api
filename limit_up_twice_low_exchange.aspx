@@ -390,7 +390,7 @@
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
             int currentIndex = stock.GetItemIndex(currentDate);
-            
+
             KLine[] kArrHour = Stock.LoadRedisKLine(stock.gid, "60min", rc);
             KLine[] kArrHalfHour = Stock.LoadRedisKLine(stock.gid, "30min", rc);
 
@@ -588,14 +588,14 @@
                 supportPrice = f5;
                 dr["类型"] = "F5";
 
-              
+
             }
             else
             {
                 dr["价差"] = (stock.kLineDay[currentIndex].lowestPrice - f3)/f3;
                 supportPrice = f3;
                 dr["类型"] = "F3";
-              
+
             }
 
 
@@ -626,7 +626,7 @@
             dr["KDJ30"] = Stock.KDJIndex(kArrHalfHour, currentIndexHalfHour);
             dr["KDJ60"] = Stock.KDJIndex(kArrHour, currentIndexHour);
 
-            
+
             dr["无影时"] = footTime;
             dr["无影"] = todayLowestPrice;
             double maxPrice = 0;
@@ -689,11 +689,16 @@
             double totalStockCount = stock.TotalStockCount(currentDate);
             if (totalStockCount > 0)
             {
-                dr["总换手"] = stock.kLineDay[currentIndex].VirtualVolume / totalStockCount;
+                dr["总换手"] = stock.kLineDay[currentIndex].volume / totalStockCount;
             }
             else
             {
                 dr["总换手"] = 0;
+            }
+
+            if (stock.kLineDay[currentIndex].volume / totalStockCount >= 0.1)
+            {
+                continue;
             }
 
             dr["KDJ30"] = Stock.KDJIndex(kArrHalfHour, currentIndexHalfHour);
