@@ -456,7 +456,7 @@
                 }
             }
 
-            if (currentIndex != firstTimeOverSupportIndex && firstTimeOverSupportIndex != 0)
+            if (currentIndex != firstTimeOverSupportIndex)
             {
                 continue;
             }
