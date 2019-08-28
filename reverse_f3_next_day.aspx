@@ -489,7 +489,7 @@
 
 
 
-            dr["调整"] = 0;
+            dr["调整"] = currentIndex - GetHighestIndex(stock.kLineDay, currentIndex, highestPrice);
 
 
 
