@@ -626,7 +626,7 @@
             {
                 dr["信号"] = dr["信号"] + "<a title='过前高' >🚩</a>";
             }
-            dr["0日"] = (currentPrice - supportPrice) / supportPrice;
+            dr["0日"] = (stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex].startPrice) / stock.kLineDay[currentIndex].startPrice;
             for (int i = 1; i <= 5; i++)
             {
                 if (currentIndex + i >= stock.kLineDay.Length)
