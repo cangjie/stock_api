@@ -535,4 +535,14 @@ public class Util
         }
         return nowDate;
     }
+
+    public static int GetLowestIndex(KLine[] kArr, int highextIndex, double lowestPrice)
+    {
+        int i = highextIndex;
+        for (; Math.Abs(kArr[i].lowestPrice - lowestPrice) < 0.01; i--)
+        {
+
+        }
+        return i;
+    }
 }

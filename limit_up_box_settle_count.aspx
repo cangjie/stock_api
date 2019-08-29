@@ -31,6 +31,7 @@
                 {
                     //if ((double)dr["总计"] >= 0.1)
                     //{
+                    /*
                         try
                         {
                             DBHelper.InsertData("bread_count", new string[,] {
@@ -57,6 +58,7 @@
                         {
                             Console.WriteLine(err.ToString());
                         }
+                        */
                     //}
                 }
             }
