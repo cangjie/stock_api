@@ -399,7 +399,6 @@
 
             //int limitUpIndex = stock.GetItemIndex(DateTime.Parse(drOri["alert_time"].ToString()));
             int highIndex = 0;
-            int lowestIndex = 0;
             //double lowest = GetFirstLowestPrice(stock.kLineDay, limitUpIndex, out lowestIndex);
             double highest = 0;
             /*
@@ -462,7 +461,6 @@
 
 
             double todayLowestPrice = 0;
-            double todayDisplayedLowestPrice = 0;
             DateTime footTime = DateTime.Now;
 
 

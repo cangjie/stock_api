@@ -404,13 +404,6 @@
         {
 
 
-            if (drOri["gid"].ToString().Trim().Equals("sh600476"))
-            {
-                string aa = "aa";
-            }
-
-
-
             DateTime alertDate = DateTime.Parse(drOri["alert_date"].ToString().Trim());
             DataRow[] drArrExists = dtOri.Select(" gid = '" + drOri["gid"].ToString() + "' and alert_date > '" + alertDate.ToShortDateString() + "'  ");
             if (drArrExists.Length > 0)
@@ -1073,10 +1066,8 @@
         int higherIndex = 0;
         int lowerIndex = lowIndex;
         double currnetHiest = 0;
-        bool find = false;
         for (int i = highIndex - 1; i > 0; i--)
         {
-            double high = 0;
             double line3 = KLine.GetAverageSettlePrice(kArr, i, 3, 3);
             if (kArr[i].highestPrice >= kArr[i - 1].highestPrice && kArr[i].highestPrice >= kArr[i + 1].highestPrice
                 && kArr[i].highestPrice > kArr[highIndex].highestPrice && kArr[i].highestPrice >= currnetHiest && kArr[i].highestPrice > line3)
@@ -1088,7 +1079,6 @@
                     if (kArr[j].lowestPrice <= kArr[j + 1].lowestPrice && kArr[j].lowestPrice <= kArr[j - 1].lowestPrice && kArr[j].lowestPrice < kArr[lowIndex].lowestPrice && kArr[lowIndex].lowestPrice < line3)
                     {
                         lowerIndex = j;
-                        find = true;
                         break;
                     }
                 }

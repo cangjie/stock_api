@@ -404,18 +404,7 @@
             int maxIndex = Math.Min(stock.kLineDay.Length - 1, currentIndex + 5);
 
 
-            if (stock.gid.Trim().Equals("sh603882"))
-            {
-                try
-                {
-                    t.Suspend();
-                }
-                catch
-                {
-
-                }
-
-            }
+            
 
             int limitUpIndex = stock.GetItemIndex(DateTime.Parse(drOri["limitup_date"].ToString()));
             int highIndex = 0;
@@ -524,7 +513,6 @@
 
 
             double todayLowestPrice = 0;
-            double todayDisplayedLowestPrice = 0;
             DateTime footTime = DateTime.Now;
 
 

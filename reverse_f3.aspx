@@ -610,6 +610,8 @@
             }
 
             int lowestIndex = Util.GetLowestIndex(stock.kLineDay, highestIndex, lowestPrice);
+
+
             if (dtBreadPool.Select(" gid = '" + stock.gid.Trim() + "' ").Length == 0)
             {
                 DBHelper.InsertData("bread_pool", new string[,] { { "gid", "varchar", stock.gid.Trim()}, {"alert_date", "datetime", currentDate.ToShortDateString() },

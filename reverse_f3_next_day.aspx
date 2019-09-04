@@ -376,7 +376,7 @@
             return dt;
         }
 
-        //DataTable dtBreadPool = DBHelper.GetDataTable(" select * from bread_pool where alert_date = '" + currentDate.ToShortDateString() + "' ");
+        DataTable dtBreadPool = DBHelper.GetDataTable(" select * from bread_pool where alert_date = '" + currentDate.ToShortDateString() + "' and alert_type = 'f3_next_day' ");
 
         DateTime lastTransactDate = Util.GetLastTransactDate(currentDate, 1);
         DateTime limitUpStartDate = Util.GetLastTransactDate(lastTransactDate, 10);
@@ -406,11 +406,7 @@
             Stock stock = new Stock(drOri["gid"].ToString().Trim(), rc);
 
 
-            if (stock.gid.Trim().Equals("sz000017"))
-            {
-                string aa = "aa";
-            }
-
+            
             stock.LoadKLineDay(rc);
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
@@ -614,13 +610,17 @@
                 dr["信号"] = "<a title='跳空' >🌟</a>" + dr["信号"].ToString().Trim();
             }
 
-            /*
+            int lowestIndex = Util.GetLowestIndex(stock.kLineDay, highestIndex, lowestPrice);
+
+
             if (dtBreadPool.Select(" gid = '" + stock.gid.Trim() + "' ").Length == 0)
             {
                 DBHelper.InsertData("bread_pool", new string[,] { { "gid", "varchar", stock.gid.Trim()}, {"alert_date", "datetime", currentDate.ToShortDateString() },
-                    {"exchange", "float", dr["总换手"].ToString() }, {"lowest", "float", dr["前低"].ToString() }, { "highest", "flaot", dr["现高"].ToString()} });
+                    {"exchange", "float", dr["总换手"].ToString() }, {"alert_type", "varchar", "f3_next_day" },
+                    {"lowest", "float", dr["前低"].ToString() }, {"lowest_date", "datetime", stock.kLineDay[lowestIndex].endDateTime.ToShortDateString() }, 
+                    { "highest", "float", dr["现高"].ToString()},{ "highest_date", "datetime", stock.kLineDay[highestIndex].endDateTime.ToShortDateString()}});
             }
-            */
+
             dr["折返"] = 0;
             dr["PF3"] = 0;
             dr["PF5"] = 0;

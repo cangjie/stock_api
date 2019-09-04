@@ -468,7 +468,6 @@
 
 
             double todayLowestPrice = 0;
-            double todayDisplayedLowestPrice = 0;
             DateTime footTime = DateTime.Now;
 
 
