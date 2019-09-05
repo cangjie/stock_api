@@ -24,7 +24,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "幅度 desc");
+        sort = Util.GetSafeRequestValue(Request, "sort", "预警日, 幅度 desc");
         filter = Util.GetSafeRequestValue(Request, "filter", "");
         if (!IsPostBack)
         {
