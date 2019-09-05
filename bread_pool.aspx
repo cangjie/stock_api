@@ -24,7 +24,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "MK差,MACD日");
+        sort = Util.GetSafeRequestValue(Request, "sort", "幅度 desc");
         filter = Util.GetSafeRequestValue(Request, "filter", "");
         if (!IsPostBack)
         {
@@ -305,7 +305,7 @@
     public static DataTable GetData(DateTime currentDate)
     {
         currentDate = Util.GetDay(currentDate);
-        DateTime startDate = Util.GetLastTransactDate(currentDate, 5);
+        //DateTime startDate = Util.GetLastTransactDate(currentDate, 5);
         DataTable dt = new DataTable();
         dt.Columns.Add("代码", Type.GetType("System.String"));
         dt.Columns.Add("名称", Type.GetType("System.String"));
@@ -341,8 +341,12 @@
         }
 
 
-        DataTable dtOri = DBHelper.GetDataTable(" select * from bread_pool where alert_date >= '" + startDate.ToShortDateString()
-            + "' and alert_date <= '" + currentDate.ToShortDateString() + "' order by alert_date desc ");
+        //DataTable dtOri = DBHelper.GetDataTable(" select * from bread_pool where alert_date >= '" + startDate.ToShortDateString()
+        //    + "' and alert_date <= '" + currentDate.ToShortDateString() + "' order by alert_date desc ");
+
+        DataTable dtOri = DBHelper.GetDataTable(" select * from bread_pool where (alert_type like '%_next_day' and alert_date >= '" + Util.GetLastTransactDate(currentDate, 2).ToShortDateString() + "' and alert_date < '" + currentDate.ToShortDateString() + "' ) "
+            + " or (alert_type in ('f3', 'f5')  and alert_date >= '" + Util.GetLastTransactDate(currentDate, 4).ToShortDateString() + "' and alert_date < '" + currentDate.ToShortDateString() + "' )" );
+
 
         DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor_new '" + currentDate.ToShortDateString() + "' ");
 
@@ -446,7 +450,7 @@
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
 
-
+            /*
             double f3ReverseRate = (stock.kLineDay[currentIndex].lowestPrice - f3) / f3;
             double f5ReverseRate = (stock.kLineDay[currentIndex].lowestPrice - f5) / f5;
             double supportPrice = 0;
@@ -465,7 +469,9 @@
 
 
             }
+            */
 
+            dr["类型"] = drOri["alert_type"].ToString().Trim().Replace("_next_day", "隔日");
 
 
             double width = Math.Round(100 * (highest - lowest) / lowest, 2);
@@ -486,10 +492,7 @@
             dr["3线"] = line3Price;
             dr["KDJ日"] = stock.kdjDays(currentIndex);
             dr["MACD日"] = stock.macdDays(currentIndex);
-            if ((int)dr["KDJ日"] < 0 || (int)dr["KDJ日"] < (int)dr["MACD日"])
-            {
-                continue;
-            }
+            
 
             dr["MK差"] = (int)dr["KDJ日"] - (int)dr["MACD日"];
 
@@ -762,7 +765,7 @@
                     <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号"  ></asp:BoundColumn>
-                    <asp:BoundColumn DataField="总换手" HeaderText="总换手"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="类型" HeaderText="类型"></asp:BoundColumn>
                     <asp:BoundColumn DataField="预警日" HeaderText="预警日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="MK差" HeaderText="MK差" ></asp:BoundColumn>
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" ></asp:BoundColumn>
@@ -777,8 +780,7 @@
                     <asp:BoundColumn DataField="幅度" HeaderText="幅度"></asp:BoundColumn>
                     <asp:BoundColumn DataField="买入" HeaderText="买入"></asp:BoundColumn>
                     <asp:BoundColumn DataField="现价" HeaderText="现价"  ></asp:BoundColumn>
-                    <asp:BoundColumn DataField="PF3" HeaderText="PF3"  ></asp:BoundColumn>
-                    <asp:BoundColumn DataField="PF5" HeaderText="PF5"  ></asp:BoundColumn>
+ 
                     <asp:BoundColumn DataField="0日" HeaderText="0日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="2日" HeaderText="2日"></asp:BoundColumn>
