@@ -24,7 +24,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "预警日, 幅度 desc");
+        sort = Util.GetSafeRequestValue(Request, "sort", "KDJ60, 预警日, 幅度 desc");
         filter = Util.GetSafeRequestValue(Request, "filter", "");
         if (!IsPostBack)
         {
@@ -341,9 +341,6 @@
         }
 
 
-        //DataTable dtOri = DBHelper.GetDataTable(" select * from bread_pool where alert_date >= '" + startDate.ToShortDateString()
-        //    + "' and alert_date <= '" + currentDate.ToShortDateString() + "' order by alert_date desc ");
-
         DataTable dtOri = DBHelper.GetDataTable(" select * from bread_pool where (alert_type like '%_next_day' and alert_date >= '" + Util.GetLastTransactDate(currentDate, 2).ToShortDateString() + "' and alert_date < '" + currentDate.ToShortDateString() + "' ) "
             + " or (alert_type in ('f3', 'f5')  and alert_date >= '" + Util.GetLastTransactDate(currentDate, 4).ToShortDateString() + "' and alert_date < '" + currentDate.ToShortDateString() + "' )" );
 
@@ -361,9 +358,9 @@
             Stock stock = new Stock(drOri["gid"].ToString().Trim(), rc);
             stock.LoadKLineDay(rc);
 
-            if (stock.gid.Trim().Equals("sh603569"))
+            if (!stock.gid.Trim().Equals("sh603803"))
             {
-                continue;
+                //continue;
             }
 
             KLine[] kArrHour = Stock.LoadRedisKLine(stock.gid, "60min", rc);
@@ -492,7 +489,7 @@
             dr["3线"] = line3Price;
             dr["KDJ日"] = stock.kdjDays(currentIndex);
             dr["MACD日"] = stock.macdDays(currentIndex);
-            
+
 
             dr["MK差"] = (int)dr["KDJ日"] - (int)dr["MACD日"];
 
@@ -502,7 +499,7 @@
 
             if (kdjHours < 0)
             {
-                continue;
+                //continue;
             }
 
             dr["KDJ30"] = Stock.KDJIndex(kArrHalfHour, kArrHalfHourTodayLastIndex);
@@ -512,8 +509,15 @@
                 continue;
             }
 
-            buyPrice = kArrHour[kArrHourTodayLastIndex - kdjHours].endPrice;
+            try
+            {
 
+                buyPrice = kArrHour[kArrHourTodayLastIndex - kdjHours].endPrice;
+            }
+            catch
+            {
+                buyPrice = kArrHour[kArrHourTodayLastIndex].endPrice;
+            }
 
             int reverseIndex = 0;
             double reversePrice = double.MaxValue;
