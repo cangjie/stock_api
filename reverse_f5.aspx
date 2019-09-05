@@ -23,6 +23,17 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
+
+        for (DateTime i = DateTime.Parse("2019-1-1"); i < DateTime.Parse("2019-4-1"); i = i.AddDays(1))
+        {
+            if (Util.IsTransacDay(i))
+            {
+                GetData(i);
+            }
+        }
+        Response.End();
+
+
         sort = Util.GetSafeRequestValue(Request, "sort", "幅度 desc");
         filter = Util.GetSafeRequestValue(Request, "filter", "");
         if (!IsPostBack)
@@ -603,13 +614,13 @@
                 dr["信号"] = "<a title='小时KDJ低位金叉' >🌟</a>" + dr["信号"].ToString().Trim();
             }
 
-            
+
             int lowestIndex = Util.GetLowestIndex(stock.kLineDay, highestIndex, lowestPrice);
             if (dtBreadPool.Select(" gid = '" + stock.gid.Trim() + "' ").Length == 0)
             {
                 DBHelper.InsertData("bread_pool", new string[,] { { "gid", "varchar", stock.gid.Trim()}, {"alert_date", "datetime", currentDate.ToShortDateString() },
                     {"exchange", "float", dr["总换手"].ToString() }, {"alert_type", "varchar", "f5" },
-                    {"lowest", "float", dr["前低"].ToString() }, {"lowest_date", "datetime", stock.kLineDay[lowestIndex].endDateTime.ToShortDateString() }, 
+                    {"lowest", "float", dr["前低"].ToString() }, {"lowest_date", "datetime", stock.kLineDay[lowestIndex].endDateTime.ToShortDateString() },
                     { "highest", "float", dr["现高"].ToString()},{ "highest_date", "datetime", stock.kLineDay[highestIndex].endDateTime.ToShortDateString()}});
             }
 

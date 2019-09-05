@@ -25,6 +25,17 @@
     {
         sort = Util.GetSafeRequestValue(Request, "sort", "幅度 desc");
         filter = Util.GetSafeRequestValue(Request, "filter", "");
+
+        for (DateTime i = DateTime.Parse("2019-1-1"); i < DateTime.Parse("2019-9-5"); i = i.AddDays(1))
+        {
+            if (Util.IsTransacDay(i))
+            {
+                GetData(i);
+            }
+        }
+        Response.End();
+
+
         if (!IsPostBack)
         {
             try
