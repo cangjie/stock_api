@@ -24,14 +24,6 @@
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        for (DateTime i = DateTime.Parse("2019-1-1"); i < DateTime.Parse("2019-4-1"); i = i.AddDays(1))
-        {
-            if (Util.IsTransacDay(i))
-            {
-                GetData(i);
-            }
-        }
-        Response.End();
 
 
         sort = Util.GetSafeRequestValue(Request, "sort", "幅度 desc");
