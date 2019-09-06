@@ -580,6 +580,11 @@
                 dr["信号"] = dr["信号"] + "<a title='上影线短' >🔥</a>";
             }
 
+            if (stock.kLineDay[highestIndex].volume / stock.TotalStockCount(stock.kLineDay[highestIndex].endDateTime.Date) <= 0.15)
+            {
+                dr["信号"] = "<a title='低换手' >📈</a>" + dr["信号"].ToString().Trim();
+            }
+
 
             bool overPreviousHigh = false;
             for (int i = currentIndex + 1; i < stock.kLineDay.Length && i < maxIndex; i++)

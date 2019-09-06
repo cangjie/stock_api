@@ -612,6 +612,11 @@
                 dr["信号"] = "<a title='跳空' >🌟</a>" + dr["信号"].ToString().Trim();
             }
 
+            if (stock.kLineDay[highestIndex].volume / stock.TotalStockCount(stock.kLineDay[highestIndex].endDateTime.Date) <= 0.15)
+            {
+                dr["信号"] = "<a title='低换手' >📈</a>" + dr["信号"].ToString().Trim();
+            }
+
             int lowestIndex = Util.GetLowestIndex(stock.kLineDay, highestIndex, lowestPrice);
 
 

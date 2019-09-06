@@ -26,7 +26,7 @@
         sort = Util.GetSafeRequestValue(Request, "sort", "幅度 desc");
         filter = Util.GetSafeRequestValue(Request, "filter", "");
 
-        
+
 
         if (!IsPostBack)
         {
@@ -621,14 +621,18 @@
                 dr["信号"] = "<a title='跳空' >🌟</a>" + dr["信号"].ToString().Trim();
             }
 
-           
+            if (stock.kLineDay[highestIndex].volume / stock.TotalStockCount(stock.kLineDay[highestIndex].endDateTime.Date) <= 0.15)
+            {
+                dr["信号"] = "<a title='低换手' >📈</a>" + dr["信号"].ToString().Trim();
+            }
+
 
             int lowestIndex = Util.GetLowestIndex(stock.kLineDay, highestIndex, lowestPrice);
             if (dtBreadPool.Select(" gid = '" + stock.gid.Trim() + "' ").Length == 0)
             {
                 DBHelper.InsertData("bread_pool", new string[,] { { "gid", "varchar", stock.gid.Trim()}, {"alert_date", "datetime", currentDate.ToShortDateString() },
                     {"exchange", "float", dr["总换手"].ToString() }, {"alert_type", "varchar", "f5_next_day" },
-                    {"lowest", "float", dr["前低"].ToString() }, {"lowest_date", "datetime", stock.kLineDay[lowestIndex].endDateTime.ToShortDateString() }, 
+                    {"lowest", "float", dr["前低"].ToString() }, {"lowest_date", "datetime", stock.kLineDay[lowestIndex].endDateTime.ToShortDateString() },
                     { "highest", "float", dr["现高"].ToString()},{ "highest_date", "datetime", stock.kLineDay[highestIndex].endDateTime.ToShortDateString()}});
             }
 
