@@ -60,7 +60,7 @@
                 dr["换手"] = Math.Round(100*(double)drOri["换手"], 2).ToString() + "%";
                 dr["幅度"] = Math.Round(100 * (double)drOri["幅度"], 2).ToString() + "%";
                 dr["买入"] = drOri["买入"];
-                for (int i = 1; i <= 5; i++)
+                for (int i = 1; i <= 10; i++)
                 {
                     double rate = (double)drOri[i.ToString() + "日"];
                     dr[i.ToString() + "日"] = "<font color='" + (rate >= 0.05 ? "red" : "green") + "' >" + Math.Round(rate * 100, 2).ToString() + "%</font>";
@@ -87,15 +87,14 @@
         dt.Columns.Add("换手", Type.GetType("System.Double"));
         dt.Columns.Add("幅度", Type.GetType("System.Double"));
         dt.Columns.Add("买入", Type.GetType("System.Double"));
-        dt.Columns.Add("1日", Type.GetType("System.Double"));
-        dt.Columns.Add("2日", Type.GetType("System.Double"));
-        dt.Columns.Add("3日", Type.GetType("System.Double"));
-        dt.Columns.Add("4日", Type.GetType("System.Double"));
-        dt.Columns.Add("5日", Type.GetType("System.Double"));
+        for (int i = 1; i <= 10; i++)
+        {
+            dt.Columns.Add(i.ToString() + "日", Type.GetType("System.Double"));
+        }
         dt.Columns.Add("总计", Type.GetType("System.Double"));
 
         DataTable dtOri = DBHelper.GetDataTable(" select * from bread_pool where alert_type <> '' and alert_date <= '"
-            + Util.GetLastTransactDate(DateTime.Now, 5).ToShortDateString() + "' order by alert_date desc ");
+            + Util.GetLastTransactDate(DateTime.Now, 10).ToShortDateString() + "' order by alert_date desc ");
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock s = GetGid(drOri["gid"].ToString().Trim());
@@ -115,7 +114,7 @@
                 }
                 DataRow dr = dt.NewRow();
                 double maxPrice = 0;
-                for (int i = 1; i <= 5; i++)
+                for (int i = 1; i <= 10; i++)
                 {
                     dr[i.ToString() + "日"] = (s.kLineDay[currentIndex + i].highestPrice - buyPrice) / buyPrice;
                     maxPrice = Math.Max(maxPrice, s.kLineDay[currentIndex + i].highestPrice);
