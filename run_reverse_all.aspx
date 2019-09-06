@@ -46,7 +46,7 @@
             dt.Columns.Add("买入");
             for (int i = 1; i <= 10; i++)
             {
-                dt.Columns.Add(i.ToString() + "日", Type.GetType("System.Double"));
+                dt.Columns.Add(i.ToString() + "日");
             }
             dt.Columns.Add("总计");
             foreach (DataRow drOri in dtOri.Select("", "幅度 desc"))
