@@ -127,6 +127,10 @@
                 double higest = double.Parse(drOri["highest"].ToString());
                 double lowest = double.Parse(drOri["lowest"].ToString());
                 dr["幅度"] = (higest - lowest) / lowest;
+                if ((double)dr["幅度"] < 0.3)
+                {
+                    continue;
+                }
                 dr["折返类型"] = drOri["alert_type"].ToString().Replace("_next_day", "隔日");
                 dr["换手"] = exchange;
                 dt.Rows.Add(dr);
