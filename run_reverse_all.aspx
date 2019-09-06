@@ -108,7 +108,7 @@
             if (highestIndex > 0 && highestIndex < s.kLineDay.Length && exchange < 0.15)
             {
                 double buyPrice = s.kLineDay[currentIndex].endPrice;
-                if (currentIndex + 5 >= s.kLineDay.Length)
+                if (currentIndex + 10 >= s.kLineDay.Length)
                 {
                     continue;
                 }
