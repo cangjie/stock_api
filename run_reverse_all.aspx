@@ -127,7 +127,7 @@
                 double higest = double.Parse(drOri["highest"].ToString());
                 double lowest = double.Parse(drOri["lowest"].ToString());
                 dr["幅度"] = (higest - lowest) / lowest;
-                if ((double)dr["幅度"] < 0.3)
+                if ((double)dr["幅度"] < 0.4)
                 {
                     continue;
                 }
