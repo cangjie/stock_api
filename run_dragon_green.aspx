@@ -98,10 +98,39 @@
         {
             Stock s = GetGid(drOri["gid"].ToString().Trim());
             int highestIndex = s.GetItemIndex(DateTime.Parse(drOri["highest_date"].ToString().Trim()));
+            if (highestIndex <= 0 || highestIndex > s.kLineDay.Length)
+            {
+                continue;
+            }
+            int lowestIndex = 0;// s.GetItemIndex(DateTime.Parse(drOri["lowest_date"].ToString().Trim()));
+            for (int i = highestIndex; i >= 0; i--)
+            {
+                if (s.kLineDay[i].lowestPrice == double.Parse(drOri["lowest"].ToString().Trim()))
+                {
+                    lowestIndex = i;
+                    break;
+                }
+            }
+            if (lowestIndex <= 0 || lowestIndex > s.kLineDay.Length)
+            {
+                continue;
+            }
+            int limitUpCount = 0;
+            for (int i = lowestIndex; i <= highestIndex; i++)
+            {
+                if (s.IsLimitUp(i))
+                {
+                    limitUpCount++;
+                }
+            }
+            if (limitUpCount < 3)
+            {
+                continue;
+            }
             int firstGreenIndex = 0;
             for (int i = highestIndex; i < s.kLineDay.Length; i++)
             {
-                if (s.kLineDay[i].endPrice > s.kLineDay[i].startPrice && s.kLineDay[i].volume / s.TotalStockCount(s.kLineDay[i].endDateTime.Date) <= 0.15)
+                if (s.kLineDay[i].endPrice < s.kLineDay[i].startPrice)// && s.kLineDay[i].volume / s.TotalStockCount(s.kLineDay[i].endDateTime.Date) <= 0.15)
                 {
                     firstGreenIndex = i;
                     break;
@@ -111,11 +140,12 @@
             {
                 continue;
             }
-            int currentIndex = s.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString().Trim()));
-            if (highestIndex < 0 || highestIndex > s.kLineDay.Length)
+            if (s.kLineDay[firstGreenIndex].volume / s.TotalStockCount(s.kLineDay[firstGreenIndex].endDateTime.Date)  > 0.15)
             {
                 continue;
             }
+            int currentIndex = s.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString().Trim()));
+
             double exchange = s.kLineDay[highestIndex].volume / s.TotalStockCount(DateTime.Parse(drOri["highest_date"].ToString().Trim()));
             if (highestIndex > 0 && highestIndex < s.kLineDay.Length && exchange < 0.15)
             {
@@ -138,10 +168,7 @@
                 double higest = double.Parse(drOri["highest"].ToString());
                 double lowest = double.Parse(drOri["lowest"].ToString());
                 dr["幅度"] = (higest - lowest) / lowest;
-                if ((double)dr["幅度"] < 0.4)
-                {
-                    continue;
-                }
+                dr["买入"] = buyPrice;
                 dr["折返类型"] = drOri["alert_type"].ToString().Replace("_next_day", "隔日");
                 dr["换手"] = exchange;
                 dt.Rows.Add(dr);
