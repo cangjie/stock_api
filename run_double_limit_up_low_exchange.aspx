@@ -185,7 +185,7 @@
             dr["总计"] = (newHighestPrice - buyPrice) / buyPrice;
             dt.Rows.Add(dr);
 
-            for (int i = 1; i <= 3; i++)
+            for (int i = 1; i <= 5; i++)
             {
                 if (SearchLimitUp(s.kLineDay, limitUpIndex + 1 + i))
                 {
