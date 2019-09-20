@@ -696,7 +696,7 @@
                 dr["总换手"] = 0;
             }
 
-            if (stock.kLineDay[currentIndex].volume / totalStockCount >= 0.1)
+            if (stock.kLineDay[currentIndex].volume / totalStockCount > 0.16)
             {
                 continue;
             }
