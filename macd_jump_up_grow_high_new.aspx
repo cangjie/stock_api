@@ -784,7 +784,7 @@
             KLine.ComputeMACD(stock.kLineDay);
 
 
-            if (stock.kLineDay[currentIndex].macd <= 0)
+            if (stock.kLineDay[currentIndex].macd <= 0 && (int)dr["MACD日"] >= 0)
             {
                 dr["信号"] = dr["信号"] + "<a title='回马枪' >🌟</a>";
             }
