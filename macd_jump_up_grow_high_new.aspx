@@ -782,13 +782,14 @@
             double currentPrice = stock.kLineDay[currentIndex].endPrice;
             stock.kLineDay[currentIndex].endPrice = stock.kLineDay[currentIndex].lowestPrice;
             KLine.ComputeMACD(stock.kLineDay);
+            stock.kLineDay[currentIndex].endPrice = currentPrice;
 
-
-            if (stock.kLineDay[currentIndex].macd <= 0 && (int)dr["MACD日"] >= 0)
+            if (stock.kLineDay[currentIndex].macd <= 0 && (int)dr["MACD日"] >= 0 
+                && Math.Min(stock.kLineDay[currentIndex].startPrice, stock.kLineDay[currentIndex].endPrice) > stock.kLineDay[currentIndex].lowestPrice)
             {
                 dr["信号"] = dr["信号"] + "<a title='回马枪' >🌟</a>";
             }
-            stock.kLineDay[currentIndex].endPrice = currentPrice;
+            
             KLine.ComputeMACD(stock.kLineDay);
 
             if (isJumpMacd)
