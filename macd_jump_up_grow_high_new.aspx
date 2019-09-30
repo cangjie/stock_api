@@ -779,13 +779,17 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"无影脚\" >🦶</a>";
             }
 
+            double currentPrice = stock.kLineDay[currentIndex].endPrice;
+            stock.kLineDay[currentIndex].endPrice = stock.kLineDay[currentIndex].lowestPrice;
+            KLine.ComputeMACD(stock.kLineDay);
 
-            if (stock.kLineDay[currentIndex].startPrice < stock.kLineDay[currentIndex].endPrice
-                && (stock.kLineDay[currentIndex].highestPrice - stock.kLineDay[currentIndex].endPrice)*2 <
-                (stock.kLineDay[currentIndex].startPrice - stock.kLineDay[currentIndex].lowestPrice) )
+
+            if (stock.kLineDay[currentIndex].macd <= 0)
             {
-                dr["信号"] = dr["信号"] + "<a title='上影线短' >🌟</a>";
+                dr["信号"] = dr["信号"] + "<a title='回马枪' >🌟</a>";
             }
+            stock.kLineDay[currentIndex].endPrice = currentPrice;
+            KLine.ComputeMACD(stock.kLineDay);
 
             if (isJumpMacd)
             {
