@@ -362,6 +362,32 @@
             {
                 continue;
             }
+            int lastCross3LineIndex = currentIndex;
+            for (int i = currentIndex - 1; i >= 5; i--)
+            {
+                if (stock.kLineDay[i].endPrice >= stock.GetAverageSettlePrice(i, 3, 3)
+                    && stock.kLineDay[i - 1].endPrice <= stock.GetAverageSettlePrice(i - 1, 3, 3))
+                {
+                    lastCross3LineIndex = i;
+                    break;
+                }
+            }
+            if (lastCross3LineIndex == currentIndex)
+            {
+                continue;
+            }
+
+            int under3LineCount = 0;
+            for (int i = lastCross3LineIndex - 1; stock.kLineDay[i].endPrice <= stock.GetAverageSettlePrice(i, 3, 3) && i >= 5; i--)
+            {
+                under3LineCount++;
+            }
+            if (under3LineCount < 13)
+            {
+                continue;
+            }
+
+
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
@@ -420,7 +446,7 @@
             }
             adjustDays++;
 
-            int lastCross3LineIndex = 0;
+            lastCross3LineIndex = 0;
 
             for (int j = currentIndex - 1; j >= currentIndex - 6; j--)
             {
