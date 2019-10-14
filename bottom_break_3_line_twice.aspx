@@ -392,6 +392,8 @@
                 continue;
             }
 
+            double lastCrossVolumeRate = stock.kLineDay[lastCross3LineIndex].volume / Stock.GetAvarageVolume(stock.kLineDay, lastCross3LineIndex, 20);
+            double currentCrossVolumeRate = stock.kLineDay[currentIndex].volume / Stock.GetAvarageVolume(stock.kLineDay, currentIndex, 20);
 
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
@@ -666,7 +668,10 @@
             }
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
 
-
+            if (lastCrossVolumeRate >= 1.25 && currentCrossVolumeRate >= 1.25)
+            {
+                dr["信号"] = "量" + dr["信号"].ToString().Trim();
+            }
 
             dt.Rows.Add(dr);
         }
