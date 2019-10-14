@@ -377,6 +377,11 @@
                 continue;
             }
 
+            if (currentIndex - lastCross3LineIndex > 5)
+            {
+                continue;
+            }
+
             int under3LineCount = 0;
             for (int i = lastCross3LineIndex - 1; stock.kLineDay[i].endPrice <= stock.GetAverageSettlePrice(i, 3, 3) && i >= 5; i--)
             {
