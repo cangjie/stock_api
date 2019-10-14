@@ -291,7 +291,7 @@
         DateTime prevDate = Util.GetLastTransactDate(currentDate, 20);
         DataTable dtOri = DBHelper.GetDataTable(" select * from bottom_break_cross_3_line  a where suggest_date = '" + currentDate.ToShortDateString() + "' "
             + " and exists ( select 'a' from bottom_break_cross_3_line b where suggest_date < '" + currentDate.ToShortDateString() + "' and   suggest_date >= '"
-            + prevDate.ToShortDateString() + "' and a.gid = b.gid  )   ");
+            + prevDate.ToShortDateString() + "' and a.gid = b.gid and b.settle_confirm = 1  )   ");
         DataTable dt = new DataTable();
         dt.Columns.Add("代码", Type.GetType("System.String"));
         dt.Columns.Add("名称", Type.GetType("System.String"));
