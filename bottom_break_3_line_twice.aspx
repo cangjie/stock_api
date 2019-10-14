@@ -358,18 +358,7 @@
             int currentIndex = stock.GetItemIndex(currentDate);
             if (currentIndex < 1)
                 continue;
-            if (!KLine.IsCros3LineTwice(stock.kLineDay, currentIndex, 20))
-                continue;
-            int under3LineDays = 0;
-            for (int i = currentIndex - 1; i >= 0 && stock.GetAverageSettlePrice(i, 3, 3) > stock.kLineDay[i].endPrice ; i--)
-            {
-                under3LineDays++;
-            }
-
-            if (under3LineDays == 0 || under3LineDays >= 5)
-            {
-                continue;
-            }
+          
 
             int under3LineTimes = 0;
             int fallDays = 0;
@@ -392,10 +381,7 @@
                     }
                 }
             }
-            if (fallDays <= 9)
-            {
-                continue;
-            }
+           
 
 
 
@@ -445,8 +431,7 @@
             if (previous3LineIndex == 0)
                 continue;
                 */
-            if (previous3LinePrice > current3LinePrice)
-                continue;
+            
 
             //if (adjustDays > 5)
             //    continue;
@@ -501,8 +486,7 @@
                 upSpace = 0.1;
                 downSpace = (buyPrice - highestPrice) / buyPrice;
             }
-            if (kdjDays < 0)
-                continue;
+            
 
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
@@ -540,10 +524,7 @@
                 //dr["信号"] = dr["信号"].ToString() + "📈";
             }
 
-            if (stock.gid.Trim().Equals("sz300393"))
-            {
-                string aa = "aa";
-            }
+           
 
 
             double ma5 = stock.GetAverageSettlePrice(currentIndex, 5, 0);
