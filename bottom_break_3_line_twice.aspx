@@ -351,15 +351,20 @@
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
 
             stock.LoadKLineDay(rc);
+
             //stock.LoadKLineDay();
-            KLine.ComputeMACD(stock.kLineDay);
-            KLine.ComputeRSV(stock.kLineDay);
-            KLine.ComputeKDJ(stock.kLineDay);
+
             int currentIndex = stock.GetItemIndex(currentDate);
             if (currentIndex < 1)
                 continue;
-          
-
+            double line3Price = stock.GetAverageSettlePrice(currentIndex, 3, 3);
+            if (stock.kLineDay[currentIndex].endPrice < line3Price)
+            {
+                continue;
+            }
+            KLine.ComputeMACD(stock.kLineDay);
+            KLine.ComputeRSV(stock.kLineDay);
+            KLine.ComputeKDJ(stock.kLineDay);
             int under3LineTimes = 0;
             int fallDays = 0;
             for (int i = currentIndex - 1; i >= 0; i--)
@@ -381,7 +386,7 @@
                     }
                 }
             }
-           
+
 
 
 
@@ -431,7 +436,7 @@
             if (previous3LineIndex == 0)
                 continue;
                 */
-            
+
 
             //if (adjustDays > 5)
             //    continue;
@@ -455,7 +460,7 @@
             double kdjDegree = KLine.ComputeKdjDegree(stock.kLineDay, currentIndex);
             double upSpace = 0;
             double downSpace = 0;
-            
+
             if (buyPrice <= lowestPrice)
             {
                 downSpace = 0.1;
@@ -486,7 +491,7 @@
                 upSpace = 0.1;
                 downSpace = (buyPrice - highestPrice) / buyPrice;
             }
-            
+
 
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
@@ -524,7 +529,7 @@
                 //dr["信号"] = dr["信号"].ToString() + "📈";
             }
 
-           
+
 
 
             double ma5 = stock.GetAverageSettlePrice(currentIndex, 5, 0);
