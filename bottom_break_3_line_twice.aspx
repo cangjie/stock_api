@@ -288,7 +288,7 @@
     public static DataTable GetData(DateTime currentDate)
     {
         currentDate = Util.GetDay(currentDate);
-        DateTime prevDate = Util.GetLastTransactDate(currentDate, 20);
+        DateTime prevDate = Util.GetLastTransactDate(currentDate, 10);
         DataTable dtOri = DBHelper.GetDataTable(" select * from bottom_break_cross_3_line  a where suggest_date = '" + currentDate.ToShortDateString() + "' "
             + " and exists ( select 'a' from bottom_break_cross_3_line b where suggest_date < '" + currentDate.ToShortDateString() + "' and   suggest_date >= '"
             + prevDate.ToShortDateString() + "' and a.gid = b.gid and b.settle_confirm = 1  )   ");
