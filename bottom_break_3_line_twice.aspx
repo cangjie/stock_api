@@ -377,6 +377,17 @@
                 continue;
             }
 
+            bool downButUpper3Line = true;
+            for (int i = lastCross3LineIndex + 1; i < currentIndex; i++)
+            {
+                if (stock.kLineDay[i].lowestPrice < stock.GetAverageSettlePrice(i, 3, 3))
+                {
+                    downButUpper3Line = false;
+                    break;
+                }
+            }
+
+
             if (currentIndex - lastCross3LineIndex > 5)
             {
                 continue;
@@ -622,10 +633,7 @@
                 buyPrice = currentPrice;
             }
             //buyPrice = Math.Max(currentPrice, buyPrice);
-            if ((totalPressure - buyPrice) / buyPrice > 0.1 || totalPressure == 0)
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"上无压力\" >🌟</a>";
-            }
+            
 
             if (stock.kLineDay[currentIndex].VirtualVolume >= Stock.GetAvarageVolume(stock.kLineDay, currentIndex, 5)
                 && stock.kLineDay[currentIndex].VirtualVolume >= Stock.GetAvarageVolume(stock.kLineDay, currentIndex, 10))
@@ -671,6 +679,10 @@
             if (lastCrossVolumeRate >= 1.25 && currentCrossVolumeRate >= 1.25)
             {
                 dr["信号"] = "量" + dr["信号"].ToString().Trim();
+            }
+            if (downButUpper3Line && currentIndex - lastCross3LineIndex <= 5)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"下跌不碰3线\" >🌟</a>";
             }
 
             dt.Rows.Add(dr);
