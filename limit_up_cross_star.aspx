@@ -307,7 +307,7 @@
             return dt;
         }
 
-        DateTime lastTransactDate = Util.GetLastTransactDate(currentDate, 2);
+        DateTime lastTransactDate = Util.GetLastTransactDate(currentDate, 1);
         //DateTime limitUpStartDate = Util.GetLastTransactDate(lastTransactDate, 4);
 
 
@@ -347,12 +347,11 @@
                 continue;
             }
 
-            double supportSettle = stock.kLineDay[currentIndex-2].endPrice;
-
-            if (!(stock.kLineDay[currentIndex].lowestPrice > supportSettle && stock.kLineDay[currentIndex - 1].lowestPrice > supportSettle))
+            if (stock.kLineDay[currentIndex].lowestPrice < stock.kLineDay[currentIndex-1].endPrice - 0.02)
             {
                 continue;
             }
+
 
             int highIndex = 0;
             int lowestIndex = 0;
