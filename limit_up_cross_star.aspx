@@ -352,7 +352,7 @@
                 continue;
             }
 
-
+            double supportPrice = stock.kLineDay[currentIndex - 1].endPrice;
             int highIndex = 0;
             int lowestIndex = 0;
             double lowest = GetFirstLowestPrice(stock.kLineDay, limitUpIndex, out lowestIndex);
