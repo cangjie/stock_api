@@ -428,10 +428,7 @@
             dr["买入"] = buyPrice;
             dr["KDJ日"] = stock.kdjDays(currentIndex);
             dr["MACD日"] = stock.macdDays(currentIndex);
-            if ((int)dr["MACD日"] >= 0)
-            {
-                dr["信号"] = dr["信号"].ToString() + "🌟";
-            }
+   
             //dr["今涨"] = (stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
             dr["今涨"] = (stock.kLineDay[currentIndex].endPrice - supportSettle) / supportSettle;
             double maxPrice = 0;
@@ -442,6 +439,10 @@
                 double highPrice = stock.kLineDay[currentIndex + i].highestPrice;
                 maxPrice = Math.Max(maxPrice, highPrice);
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
+            }
+            if ((stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice <= 0.095)
+            {
+                dr["信号"] = dr["信号"].ToString() + "🌟";
             }
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
             dt.Rows.Add(dr);
