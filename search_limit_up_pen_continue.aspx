@@ -39,7 +39,7 @@
                             dr["日期"] = s.kLineDay[i].startDateTime.ToShortDateString();
                             dr["名称"] = s.Name.Trim();
                             dr["代码"] = s.gid.Trim();
-                            double buyPrice = s.kLineDay[i].endPrice;
+                            double buyPrice = s.kLineDay[i].startPrice;
                             dr["买入"] = Math.Round(buyPrice, 2).ToString();
                             double maxPrice = s.kLineDay[i + 1].highestPrice;
                             double rate = (s.kLineDay[i + 1].highestPrice - buyPrice) / buyPrice;
