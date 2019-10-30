@@ -30,7 +30,7 @@
             int startIndex = s.GetItemIndex(startDate);
             for (int i = startIndex; i >= 7; i--)
             {
-                if (!s.IsLimitUp(i) && s.IsLimitUp(i - 1) && s.IsLimitUp(i - 2) && s.IsLimitUp(i - 4) )
+                if (!s.IsLimitUp(i) && s.IsLimitUp(i - 1) && s.IsLimitUp(i - 2) && s.IsLimitUp(i - 3) &&  s.IsLimitUp(i - 4))
                 {
                     bool fromBottom = true;
                     for (int j = i - 5; j >= 0 && s.GetAverageSettlePrice(j, 3, 3) <= s.kLineDay[j].endPrice; j--)
