@@ -50,10 +50,10 @@
                             dr["日期"] = s.kLineDay[i].startDateTime.ToShortDateString();
                             dr["名称"] = s.Name.Trim();
                             dr["代码"] = s.gid.Trim();
-                            double buyPrice = s.kLineDay[i].startPrice;
+                            double buyPrice = s.kLineDay[i].endPrice;
                             dr["买入"] = Math.Round(buyPrice, 2).ToString();
                             double maxPrice = s.kLineDay[i + 1].highestPrice;
-                            double rate = (s.kLineDay[i + 1].highestPrice - buyPrice) / buyPrice;
+                            double rate = (s.kLineDay[i + 1].endPrice - buyPrice) / buyPrice;
                             dr["1日"] = "<font color=\"" + ((rate > 0.01) ? "red" : "green") + "\" >" + Math.Round(rate * 100, 2).ToString() + "%</a>";
                             dt.Rows.Add(dr);
                             if (rate > 0.0975 && s.kLineDay[i + 1].endPrice == s.kLineDay[i + 1].highestPrice)
