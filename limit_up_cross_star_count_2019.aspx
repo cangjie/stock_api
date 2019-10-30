@@ -95,7 +95,7 @@
                 {
                  %>
             <tr>
-                <td><%=sm.AddMonths(i*3).ToShortDateString() %></td>
+                <td><%=sm.AddMonths(i).ToShortDateString() %></td>
                 <td><%=Math.Round(totalRate[i]*100, 2).ToString() %>%</td>
                 <td><%=totalCount[i].ToString() %></td>
                 <td><%=Math.Round((totalRate[i]/totalCount[i])*100, 2).ToString() %>%</td>
