@@ -12,6 +12,8 @@
     protected void Page_Load(object sender, EventArgs e)
     {
         FillGidArr();
+        //gidArr = new Stock[] { new Stock("sh600143") };
+        //gidArr[0].LoadKLineDay(rc);
         dt = new DataTable();
         dt.Columns.Add("日期");
         dt.Columns.Add("代码");
@@ -78,9 +80,18 @@
 
 
 
+        DataTable dtNew = dt.Clone();
+        foreach (DataRow dr in dt.Select("", "日期 desc"))
+        {
+            DataRow drNew = dtNew.NewRow();
+            foreach (DataColumn c in dt.Columns)
+            {
+                drNew[c.Caption.Trim()] = dr[c];
+            }
+            dtNew.Rows.Add(drNew);
+        }
 
-
-        dg.DataSource = dt;
+        dg.DataSource = dtNew;
         dg.DataBind();
 
     }

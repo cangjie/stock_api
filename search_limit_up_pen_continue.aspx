@@ -12,6 +12,7 @@
     protected void Page_Load(object sender, EventArgs e)
     {
         FillGidArr();
+
         dt = new DataTable();
         dt.Columns.Add("日期");
         dt.Columns.Add("代码");
@@ -34,30 +35,30 @@
                         && s.IsLimitUp(i - 2) && s.IsLimitUp(i - 4) && s.IsLimitUp(i - 5) && s.IsLimitUp(i - 6))
                 {
                     try
-                        {
-                            DataRow dr = dt.NewRow();
-                            dr["日期"] = s.kLineDay[i].startDateTime.ToShortDateString();
-                            dr["名称"] = s.Name.Trim();
-                            dr["代码"] = s.gid.Trim();
-                            double buyPrice = s.kLineDay[i].startPrice;
-                            dr["买入"] = Math.Round(buyPrice, 2).ToString();
-                            double maxPrice = s.kLineDay[i + 1].highestPrice;
-                            double rate = (s.kLineDay[i + 1].highestPrice - buyPrice) / buyPrice;
-                            dr["1日"] = "<font color=\"" + ((rate > 0.01) ? "red" : "green") + "\" >" + Math.Round(rate * 100, 2).ToString() + "%</a>";
-                            maxPrice = Math.Max(maxPrice, s.kLineDay[i + 2].highestPrice);
-                            rate = (s.kLineDay[i + 2].highestPrice - buyPrice) / buyPrice;
-                            dr["2日"] = "<font color=\"" + ((rate > 0.01) ? "red" : "green") + "\" >" + Math.Round(rate * 100, 2).ToString() + "%</a>";
-                            maxPrice = Math.Max(maxPrice, s.kLineDay[i + 3].highestPrice);
-                            rate = (s.kLineDay[i + 3].highestPrice - buyPrice) / buyPrice;
-                            dr["3日"] = "<font color=\"" + ((rate > 0.01) ? "red" : "green") + "\" >" + Math.Round(rate * 100, 2).ToString() + "%</a>";
-                            rate = (maxPrice - buyPrice) / buyPrice;
-                            dr["总计"] = "<font color=\"" + ((rate > 0.01) ? "red" : "green") + "\" >" + Math.Round(rate * 100, 2).ToString() + "%</a>";
-                            dt.Rows.Add(dr);
-                        }
-                        catch
-                        {
+                    {
+                        DataRow dr = dt.NewRow();
+                        dr["日期"] = s.kLineDay[i].startDateTime.ToShortDateString();
+                        dr["名称"] = s.Name.Trim();
+                        dr["代码"] = s.gid.Trim();
+                        double buyPrice = s.kLineDay[i].startPrice;
+                        dr["买入"] = Math.Round(buyPrice, 2).ToString();
+                        double maxPrice = s.kLineDay[i + 1].highestPrice;
+                        double rate = (s.kLineDay[i + 1].highestPrice - buyPrice) / buyPrice;
+                        dr["1日"] = "<font color=\"" + ((rate > 0.01) ? "red" : "green") + "\" >" + Math.Round(rate * 100, 2).ToString() + "%</a>";
+                        maxPrice = Math.Max(maxPrice, s.kLineDay[i + 2].highestPrice);
+                        rate = (s.kLineDay[i + 2].highestPrice - buyPrice) / buyPrice;
+                        dr["2日"] = "<font color=\"" + ((rate > 0.01) ? "red" : "green") + "\" >" + Math.Round(rate * 100, 2).ToString() + "%</a>";
+                        maxPrice = Math.Max(maxPrice, s.kLineDay[i + 3].highestPrice);
+                        rate = (s.kLineDay[i + 3].highestPrice - buyPrice) / buyPrice;
+                        dr["3日"] = "<font color=\"" + ((rate > 0.01) ? "red" : "green") + "\" >" + Math.Round(rate * 100, 2).ToString() + "%</a>";
+                        rate = (maxPrice - buyPrice) / buyPrice;
+                        dr["总计"] = "<font color=\"" + ((rate > 0.01) ? "red" : "green") + "\" >" + Math.Round(rate * 100, 2).ToString() + "%</a>";
+                        dt.Rows.Add(dr);
+                    }
+                    catch
+                    {
 
-                        }
+                    }
                 }
             }
         }
@@ -65,7 +66,7 @@
 
 
 
-        
+
         dg.DataSource = dt;
         dg.DataBind();
 
