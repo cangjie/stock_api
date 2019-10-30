@@ -23,29 +23,41 @@
 
         dt.Columns.Add("总计");
 
-        for (DateTime currentDate = DateTime.Now.AddDays(-7); currentDate >= DateTime.Parse("2018-1-1"); currentDate = currentDate.AddDays(-1))
+        DateTime startDate = Util.GetLastTransactDate(DateTime.Now.Date, 6);
+
+        foreach (Stock s in gidArr)
         {
-            if (Util.IsTransacDay(currentDate))
+            int currentIndex = s.GetItemIndex(startDate);
+            if (currentIndex <= 5)
             {
-                foreach (Stock s in gidArr)
+                continue;
+            }
+            for (int i = currentIndex; i >= 5; i--)
+            {
+                if (s.IsLimitUp(i - 1) && !s.IsLimitUp(i - 2) && s.IsLimitUp(i - 3) && s.IsLimitUp(i - 4))
                 {
-                    int currentIndex = s.GetItemIndex(currentDate);
-                    if (currentIndex <= 5)
+                    bool fromBottom = true;
+                    for (int j = i - 5; j >= 0 && s.GetAverageSettlePrice(j, 3, 3) <= s.kLineDay[j].endPrice; j--)
                     {
-                        continue;
+                        if (s.IsLimitUp(j))
+                        {
+                            fromBottom = false;
+                            break;
+                        }
                     }
-                    if (s.IsLimitUp(currentIndex - 1) && !s.IsLimitUp(currentIndex - 2) && s.IsLimitUp(currentIndex - 3)
-                        && s.IsLimitUp(currentIndex - 4) && s.kLineDay[currentIndex].startPrice > s.kLineDay[currentIndex].endPrice)
+                    if (fromBottom)
                     {
-                        try
+                        double maxPrice = Math.Max(Math.Max(s.kLineDay[i - 1].highestPrice, s.kLineDay[i - 2].highestPrice),
+                            Math.Max(s.kLineDay[i - 3].highestPrice, s.kLineDay[i - 4].highestPrice));
+                        if (s.kLineDay[i].startPrice > maxPrice)
                         {
                             DataRow dr = dt.NewRow();
-                            dr["日期"] = currentDate.ToShortDateString();
+                            dr["日期"] = s.kLineDay[i].startDateTime.ToShortDateString();
                             dr["名称"] = s.Name.Trim();
                             dr["代码"] = s.gid.Trim();
                             double buyPrice = s.kLineDay[currentIndex].startPrice;
                             dr["买入"] = Math.Round(buyPrice, 2).ToString();
-                            double maxPrice = s.kLineDay[currentIndex + 1].highestPrice;
+                            maxPrice = s.kLineDay[currentIndex + 1].highestPrice;
                             double rate = (s.kLineDay[currentIndex + 1].highestPrice - buyPrice) / buyPrice;
                             dr["1日"] = "<font color=\"" + ((rate > 0.01) ? "red" : "green") + "\" >" + Math.Round(rate * 100, 2).ToString() + "%</a>";
                             maxPrice = Math.Max(maxPrice, s.kLineDay[currentIndex + 2].highestPrice);
@@ -58,15 +70,16 @@
                             dr["总计"] = "<font color=\"" + ((rate > 0.01) ? "red" : "green") + "\" >" + Math.Round(rate * 100, 2).ToString() + "%</a>";
                             dt.Rows.Add(dr);
                         }
-                        catch
-                        {
-
-                        }
                     }
-
                 }
+
             }
         }
+
+
+
+
+
         dg.DataSource = dt;
         dg.DataBind();
 
