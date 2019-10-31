@@ -283,7 +283,7 @@
         dt.Columns.Add("名称", Type.GetType("System.String"));
         dt.Columns.Add("信号", Type.GetType("System.String"));
         dt.Columns.Add("缩量", Type.GetType("System.Double"));
-        dt.Columns.Add("调整", Type.GetType("System.Int32"));
+        dt.Columns.Add("板数", Type.GetType("System.Int32"));
         dt.Columns.Add("现高", Type.GetType("System.Double"));
         dt.Columns.Add("F3", Type.GetType("System.Double"));
         dt.Columns.Add("F5", Type.GetType("System.Double"));
@@ -334,10 +334,20 @@
                 continue;
             }
 
-          
+
             if (stock.kLineDay[currentIndex].lowestPrice < stock.kLineDay[currentIndex-1].endPrice - 0.02)
             {
                 continue;
+            }
+
+            int limitUpNum = 0;
+
+            for (int i = currentIndex - 1; i > 0 && stock.kLineDay[currentIndex].endPrice >= stock.GetAverageSettlePrice(i, 3, 3); i--)
+            {
+                if (stock.IsLimitUp(i))
+                {
+                    limitUpNum++;
+                }
             }
 
             double supportSettle = stock.kLineDay[currentIndex - 1].endPrice;
@@ -403,7 +413,7 @@
 
 
 
-            dr["调整"] = currentIndex - limitUpIndex;
+            dr["板数"] = limitUpNum.ToString();
             dr["缩量"] = volumeReduce;
             dr["现高"] = highest;
             dr["F3"] = f3;
@@ -575,7 +585,7 @@
                     <asp:BoundColumn DataField="缩量" HeaderText="缩量"></asp:BoundColumn>
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD日|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="调整" HeaderText="调整" SortExpression="调整|asc"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="板数" HeaderText="板数" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
                     <asp:BoundColumn DataField="现高" HeaderText="现高"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>
