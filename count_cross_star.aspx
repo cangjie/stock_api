@@ -66,7 +66,7 @@
                     limitUpNum++;
                 }
             }
-            if (limitUpNum <= 1)
+            if (limitUpNum <= 0)
             {
                 continue;
             }
@@ -89,9 +89,9 @@
             dt.Rows.Add(dr);
         }
 
-        int limitNum = 2;
+        int limitNum = 0;
         DataRow drCount = dtCount.NewRow();
-        drCount["板数"] = "2";
+        drCount["板数"] = "0";
         int count = 0;
         int successCount = 0;
         double totalRate = 0;
