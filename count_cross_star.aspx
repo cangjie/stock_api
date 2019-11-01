@@ -79,7 +79,7 @@
             double buyPrice = s.kLineDay[currentIndex].endPrice;
             for (int i = 1; i <= 5; i++)
             {
-                double rate = (s.kLineDay[currentIndex + 1].endPrice - buyPrice) / buyPrice;
+                double rate = (s.kLineDay[currentIndex + 1].highestPrice - buyPrice) / buyPrice;
                 maxRate = Math.Max(maxRate, rate);
                 //dr[i.ToString() + "日"] = "<font color=\"" + (rate >= 0.01 ? "red" : "green") + "\" >" + Math.Round((rate * 100), 2)+"%</font>";
                 dr[i.ToString() + "日"] = rate;
@@ -141,7 +141,7 @@
                 drNew[i.ToString()+"日"] = "<font color=\"" + (rate >= 0.01 ? "red" : "green") + "\" >" + Math.Round((rate * 100), 2)+"%</font>";
             }
             double rateTotal = double.Parse(drNew["总计"].ToString());
-            dr["总计"] = "<font color=\"" + (rateTotal >= 0.01 ? "red" : "green") + "\" >" + Math.Round((rateTotal * 100), 2)+"%</font>";
+            drNew["总计"] = "<font color=\"" + (rateTotal >= 0.01 ? "red" : "green") + "\" >" + Math.Round((rateTotal * 100), 2)+"%</font>";
             dtNew.Rows.Add(drNew);
         }
         drCount["总个数"] = count.ToString();
