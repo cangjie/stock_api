@@ -79,7 +79,7 @@
             double buyPrice = s.kLineDay[currentIndex].endPrice;
             for (int i = 1; i <= 5; i++)
             {
-                double rate = (s.kLineDay[currentIndex + 1].highestPrice - buyPrice) / buyPrice;
+                double rate = (s.kLineDay[currentIndex + i].highestPrice - buyPrice) / buyPrice;
                 maxRate = Math.Max(maxRate, rate);
                 //dr[i.ToString() + "日"] = "<font color=\"" + (rate >= 0.01 ? "red" : "green") + "\" >" + Math.Round((rate * 100), 2)+"%</font>";
                 dr[i.ToString() + "日"] = rate;
