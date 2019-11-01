@@ -20,7 +20,7 @@
         dtCount.Columns.Add("总利润");
         dtCount.Columns.Add("平均利润");
         DataTable dt = new DataTable();
-        dt.Columns.Add("日期");
+        dt.Columns.Add("日期", Type.GetType("System.DateTime"));
         dt.Columns.Add("代码");
         dt.Columns.Add("名称");
         dt.Columns.Add("板数", Type.GetType("System.Int32"));
@@ -44,7 +44,7 @@
         dtNew.Columns.Add("总计");
 
 
-        DataTable dtOri = DBHelper.GetDataTable(" select * from limit_up where next_day_cross_star_un_limit_up = 1 and alert_date <= '2019-10-24'");
+        DataTable dtOri = DBHelper.GetDataTable(" select * from limit_up where next_day_cross_star_un_limit_up = 1 and alert_date <= '2019-10-24' order by alert_date desc");
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock s = GetStock(drOri["gid"].ToString().Trim());
@@ -71,7 +71,7 @@
                 continue;
             }
             DataRow dr = dt.NewRow();
-            dr["日期"] = s.kLineDay[currentIndex].startDateTime.ToShortDateString();
+            dr["日期"] = s.kLineDay[currentIndex].startDateTime.Date;
             dr["代码"] = s.gid.Trim();
             dr["名称"] = s.Name.Trim();
             dr["板数"] = limitUpNum;
@@ -103,6 +103,7 @@
             {
                 drNew[c.Caption] = dr[c].ToString();
             }
+            drNew["日期"] = ((DateTime)dr["日期"]).ToShortDateString();
             if (limitNum == int.Parse(dr["板数"].ToString()))
             {
                 count++;
