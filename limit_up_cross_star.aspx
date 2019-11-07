@@ -375,7 +375,7 @@
 
             double volumeYesterday = stock.kLineDay[currentIndex - 1].volume;// Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(stock.kLineDay[limitUpIndex].startDateTime.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
 
-            
+
             double volumeReduce = volumeToday / volumeYesterday;
 
 
@@ -437,6 +437,13 @@
             if ((stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice <= 0.095)
             {
                 dr["信号"] = dr["信号"].ToString() + "🌟";
+            }
+            if (currentIndex + 1 < stock.kLineDay.Length)
+            {
+                if (stock.kLineDay[currentIndex + 1].lowestPrice <= f5 + 0.02)
+                {
+                     dr["信号"] = dr["信号"].ToString() + "📉";
+                }
             }
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
             dt.Rows.Add(dr);
