@@ -395,17 +395,8 @@
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
-            dr["信号"] = (stock.kLineDay[currentIndex].endPrice <= f3 * 1.01) ? "📈" : "";
-            if (dr["信号"].ToString().Trim().Equals("") && StockWatcher.HaveAlerted(stock.gid.Trim(), "limit_up_box_f3", currentDate))
-            {
-                dr["信号"] = "📈";
-            }
-
-            if (Math.Abs(currentPrice - buyPrice) / buyPrice < 0.01  && dr["信号"].ToString().IndexOf("📈") >= 0 )
-            {
-                dr["信号"] = dr["信号"] + "🛍️";
-            }
-
+            dr["信号"] = "";
+            
 
 
 
@@ -433,6 +424,13 @@
                 double highPrice = stock.kLineDay[currentIndex + i].highestPrice;
                 maxPrice = Math.Max(maxPrice, highPrice);
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
+                if (i == 1)
+                {
+                    if (stock.kLineDay[currentIndex + 1].startPrice > stock.kLineDay[currentIndex].highestPrice)
+                    {
+                        dr["信号"] = dr["信号"].ToString() + "<a title=\"次日高开过前高\" >📈</a>";
+                    }
+                }
             }
             if ((stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice <= 0.095)
             {
@@ -442,7 +440,7 @@
             {
                 if (stock.kLineDay[currentIndex + 1].lowestPrice <= f5 + 0.02)
                 {
-                     dr["信号"] = dr["信号"].ToString() + "📉";
+                    dr["信号"] = dr["信号"].ToString() + "📉";
                 }
             }
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
