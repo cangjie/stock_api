@@ -335,7 +335,7 @@
             }
 
 
-            if (stock.kLineDay[currentIndex-1].endPrice < stock.kLineDay[currentIndex-2].endPrice)
+            if (stock.kLineDay[currentIndex-1].lowestPrice < stock.kLineDay[currentIndex-2].endPrice)
             {
                 continue;
             }
