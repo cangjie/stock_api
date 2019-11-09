@@ -54,7 +54,7 @@
             {
                 if (s.IsLimitUp(i - 2)
                     && s.kLineDay[i].startPrice > s.kLineDay[i-1].highestPrice
-                    && s.kLineDay[i-1].lowestPrice > s.kLineDay[i-2].endPrice)
+                    && s.kLineDay[i-1].endPrice > s.kLineDay[i-2].endPrice)
                 {
                     DataRow dr = dt.NewRow();
                     dr["日期"] = s.kLineDay[i].startDateTime.Date;
