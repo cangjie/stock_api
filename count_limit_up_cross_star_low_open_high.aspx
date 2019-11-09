@@ -74,11 +74,11 @@
                     {
                         success5++;
                     }
-                    else if (maxRate >= 0.02)
+                    if (maxRate >= 0.02)
                     {
                         success2++;
                     }
-                    else if (maxRate >= 0.01)
+                    if (maxRate >= 0.01)
                     {
                         success1++;
                     }
