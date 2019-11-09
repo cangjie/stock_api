@@ -67,20 +67,21 @@
                         double rate = (s.kLineDay[i + j].highestPrice - buyPrice) / buyPrice;
                         maxRate = Math.Max(maxRate, rate);
                         dr[j.ToString() + "日"] = rate;
-                        if (rate >= 0.05)
-                        {
-                            success5++;
-                        }
-                        else if (rate >= 0.02)
-                        {
-                            success2++;
-                        }
-                        else if (rate >= 0.01)
-                        {
-                            success1++;
-                        }
+                        
                     }
                     dr["总计"] = maxRate;
+                    if (maxRate >= 0.05)
+                    {
+                        success5++;
+                    }
+                    else if (maxRate >= 0.02)
+                    {
+                        success2++;
+                    }
+                    else if (maxRate >= 0.01)
+                    {
+                        success1++;
+                    }
                     dt.Rows.Add(dr);
                 }
             }
