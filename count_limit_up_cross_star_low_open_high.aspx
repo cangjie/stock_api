@@ -45,6 +45,9 @@
         dtNew.Columns.Add("5日");
         dtNew.Columns.Add("总计");
 
+        success1 = 0;
+        success2 = 0;
+        success5 = 0;
 
         //DataTable dtOri = DBHelper.GetDataTable(" select * from limit_up where next_day_cross_star_un_limit_up = 1 and alert_date <= '2019-10-24' order by alert_date desc");
         foreach (Stock s  in gidArr)
