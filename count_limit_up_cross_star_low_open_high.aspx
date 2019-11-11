@@ -60,7 +60,7 @@
         foreach (Stock s  in gidArr)
         {
 
-            for (int i = s.kLineDay.Length - 11; i >= 3; i--)
+            for (int i = s.kLineDay.Length - 6; i >= 3; i--)
             {
                 if (s.IsLimitUp(i - 1) && !s.IsLimitUp(i)
                     && s.kLineDay[i].lowestPrice <= s.kLineDay[i-1].endPrice
