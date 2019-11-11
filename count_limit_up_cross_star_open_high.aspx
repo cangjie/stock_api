@@ -67,7 +67,7 @@
                     && (s.kLineDay[i].lowestPrice - s.kLineDay[i-1].endPrice) / s.kLineDay[i-1].endPrice <= 0.0975)
                 {
                     double maxPrice = s.kLineDay[i].highestPrice;
-                    for (int j = i + 1; j <= i + 5; j++)
+                    for (int j = i + 1; j <= i + 1; j++)
                     {
                         
                         if (s.kLineDay[j].startPrice >= maxPrice
