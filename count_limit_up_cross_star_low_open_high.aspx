@@ -72,7 +72,6 @@
                         if (s.kLineDay[j].startPrice >= maxPrice
                             && (s.kLineDay[j].startPrice - s.kLineDay[j-1].endPrice) / s.kLineDay[j-1].endPrice <= 0.0975)
                         {
-                            
                             DataRow dr = dt.NewRow();
                             dr["日期"] = s.kLineDay[j].startDateTime.Date;
                             dr["代码"] = s.gid.Trim();
@@ -123,8 +122,15 @@
 
 
         //DataTable dtNew = dt.Clone();
+        string lastDateString = "";
+        string lastGid = "";
         foreach (DataRow dr in dt.Select("", "日期 desc"))
         {
+            //if (dtNew.Rows[dtNew.Rows.Count - 1]["日期"].ToString()
+            if (lastDateString.Trim().Equals(((DateTime)dr["日期"]).ToShortDateString()) && lastGid.Trim().Equals(dr["代码"].ToString()))
+            {
+                continue;
+            }
             DataRow drNew = dtNew.NewRow();
             foreach (DataColumn c in dt.Columns)
             {
@@ -152,11 +158,13 @@
                 success1++;
             }
             drNew["总计"] = "<font color=\"" + (rateTotal >= 0.01 ? "red" : "green") + "\" >" + Math.Round((rateTotal * 100), 2)+"%</font>";
-            drNew["开涨"] = "<font color=\"" + (double.Parse(dr["开涨"].ToString()) >= 0.01 ? "red" : "green") + "\" >" 
+            drNew["开涨"] = "<font color=\"" + (double.Parse(dr["开涨"].ToString()) >= 0.01 ? "red" : "green") + "\" >"
                 + Math.Round((double.Parse(dr["开涨"].ToString()) * 100), 2)+"%</font>";
-            drNew["收涨"] = "<font color=\"" + (double.Parse(dr["收涨"].ToString()) >= 0.01 ? "red" : "green") + "\" >" 
+            drNew["收涨"] = "<font color=\"" + (double.Parse(dr["收涨"].ToString()) >= 0.01 ? "red" : "green") + "\" >"
                 + Math.Round((double.Parse(dr["收涨"].ToString()) * 100), 2)+"%</font>";
             dtNew.Rows.Add(drNew);
+            lastDateString = ((DateTime)dr["日期"]).ToShortDateString();
+            lastGid = dr["代码"].ToString();
         }
 
 

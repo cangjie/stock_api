@@ -111,8 +111,14 @@
 
 
         //DataTable dtNew = dt.Clone();
+        string lastDateString = "";
+        string lastGid = "";
         foreach (DataRow dr in dt.Select("", "日期 desc"))
         {
+            if (lastDateString.Trim().Equals(((DateTime)dr["日期"]).ToShortDateString()) && lastGid.Trim().Equals(dr["代码"].ToString()))
+            {
+                continue;
+            }
             DataRow drNew = dtNew.NewRow();
             foreach (DataColumn c in dt.Columns)
             {
@@ -145,6 +151,8 @@
             drNew["收涨"] = "<font color=\"" + (double.Parse(dr["收涨"].ToString()) >= 0.01 ? "red" : "green") + "\" >" 
                 + Math.Round((double.Parse(dr["收涨"].ToString()) * 100), 2)+"%</font>";
             dtNew.Rows.Add(drNew);
+            lastDateString = ((DateTime)dr["日期"]).ToShortDateString();
+            lastGid = dr["代码"].ToString();
         }
 
 
