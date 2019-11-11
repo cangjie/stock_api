@@ -72,7 +72,7 @@
                         if (s.kLineDay[j].startPrice >= maxPrice
                             && (s.kLineDay[j].startPrice - s.kLineDay[j-1].endPrice) / s.kLineDay[j-1].endPrice <= 0.0975)
                         {
-                            maxPrice = Math.Max(maxPrice, s.kLineDay[j].highestPrice);
+                            
                             DataRow dr = dt.NewRow();
                             dr["日期"] = s.kLineDay[j].startDateTime.Date;
                             dr["代码"] = s.gid.Trim();
@@ -108,6 +108,7 @@
                             dt.Rows.Add(dr);
                             break;
                         }
+                        maxPrice = Math.Max(maxPrice, s.kLineDay[j].highestPrice);
                     }
 
 
