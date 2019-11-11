@@ -98,7 +98,7 @@
                             s.Name.Trim(),
                             "买入价：" + price.ToString() + " " + message.Trim()) && volumeIncrease > 100)
                         {
-                            StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", s.gid.Trim(), s.Name + " " + message, price, "3_line");
+                            //StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", s.gid.Trim(), s.Name + " " + message, price, "3_line");
                             //StockWatcher.SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", s.gid.Trim(), s.Name + " " + message, price, "3_line");
                         }
                     }

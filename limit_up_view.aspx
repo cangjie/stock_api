@@ -671,6 +671,7 @@
                                 dr["名称"].ToString().Trim(),
                                 "现价：" + price.ToString() + " " + message.Trim()))
                         {
+                            /*
                             string message_ext = message.Replace("👑KDJ", "👑KDJ" + dr["KDJ日"].ToString().Trim()) + " 调整：" + dr["调整"].ToString().Trim();
                             StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(),
                                 dr["名称"].ToString() + " " + message_ext, f3, "limit_up_box_f3");
@@ -686,7 +687,7 @@
                                 dr["名称"].ToString() + " " + message, f3, "limit_up_box_f3");
                             StockWatcher.SendAlertMessage("oqrMvtxeGio8mZcm3U69TtcDu9XY", dr["代码"].ToString().Trim(),
                                 dr["名称"].ToString() + " " + message, f3, "limit_up_box_f3");
-
+*/
                         }
                     }
                     else

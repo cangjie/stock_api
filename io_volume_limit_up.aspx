@@ -849,13 +849,13 @@
                         //        dr["名称"].ToString() + " " + message, price, "limit_up_box");
 
                         //老马
-                        StockWatcher.SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", dr["代码"].ToString().Trim(),
-                                dr["名称"].ToString() + " " + message, price, "limit_up_box");
+                        //StockWatcher.SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", dr["代码"].ToString().Trim(),
+                                //dr["名称"].ToString() + " " + message, price, "limit_up_box");
                         //老马的朋友
-                        StockWatcher.SendAlertMessage("oqrMvt7eGkY9UejlTH1i8d-oD-V0", dr["代码"].ToString().Trim(),
-                                dr["名称"].ToString() + " " + message, price, "limit_up_box");
-                        StockWatcher.SendAlertMessage("oqrMvtwvHer0l3SJGYP73ioQeuVo", dr["代码"].ToString().Trim(),
-                                dr["名称"].ToString() + " " + message, price, "limit_up_box");
+                        //StockWatcher.SendAlertMessage("oqrMvt7eGkY9UejlTH1i8d-oD-V0", dr["代码"].ToString().Trim(),
+                                //dr["名称"].ToString() + " " + message, price, "limit_up_box");
+                        //StockWatcher.SendAlertMessage("oqrMvtwvHer0l3SJGYP73ioQeuVo", dr["代码"].ToString().Trim(),
+                                //dr["名称"].ToString() + " " + message, price, "limit_up_box");
 
 
 
