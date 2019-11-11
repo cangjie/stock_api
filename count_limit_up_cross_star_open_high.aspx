@@ -78,6 +78,7 @@
 
                             }
                             dr["总计"] = maxRate;
+                            /*
                             if (maxRate >= 0.05)
                             {
                                 success5++;
@@ -90,6 +91,7 @@
                             {
                                 success1++;
                             }
+                            */
                             dt.Rows.Add(dr);
                             break;
                         }
@@ -123,6 +125,18 @@
                 drNew[i.ToString()+"日"] = "<font color=\"" + (rate >= 0.01 ? "red" : "green") + "\" >" + Math.Round((rate * 100), 2)+"%</font>";
             }
             double rateTotal = double.Parse(drNew["总计"].ToString());
+            if (rateTotal >= 0.05)
+            {
+                success5++;
+            }
+            if (rateTotal >= 0.02)
+            {
+                success2++;
+            }
+            if (rateTotal >= 0.01)
+            {
+                success1++;
+            }
             drNew["总计"] = "<font color=\"" + (rateTotal >= 0.01 ? "red" : "green") + "\" >" + Math.Round((rateTotal * 100), 2)+"%</font>";
             dtNew.Rows.Add(drNew);
         }
