@@ -55,7 +55,8 @@
             for (int i = s.kLineDay.Length - 11; i >= 3; i--)
             {
                 if (s.IsLimitUp(i - 1)
-                    && s.kLineDay[i].lowestPrice > s.kLineDay[i-1].endPrice)
+                    && s.kLineDay[i].lowestPrice > s.kLineDay[i-1].endPrice
+                    && (s.kLineDay[i].lowestPrice - s.kLineDay[i-1].endPrice) / s.kLineDay[i-1].endPrice <= 0.0975)
                 {
                     double maxPrice = s.kLineDay[i].highestPrice;
                     for (int j = i + 1; j <= i + 5; j++)
@@ -78,20 +79,7 @@
 
                             }
                             dr["总计"] = maxRate;
-                            /*
-                            if (maxRate >= 0.05)
-                            {
-                                success5++;
-                            }
-                            if (maxRate >= 0.02)
-                            {
-                                success2++;
-                            }
-                            if (maxRate >= 0.01)
-                            {
-                                success1++;
-                            }
-                            */
+                            
                             dt.Rows.Add(dr);
                             break;
                         }

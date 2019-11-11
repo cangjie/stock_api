@@ -56,7 +56,7 @@
             {
                 if (s.IsLimitUp(i - 1)
                     && s.kLineDay[i].lowestPrice <= s.kLineDay[i-1].endPrice
-                    && s.kLineDay[i].endPrice <= s.kLineDay[i-1].endPrice)
+                    && s.kLineDay[i].endPrice >= s.kLineDay[i-1].endPrice)
                 {
                     double maxPrice = s.kLineDay[i].highestPrice;
                     for (int j = i + 1; j <= i + 5; j++)
