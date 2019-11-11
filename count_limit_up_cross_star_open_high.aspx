@@ -52,39 +52,51 @@
         foreach (Stock s  in gidArr)
         {
 
-            for (int i = s.kLineDay.Length - 6; i >= 3; i--)
+            for (int i = s.kLineDay.Length - 11; i >= 3; i--)
             {
-                if (s.IsLimitUp(i - 2)
-                    && s.kLineDay[i].startPrice > s.kLineDay[i-1].highestPrice
-                    && s.kLineDay[i-1].lowestPrice > s.kLineDay[i-2].endPrice)
+                if (s.IsLimitUp(i - 1)
+                    && s.kLineDay[i].lowestPrice > s.kLineDay[i-1].endPrice)
                 {
-                    DataRow dr = dt.NewRow();
-                    dr["日期"] = s.kLineDay[i].startDateTime.Date;
-                    dr["代码"] = s.gid.Trim();
-                    dr["名称"] = s.Name.Trim();
-                    double buyPrice = s.kLineDay[i].startPrice;
-                    double maxRate = double.MinValue;
-                    for (int j = 1; j <= 5; j++)
+                    double maxPrice = s.kLineDay[i].highestPrice;
+                    for (int j = i + 1; j <= i + 5; j++)
                     {
-                        double rate = (s.kLineDay[i + j].highestPrice - buyPrice) / buyPrice;
-                        maxRate = Math.Max(maxRate, rate);
-                        dr[j.ToString() + "日"] = rate;
-                        
+                        if (s.kLineDay[j].startPrice >= maxPrice
+                            && (s.kLineDay[j].startPrice - s.kLineDay[j-1].endPrice) / s.kLineDay[j-1].endPrice <= 0.0975)
+                        {
+                            maxPrice = Math.Max(maxPrice, s.kLineDay[j].endPrice);
+                            DataRow dr = dt.NewRow();
+                            dr["日期"] = s.kLineDay[i].startDateTime.Date;
+                            dr["代码"] = s.gid.Trim();
+                            dr["名称"] = s.Name.Trim();
+                            double buyPrice = s.kLineDay[j].startPrice;
+                            double maxRate = double.MinValue;
+                            for (int k = 1; k <= 5; k++)
+                            {
+                                double rate = (s.kLineDay[k + j].highestPrice - buyPrice) / buyPrice;
+                                maxRate = Math.Max(maxRate, rate);
+                                dr[k.ToString() + "日"] = rate;
+
+                            }
+                            dr["总计"] = maxRate;
+                            if (maxRate >= 0.05)
+                            {
+                                success5++;
+                            }
+                            if (maxRate >= 0.02)
+                            {
+                                success2++;
+                            }
+                            if (maxRate >= 0.01)
+                            {
+                                success1++;
+                            }
+                            dt.Rows.Add(dr);
+                            break;
+                        }
                     }
-                    dr["总计"] = maxRate;
-                    if (maxRate >= 0.05)
-                    {
-                        success5++;
-                    }
-                    if (maxRate >= 0.02)
-                    {
-                        success2++;
-                    }
-                    if (maxRate >= 0.01)
-                    {
-                        success1++;
-                    }
-                    dt.Rows.Add(dr);
+
+
+                    
                 }
             }
 
