@@ -27,6 +27,8 @@
         dt.Columns.Add("日期", Type.GetType("System.DateTime"));
         dt.Columns.Add("代码");
         dt.Columns.Add("名称");
+        dt.Columns.Add("昨收");
+        dt.Columns.Add("买入");
         dt.Columns.Add("1日");
         dt.Columns.Add("2日");
         dt.Columns.Add("3日");
@@ -38,6 +40,8 @@
         dtNew.Columns.Add("日期");
         dtNew.Columns.Add("代码");
         dtNew.Columns.Add("名称");
+        dtNew.Columns.Add("昨收");
+        dtNew.Columns.Add("买入");
         dtNew.Columns.Add("1日");
         dtNew.Columns.Add("2日");
         dtNew.Columns.Add("3日");
@@ -69,7 +73,9 @@
                             dr["日期"] = s.kLineDay[j].startDateTime.Date;
                             dr["代码"] = s.gid.Trim();
                             dr["名称"] = s.Name.Trim();
+                            dr["昨收"] = Math.Round(s.kLineDay[j - 1].endPrice, 2);
                             double buyPrice = s.kLineDay[j].startPrice;
+                            dr["买入"] = Math.Round(buyPrice, 2);
                             double maxRate = double.MinValue;
                             for (int k = 1; k <= 5; k++)
                             {
