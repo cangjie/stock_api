@@ -29,6 +29,8 @@
         dt.Columns.Add("名称");
         dt.Columns.Add("昨收");
         dt.Columns.Add("买入");
+        dt.Columns.Add("开涨");
+        dt.Columns.Add("收涨");
         dt.Columns.Add("1日");
         dt.Columns.Add("2日");
         dt.Columns.Add("3日");
@@ -42,6 +44,8 @@
         dtNew.Columns.Add("名称");
         dtNew.Columns.Add("昨收");
         dtNew.Columns.Add("买入");
+        dtNew.Columns.Add("开涨");
+        dtNew.Columns.Add("收涨");
         dtNew.Columns.Add("1日");
         dtNew.Columns.Add("2日");
         dtNew.Columns.Add("3日");
@@ -86,7 +90,8 @@
 
                             }
                             dr["总计"] = maxRate;
-
+                            dr["开涨"] = (s.kLineDay[j].startPrice - s.kLineDay[j - 1].endPrice) / s.kLineDay[j - 1].endPrice;
+                            dr["收涨"] = (s.kLineDay[j].endPrice - s.kLineDay[j].startPrice) / s.kLineDay[j].startPrice;
                             dt.Rows.Add(dr);
                             break;
                         }
@@ -133,6 +138,10 @@
                 success1++;
             }
             drNew["总计"] = "<font color=\"" + (rateTotal >= 0.01 ? "red" : "green") + "\" >" + Math.Round((rateTotal * 100), 2)+"%</font>";
+            drNew["开涨"] = "<font color=\"" + (double.Parse(dr["开涨"].ToString()) >= 0.01 ? "red" : "green") + "\" >" 
+                + Math.Round((double.Parse(dr["开涨"].ToString()) * 100), 2)+"%</font>";
+            drNew["收涨"] = "<font color=\"" + (double.Parse(dr["收涨"].ToString()) >= 0.01 ? "red" : "green") + "\" >" 
+                + Math.Round((double.Parse(dr["收涨"].ToString()) * 100), 2)+"%</font>";
             dtNew.Rows.Add(drNew);
         }
 
