@@ -62,7 +62,7 @@
 
             for (int i = s.kLineDay.Length - 11; i >= 3; i--)
             {
-                if (s.IsLimitUp(i - 1)
+                if (s.IsLimitUp(i - 1) && !s.IsLimitUp(i)
                     && s.kLineDay[i].lowestPrice <= s.kLineDay[i-1].endPrice
                     && s.kLineDay[i].endPrice >= s.kLineDay[i-1].endPrice)
                 {
