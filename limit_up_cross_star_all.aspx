@@ -428,7 +428,7 @@
 
                 if (stock.kLineDay[currentIndex + i].startPrice > maxPrice && !stock.IsLimitUp(currentIndex) && !haveLimitUp)
                 {
-                    dr["信号"] = dr["信号"].ToString() + "<a title=\"次日高开过前高\" >📈</a>";
+                    dr["信号"] = dr["信号"].ToString() + "<a title=\"次日高开过前高\" >🔺</a>";
                 }
 
                 if (stock.IsLimitUp(currentIndex + i))
@@ -440,12 +440,12 @@
                 f5 = maxPrice - (maxPrice - lowest) * 0.618;
                 if (stock.kLineDay[currentIndex + i].lowestPrice < f3 && !lowThanF3)
                 {
-                    dr["信号"] = dr["信号"].ToString() + "📉";
+                    dr["信号"] = dr["信号"].ToString() + "🟢";
                     lowThanF3 = true;
                 }
                 if (stock.kLineDay[currentIndex + i].lowestPrice < f5 && !lowThanF5)
                 {
-                    dr["信号"] = dr["信号"].ToString() + "📉";
+                    dr["信号"] = dr["信号"].ToString() + "🟢";
                     lowThanF5 = true;
                 }
 
