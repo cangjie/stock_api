@@ -334,9 +334,14 @@
                 continue;
             }
 
+            if (stock.gid.Trim().Equals("sz300632"))
+            {
+                string aa = "aa";
+            }
+
 
             if (stock.kLineDay[currentIndex].endPrice <= stock.kLineDay[currentIndex-1].highestPrice
-                && stock.kLineDay[currentIndex].startPrice <= stock.kLineDay[currentIndex-1].highestPrice)
+                || stock.kLineDay[currentIndex].startPrice <= stock.kLineDay[currentIndex-1].highestPrice)
             {
                 continue;
             }
@@ -427,7 +432,7 @@
                     break;
 
                 double highPrice = stock.kLineDay[currentIndex + i].highestPrice;
-                
+
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
 
 
