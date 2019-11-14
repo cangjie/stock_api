@@ -412,12 +412,16 @@
             bool lowThanF5 = false;
             bool lowThanF3 = false;
             bool haveLimitUp = false;
+            double computeMaxPrice = 0;
             for (int i = 1; i <= 5; i++)
             {
+                
                 if (currentIndex + i >= stock.kLineDay.Length)
                     break;
 
                 double highPrice = stock.kLineDay[currentIndex + i].highestPrice;
+
+                computeMaxPrice = Math.Max(computeMaxPrice, highPrice);
 
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
 
@@ -452,7 +456,7 @@
                 dr["信号"] = dr["信号"].ToString() + "🌟";
             }
 
-            dr["总计"] = (maxPrice - buyPrice) / buyPrice;
+            dr["总计"] = (computeMaxPrice - buyPrice) / buyPrice;
             dt.Rows.Add(dr);
 
         }
