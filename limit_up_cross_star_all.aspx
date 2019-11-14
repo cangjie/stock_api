@@ -335,7 +335,8 @@
             }
 
 
-            if (stock.kLineDay[currentIndex].endPrice <= stock.kLineDay[currentIndex-1].highestPrice )
+            if (stock.kLineDay[currentIndex].endPrice <= stock.kLineDay[currentIndex-1].highestPrice
+                && stock.kLineDay[currentIndex].startPrice <= stock.kLineDay[currentIndex-1].highestPrice)
             {
                 continue;
             }
@@ -396,7 +397,7 @@
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
             dr["信号"] = "";
-            
+
 
 
 
@@ -416,24 +417,30 @@
 
             //dr["今涨"] = (stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
             dr["今涨"] = (stock.kLineDay[currentIndex].endPrice - supportSettle) / supportSettle;
-            double maxPrice = highest;
+            double maxPrice = Math.Max(highest, stock.kLineDay[currentIndex].highestPrice);
             bool lowThanF5 = false;
             bool lowThanF3 = false;
+            bool haveLimitUp = false;
             for (int i = 1; i <= 5; i++)
             {
                 if (currentIndex + i >= stock.kLineDay.Length)
                     break;
+
                 double highPrice = stock.kLineDay[currentIndex + i].highestPrice;
-                maxPrice = Math.Max(maxPrice, highPrice);
+                
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
-                if (i == 1)
+
+
+                if (stock.kLineDay[currentIndex + i].startPrice > maxPrice && !stock.IsLimitUp(currentIndex) && !haveLimitUp)
                 {
-                    if (stock.kLineDay[currentIndex + 1].startPrice > stock.kLineDay[currentIndex].highestPrice 
-                        && !stock.IsLimitUp(currentIndex))
-                    {
-                        dr["信号"] = dr["信号"].ToString() + "<a title=\"次日高开过前高\" >📈</a>";
-                    }
+                    dr["信号"] = dr["信号"].ToString() + "<a title=\"次日高开过前高\" >📈</a>";
                 }
+
+                if (stock.IsLimitUp(currentIndex + i))
+                {
+                    haveLimitUp = true;
+                }
+                maxPrice = Math.Max(maxPrice, highPrice);
                 f3 = maxPrice - (maxPrice - lowest) * 0.382;
                 f5 = maxPrice - (maxPrice - lowest) * 0.618;
                 if (stock.kLineDay[currentIndex + i].lowestPrice < f3 && !lowThanF3)
@@ -453,7 +460,7 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "🌟";
             }
-            
+
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
             dt.Rows.Add(dr);
 
