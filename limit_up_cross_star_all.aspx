@@ -12,31 +12,21 @@
 
     public static ThreadStart tsQ = new ThreadStart(StockWatcher.LogQuota);
 
-    public static Thread tQ = new Thread(tsQ);
+    //public static Thread tQ = new Thread(tsQ);
 
     public static ThreadStart ts = new ThreadStart(PageWatcher);
 
     public static Thread t = new Thread(ts);
 
+    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+
     protected void Page_Load(object sender, EventArgs e)
     {
+        
         sort = Util.GetSafeRequestValue(Request, "sort", "缩量");
         if (!IsPostBack)
         {
-            try
-            {
-                if (tQ.ThreadState != ThreadState.Running && tQ.ThreadState != ThreadState.WaitSleepJoin)
-                {
-                    tQ.Abort();
-                    tsQ = new ThreadStart(StockWatcher.LogQuota);
-                    tQ = new Thread(tsQ);
-                    //tQ.Start();
-                }
-            }
-            catch(Exception err)
-            {
-                Console.WriteLine(err.ToString());
-            }
+
 
             try
             {
@@ -44,7 +34,7 @@
                 {
                     t.Abort();
                     t = new Thread(ts);
-                    //t.Start();
+                    t.Start();
 
                 }
             }
@@ -318,7 +308,7 @@
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
-            stock.LoadKLineDay();
+            stock.LoadKLineDay(rc);
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
@@ -334,10 +324,6 @@
                 continue;
             }
 
-            if (stock.gid.Trim().Equals("sz300632"))
-            {
-                string aa = "aa";
-            }
 
 
             if (stock.kLineDay[currentIndex].endPrice <= stock.kLineDay[currentIndex-1].highestPrice
@@ -502,7 +488,45 @@
     {
         for(; true; )
         {
-            DateTime currentDate = Util.GetDay(DateTime.Now);
+            if (Util.IsTransacDay(DateTime.Now.Date))
+            {
+                DateTime alertDate = DateTime.Now.Date.AddDays(-1);
+                for (int i = 1; i <= 5; i++)
+                {
+                    if (!Util.IsTransacDay(alertDate))
+                    {
+                        alertDate = alertDate.AddDays(-1);
+                        i--;
+                    }
+                    else
+                    {
+                        DataTable dt = GetData(alertDate);
+                        foreach (DataRow dr in dt.Rows)
+                        {
+                            if (dr["信号"].ToString().IndexOf("📈") >= 0)
+                            {
+                                string message = "高开";
+                                Stock s = new Stock(dr["代码"].ToString().Trim());
+                                s.LoadKLineDay(rc);
+                                int currentIndex = s.GetItemIndex(DateTime.Now);
+                                double price = Math.Round(s.kLineDay[currentIndex].startPrice, 2);
+                                if (StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()),
+                                    dr["代码"].ToString().Trim(), "shell_open_high", dr["名称"].ToString().Trim(), ""))
+                                {
+                                    StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(),
+                                        dr["名称"].ToString() + " " + message, price, "shell_open_high");
+                                    StockWatcher.SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", dr["代码"].ToString().Trim(),
+                                        dr["名称"].ToString() + " " + message, price, "shell_open_high");
+                                }
+                            }
+                        }
+                        alertDate = alertDate.AddDays(-1);
+                    }
+                }
+            }
+
+            /*
+
             if (Util.IsTransacDay(currentDate) && Util.IsTransacTime(DateTime.Now))
             {
                 DataTable dt = GetData(currentDate);
@@ -528,18 +552,7 @@
                         {
                             StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(),
                                 dr["名称"].ToString() + " " + message, f3, "limit_up_box_f3");
-                            //StockWatcher.SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", dr["代码"].ToString().Trim(),
-                            //    dr["名称"].ToString() + " " + message, f3, "limit_up_box_f3");
-                            /*
-                            StockWatcher.SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", dr["代码"].ToString().Trim(),
-                                dr["名称"].ToString() + " " + message, f3, "limit_up_box_f3");
-                            StockWatcher.SendAlertMessage("oqrMvt2RxLEM7B8a3H6BYD5tXEiY", dr["代码"].ToString().Trim(),
-                                dr["名称"].ToString() + " " + message, f3, "limit_up_box_f3");
-                            StockWatcher.SendAlertMessage("oqrMvt1-mTlYx0c9qr7EM9ryA6-I", dr["代码"].ToString().Trim(),
-                                dr["名称"].ToString() + " " + message, f3, "limit_up_box_f3");
-                            StockWatcher.SendAlertMessage("oqrMvtxeGio8mZcm3U69TtcDu9XY", dr["代码"].ToString().Trim(),
-                                dr["名称"].ToString() + " " + message, f3, "limit_up_box_f3");
-                                */
+
                         }
                     }
                     else
@@ -556,25 +569,16 @@
                                 dr["名称"].ToString().Trim(),
                                 "买入价：" + price.ToString() + " " + message.Trim()))
                         {
-                            /*
-                            StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(),
-                                dr["名称"].ToString() + " " + message, price, "limit_up_box_f5");
-                            
-                            StockWatcher.SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", dr["代码"].ToString().Trim(),
-                                dr["名称"].ToString() + " " + message, price, "limit_up_box_f5");
-                            StockWatcher.SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", dr["代码"].ToString().Trim(),
-                                dr["名称"].ToString() + " " + message, price, "limit_up_box_f5");
-                            StockWatcher.SendAlertMessage("oqrMvt2RxLEM7B8a3H6BYD5tXEiY", dr["代码"].ToString().Trim(),
-                                dr["名称"].ToString() + " " + message, price, "limit_up_box_f5");
-                            
-                            */
+
 
                         }
 
                     }
 
                 }
-            }
+
+        }
+        */
             Thread.Sleep(30000);
         }
     }
@@ -635,7 +639,6 @@
                 <SelectedItemStyle BackColor="#008A8C" Font-Bold="True" ForeColor="White" />
                 </asp:DataGrid></td>
             </tr>
-            <tr><td><%=t.ThreadState.ToString() %></td></tr>
         </table>
     </div>
     </form>
