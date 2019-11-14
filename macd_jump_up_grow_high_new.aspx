@@ -12,10 +12,6 @@
 
    
 
-    public static ThreadStart ts = new ThreadStart(PageWatcher);
-
-    public static Thread t = new Thread(ts);
-
     public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
 
     public static string filter = "";
@@ -28,20 +24,7 @@
         {
            
 
-            try
-            {
-                if (t.ThreadState != ThreadState.Running && t.ThreadState != ThreadState.WaitSleepJoin)
-                {
-                    t.Abort();
-                    t = new Thread(ts);
-                    t.Start();
-
-                }
-            }
-            catch
-            {
-
-            }
+            
 
 
             DataTable dt = GetData();
@@ -982,21 +965,7 @@
     }
 
 
-    public static void PageWatcher()
-    {
-        for(; true; )
-        {
-            DateTime currentDate = Util.GetDay(DateTime.Now);
-            if (Util.IsTransacDay(currentDate) && Util.IsTransacTime(DateTime.Now))
-            {
-                GetData(currentDate);
-            }
-            Thread.Sleep(10000);
-        }
-    }
-
-
-
+    
 
     public static bool foot(Core.Timeline[] tArr, out double lowestPrice, out double displayLowPrice, out DateTime footTime)
     {
@@ -1090,7 +1059,6 @@
                 <SelectedItemStyle BackColor="#008A8C" Font-Bold="True" ForeColor="White" />
                 </asp:DataGrid></td>
             </tr>
-            <tr><td><%=t.ThreadState.ToString() %></td></tr>
         </table>
     </div>
     </form>
