@@ -30,14 +30,14 @@
         dtCount.Rows.Add(drCount);
 
         drCount = dtCount.NewRow();
-        drCount["放量"] = "100%-150%";
+        drCount["放量"] = "100%-125%";
         drCount["总个数"] = "0";
         drCount["总利润"] = "0";
         drCount["平均利润"] = "0";
         dtCount.Rows.Add(drCount);
 
         drCount = dtCount.NewRow();
-        drCount["放量"] = "150%-190%";
+        drCount["放量"] = "125%-190%";
         drCount["总个数"] = "0";
         drCount["总利润"] = "0";
         drCount["平均利润"] = "0";
@@ -122,10 +122,7 @@
 
             double volumeRate = s.kLineDay[currentIndex].volume / s.kLineDay[currentIndex - 1].volume;
 
-            if (volumeRate < 1 || volumeRate > 1.25)
-            {
-                continue;
-            }
+            
 
             DataRow dr = dt.NewRow();
             dr["日期"] = s.kLineDay[currentIndex].startDateTime.Date;
@@ -173,11 +170,11 @@
 
             int countIndex = 0;
             double volumeIncrease = double.Parse(drNew["放量"].ToString());
-            if (volumeIncrease >= 1 && volumeIncrease < 1.5)
+            if (volumeIncrease >= 1 && volumeIncrease < 1.25)
             {
                 countIndex = 1;
             }
-            else if (volumeIncrease >= 1.5 && volumeIncrease < 1.9)
+            else if (volumeIncrease >= 1.25 && volumeIncrease < 1.9)
             {
                 countIndex = 2;
             }
