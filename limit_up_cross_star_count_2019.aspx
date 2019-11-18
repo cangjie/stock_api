@@ -8,6 +8,8 @@
 
     public int[] totalCount = new int[22];
 
+    public int[] totalSuccessCount = new int[22];
+
     public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
 
     public static Stock[] gidArr;
@@ -42,8 +44,13 @@
                     {
                         highestPrice = Math.Max(highestPrice, s.kLineDay[currentIndex + 1 + j].highestPrice);
                     }
-                    totalRate[i] = totalRate[i] + (highestPrice - buyPrice) / buyPrice;
+                    double rate = (highestPrice - buyPrice) / buyPrice;
+                    totalRate[i] = totalRate[i] + rate;
                     totalCount[i]++;
+                    if (rate >= 0.05)
+                    {
+                        totalSuccessCount[i]++;
+                    }
                 }
                 catch
                 {
@@ -97,8 +104,10 @@
             <tr>
                 <td><%=sm.AddMonths(i).ToShortDateString() %></td>
                 <td><%=Math.Round(totalRate[i]*100, 2).ToString() %>%</td>
-                <td><%=totalCount[i].ToString() %></td>
                 <td><%=Math.Round((totalRate[i]/totalCount[i])*100, 2).ToString() %>%</td>
+                <td><%=totalSuccessCount[i].ToString() %></td>
+                <td><%=totalCount[i].ToString() %></td>
+                <td><%=Math.Round((double)100*totalSuccessCount[i]/(double)totalCount[i], 2).ToString() %>%</td>
             </tr>
             <%
                 }
