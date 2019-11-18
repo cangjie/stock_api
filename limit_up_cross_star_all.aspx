@@ -428,7 +428,7 @@
 
                 if (stock.kLineDay[currentIndex + i].startPrice > maxPrice && !stock.IsLimitUp(currentIndex) && !haveLimitUp)
                 {
-                    dr["信号"] = dr["信号"].ToString() + "<a title=\"次日高开过前高\" >🔺</a>";
+                    dr["信号"] = dr["信号"].ToString() + "<a title=\"次5日高开过前高\" >🔺</a>";
                 }
 
                 if (stock.IsLimitUp(currentIndex + i))

@@ -119,12 +119,20 @@
             {
                 continue;
             }
+
+            double volumeRate = s.kLineDay[currentIndex].volume / s.kLineDay[currentIndex - 1].volume;
+
+            if (volumeRate < 1 || volumeRate > 1.25)
+            {
+                continue;
+            }
+
             DataRow dr = dt.NewRow();
             dr["日期"] = s.kLineDay[currentIndex].startDateTime.Date;
             dr["代码"] = s.gid.Trim();
             dr["名称"] = s.Name.Trim();
             dr["板数"] = limitUpNum;
-            dr["放量"] = s.kLineDay[currentIndex].volume / s.kLineDay[currentIndex-1].volume;
+            dr["放量"] = volumeRate;
             dr["换手"] = (double)s.kLineDay[currentIndex].volume / (double)s.TotalStockCount(s.kLineDay[currentIndex].startDateTime);
             double maxRate = -100;
             double buyPrice = s.kLineDay[currentIndex].endPrice;
