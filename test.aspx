@@ -5,16 +5,12 @@
 <%@ Import Namespace="System.Data.SqlClient" %>
 <script runat="server">
 
-    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+    //public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
 
     protected void Page_Load(object sender, EventArgs e)
     {
+        KeyValuePair<Stock, DateTime>[] gidArr = Util.GetDoubleLimitUpFrom3Line();
 
-        Stock s = new Stock("sz000993");
-        s.LoadKLineDay(rc);
-        s.kLineDay[s.kLineDay.Length - 1].endPrice = s.kLineDay[s.kLineDay.Length - 1].startPrice;
-        KLine.ComputeMACD(s.kLineDay);
-        Response.Write(s.kLineDay[s.kLineDay.Length - 2].macd.ToString());
     }
 
     public static double GetFirstLowestPrice(KLine[] kArr, int index, out int lowestIndex)

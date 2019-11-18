@@ -16,6 +16,7 @@ public class Util
 {
     public static string conStr = System.Configuration.ConfigurationSettings.AppSettings["constr"].Trim();
 
+    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
 
     public static string physicalPath = "";
 
@@ -546,4 +547,86 @@ public class Util
         }
         return i;
     }
+
+    public static KeyValuePair<string, DateTime>[] GetDoubleLimitUp()
+    {
+        DataTable dt = DBHelper.GetDataTable(" select * from limit_up order by alert_date desc ");
+        ArrayList gidDoubleLimitUpArr = new ArrayList();
+        foreach (DataRow dr in dt.Rows)
+        {
+            string gid = dr["gid"].ToString();
+            DateTime currentDate = DateTime.Parse(dr["alert_date"].ToString()).Date;
+            DateTime prevDate = Util.GetLastTransactDate(currentDate, 1);
+            if (dt.Select(" gid = '" + gid.Trim() + "' and alert_date = '" + prevDate.ToShortDateString() + "' ").Length > 0)
+            {
+                KeyValuePair<string, DateTime> o = new KeyValuePair<string, DateTime>(gid, currentDate.Date);
+                gidDoubleLimitUpArr.Add(o);
+            }
+        }
+        KeyValuePair<string, DateTime>[] ret = new KeyValuePair<string, DateTime>[gidDoubleLimitUpArr.Count];
+        for (int i = 0; i < gidDoubleLimitUpArr.Count; i++)
+        {
+            ret[i] = (KeyValuePair<string, DateTime>)gidDoubleLimitUpArr[i];
+        }
+        return ret;
+    }
+
+    public static KeyValuePair<Stock, DateTime>[] GetDoubleLimitUpFrom3Line()
+    {
+        KeyValuePair<string, DateTime>[] doubleLimitUpArrFromDB = GetDoubleLimitUp();
+        ArrayList gidArr = new ArrayList();
+        ArrayList tempRet = new ArrayList();
+        foreach (KeyValuePair<string, DateTime> doubleLimitUpItem in doubleLimitUpArrFromDB)
+        {
+            string gid = doubleLimitUpItem.Key.Trim();
+            DateTime currentDate = doubleLimitUpItem.Value.Date;
+            Stock s = new Stock();
+            bool existInArr = false;
+            foreach (object gidObject in gidArr)
+            {
+                if (((Stock)gidObject).gid.Trim().Equals(gid))
+                {
+                    existInArr = true;
+                    s = (Stock)gidObject;
+                    break;
+                }
+            }
+            if (!existInArr)
+            {
+                s = new Stock(gid);
+                s.LoadKLineDay(rc);
+                gidArr.Add(s);
+            }
+            int currentIndex = s.GetItemIndex(currentDate);
+            if (currentIndex < 0)
+            {
+                continue;
+            }
+            if (!s.IsLimitUp(currentIndex) || !s.IsLimitUp(currentIndex - 1))
+            {
+                continue;
+            }
+            bool haveOthersLimitUpFrom3Line = false;
+            for (int i = currentIndex - 2; i >=3 && s.kLineDay[i].endPrice >= s.GetAverageSettlePrice(i, 3, 3); i--)
+            {
+                if (s.IsLimitUp(i))
+                {
+                    haveOthersLimitUpFrom3Line = true;
+                    break;
+                }
+            }
+            if (!haveOthersLimitUpFrom3Line)
+            {
+                tempRet.Add(new KeyValuePair<Stock, DateTime>(s, currentDate));
+            }
+        }
+        KeyValuePair<Stock, DateTime>[] ret = new KeyValuePair<Stock, DateTime>[tempRet.Count];
+        for (int i = 0; i < ret.Length; i++)
+        {
+            ret[i] = (KeyValuePair<Stock, DateTime>)tempRet[i];
+        }
+        return ret;
+    }
+
+
 }
