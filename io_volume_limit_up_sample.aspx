@@ -10,13 +10,7 @@
 
     public string sort = "缩量";
 
-    public static ThreadStart tsQ = new ThreadStart(StockWatcher.LogQuota);
-
-    public static Thread tQ = new Thread(tsQ);
-
-    public static ThreadStart ts = new ThreadStart(PageWatcher);
-
-    public static Thread t = new Thread(ts);
+   
 
     public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
 
@@ -28,35 +22,7 @@
         times = double.Parse(Util.GetSafeRequestValue(Request, "times", "1.1"));
         if (!IsPostBack)
         {
-            try
-            {
-                if (tQ.ThreadState != ThreadState.Running && tQ.ThreadState != ThreadState.WaitSleepJoin)
-                {
-                    tQ.Abort();
-                    tsQ = new ThreadStart(StockWatcher.LogQuota);
-                    tQ = new Thread(tsQ);
-                    //tQ.Start();
-                }
-            }
-            catch(Exception err)
-            {
-                Console.WriteLine(err.ToString());
-            }
-
-            try
-            {
-                if (t.ThreadState != ThreadState.Running && t.ThreadState != ThreadState.WaitSleepJoin)
-                {
-                    t.Abort();
-                    t = new Thread(ts);
-                    //t.Start();
-
-                }
-            }
-            catch
-            {
-
-            }
+            
 
 
             DataTable dt = GetData();
@@ -831,59 +797,6 @@
 
 
 
-    public static void PageWatcher()
-    {
-        for(; true; )
-        {
-            DateTime currentDate = Util.GetDay(DateTime.Now);
-            if (Util.IsTransacDay(currentDate) && Util.IsTransacTime(DateTime.Now))
-            {
-                DataTable dt = GetData(currentDate, 0.1);
-
-
-
-                foreach (DataRow dr in dt.Rows)
-                {
-                    double high = Math.Round(double.Parse(dr["现高"].ToString()), 2);
-                    double low = Math.Round(double.Parse(dr["前低"].ToString()), 2);
-                    double price = Math.Round((double)dr["买入"], 2);
-                    string message = "缩量：" + Math.Round(100 * (double)dr["缩量"], 2).ToString() + "% 幅度：" + Math.Round(100 * (high - low) / low, 2).ToString()
-                        //+ "% MACD：" + dr["MACD日"].ToString() + " KDJ:" + dr["KDJ日"].ToString();
-                        + "% 价差：" + Math.Round(double.Parse(dr["价差"].ToString().Trim()), 2).ToString().Trim() + " 支撑：" + dr["类型"].ToString().Trim();
-
-                    if ((double)dr["价差abs"] <= 0.02 &&  StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()),
-                        dr["代码"].ToString().Trim(),
-                        "limit_up_box",
-                        dr["名称"].ToString().Trim(),
-                        "现价：" + price.ToString() + " " + message.Trim()))
-                    {
-                        //StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(),
-                        //        dr["名称"].ToString() + " " + message, price, "limit_up_box");
-
-
-                        //18601197897
-                        //StockWatcher.SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", dr["代码"].ToString().Trim(),
-                        //        dr["名称"].ToString() + " " + message, price, "limit_up_box");
-
-                        //老马
-                        //StockWatcher.SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", dr["代码"].ToString().Trim(),
-                        //        dr["名称"].ToString() + " " + message, price, "limit_up_box");
-                        //老马的朋友
-                        //StockWatcher.SendAlertMessage("oqrMvt7eGkY9UejlTH1i8d-oD-V0", dr["代码"].ToString().Trim(),
-                        //        dr["名称"].ToString() + " " + message, price, "limit_up_box");
-                        //StockWatcher.SendAlertMessage("oqrMvtwvHer0l3SJGYP73ioQeuVo", dr["代码"].ToString().Trim(),
-                        //        dr["名称"].ToString() + " " + message, price, "limit_up_box");
-
-
-
-                    }
-                }
-
-            }
-            Thread.Sleep(15000);
-        }
-    }
-
 
     public static bool foot(Core.Timeline[] tArr, out double lowestPrice, out double displayLowPrice, out DateTime footTime)
     {
@@ -979,7 +892,6 @@
                 <SelectedItemStyle BackColor="#008A8C" Font-Bold="True" ForeColor="White" />
                 </asp:DataGrid></td>
             </tr>
-            <tr><td><%=t.ThreadState.ToString() %></td></tr>
         </table>
     </div>
     </form>
