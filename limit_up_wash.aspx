@@ -9,28 +9,13 @@
 
     public DateTime currentDate = Util.GetDay(DateTime.Now);
 
-    public static ThreadStart ts = new ThreadStart(PageWatcher);
-
-    public static Thread t = new Thread(ts);
+   
 
     public static long threadCount = 0;
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        try
-        {
-            if (t.ThreadState != ThreadState.Running && t.ThreadState != ThreadState.WaitSleepJoin)
-            {
-                t.Abort();
-                ts = new ThreadStart(PageWatcher);
-                t = new Thread(ts);
-                t.Start();
-            }
-        }
-        catch(Exception err)
-        {
-            Console.WriteLine(err.ToString());
-        }
+       
         if (!IsPostBack)
         {
             DataTable dt = AddTotal(GetData());
@@ -508,54 +493,6 @@
         return support;
     }
 
-    public static void PageWatcher()
-    {
-        for (; true;)
-        {
-            DateTime currentDate = Util.GetDay(DateTime.Now);
-            //for (int i = 1; i <= 4; i++)
-            //{
-                //currentDate = currentDate.AddDays(-1);
-            if (Util.IsTransacDay(currentDate))
-            {
-                if (Util.IsTransacTime(DateTime.Now))
-                {
-                    DataTable dt = GetData(currentDate);
-                    foreach (DataRow dr in dt.Rows)
-                    {
-                        //KLine.RefreshKLine(dr["代码"].ToString().Trim(), DateTime.Parse(DateTime.Now.ToShortDateString()));
-                        if (dr["信号"].ToString().IndexOf("🛍️") >= 0)
-                        {
-                            string message = dr["信号"].ToString().Trim() + " " + currentDate.ToShortDateString() + dr["支撑"].ToString() + " 缩量：" + Math.Round(100 * double.Parse(dr["缩量"].ToString().Trim()), 2).ToString() + "% 已调整" + dr["调整天数"].ToString().Trim() + "日";
-                            double price = Math.Round(double.Parse(dr["买入价"].ToString()), 2);
-
-                            if (StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()),
-                                dr["代码"].ToString().Trim(),
-                                "limit_up_box",
-                                dr["名称"].ToString().Trim(),
-                                "买入价：" + price.ToString() + " " + message.Trim()))
-                            {
-                                /*
-                                StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(), dr["名称"].ToString() + " " + message, price, "bottom");
-                                StockWatcher.SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", dr["代码"].ToString().Trim(), dr["名称"].ToString() + " " + message, price, "bottom");
-                                */
-                            }
-                        }
-
-                    }
-                }
-            }
-
-                //else
-                //{
-                //    i--;
-                //}
-            //}
-            Thread.Sleep(60000);
-            threadCount++;
-        }
-    }
-
 </script>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -589,9 +526,7 @@
                     <SelectedItemStyle BackColor="#008A8C" Font-Bold="True" ForeColor="White" />
                     </asp:DataGrid></td>
             </tr>
-            <tr>
-                <td><%=t.ThreadState.ToString() %>|<%=threadCount.ToString() %></td>
-            </tr>
+            
         </table>
     </div>
     </form>

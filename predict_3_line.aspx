@@ -9,10 +9,7 @@
 
     public string allGids = "";
 
-    public static ThreadStart ts = new ThreadStart(PageWatcher);
-
-    public static Thread t = new Thread(ts);
-
+   
     public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
 
     public string sort = "3线下 desc";
@@ -20,20 +17,7 @@
     protected void Page_Load(object sender, EventArgs e)
     {
         sort = Util.GetSafeRequestValue(Request, "sort", "3线下 desc");
-        try
-        {
-            if (t.ThreadState != ThreadState.Running && t.ThreadState != ThreadState.WaitSleepJoin)
-            {
-                t.Abort();
-                ts = new ThreadStart(PageWatcher);
-                t = new Thread(ts);
-                //t.Start();
-            }
-        }
-        catch(Exception err)
-        {
-            Console.WriteLine(err.ToString());
-        }
+        
         if (!IsPostBack)
         {
             calendar.SelectedDate = Util.GetDay(DateTime.Now);
@@ -73,43 +57,6 @@
             }
         }
         return dt;
-    }
-
-    public static void PageWatcher()
-    {
-        for (; true;)
-        {
-            if (Util.IsTransacDay(DateTime.Parse(DateTime.Now.ToShortDateString())) && Util.IsTransacTime(DateTime.Now))
-            {
-                DataTable dt = GetData(DateTime.Parse(DateTime.Now.ToShortDateString()));
-                foreach (DataRow dr in dt.Rows)
-                {
-                    string signal = dr["信号"].ToString().Trim();
-                    if (signal.IndexOf("💩") < 0 && signal.IndexOf("📈") >= 0 && (signal.IndexOf("🔥") >= 0 || signal.IndexOf("🛍️") >= 0))
-                    {
-                        string gid = dr["代码"].ToString().Trim();
-                        Stock s = new Stock(gid);
-                        //KLine.RefreshKLine(gid, DateTime.Parse(DateTime.Now.ToShortDateString()));
-                        double volumeIncrease = Math.Round(100 * double.Parse(dr["放量"].ToString().Trim()), 2);
-                        string message = (dr["信号"].ToString().Trim().IndexOf("📈")>=0?"📈":"")
-                            + (dr["信号"].ToString().Trim().IndexOf("🔥")>=0?"🔥":"") + (dr["信号"].ToString().Trim().IndexOf("🛍️")>=0?"🛍️":"")
-                            + " 放量：" + volumeIncrease.ToString() + "%";
-                        double price = Math.Round(double.Parse(dr["买入价"].ToString()), 2);
-
-                        if (StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()),
-                            gid,
-                            "bottom_break_cross_3_line",
-                            s.Name.Trim(),
-                            "买入价：" + price.ToString() + " " + message.Trim()) && volumeIncrease > 100)
-                        {
-                            //StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", s.gid.Trim(), s.Name + " " + message, price, "3_line");
-                            StockWatcher.SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", s.gid.Trim(), s.Name + " " + message, price, "3_line");
-                        }
-                    }
-                }
-            }
-            Thread.Sleep(60000);
-        }
     }
 
     public static DataTable GetData(DateTime date)
@@ -675,9 +622,7 @@
                 <SelectedItemStyle BackColor="#008A8C" Font-Bold="True" ForeColor="White" />
                 </asp:DataGrid></td>
         </tr>
-        <tr>
-            <td><%=t.ThreadState.ToString() %></td>
-        </tr>
+       
     </table>
     </form>
 </body>

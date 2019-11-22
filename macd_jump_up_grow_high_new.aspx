@@ -865,30 +865,7 @@
                 dr["信号"] = "<a title='小时KDJ低位金叉' >📈</a>" + dr["信号"].ToString().Trim();
             }
 
-            try
-            {
-                int i = DBHelper.InsertData("alert_cross_macd", new string[,] { {"alert_date", "datetime",  currentDate.ToShortDateString() },
-                    {"gid", "varchar", stock.gid.Trim() }, {"current_price", "float", dr["现价"].ToString() },
-                    {"current_volume_rate", "float", dr["缩量"].ToString() }, {"sent_message", "int", "1" } });
-                if (i == 1)
-                {
-                    string message = "KDJ:" + dr["KDJ日"].ToString() + " 放量:" + Math.Round(100*(double)dr["缩量"], 0).ToString() + "% "
-                        + "开盘涨幅:" + Math.Round(100*(double)dr["今涨"], 2).ToString() + "% 当前涨幅：" + Math.Round(100*(double)dr["0日"], 2).ToString() + "%";
-                    //StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(),
-                    //            dr["名称"].ToString() + " " + message, stock.kLineDay[currentIndex].endPrice, "macd");
-                    StockWatcher.SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", dr["代码"].ToString().Trim(),
-                                dr["名称"].ToString() + " " + message, stock.kLineDay[currentIndex].endPrice, "macd");
-                    //老马
-                    StockWatcher.SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", dr["代码"].ToString().Trim(),
-                                dr["名称"].ToString() + " " + message, stock.kLineDay[currentIndex].endPrice, "macd");
-                    
-
-                }
-            }
-            catch
-            {
-
-            }
+            
 
 
 
