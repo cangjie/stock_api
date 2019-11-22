@@ -10,13 +10,7 @@
 
     public string sort = "MACD日,KDJ日,综指 desc";
 
-    public static ThreadStart tsQ = new ThreadStart(StockWatcher.LogQuota);
-
-    //public static Thread tQ = new Thread(tsQ);
-
-    public static ThreadStart ts = new ThreadStart(PageWatcher);
-
-    public static Thread t = new Thread(ts);
+    
 
     public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
 
@@ -28,20 +22,7 @@
         {
 
 
-            try
-            {
-                if (t.ThreadState != ThreadState.Running && t.ThreadState != ThreadState.WaitSleepJoin)
-                {
-                    t.Abort();
-                    t = new Thread(ts);
-                    t.Start();
-
-                }
-            }
-            catch
-            {
-
-            }
+           
 
 
             DataTable dt = GetData();
@@ -486,65 +467,6 @@
             }
         }
         return ret;
-    }
-
-    public static void PageWatcher()
-    {
-        for(; true; )
-        {
-            if (Util.IsTransacDay(DateTime.Now.Date))
-            {
-                DateTime alertDate = DateTime.Now.Date.AddDays(-1);
-                for (int i = 1; i <= 5; i++)
-                {
-                    if (!Util.IsTransacDay(alertDate))
-                    {
-                        alertDate = alertDate.AddDays(-1);
-                        i--;
-                    }
-                    else
-                    {
-                        DataTable dt = GetData(alertDate);
-                        foreach (DataRow dr in dt.Rows)
-                        {
-                            if (dr["信号"].ToString().IndexOf("📈") >= 0)
-                            {
-
-                                string message = "高开";
-                                Stock s = new Stock(dr["代码"].ToString().Trim());
-                                s.LoadKLineDay(rc);
-                                int currentIndex = s.GetItemIndex(DateTime.Now);
-                                int startIndex = s.GetItemIndex(alertDate);
-                                bool openHigh = true;
-                                for (int j = startIndex; j < currentIndex; j++)
-                                {
-                                    if (s.kLineDay[currentIndex].startPrice <= s.kLineDay[j].highestPrice)
-                                    {
-                                        openHigh = false;
-                                        break;
-                                    }
-                                }
-
-
-                                double price = Math.Round(s.kLineDay[currentIndex].startPrice, 2);
-                                if (openHigh && StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()),
-                                    dr["代码"].ToString().Trim(), "shell_open_high", dr["名称"].ToString().Trim(), ""))
-                                {
-                                    StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(),
-                                        dr["名称"].ToString() + " " + message, price, "shell_open_high");
-                                    StockWatcher.SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", dr["代码"].ToString().Trim(),
-                                        dr["名称"].ToString() + " " + message, price, "shell_open_high");
-                                }
-                            }
-                        }
-                        alertDate = alertDate.AddDays(-1);
-                    }
-                }
-            }
-
-
-            Thread.Sleep(30000);
-        }
     }
 
 </script>
