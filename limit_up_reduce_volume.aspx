@@ -11,9 +11,7 @@
     {
         if (!IsPostBack)
         {
-            ThreadStart ts = new ThreadStart(RefreshData);
-            Thread t = new Thread(ts);
-            t.Start();
+            
             //RefreshData();
             calendar.SelectedDate = DateTime.Now;
             dg.DataSource = GetData();
@@ -134,60 +132,6 @@
     {
         dg.DataSource = GetData();
         dg.DataBind();
-    }
-
-    public static void RefreshData()
-    {
-        string[] gidArr = Util.GetAllGids();
-        DateTime i = DateTime.Parse(DateTime.Now.ToShortDateString());
-        if (!Util.IsTransacDay(i))
-            return;
-        if (DateTime.Now.Hour < 14 || DateTime.Now.Minute < 30)
-            return;
-        foreach (string gid in gidArr)
-        {
-            Stock s = new Stock(gid);
-            s.kArr = KLine.GetLocalKLine(gid, "day");
-
-            if (Util.IsTransacDay(i))
-            {
-                int idx = s.GetItemIndex(DateTime.Parse(i.ToShortDateString() + " 9:30"));
-                if (idx > 1)
-                {
-                    if ((s.kArr[idx - 1].endPrice - s.kArr[idx - 2].endPrice) / s.kArr[idx - 1].endPrice >= 0.05)
-                    {
-                        double volume = Stock.GetVolumeAndAmount(s.gid, DateTime.Parse(i.ToShortDateString() + " 14:35"))[0];
-                        double volumeLast = Stock.GetVolumeAndAmount(s.gid, DateTime.Parse(s.kArr[idx - 1].startDateTime.ToShortDateString() + " 14:30"))[0];
-
-                        if (volumeLast - volume > 0 && volume / volumeLast < 0.67)
-                        {
-                            try
-                            {
-                                int ret = DBHelper.InsertData("limit_up_volume_reduce", new string[,] {
-                                { "gid", "varchar", gid},
-                                { "alert_date", "datetime", i.ToShortDateString()}
-                                });
-                                if (ret == 1)
-                                {
-                                    string stockName = (new Stock(gid)).Name;
-                                    //StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", gid, stockName, Math.Round(s.LastTrade, 2), "volumedecrease");
-                                    //StockWatcher.SendAlertMessage("oqrMvt8K6cwKt5T1yAavEylbJaRs", gid, stockName, Math.Round(s.LastTrade, 2), "volumedecrease");
-                                    //StockWatcher.SendAlertMessage("oqrMvt6-N8N1kGONOg7fzQM7VIRg", gid, stockName, Math.Round(s.LastTrade, 2), "volumedecrease");
-                                }
-                            }
-                            catch
-                            {
-
-                            }
-                        }
-
-                    }
-
-                }
-            }
-
-        }
-
     }
 
     protected void dg_SortCommand(object source, DataGridSortCommandEventArgs e)
