@@ -20,11 +20,6 @@
         sort = Util.GetSafeRequestValue(Request, "sort", "缩量");
         if (!IsPostBack)
         {
-
-
-
-
-
             DataTable dt = GetData();
             dg.DataSource = dt;
             dg.DataBind();
