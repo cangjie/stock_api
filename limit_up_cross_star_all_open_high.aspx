@@ -20,11 +20,6 @@
         sort = Util.GetSafeRequestValue(Request, "sort", "缩量");
         if (!IsPostBack)
         {
-
-
-
-
-
             DataTable dt = GetData();
             dg.DataSource = dt;
             dg.DataBind();
@@ -291,6 +286,10 @@
 
         foreach (DataRow drOri in dtOri.Rows)
         {
+            if (dt.Select(" 代码 = '" + drOri["gid"].ToString().Trim() + "' ").Length > 0)
+            {
+                continue;
+            }
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
             stock.LoadKLineDay(rc);
             KLine.ComputeMACD(stock.kLineDay);
@@ -313,6 +312,12 @@
                 continue;
             }
 
+            if (stock.IsLimitUp(limitUpIndex + 1))
+            {
+                continue;
+            }
+
+           
 
             if (stock.kLineDay[limitUpIndex + 1].endPrice <= stock.kLineDay[limitUpIndex].highestPrice
                 || stock.kLineDay[limitUpIndex + 1].startPrice <= stock.kLineDay[limitUpIndex].highestPrice)
