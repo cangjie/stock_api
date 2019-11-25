@@ -319,7 +319,7 @@
 
 
             bool noGap = false;
-            bool existWBottom = false;
+            //bool existWBottom = false;
             double lowestOnGap = double.MaxValue;
             for (int i = limitUpIndex + 1; i <= currentIndex; i++)
             {
@@ -344,7 +344,7 @@
 
             if (Math.Abs((stock.kLineDay[currentIndex].lowestPrice - lowestOnGap) / lowestOnGap) > 0.01)
             {
-                //continue;
+                continue;
             }
 
             double maxPriceAfterLimitUp = stock.kLineDay[limitUpIndex].highestPrice;
