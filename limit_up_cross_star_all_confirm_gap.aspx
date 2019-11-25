@@ -344,7 +344,7 @@
 
             if (Math.Abs((stock.kLineDay[currentIndex].lowestPrice - lowestOnGap) / lowestOnGap) > 0.01)
             {
-                continue;
+                //continue;
             }
 
             double maxPriceAfterLimitUp = stock.kLineDay[limitUpIndex].highestPrice;
