@@ -9,7 +9,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        KeyValuePair<Stock, DateTime>[] gidArr = Util.GetDoubleLimitUpFrom3Line();
+        //KeyValuePair<Stock, DateTime>[] gidArr = Util.GetDoubleLimitUpFrom3Line();
 
     }
 
