@@ -6,15 +6,15 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        string year = Util.GetSafeRequestValue(Request, "year", "2019");
+        string month = Util.GetSafeRequestValue(Request, "month", "2019-12");
         if (!IsPostBack)
         {
-            dg.DataSource = GetData(year);
+            dg.DataSource = GetData(month);
             dg.DataBind();
         }
     }
 
-    public DataTable GetData(string year)
+    public DataTable GetData(string month)
     {
         DataTable dt = new DataTable();
         dt.Columns.Add("日期");
@@ -22,8 +22,11 @@
         dt.Columns.Add("名称");
         dt.Columns.Add("板数");
 
-        DataTable dtOri = DBHelper.GetDataTable(" select * from limit_up where alert_date <= '" + year.Trim() + "-12-31'  and alert_date >= '" 
-            + Util.GetLastTransactDate(DateTime.Parse(year.Trim()+"-1-1"), 10).Date.ToShortDateString() + "' order by alert_date desc ");
+        DateTime currentMonth = DateTime.Parse(month + "-1");
+        currentMonth = currentMonth.AddMonths(1).AddDays(-1);
+
+        DataTable dtOri = DBHelper.GetDataTable(" select * from limit_up where alert_date <= '" + currentMonth.Date.ToShortDateString() + "' and alert_date >= '"
+            + Util.GetLastTransactDate(DateTime.Parse(month.Trim()+"-1"), 10).Date.ToShortDateString() + "' order by alert_date desc ");
 
         foreach (DataRow drOri in dtOri.Rows)
         {
