@@ -10,7 +10,7 @@
 
     public string sort = "MACD日,KDJ日,综指 desc";
 
-    
+
 
     public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
 
@@ -22,7 +22,7 @@
         {
 
 
-           
+
 
 
             DataTable dt = GetData();
@@ -281,6 +281,8 @@
         DateTime lastTransactDate = Util.GetLastTransactDate(currentDate, 1);
         //DateTime limitUpStartDate = Util.GetLastTransactDate(lastTransactDate, 4);
 
+        DataTable dtGragonTigerList = DBHelper.GetDataTable(" select * from dragon_tiger_list where alert_date >= '" + Util.GetLastTransactDate(currentDate, 5)
+            + "' and alert_date <= '" + currentDate.ToShortDateString() + "' ");
 
 
         DataTable dtOri = DBHelper.GetDataTable(" select gid, alert_date from limit_up where  alert_date = '"
@@ -396,7 +398,7 @@
             double computeMaxPrice = 0;
             for (int i = 1; i <= 5; i++)
             {
-                
+
                 if (currentIndex + i >= stock.kLineDay.Length)
                     break;
 
@@ -435,6 +437,11 @@
                 && stock.kLineDay[currentIndex].lowestPrice > stock.kLineDay[currentIndex - 1].highestPrice)
             {
                 dr["信号"] = dr["信号"].ToString() + "🌟";
+            }
+
+            if (dtGragonTigerList.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"龙虎榜\" >🐲🐯</a>"; 
             }
 
             dr["总计"] = (computeMaxPrice - buyPrice) / buyPrice;
