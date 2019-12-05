@@ -228,7 +228,7 @@ public class Stock
         if (ret)
         {
             int firstAbove3LineIndex = currentIndex-limitUpNum+1;
-            for (; GetAverageSettlePrice(firstAbove3LineIndex, 3, 3) < kLineDay[firstAbove3LineIndex].endPrice; firstAbove3LineIndex--)
+            for (; GetAverageSettlePrice(firstAbove3LineIndex, 3, 3) < kLineDay[firstAbove3LineIndex].endPrice && firstAbove3LineIndex > 6; firstAbove3LineIndex--)
             {
 
             }
