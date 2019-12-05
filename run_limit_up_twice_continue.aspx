@@ -4,11 +4,11 @@
 
 <script runat="server">
 
-    public static ArrayList gidArr = new ArrayList();
+    public  ArrayList gidArr = new ArrayList();
 
     public static int count = 0;
 
-    public static Stock GetStock(string gid)
+    public  Stock GetStock(string gid)
     {
         Stock s = new Stock();
         bool found = false;
