@@ -148,6 +148,8 @@ public class Stock
         return k;
     }
 
+   
+
     public static DateTime GetCurrentKLineEndDateTime(DateTime currentDate, int stepMinutes)
     {
         if (currentDate.Date < DateTime.Now.Date)
@@ -210,6 +212,36 @@ public class Stock
             }
         }
         return index;
+    }
+
+    public bool IsLimitUpContinous(int currentIndex, int limitUpNum)
+    {
+        bool ret = true;
+        for (int i = 0; i < limitUpNum; i++)
+        {
+            if (!IsLimitUp(currentIndex - i))
+            {
+                ret = false;
+                break;
+            }
+        }
+        if (ret)
+        {
+            int firstAbove3LineIndex = currentIndex-limitUpNum+1;
+            for (; GetAverageSettlePrice(firstAbove3LineIndex, 3, 3) < kLineDay[firstAbove3LineIndex].endPrice; firstAbove3LineIndex--)
+            {
+
+            }
+            for (int i = firstAbove3LineIndex; i < currentIndex - limitUpNum + 1; i++)
+            {
+                if (IsLimitUp(i))
+                {
+                    ret = false;
+                    break;
+                }
+            }
+        }
+        return ret;
     }
 
     public bool IsCross3Line(int index, string type)
