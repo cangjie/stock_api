@@ -60,7 +60,7 @@
     {
         if (!IsPostBack)
         {
-            buyPoint = Util.GetSafeRequestValue(Request, "buypoint", "settle");
+            buyPoint = Util.GetSafeRequestValue(Request, "buypoint", "open");
             DataTable dt = GetData();
             dg.DataSource = RenderHtml(dt.Select("", ""));
             dg.DataBind();
