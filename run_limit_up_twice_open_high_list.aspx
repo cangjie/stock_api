@@ -32,6 +32,8 @@
 
     public int downEarn = 0;
 
+    public static string buyPoint = "open";
+
     public  Stock GetStock(string gid)
     {
         Stock s = new Stock();
@@ -58,6 +60,7 @@
     {
         if (!IsPostBack)
         {
+            buyPoint = Util.GetSafeRequestValue(Request, "buypoint", "settle");
             DataTable dt = GetData();
             dg.DataSource = RenderHtml(dt.Select("", ""));
             dg.DataBind();
@@ -182,6 +185,10 @@
             }
 
             double buyPrice = stock.kLineDay[currentIndex + 1].endPrice;
+            if (buyPoint.Trim().Equals("open"))
+            {
+                buyPrice = stock.kLineDay[currentIndex + 1].startPrice;
+            }
             DataRow dr = dt.NewRow();
             dr["日期"] = stock.kLineDay[currentIndex].startDateTime.ToShortDateString();
             dr["代码"] = stock.gid;
