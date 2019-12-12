@@ -189,7 +189,8 @@
             {
                 buyPrice = stock.kLineDay[currentIndex + 1].startPrice;
             }
-            else if (buyPoint.Trim().Equals("half"))
+            else if (buyPoint.Trim().Equals("half") 
+                && (stock.kLineDay[currentIndex+1].endPrice - stock.kLineDay[currentIndex+1].startPrice) / stock.kLineDay[currentIndex+1].startPrice <= -0.03)
             {
                 buyPrice = (stock.kLineDay[currentIndex + 1].endPrice + stock.kLineDay[currentIndex + 1].startPrice) / 2;
             }
