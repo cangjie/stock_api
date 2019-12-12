@@ -13,17 +13,23 @@
 
     public int horseHeadF5 = 0;
 
+    public int horseHeadF3 = 0;
+
     public int horseHeadHigh = 0;
 
     public int sortCaseCount = 0;
 
     public int sortCaseF5 = 0;
 
+    public int sortCaseF3 = 0;
+
     public int sortCaseHigh = 0;
 
     public int downCount = 0;
 
     public int downF5 = 0;
+
+    public int downF3 = 0;
 
     public int downHigh = 0;
 
@@ -190,6 +196,7 @@
             double highPrice = stock.kLineDay[currentIndex + 1].highestPrice;
             double lowPrice = stock.kLineDay[currentIndex + 2].lowestPrice;
             double f5 = lowPrice + (highPrice - lowPrice) * 0.618;
+            double f3 = lowPrice + (highPrice - lowPrice) * 0.382;
             DataRow dr = dt.NewRow();
             dr["日期"] = stock.kLineDay[currentIndex].startDateTime.ToShortDateString();
             dr["代码"] = stock.gid;
@@ -207,7 +214,11 @@
             if (!stock.IsLimitUp(currentIndex + 1) && stock.kLineDay[currentIndex + 1].lowestPrice > stock.kLineDay[currentIndex].endPrice)
             {
                 horseHeadCount++;
-                if (maxPrice >= f5)
+                if (maxPrice > f3)
+                {
+                    horseHeadF3++;
+                }
+                if (maxPrice > f5)
                 {
                     horseHeadF5++;
                 }
@@ -222,6 +233,10 @@
                 && stock.kLineDay[currentIndex + 1].lowestPrice <= stock.kLineDay[currentIndex].endPrice)
             {
                 sortCaseCount++;
+                if (maxPrice > f3)
+                {
+                    sortCaseF3++;
+                }
                 if (maxPrice > f5)
                 {
                     sortCaseF5++;
@@ -235,7 +250,11 @@
             if (!stock.IsLimitUp(currentIndex + 1) && stock.kLineDay[currentIndex + 1].endPrice <= stock.kLineDay[currentIndex].endPrice)
             {
                 downCount++;
-                if (maxPrice >= f5)
+                if (maxPrice > f3)
+                {
+                    downF3++;
+                }
+                if (maxPrice > f5)
                 {
                     downF5++;
                 }
@@ -277,16 +296,19 @@
 
             <tr>
                 <td>马头：<%=ShowPercent(horseHeadCount, count) %></td>
+                <td>F3：<%=ShowPercent(horseHeadF3, horseHeadCount) %> </td>
                 <td>F5：<%=ShowPercent(horseHeadF5, horseHeadCount) %> </td>
                 <td>前高：<%=ShowPercent(horseHeadHigh, horseHeadCount) %></td>
             </tr>
             <tr>
                 <td>剑鞘：<%=ShowPercent(sortCaseCount, count) %></td>
+                <td>F3：<%=ShowPercent(sortCaseF3, sortCaseCount) %> </td>
                 <td>F5：<%=ShowPercent(sortCaseF5, sortCaseCount) %> </td>
                 <td>前高：<%=ShowPercent(sortCaseHigh, sortCaseCount) %></td>
             </tr>
             <tr>
                 <td>下跌：<%=ShowPercent(downCount, count) %></td>
+                <td>F3：<%=ShowPercent(downF3, downCount) %></td>
                 <td>F5：<%=ShowPercent(downF5, downCount) %></td>
                 <td>前高：<%=ShowPercent(downHigh, downCount) %></td>
             </tr>
