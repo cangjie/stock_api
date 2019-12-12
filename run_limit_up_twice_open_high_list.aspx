@@ -189,6 +189,10 @@
             {
                 buyPrice = stock.kLineDay[currentIndex + 1].startPrice;
             }
+            else if (buyPoint.Trim().Equals("half"))
+            {
+                buyPrice = (stock.kLineDay[currentIndex + 1].endPrice + stock.kLineDay[currentIndex + 1].startPrice) / 2;
+            }
             DataRow dr = dt.NewRow();
             dr["日期"] = stock.kLineDay[currentIndex].startDateTime.ToShortDateString();
             dr["代码"] = stock.gid;
