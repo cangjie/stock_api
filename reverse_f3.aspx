@@ -482,7 +482,7 @@
                 {
                     limitUpNum++;
                     if (limitUpNum == 1
-                        && Math.Max(stock.kLineDay[i+1].startPrice, stock.kLineDay[i+1].endPrice) > stock.kLineDay[i].endPrice)
+                        && Math.Min(stock.kLineDay[i+1].startPrice, stock.kLineDay[i+1].endPrice) > stock.kLineDay[i].endPrice)
                     {
                         isSortCase = true;
                         if (stock.kLineDay[i + 1].endPrice > stock.kLineDay[i].endPrice)
