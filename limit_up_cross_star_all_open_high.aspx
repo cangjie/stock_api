@@ -456,8 +456,7 @@
                 }
 
             }
-            if ((stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice <= 0.0975
-                && stock.kLineDay[currentIndex].lowestPrice > stock.kLineDay[currentIndex - 1].highestPrice)
+            if (stock.kLineDay[limitUpIndex + 1].lowestPrice > stock.kLineDay[limitUpIndex].highestPrice)
             {
                 dr["信号"] = dr["信号"].ToString() + "🌟";
             }
@@ -498,7 +497,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title></title>
+    <title>跳空剑鞘十字星（剑鞘：开盘收盘价都在之前涨停以上）</title>
 </head>
 <body>
     <form id="form2" runat="server">
