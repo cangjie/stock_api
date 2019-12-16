@@ -465,13 +465,23 @@
                 continue;
             }
 
-
+            bool isSortCase = false;
+            bool isHorseHead = false;
             int limitUpNum = 0;
             for (int i = highestIndex; stock.kLineDay[i].endPrice >= stock.GetAverageSettlePrice(i, 3, 3) && i >= 0; i--)
             {
                 if (stock.IsLimitUp(i))
                 {
                     limitUpNum++;
+                    if (limitUpNum == 1
+                        && Math.Max(stock.kLineDay[i+1].startPrice, stock.kLineDay[i+1].endPrice) > stock.kLineDay[i].endPrice)
+                    {
+                        isSortCase = true;
+                        if (stock.kLineDay[i + 1].endPrice > stock.kLineDay[i].endPrice)
+                        {
+                            isHorseHead = true;
+                        }
+                    }
                 }
             }
 
@@ -641,6 +651,14 @@
             dr["折返"] = 0;
             dr["PF3"] = 0;
             dr["PF5"] = 0;
+            if (isHorseHead)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title='马头' >🐴</a>";
+            }
+            else if (isSortCase)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title='剑鞘' >➖</a>";
+            }
             dt.Rows.Add(dr);
 
         }
