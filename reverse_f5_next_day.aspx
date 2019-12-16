@@ -354,6 +354,7 @@
         dt.Columns.Add("信号", Type.GetType("System.String"));
         dt.Columns.Add("缩量", Type.GetType("System.Double"));
         dt.Columns.Add("总换手", Type.GetType("System.Double"));
+        dt.Columns.Add("板数", Type.GetType("System.Int32"));
         dt.Columns.Add("调整", Type.GetType("System.Int32"));
         dt.Columns.Add("现高", Type.GetType("System.Double"));
         dt.Columns.Add("F3", Type.GetType("System.Double"));
@@ -482,6 +483,20 @@
                 continue;
             }
 
+            int limitUpNum = 0;
+            for (int i = highestIndex; stock.kLineDay[i].endPrice >= stock.GetAverageSettlePrice(i, 3, 3) && i >= 0; i--)
+            {
+                if (stock.IsLimitUp(i))
+                {
+                    limitUpNum++;
+                }
+            }
+
+            if (limitUpNum <= 1)
+            {
+                continue;
+            }
+
 
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
@@ -498,7 +513,7 @@
 
             dr["调整"] = currentIndex - GetHighestIndex(stock.kLineDay, currentIndex, highestPrice);
 
-
+            dr["板数"] = limitUpNum;
 
             dr["缩量"] = 0;
             dr["现高"] = highestPrice;
@@ -723,10 +738,10 @@
                                 dr["名称"].ToString() + " " + message, price, "limit_up_box");
 
 
-                       
+
 
                     }
-                    
+
                 }
 
             }
@@ -805,6 +820,7 @@
                     <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号"  ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="板数" HeaderText="板数"></asp:BoundColumn>
                     <asp:BoundColumn DataField="调整" HeaderText="调整"></asp:BoundColumn>
                     <asp:BoundColumn DataField="MK差" HeaderText="MK差" ></asp:BoundColumn>
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" ></asp:BoundColumn>
