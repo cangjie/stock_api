@@ -289,6 +289,7 @@
         dt.Columns.Add("名称", Type.GetType("System.String"));
         dt.Columns.Add("信号", Type.GetType("System.String"));
         dt.Columns.Add("缩量", Type.GetType("System.Double"));
+        dt.Columns.Add("板数", Type.GetType("System.Int32"));
         dt.Columns.Add("调整", Type.GetType("System.Int32"));
         dt.Columns.Add("现高", Type.GetType("System.Double"));
         dt.Columns.Add("F3", Type.GetType("System.Double"));
@@ -546,11 +547,37 @@
             }
 
 
+            bool isSortCase = false;
+            bool isHorseHead = false;
+            int limitUpNum = 0;
+            for (int i = limitUpIndex; stock.kLineDay[i].endPrice >= stock.GetAverageSettlePrice(i, 3, 3) && i >= 0; i--)
+            {
+                if (stock.IsLimitUp(i))
+                {
+                    limitUpNum++;
+                    if (limitUpNum == 1
+                        && Math.Min(stock.kLineDay[i+1].startPrice, stock.kLineDay[i+1].endPrice) > stock.kLineDay[i].endPrice)
+                    {
+                        isSortCase = true;
+                        if (stock.kLineDay[i + 1].endPrice > stock.kLineDay[i].endPrice)
+                        {
+                            isHorseHead = true;
+                        }
+                    }
+                }
+
+            }
+
+            if (limitUpNum <= 1)
+            {
+                continue;
+            }
+
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
 
-
+            dr["板数"] = limitUpNum;
             /*
             dr["信号"] = (stock.kLineDay[currentIndex].endPrice <= f3 * 1.01) ? "📈" : "";
             if (dr["信号"].ToString().Trim().Equals("") && StockWatcher.HaveAlerted(stock.gid.Trim(), "limit_up_box", currentDate))
@@ -708,6 +735,14 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"大长腿\" >腿</a>";
             }
+            if (isHorseHead)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title='马头' >🐴</a>";
+            }
+            else if (isSortCase)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title='剑鞘' >➖</a>";
+            }
             dt.Rows.Add(dr);
 
         }
@@ -831,6 +866,7 @@
                     <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号" SortExpression="信号|desc" ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="板数" HeaderText="板数"></asp:BoundColumn>
                     <asp:BoundColumn DataField="缩量" HeaderText="缩量"></asp:BoundColumn>
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD日|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>

@@ -10,8 +10,6 @@
 
     public string sort = "MACD日,KDJ日,综指 desc";
 
-
-
     public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
 
     protected void Page_Load(object sender, EventArgs e)
