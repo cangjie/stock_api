@@ -432,7 +432,8 @@
                 }
 
             }
-            if (!stock.IsLimitUp(currentIndex))
+            if (!stock.IsLimitUp(currentIndex) 
+                && stock.kLineDay[currentIndex].lowestPrice > stock.kLineDay[currentIndex-1].highestPrice)
             {
                 dr["信号"] = dr["信号"].ToString() + "🌟";
             }
