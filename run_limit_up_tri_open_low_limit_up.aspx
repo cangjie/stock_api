@@ -6,14 +6,14 @@
 
     public  ArrayList gidArr = new ArrayList();
 
-    
+
     public static int count = 0;
 
     public static int over1Per = 0;
 
     public static int over5Per = 0;
 
-   
+
 
     public  Stock GetStock(string gid)
     {
@@ -149,7 +149,7 @@
             {
                 continue;
             }
-            if (currentIndex + 7 > stock.kLineDay.Length - 1)
+            if (currentIndex + 8 > stock.kLineDay.Length - 1)
             {
                 continue;
             }
@@ -157,17 +157,25 @@
             {
                 continue;
             }
-
-            if (stock.kLineDay[currentIndex + 1].startPrice >= stock.kLineDay[currentIndex].endPrice)
-            {
-                continue;
-            }
-
             if (!stock.IsLimitUp(currentIndex + 1))
             {
                 continue;
             }
-            double buyPrice = stock.kLineDay[currentIndex + 1].endPrice;
+
+            if (stock.kLineDay[currentIndex + 2].startPrice > stock.kLineDay[currentIndex + 1].endPrice)
+            {
+                continue;
+            }
+            if (!stock.IsLimitUp(currentIndex + 2))
+            {
+                continue;
+            }
+            if (stock.kLineDay[currentIndex + 3].startPrice <= stock.kLineDay[currentIndex + 2].endPrice)
+            {
+                continue;
+            }
+
+            double buyPrice = stock.kLineDay[currentIndex + 3].startPrice;
             double highPrice = stock.kLineDay[currentIndex + 1].highestPrice;
             double lowPrice = stock.kLineDay[currentIndex + 2].lowestPrice;
             double f5 = lowPrice + (highPrice - lowPrice) * 0.618;
@@ -180,13 +188,13 @@
             double maxPrice = 0;
             for (int i = 1; i <= 5; i++)
             {
-                maxPrice = Math.Max(maxPrice, stock.kLineDay[currentIndex + 2 + i].highestPrice);
-                dr[i.ToString() + "日"] = (stock.kLineDay[currentIndex + 2 + i].highestPrice - buyPrice) / buyPrice;
+                maxPrice = Math.Max(maxPrice, stock.kLineDay[currentIndex + 3 + i].highestPrice);
+                dr[i.ToString() + "日"] = (stock.kLineDay[currentIndex + 3 + i].highestPrice - buyPrice) / buyPrice;
             }
             double totalRate = (maxPrice - buyPrice) / buyPrice;
             dr["总计"] = totalRate;
 
-            
+
             if (stock.kLineDay[currentIndex + 2].startPrice <= stock.kLineDay[currentIndex + 2].endPrice)
             {
                 dr["信号"] = "<font color='green' >" + dr["信号"].ToString() + "</font>";
