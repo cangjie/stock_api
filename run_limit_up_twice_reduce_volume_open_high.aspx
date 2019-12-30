@@ -182,7 +182,7 @@
             {
                 continue;
             }
-            if (stock.kLineDay[currentIndex].volume < 4 * stock.kLineDay[currentIndex - 1].volume)
+            if (stock.kLineDay[currentIndex].volume < 3 * stock.kLineDay[currentIndex - 1].volume)
             {
                 continue;
             }
