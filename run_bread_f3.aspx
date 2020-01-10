@@ -219,7 +219,7 @@
 
 
             DataRow dr = dt.NewRow();
-            dr["日期"] = stock.kLineDay[currentIndex].startDateTime.ToShortDateString();
+            dr["日期"] = stock.kLineDay[currentIndex+1+adjustNum].startDateTime.ToShortDateString();
             dr["代码"] = stock.gid;
             dr["名称"] = stock.Name.Trim();
             dr["买入"] = buyPrice;
