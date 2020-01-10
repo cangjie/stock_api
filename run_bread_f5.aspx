@@ -215,7 +215,7 @@
             }
 
 
-            double buyPrice = Math.Max(f3, stock.kLineDay[currentIndex + adjustNum].lowestPrice);
+            double buyPrice = Math.Max(f5, stock.kLineDay[currentIndex + adjustNum].lowestPrice);
 
 
             DataRow dr = dt.NewRow();
