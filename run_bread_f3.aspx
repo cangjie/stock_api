@@ -204,7 +204,7 @@
 
             int adjustNum = 0;
 
-            for (int i = currentIndex; adjustNum <= 5 && i < stock.kLineDay.Length && stock.kLineDay[i].lowestPrice >= f3 * 1.005; i++)
+            for (int i = currentIndex + 1; adjustNum <= 5 && i < stock.kLineDay.Length && stock.kLineDay[i].lowestPrice >= f3 * 1.005; i++)
             {
                 adjustNum++;
             }
