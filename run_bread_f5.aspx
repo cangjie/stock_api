@@ -172,7 +172,7 @@
             {
                 continue;
             }
-            if (currentIndex + 10 > stock.kLineDay.Length - 1)
+            if (currentIndex + 14 > stock.kLineDay.Length - 1)
             {
                 continue;
             }
