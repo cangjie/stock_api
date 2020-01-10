@@ -204,9 +204,21 @@
 
             int adjustNum = 0;
 
+            bool newHigh = false;
+
             for (int i = currentIndex + 1; adjustNum <= 5 && i < stock.kLineDay.Length && stock.kLineDay[i].lowestPrice >= f5 * 1.005; i++)
             {
+                if (stock.kLineDay[currentIndex + 1].highestPrice <= stock.kLineDay[i].highestPrice)
+                {
+                    newHigh = true;
+                    break;
+                }
                 adjustNum++;
+            }
+
+            if (newHigh)
+            {
+                continue;
             }
 
             if (adjustNum > 9)
