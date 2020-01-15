@@ -221,7 +221,7 @@
                 continue;
             }
 
-            if (adjustNum > 9)
+            if (adjustNum > 5)
             {
                 continue;
             }
