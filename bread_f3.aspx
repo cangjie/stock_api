@@ -425,11 +425,14 @@
             if (stock.kLineDay[limitUpIndex + 1].startPrice > stock.kLineDay[limitUpIndex].endPrice
                 && stock.kLineDay[limitUpIndex + 1].endPrice > stock.kLineDay[limitUpIndex].endPrice)
             {
-                dr["信号"] = dr["信号"].ToString() + "🗡";
-            }
-            else if (stock.kLineDay[limitUpIndex + 1].lowestPrice > stock.kLineDay[limitUpIndex].endPrice)
-            {
-                dr["信号"] = dr["信号"].ToString() + "🐴";
+                if (stock.kLineDay[limitUpIndex + 1].lowestPrice > stock.kLineDay[limitUpIndex].endPrice)
+                {
+                    dr["信号"] = dr["信号"].ToString() + "🐴";
+                }
+                else
+                {
+                    dr["信号"] = dr["信号"].ToString() + "🗡";
+                }
             }
 
             if (dtGragonTigerList.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
