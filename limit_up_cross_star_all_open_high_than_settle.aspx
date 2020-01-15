@@ -382,7 +382,7 @@
             double volumeReduce = volumeToday / volumeYesterday;
 
 
-            buyPrice = stock.kLineDay[currentIndex].endPrice;
+            buyPrice = stock.kLineDay[currentIndex].startPrice;
 
             /*
             if (stock.kLineDay[currentIndex].startPrice > f3 * 0.99 && stock.kLineDay[currentIndex].lowestPrice < f3 * 1.01 )
