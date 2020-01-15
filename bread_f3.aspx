@@ -339,10 +339,10 @@
             double highest = stock.kLineDay[limitUpIndex+1].highestPrice;
 
             double f3 = highest - (highest - lowest) * 0.382;
-
+            double f4 = highest - (highest - lowest) * 0.5;
             double f5 = highest - (highest - lowest) * 0.618;
 
-            if (stock.kLineDay[currentIndex].lowestPrice >= f3 * 1.005 || stock.kLineDay[currentIndex].lowestPrice <= f3 * 0.995)
+            if (stock.kLineDay[currentIndex].lowestPrice >= f3 * 1.005 || stock.kLineDay[currentIndex].lowestPrice <= f4)
             {
                 continue;
             }
@@ -361,7 +361,7 @@
             double volumeReduce = volumeToday / volumeYesterday;
 
 
-            buyPrice = stock.kLineDay[currentIndex].endPrice;
+            buyPrice = Math.Max(f3, stock.kLineDay[currentIndex].endPrice);
 
             /*
             if (stock.kLineDay[currentIndex].startPrice > f3 * 0.99 && stock.kLineDay[currentIndex].lowestPrice < f3 * 1.01 )
