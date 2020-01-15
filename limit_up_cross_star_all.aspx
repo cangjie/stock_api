@@ -317,7 +317,7 @@
 
             int limitUpNum = 0;
 
-            for (int i = currentIndex - 1; i > 0 && stock.kLineDay[currentIndex].endPrice >= stock.GetAverageSettlePrice(i, 3, 3); i--)
+            for (int i = currentIndex - 1; i > 0 && stock.kLineDay[i].endPrice >= stock.GetAverageSettlePrice(i, 3, 3); i--)
             {
                 if (stock.IsLimitUp(i))
                 {
