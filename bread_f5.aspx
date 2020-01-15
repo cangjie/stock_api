@@ -324,7 +324,19 @@
             {
                 continue;
             }
-
+            bool overHigh = false;
+            for (int i = limitUpIndex + 2; i <= currentIndex; i++)
+            {
+                if (stock.kLineDay[i].highestPrice >= stock.kLineDay[limitUpIndex + 1].highestPrice)
+                {
+                    overHigh = true;
+                    break;
+                }
+            }
+            if (overHigh)
+            {
+                continue;
+            }
 
 
 

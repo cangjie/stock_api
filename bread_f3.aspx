@@ -319,9 +319,20 @@
             {
                 continue;
             }
+            bool overHigh = false;
+            for (int i = limitUpIndex + 2; i <= currentIndex; i++)
+            {
+                if (stock.kLineDay[i].highestPrice >= stock.kLineDay[limitUpIndex + 1].highestPrice)
+                {
+                    overHigh = true;
+                    break;
+                }
+            }
+            if (overHigh)
+            {
+                continue;
+            }
 
-
-            
 
             int limitUpNum = 0;
 
@@ -416,10 +427,10 @@
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
 
 
-                
+
 
             }
-            
+
 
 
             if (stock.kLineDay[limitUpIndex + 1].startPrice > stock.kLineDay[limitUpIndex].endPrice
