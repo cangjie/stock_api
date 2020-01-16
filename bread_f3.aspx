@@ -20,11 +20,6 @@
         sort = Util.GetSafeRequestValue(Request, "sort", "缩量");
         if (!IsPostBack)
         {
-
-
-
-
-
             DataTable dt = GetData();
             dg.DataSource = dt;
             dg.DataBind();
@@ -358,6 +353,19 @@
                 continue;
             }
 
+            bool haveReached = false;
+            for (int i = limitUpIndex; i < currentIndex; i++)
+            {
+                if (stock.kLineDay[currentIndex].lowestPrice < f3 * 1.005)
+                {
+                    haveReached = true;
+                    break;
+                }
+            }
+            if (haveReached)
+            {
+                continue;
+            }
 
 
             double line3Price = KLine.GetAverageSettlePrice(stock.kLineDay, currentIndex, 3, 3);
