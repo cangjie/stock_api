@@ -358,7 +358,7 @@
             bool haveReached = false;
             for (int i = limitUpIndex; i < currentIndex; i++)
             {
-                if (stock.kLineDay[currentIndex].lowestPrice < f5 * 1.005)
+                if (stock.kLineDay[i].lowestPrice < f5 * 1.005)
                 {
                     haveReached = true;
                     break;
