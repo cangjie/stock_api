@@ -171,7 +171,7 @@
             {
                 continue;
             }
-            if (limitUpIndex + 10 > stock.kLineDay.Length - 1)
+            if (limitUpIndex + 6 > stock.kLineDay.Length - 1)
             {
                 continue;
             }
