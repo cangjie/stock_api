@@ -255,7 +255,8 @@
                 }
                 dr["信号"] = dr["信号"].ToString() + "剑鞘";
             }
-            if (!stock.IsLimitUp(currentIndex + 1) && stock.kLineDay[currentIndex + 1].endPrice <= stock.kLineDay[currentIndex].endPrice)
+            if (!stock.IsLimitUp(currentIndex + 1) && stock.kLineDay[currentIndex + 1].endPrice <= stock.kLineDay[currentIndex].endPrice
+                && stock.kLineDay[currentIndex+1].startPrice > stock.kLineDay[currentIndex].endPrice)
             {
                 downCount++;
                 if (totalRate >= 0.01)
