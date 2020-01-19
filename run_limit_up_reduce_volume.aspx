@@ -223,7 +223,7 @@
             {
                 totalSuc++;
             }
-            else if (totalRate >= 0.05)
+            if (totalRate >= 0.05)
             {
                 totalEarn++;
             }
