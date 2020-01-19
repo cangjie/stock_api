@@ -159,7 +159,7 @@
 
         DataTable dtOri = DBHelper.GetDataTable("select  * from limit_up a where not exists(select 'a' from limit_up b where a.gid = b.gid and b.alert_date = dbo.func_GetNextTransactDate(a.alert_date, 1)) "
             // + " and gid = 'sz300643' " 
-            + " and alert_date <= '" + Util.GetLastTransactDate(DateTime.Now.Date, 10).ToShortDateString() + "' "
+            + " and alert_date <= '" + Util.GetLastTransactDate(DateTime.Now.Date, 8).ToShortDateString() + "' "
             + " order by a.alert_date desc"
             );
         foreach (DataRow drOri in dtOri.Rows)
@@ -171,7 +171,7 @@
             {
                 continue;
             }
-            if (limitUpIndex + 6 > stock.kLineDay.Length - 1)
+            if (limitUpIndex + 7 > stock.kLineDay.Length - 1)
             {
                 continue;
             }
