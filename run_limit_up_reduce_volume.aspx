@@ -185,7 +185,7 @@
             }
             double firstVolume = stock.kLineDay[limitUpIndex + 1].volume;
             double minVolume = stock.kLineDay[limitUpIndex].volume;
-            int limitUpNum = 0;
+            int limitUpNum = 1;
             for (int i = limitUpIndex - 1; i >= 0 && stock.kLineDay[i].endPrice >= stock.GetAverageSettlePrice(i, 3, 3); i--)
             {
                 if (stock.IsLimitUp(i))
