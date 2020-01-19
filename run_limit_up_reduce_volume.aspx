@@ -149,6 +149,7 @@
         dt.Columns.Add("信号", Type.GetType("System.String"));
         dt.Columns.Add("代码", Type.GetType("System.String"));
         dt.Columns.Add("名称", Type.GetType("System.String"));
+        dt.Columns.Add("板数", Type.GetType("System.Int32"));
         dt.Columns.Add("买入", Type.GetType("System.Double"));
         for (int i = 1; i <= 5; i++)
         {
