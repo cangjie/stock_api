@@ -32,6 +32,10 @@
 
     public int downEarn = 0;
 
+    public int totalSuc = 0;
+
+    public int totalEarn = 0;
+
     public static string buyPoint = "open";
 
     public  Stock GetStock(string gid)
@@ -215,6 +219,14 @@
             }
             double totalRate = (maxPrice - buyPrice) / buyPrice;
             dr["总计"] = totalRate;
+            if (totalRate >= 0.01)
+            {
+                totalSuc++;
+            }
+            else if (totalRate >= 0.05)
+            {
+                totalEarn++;
+            }
             if (stock.IsLimitUp(currentIndex + 1))
             {
                 limitUpTriCount++;
@@ -316,7 +328,7 @@
 
     </div>
     <div>
-        <div>总计：<%=count %></div>
+        <div>总计：<%=count %> 1%：<%= Math.Round((double)totalSuc * 100/count, 2).ToString() %>% 5%：<%= Math.Round((double)totalEarn * 100/count, 2).ToString() %>%</div>
         <div><asp:DataGrid ID="dg" runat="server" BackColor="White" BorderColor="#999999" BorderStyle="None" BorderWidth="1px" CellPadding="3" GridLines="Vertical" Width="100%">
             <AlternatingItemStyle BackColor="#DCDCDC" />
             <FooterStyle BackColor="#CCCCCC" ForeColor="Black" />
