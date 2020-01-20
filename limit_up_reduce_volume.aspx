@@ -11,7 +11,7 @@
     {
         if (!IsPostBack)
         {
-            
+
             //RefreshData();
             calendar.SelectedDate = DateTime.Now;
             dg.DataSource = GetData();
@@ -22,23 +22,16 @@
     public DataTable GetData()
     {
         DateTime currentDate = DateTime.Parse(calendar.SelectedDate.ToShortDateString());
-        DataTable dtOri = DBHelper.GetDataTable(" select * from  limit_up_volume_reduce where alert_date >= '"
-            + currentDate.ToShortDateString() + "'  and alert_date < '" + currentDate.AddDays(1).ToShortDateString() + "' ");
+        DataTable dtOri = DBHelper.GetDataTable(" select * from  limit_up where  alert_date = '"
+            + Util.GetLastTransactDate(currentDate, 1).ToShortDateString() + "' ");
 
-        string allGids = "";
 
-        foreach (DataRow drOri in dtOri.Rows)
-        {
-            Stock stock = new Stock(drOri["gid"].ToString().Trim());
-            if (stock.Name.Trim().ToLower().IndexOf("st") < 0 )
-                allGids = allGids + "," + drOri["gid"].ToString().Trim();
-        }
-        if (!allGids.Trim().Equals(""))
-            allGids = allGids.Remove(0, 1);
+
         DataTable dt = new DataTable();
         dt.Columns.Add("代码");
         dt.Columns.Add("名称");
         dt.Columns.Add("信号");
+        dt.Columns.Add("板数");
         dt.Columns.Add("前日涨幅");
         dt.Columns.Add("当日收盘");
         dt.Columns.Add("当日涨幅");
@@ -55,16 +48,41 @@
         {
             DataRow dr = dt.NewRow();
             Stock s = new Stock(drOri["gid"].ToString());
-            if (s.Name.Trim().ToLower().IndexOf("st") >= 0)
-                continue;
-            s.LoadKLineDay();
+
+            s.LoadKLineDay(Util.rc);
+
+
+
             int currentIndex = s.GetItemIndex(currentDate);
+
+            if (currentIndex <= 0)
+            {
+                continue;
+            }
+
+            if (s.kLineDay[currentIndex].VirtualVolume > s.kLineDay[currentIndex - 1].volume)
+            {
+                continue;
+            }
+            if (s.IsLimitUp(currentIndex))
+            {
+                continue;
+            }
+            int limitUpNum = 0;
+
+            for (int i = currentIndex - 1; i >= 0 && s.kLineDay[i].endPrice >= s.GetAverageSettlePrice(i, 3, 3); i--)
+            {
+                if (s.IsLimitUp(i))
+                {
+                    limitUpNum++;
+                }
+            }
+
             dr["代码"] = s.gid;
             dr["名称"] = "<a href=\"https://touzi.sina.com.cn/public/xray/details/" + s.gid.Trim()
                 + "\" target=\"_blank\"  >" + s.Name.Trim() + "</a>";
-            dr["代码"] = "<a href=\"show_k_line_day.aspx?gid=" + s.gid + "&name=" + s.Name.Trim() + "&gids=" + allGids.Trim() + "\" target=\"_blank\" >"
-                + s.gid + "</a>";
-
+            dr["代码"] = s.gid;
+            dr["板数"] = limitUpNum.ToString();
             double volumeToday = Stock.GetVolumeAndAmount(s.gid, DateTime.Parse(currentDate.ToShortDateString() + " 15:00"))[0];
             double volumeYesterday = Stock.GetVolumeAndAmount(s.gid, DateTime.Parse(currentDate.AddDays(-1).ToShortDateString() + " 15:00"))[0];
 
@@ -269,6 +287,7 @@
                 <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                 <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                 <asp:BoundColumn DataField="信号" HeaderText="信号"></asp:BoundColumn>
+                <asp:BoundColumn DataField="板数" HeaderText="板数"></asp:BoundColumn>
                 <asp:BoundColumn DataField="拉升天数" HeaderText="拉升天数" SortExpression="拉升天数|desc"></asp:BoundColumn>
                 <asp:BoundColumn DataField="拉升幅度" HeaderText="拉升幅度" SortExpression="拉升幅度|desc"></asp:BoundColumn>
                 <asp:BoundColumn DataField="前日涨幅" HeaderText="前日涨幅" SortExpression="前日涨幅|asc"></asp:BoundColumn>

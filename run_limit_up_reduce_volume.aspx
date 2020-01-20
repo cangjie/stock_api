@@ -155,7 +155,7 @@
         dt.Columns.Add("名称", Type.GetType("System.String"));
         dt.Columns.Add("板数", Type.GetType("System.Int32"));
         dt.Columns.Add("买入", Type.GetType("System.Double"));
-        for (int i = 1; i <= 5; i++)
+        for (int i = 1; i <= 14; i++)
         {
             dt.Columns.Add(i.ToString() + "日", Type.GetType("System.Double"));
         }
@@ -163,7 +163,7 @@
 
         DataTable dtOri = DBHelper.GetDataTable("select  * from limit_up a where not exists(select 'a' from limit_up b where a.gid = b.gid and b.alert_date = dbo.func_GetNextTransactDate(a.alert_date, 1)) "
             // + " and gid = 'sz300643' " 
-            + " and alert_date <= '" + Util.GetLastTransactDate(DateTime.Now.Date, 8).ToShortDateString() + "' "
+            + " and alert_date <= '" + Util.GetLastTransactDate(DateTime.Now.Date, 16).ToShortDateString() + "' "
             + " order by a.alert_date desc"
             );
         foreach (DataRow drOri in dtOri.Rows)
@@ -175,7 +175,7 @@
             {
                 continue;
             }
-            if (limitUpIndex + 7 > stock.kLineDay.Length - 1)
+            if (limitUpIndex + 15 > stock.kLineDay.Length - 1)
             {
                 continue;
             }
@@ -212,7 +212,7 @@
             dr["板数"] = limitUpNum;
             dr["买入"] = buyPrice;
             double maxPrice = 0;
-            for (int i = 1; i <= 5; i++)
+            for (int i = 1; i <= 14; i++)
             {
                 maxPrice = Math.Max(maxPrice, stock.kLineDay[currentIndex + 1 + i].highestPrice);
                 dr[i.ToString() + "日"] = (stock.kLineDay[currentIndex + 1 + i].highestPrice - buyPrice) / buyPrice;
