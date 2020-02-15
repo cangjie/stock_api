@@ -17,7 +17,7 @@
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        sort = Util.GetSafeRequestValue(Request, "sort", "缩量");
+        sort = Util.GetSafeRequestValue(Request, "sort", "今涨");
         if (!IsPostBack)
         {
             DataTable dt = GetData();
@@ -390,7 +390,7 @@
             dr["MACD日"] = stock.macdDays(currentIndex);
 
             //dr["今涨"] = (stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
-            dr["今涨"] = (stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex].startPrice) / stock.kLineDay[currentIndex].startPrice;
+            dr["今涨"] = (stock.kLineDay[currentIndex].startPrice - stock.kLineDay[currentIndex-1].endPrice) / stock.kLineDay[currentIndex-1].endPrice;
             double maxPrice = Math.Max(highest, stock.kLineDay[currentIndex].highestPrice);
             bool lowThanF5 = false;
             bool lowThanF3 = false;
