@@ -73,6 +73,10 @@
             {
                 continue;
             }
+            if (stock.kLineDay[currentIndex + 1].startPrice >= stock.kLineDay[currentIndex].endPrice)
+            {
+                continue;
+            }
             int lowestIndex = 0;
             double lowestPrice = GetFirstLowestPrice(stock.kLineDay, currentIndex + 1, out lowestIndex);
             double highestPrice = Math.Max(Math.Max(stock.kLineDay[currentIndex].highestPrice,
