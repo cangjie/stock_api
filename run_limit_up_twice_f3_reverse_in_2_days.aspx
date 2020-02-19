@@ -97,6 +97,10 @@
             {
                 continue;
             }
+            if (stock.kLineDay[currentIndex + 2].lowestPrice >= f3 * 1.01)
+            {
+                continue;
+            }
             double buyPrice = Math.Max(stock.kLineDay[currentIndex + 2].lowestPrice, f3);
 
 

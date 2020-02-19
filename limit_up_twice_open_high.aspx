@@ -433,7 +433,7 @@
                 }
 
             }
-            if (!stock.IsLimitUp(currentIndex) 
+            if (!stock.IsLimitUp(currentIndex)
                 && stock.kLineDay[currentIndex].endPrice > stock.kLineDay[currentIndex-1].highestPrice)
             {
                 dr["信号"] = dr["信号"].ToString() + "🌟";
@@ -450,6 +450,13 @@
                     dr["信号"] = dr["信号"].ToString() + "<a title=\"龙虎榜\" >🐲</a>";
                 }
 
+            }
+            double yesterdayVolume = stock.kLineDay[currentIndex - 1].volume;
+            double beforeYesterdayVolume = stock.kLineDay[currentIndex - 2].volume;
+            double volumeIncreateRate = (yesterdayVolume - beforeYesterdayVolume) / beforeYesterdayVolume;
+            if (volumeIncreateRate < 0.1 && volumeIncreateRate > -0.2)
+            { 
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"二连板量持平\" 📈</a>";
             }
 
             dr["总计"] = (computeMaxPrice - buyPrice) / buyPrice;
