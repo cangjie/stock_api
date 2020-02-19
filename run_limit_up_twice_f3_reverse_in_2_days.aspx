@@ -73,15 +73,21 @@
             {
                 continue;
             }
-            if (stock.kLineDay[currentIndex + 1].startPrice >= stock.kLineDay[currentIndex].endPrice)
+            if (stock.kLineDay[currentIndex + 1].startPrice >= stock.kLineDay[currentIndex].endPrice
+                || stock.kLineDay[currentIndex + 1].endPrice >= stock.kLineDay[currentIndex].endPrice)
             {
                 continue;
             }
             int lowestIndex = 0;
             double lowestPrice = GetFirstLowestPrice(stock.kLineDay, currentIndex + 1, out lowestIndex);
-            double highestPrice = Math.Max(Math.Max(stock.kLineDay[currentIndex].highestPrice,
-                stock.kLineDay[currentIndex + 1].highestPrice), stock.kLineDay[currentIndex+2].highestPrice);
+            double highestPrice = Math.Max(stock.kLineDay[currentIndex].highestPrice, stock.kLineDay[currentIndex + 1].highestPrice);
             double f3 = highestPrice - (highestPrice - lowestPrice) * 0.382;
+
+            if (f3 <= stock.GetAverageSettlePrice(currentIndex + 2, 3, 3))
+            {
+                continue;
+            }
+
             if (stock.kLineDay[currentIndex + 1].endPrice == stock.kLineDay[currentIndex + 1].lowestPrice
                 && (stock.kLineDay[currentIndex + 1].endPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice < -0.099)
             {
