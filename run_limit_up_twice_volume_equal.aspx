@@ -73,6 +73,10 @@
             {
                 continue;
             }
+            if (stock.kLineDay[currentIndex].endPrice > stock.kLineDay[currentIndex + 1].startPrice)
+            {
+                continue;
+            }
             double todayVolume = stock.kLineDay[currentIndex].volume;
             double yestodayVolume = stock.kLineDay[currentIndex - 1].volume;
             double volumeIncreaseRate = (todayVolume - yestodayVolume) / yestodayVolume;
@@ -90,7 +94,7 @@
                 dr["次日涨停"] = "是";
             }
             else
-            { 
+            {
                 dr["次日涨停"] = "否";
             }
             dt.Rows.Add(dr);
