@@ -21,7 +21,7 @@
         sort = Util.GetSafeRequestValue(Request, "sort", "今涨");
         if (!IsPostBack)
         {
-            rate = int.Parse(Util.GetSafeRequestValue(Request, "rate", "15").Trim());
+            rate = int.Parse(Util.GetSafeRequestValue(Request, "rate", "10").Trim());
             DataTable dt = GetData();
             dg.DataSource = dt;
             dg.DataBind();
