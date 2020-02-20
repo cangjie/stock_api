@@ -49,9 +49,7 @@
         dt.Columns.Add("名称");
         dt.Columns.Add("次日涨停");
         DataTable dtOri = DBHelper.GetDataTable("select * from limit_up a where exists(select 'a' from limit_up b where a.gid = b.gid and b.alert_date = dbo.func_GetLastTransactDate(a.alert_date, 1)) "
-            // + " and gid = 'sz300643' " 
-            + " order by a.alert_date desc"
-            );
+            + " order by a.alert_date desc");
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock stock = GetStock(drOri["gid"].ToString());
