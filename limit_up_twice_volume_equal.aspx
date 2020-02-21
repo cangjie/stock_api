@@ -370,9 +370,14 @@
 
             double volumeReduce = volumeToday / volumeYesterday;
 
-
-            buyPrice = stock.kLineDay[currentIndex].endPrice;
-
+            if (currentIndex == stock.kLineDay.Length - 1)
+            {
+                buyPrice = stock.kLineDay[currentIndex].endPrice;
+            }
+            else
+            { 
+                 buyPrice = stock.kLineDay[currentIndex+1].startPrice;
+            }
             /*
             if (stock.kLineDay[currentIndex].startPrice > f3 * 0.99 && stock.kLineDay[currentIndex].lowestPrice < f3 * 1.01 )
             {
@@ -430,7 +435,7 @@
                 {
                     dr["信号"] = dr["信号"].ToString() + "<a title=\"二连板量持平后高开\" >📈</a>";
                     if ((stock.kLineDay[currentIndex + 1].startPrice - stock.kLineDay[currentIndex + 1].endPrice) / stock.kLineDay[currentIndex + 1].endPrice < 0.095)
-                    { 
+                    {
                         dr["信号"] = dr["信号"].ToString() + "<a title=\"未涨停\" >🌟</a>";
                     }
                 }
@@ -463,7 +468,7 @@
 
             }
 
-            
+
 
             if (dtGragonTigerList.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
             {
