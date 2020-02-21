@@ -276,7 +276,7 @@
             return dt;
         }
 
-        DateTime lastTransactDate = Util.GetLastTransactDate(currentDate, 1);
+        //DateTime lastTransactDate = Util.GetLastTransactDate(currentDate, 1);
         //DateTime limitUpStartDate = Util.GetLastTransactDate(lastTransactDate, 4);
 
         DataTable dtGragonTigerList = DBHelper.GetDataTable(" select * from dragon_tiger_list where alert_date >= '" + Util.GetLastTransactDate(currentDate, 5)
@@ -284,7 +284,7 @@
 
 
         DataTable dtOri = DBHelper.GetDataTable("select * from limit_up a where exists(select 'a' from limit_up b where a.gid = b.gid and b.alert_date = dbo.func_GetLastTransactDate(a.alert_date, 1)) "
-            + " and a.alert_date = '" + lastTransactDate.ToShortDateString() + "' "
+            + " and a.alert_date = '" + currentDate.ToShortDateString() + "' "
             + " order by a.alert_date desc");
         /*
         DataTable dtOri = DBHelper.GetDataTable(" select  * from limit_up a where exists(select 'a' from limit_up b where a.gid = b.gid and b.alert_date = dbo.func_GetLastTransactDate(a.alert_date, 1))  "
