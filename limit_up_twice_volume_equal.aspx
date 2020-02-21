@@ -433,10 +433,10 @@
 
                 if (i == 1)
                 {
-                    dr["信号"] = dr["信号"].ToString() + "<a title=\"二连板量持平后高开\" >📈</a>";
-                    if ((stock.kLineDay[currentIndex + 1].startPrice - stock.kLineDay[currentIndex + 1].endPrice) / stock.kLineDay[currentIndex + 1].endPrice < 0.095)
+                    if ((stock.kLineDay[currentIndex + 1].startPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice < 0.095
+                        && stock.kLineDay[currentIndex + 1].startPrice > stock.kLineDay[currentIndex].endPrice)
                     {
-                        dr["信号"] = dr["信号"].ToString() + "<a title=\"未涨停\" >🌟</a>";
+                        dr["信号"] = dr["信号"].ToString() + "<a title=\"高开未涨停\" >🌟</a>";
                     }
                 }
 
