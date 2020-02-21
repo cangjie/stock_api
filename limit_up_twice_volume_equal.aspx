@@ -429,7 +429,12 @@
                 if (i == 1)
                 {
                     dr["信号"] = dr["信号"].ToString() + "<a title=\"二连板量持平后高开\" >📈</a>";
+                    if ((stock.kLineDay[currentIndex + 1].startPrice - stock.kLineDay[currentIndex + 1].endPrice) / stock.kLineDay[currentIndex + 1].endPrice < 0.095)
+                    { 
+                        dr["信号"] = dr["信号"].ToString() + "<a title=\"未涨停\" >🌟</a>";
+                    }
                 }
+
 
 
 
@@ -457,12 +462,8 @@
                 }
 
             }
-         
-            if (!stock.IsLimitUp(currentIndex)
-                && stock.kLineDay[currentIndex].endPrice > stock.kLineDay[currentIndex-1].highestPrice)
-            {
-                dr["信号"] = dr["信号"].ToString() + "🌟";
-            }
+
+            
 
             if (dtGragonTigerList.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
             {
