@@ -318,18 +318,18 @@
             {
                 continue;
             }
-            
+
             double todayVolume = stock.kLineDay[currentIndex].volume;
             double yestodayVolume = stock.kLineDay[currentIndex - 1].volume;
             double volumeIncreaseRate = (todayVolume - yestodayVolume) / yestodayVolume;
-            
-            if (volumeIncreaseRate >= double.Parse("0." + rate.ToString()) 
+
+            if (volumeIncreaseRate >= double.Parse("0." + rate.ToString())
                 || volumeIncreaseRate <= double.Parse("-0." + rate.ToString()))
             {
                 continue;
             }
 
-            
+
 
 
             int limitUpNum = 0;
@@ -426,8 +426,11 @@
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
 
 
+                if (i == 1)
+                {
+                    dr["信号"] = dr["信号"].ToString() + "<a title=\"二连板量持平后高开\" >📈</a>";
+                }
 
-                
 
 
                 if (stock.kLineDay[currentIndex + i].startPrice > maxPrice && !stock.IsLimitUp(currentIndex) && !haveLimitUp)
@@ -454,13 +457,7 @@
                 }
 
             }
-            double yesterdayVolume = stock.kLineDay[currentIndex - 1].volume;
-            double beforeYesterdayVolume = stock.kLineDay[currentIndex - 2].volume;
-            double volumeIncreateRate = (yesterdayVolume - beforeYesterdayVolume) / beforeYesterdayVolume;
-            if (volumeIncreateRate < 0.1 && volumeIncreateRate > -0.2)
-            { 
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"二连板量持平\" 📈</a>";
-            }
+         
             if (!stock.IsLimitUp(currentIndex)
                 && stock.kLineDay[currentIndex].endPrice > stock.kLineDay[currentIndex-1].highestPrice)
             {
@@ -479,7 +476,7 @@
                 }
 
             }
-            
+
             dr["总计"] = (computeMaxPrice - buyPrice) / buyPrice;
             dt.Rows.Add(dr);
 
