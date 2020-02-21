@@ -442,7 +442,7 @@
             double volumeIncreateRate = (yesterdayVolume - beforeYesterdayVolume) / beforeYesterdayVolume;
             if (volumeIncreateRate < 0.2 && volumeIncreateRate > -0.2)
             { 
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"二连板量持平\" 📈</a>";
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"二连板量持平\" >📈</a>";
             }
             if (!stock.IsLimitUp(currentIndex)
                 && stock.kLineDay[currentIndex].endPrice > stock.kLineDay[currentIndex-1].highestPrice)
