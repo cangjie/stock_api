@@ -440,7 +440,7 @@
             double yesterdayVolume = stock.kLineDay[currentIndex - 1].volume;
             double beforeYesterdayVolume = stock.kLineDay[currentIndex - 2].volume;
             double volumeIncreateRate = (yesterdayVolume - beforeYesterdayVolume) / beforeYesterdayVolume;
-            if (volumeIncreateRate < 0.1 && volumeIncreateRate > -0.2)
+            if (volumeIncreateRate < 0.2 && volumeIncreateRate > -0.2)
             { 
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"二连板量持平\" 📈</a>";
             }
