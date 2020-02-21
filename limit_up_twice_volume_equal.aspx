@@ -469,7 +469,7 @@
 
             if (dtGragonTigerList.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
             {
-                if (dtGragonTigerList.Select(" gid = '" + stock.gid.Trim() + "' and alert_date = '" + Util.GetLastTransactDate(currentDate, 1).ToShortDateString() + "' ").Length > 0)
+                if (dtGragonTigerList.Select(" gid = '" + stock.gid.Trim() + "' and alert_date = '" + currentDate.ToShortDateString() + "' ").Length > 0)
                 {
                     dr["信号"] = dr["信号"].ToString() + "<a title=\"昨日龙虎榜\" >🐲🐯</a>";
                 }
