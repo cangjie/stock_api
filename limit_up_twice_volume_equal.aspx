@@ -375,8 +375,8 @@
                 buyPrice = stock.kLineDay[currentIndex].endPrice;
             }
             else
-            { 
-                 buyPrice = stock.kLineDay[currentIndex+1].startPrice;
+            {
+                buyPrice = stock.kLineDay[currentIndex+1].startPrice;
             }
             /*
             if (stock.kLineDay[currentIndex].startPrice > f3 * 0.99 && stock.kLineDay[currentIndex].lowestPrice < f3 * 1.01 )
@@ -412,7 +412,7 @@
             dr["MACD日"] = stock.macdDays(currentIndex);
 
             //dr["今涨"] = (stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
-            dr["今涨"] = (stock.kLineDay[currentIndex].startPrice - stock.kLineDay[currentIndex-1].endPrice) / stock.kLineDay[currentIndex-1].endPrice;
+            dr["今涨"] = 0; 
             double maxPrice = Math.Max(highest, stock.kLineDay[currentIndex].highestPrice);
             bool lowThanF5 = false;
             bool lowThanF3 = false;
@@ -438,6 +438,7 @@
                     {
                         dr["信号"] = dr["信号"].ToString() + "<a title=\"高开未涨停\" >🌟</a>";
                     }
+                    dr["今涨"] = (stock.kLineDay[currentIndex+1].startPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice;
                 }
 
 
