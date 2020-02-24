@@ -412,7 +412,7 @@
             dr["MACD日"] = stock.macdDays(currentIndex);
 
             //dr["今涨"] = (stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
-            dr["今涨"] = 0; 
+            dr["今涨"] = 0;
             double maxPrice = Math.Max(highest, stock.kLineDay[currentIndex].highestPrice);
             bool lowThanF5 = false;
             bool lowThanF3 = false;

@@ -10,7 +10,9 @@
     protected void Page_Load(object sender, EventArgs e)
     {
         //KeyValuePair<Stock, DateTime>[] gidArr = Util.GetDoubleLimitUpFrom3Line();
-
+        Stock s = new Stock("sz300624");
+        s.LoadKLineDay();
+        Response.Write(s.IsLimitUp(s.kLineDay.Length-1).ToString());
     }
 
     public static double GetFirstLowestPrice(KLine[] kArr, int index, out int lowestIndex)
