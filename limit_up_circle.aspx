@@ -18,7 +18,7 @@
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        sort = Util.GetSafeRequestValue(Request, "sort", "今涨");
+        sort = Util.GetSafeRequestValue(Request, "sort", "缩量");
         if (!IsPostBack)
         {
             rate = int.Parse(Util.GetSafeRequestValue(Request, "rate", "10").Trim());
