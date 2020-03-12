@@ -485,6 +485,11 @@
 
             }
 
+            if (stock.kLineDay[currentIndex].volume / stock.TotalStockCount(currentDate) <= 0.1)
+            { 
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"换手小于10%\" >📈</a>";
+            }
+
             dr["总计"] = (computeMaxPrice - buyPrice) / buyPrice;
             dt.Rows.Add(dr);
 
