@@ -225,7 +225,7 @@
                         case "今开":
                         default:
                             if (System.Text.RegularExpressions.Regex.IsMatch(drArr[0].Table.Columns[i].Caption.Trim(), "\\d日")
-                                || drArr[0].Table.Columns[i].Caption.Trim().Equals("总计"))
+                                || drArr[0].Table.Columns[i].Caption.Trim().Equals("总计")  || drArr[0].Table.Columns[i].Caption.Trim().Equals("今开") )
                             {
                                 if (!drOri[i].ToString().Equals(""))
                                 {
