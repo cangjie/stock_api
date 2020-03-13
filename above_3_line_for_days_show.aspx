@@ -207,7 +207,6 @@
                             double buyPrice = Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2);
                             dr[i] = "<font color=\"" + ((buyPrice > currentPrice) ? "red" : ((buyPrice==currentPrice)? "gray" : "green")) + "\" >" + Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2).ToString() + "</font>";
                             break;
-                        case "今开":
                         case "今收":
                             double todayPrice = (double)drOri[i];
                             dr[i] = "<font color=\"" + (todayPrice > settle ? "red" : (todayPrice == settle ? "gray" : "green")) + "\"  >"
@@ -357,7 +356,7 @@
             double openPrice = stock.kLineDay[currentIndex].startPrice;
             double currentPrice = stock.kLineDay[currentIndex].endPrice;
             dr["昨收"] = settlePrice;
-            dr["今开"] = openPrice;
+            dr["今开"] = (openPrice-stock.kLineDay[currentIndex-1].endPrice)/stock.kLineDay[currentIndex-1].endPrice;
             dr["今收"] = currentPrice;
             int macdDays = stock.macdDays(currentIndex);
             dr["MACD"] = macdDays;
@@ -381,7 +380,7 @@
             int days3Line = KLine.Above3LineDays(stock, currentIndex);
             dr["3线日"] = daysAbove3Line;
             dr["3线"] = stock.GetAverageSettlePrice(currentIndex, 3, 3);
-            double buyPrice = stock.kLineDay[currentIndex].endPrice;
+            double buyPrice = stock.kLineDay[currentIndex].startPrice;
             double lowestPrice = stock.LowestPrice(currentDate, 20);
             double highestPrice = stock.HighestPrice(currentDate, 40);
             double f1 = lowestPrice + (highestPrice - lowestPrice) * 0.236;
@@ -659,7 +658,7 @@
                     <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F5" HeaderText="F5"></asp:BoundColumn>
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
-			  
+			        <asp:BoundColumn DataField="今开" HeaderText="今开" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="0日" HeaderText="0日" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="2日" HeaderText="2日"></asp:BoundColumn>
