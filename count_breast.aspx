@@ -28,7 +28,7 @@
         dt.Columns.Add("日期", Type.GetType("System.DateTime"));
         dt.Columns.Add("代码");
         dt.Columns.Add("名称");
-        dt.Columns.Add("幅度", Type.GetType("System.Double"));
+        dt.Columns.Add("板数", Type.GetType("System.Int32"));
         dt.Columns.Add("买入", Type.GetType("System.Double"));
         dt.Columns.Add("1日");
         dt.Columns.Add("2日");
@@ -41,7 +41,7 @@
         dtNew.Columns.Add("日期");
         dtNew.Columns.Add("代码");
         dtNew.Columns.Add("名称");
-        dtNew.Columns.Add("幅度");
+        dtNew.Columns.Add("板数");
         dtNew.Columns.Add("买入");
         dtNew.Columns.Add("1日");
         dtNew.Columns.Add("2日");
@@ -111,11 +111,17 @@
 
                 double lowestPrice = double.MaxValue;
                 double highestPrice = 0;
+                int lowestIndex = 0;
+
                 for (int j = startIndex; j <= i; j++)
                 {
                     if (s.kLineDay[j].lowestPrice > 0)
                     {
-                        lowestPrice = Math.Min(lowestPrice, s.kLineDay[j].lowestPrice);
+                        if (lowestPrice >= s.kLineDay[j].lowestPrice)
+                        {
+                            lowestPrice = s.kLineDay[j].lowestPrice;
+                            lowestIndex = j;
+                        }
                     }
                     highestPrice = Math.Max(highestPrice, s.kLineDay[j].highestPrice);
                 }
@@ -123,18 +129,27 @@
                 {
                     continue;
                 }
-                double range = (highestPrice - lowestPrice) / lowestPrice;
-                if ( range <= 0.2)
+
+                int limitUpNum = 0;
+                for (int j = lowestIndex; j <= i; j++)
+                {
+                    if (s.IsLimitUp(j))
+                    {
+                        limitUpNum++;
+                    }
+                }
+                if (limitUpNum < 2)
                 {
                     continue;
                 }
+
                 highestPrice = Math.Max(highestPrice, s.kLineDay[i + 1].highestPrice);
                 double f5 = highestPrice - (highestPrice - lowestPrice) * 0.618;
                 DataRow dr = dt.NewRow();
                 dr["日期"] = s.kLineDay[i+1].startDateTime.Date;
                 dr["代码"] = s.gid.Trim();
                 dr["名称"] = s.Name.Trim();
-                dr["幅度"] = range;
+                dr["板数"] = limitUpNum;
                 dr["买入"] = nextOpen;
                 double buyPrice = nextOpen;
                 double maxRate = 0;
