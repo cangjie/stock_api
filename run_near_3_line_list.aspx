@@ -18,7 +18,10 @@
         }
         for (DateTime i = startDate; i <= endDate; i = i.AddDays(1))
         {
-            GetData(i);
+            if (Util.IsTransacDay(i))
+            {
+                GetData(i);
+            }
         }
     }
 
