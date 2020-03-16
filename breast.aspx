@@ -297,7 +297,7 @@
             {
                 continue;
             }
-            if (stock.kLineDay[currentIndex].startPrice <= stock.kLineDay[currentIndex].endPrice)
+            if (stock.kLineDay[currentIndex].startPrice <= stock.kLineDay[currentIndex-1].endPrice)
             {
                 continue;
             }
