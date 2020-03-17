@@ -7,13 +7,17 @@
 
         //DateTime currentDate = DateTime.Parse("2018-8-24");
 
+        DateTime startDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "start", DateTime.Now.ToShortDateString()));
+
+        DateTime endDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "end", DateTime.Now.ToShortDateString()));
+
         string[] gidArr = Util.GetAllGids();
         for (int i = 0; i < gidArr.Length; i++)
         {
             Stock s = new Stock(gidArr[i].Trim());
             s.LoadKLineDay();
 
-            for (DateTime currentDate = DateTime.Now.Date ; currentDate >= DateTime.Now.Date; currentDate = currentDate.AddDays(-1))
+            for (DateTime currentDate = startDate ; currentDate <= endDate; currentDate = currentDate.AddDays(1))
             {
                 if (!Util.IsTransacDay(currentDate))
                 {
