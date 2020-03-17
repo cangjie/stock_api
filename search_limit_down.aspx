@@ -14,36 +14,39 @@
         string[] gidArr = Util.GetAllGids();
         for (int i = 0; i < gidArr.Length; i++)
         {
-            Stock s = new Stock(gidArr[i].Trim());
-            s.LoadKLineDay();
-
-            for (DateTime currentDate = startDate ; currentDate <= endDate; currentDate = currentDate.AddDays(1))
+            try
             {
-                if (!Util.IsTransacDay(currentDate))
-                {
-                    continue;
-                }
+                Stock s = new Stock(gidArr[i].Trim());
+                s.LoadKLineDay();
 
-                int currentIndex = s.GetItemIndex(currentDate);
-                if (currentIndex > 0)
+                for (DateTime currentDate = startDate; currentDate <= endDate; currentDate = currentDate.AddDays(1))
                 {
-                    if (s.kLineDay[currentIndex].endPrice == s.kLineDay[currentIndex].lowestPrice && s.kLineDay[currentIndex].lowestPrice <= s.kLineDay[currentIndex - 1].endPrice * (1-0.09))
+                    if (!Util.IsTransacDay(currentDate))
                     {
-                        try
-                        {
-                            DBHelper.InsertData("limit_down", new string[,] { { "gid", "varchar", s.gid.Trim() }, { "alert_date", "datetime", s.kLineDay[currentIndex].endDateTime.ToShortDateString() } });
-                        }
-                        catch
-                        {
+                        continue;
+                    }
 
+                    int currentIndex = s.GetItemIndex(currentDate);
+                    if (currentIndex > 0)
+                    {
+                        if (s.kLineDay[currentIndex].endPrice == s.kLineDay[currentIndex].lowestPrice && s.kLineDay[currentIndex].lowestPrice <= s.kLineDay[currentIndex - 1].endPrice * (1 - 0.09))
+                        {
+                            try
+                            {
+                                DBHelper.InsertData("limit_down", new string[,] { { "gid", "varchar", s.gid.Trim() }, { "alert_date", "datetime", s.kLineDay[currentIndex].endDateTime.ToShortDateString() } });
+                            }
+                            catch
+                            {
+
+                            }
                         }
                     }
                 }
             }
-
-
-
-
+            catch
+            { 
+            
+            }
         }
 
     }
