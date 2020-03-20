@@ -51,6 +51,7 @@
         success2 = 0;
         success5 = 0;
         //DataTable dtOri = DBHelper.GetDataTable(" select * from limit_up where next_day_cross_star_un_limit_up = 1 and alert_date <= '2019-10-24' order by alert_date desc");
+        //string[] gidArr = new string[] { "sz002838"};//Util.GetAllGids();
         string[] gidArr = Util.GetAllGids();
         //foreach (Stock s  in gidArr)
         for(int m = 0; m < gidArr.Length; m++)
@@ -64,6 +65,10 @@
                     continue;
                 }
                 if (!s.IsLimitUp(i + 1))
+                {
+                    continue;
+                }
+                if (s.IsLimitUp(i + 7) && s.kLineDay[i + 7].highestPrice == s.kLineDay[i + 7].lowestPrice)
                 {
                     continue;
                 }
@@ -91,7 +96,7 @@
                     || s.kLineDay[i + 4].volume / s.TotalStockCount(s.kLineDay[i + 4].startDateTime.Date) >= 0.3
                     || s.kLineDay[i + 7].volume / s.TotalStockCount(s.kLineDay[i + 7].startDateTime.Date) >= 0.3)
                 {
-                    //continue;
+                    continue;
                 }
                 double buyPrice = s.kLineDay[i + 7].endPrice;
                 double maxPrice = Math.Max(Math.Max(s.kLineDay[i + 8].highestPrice,
@@ -155,7 +160,7 @@
                 drNew[i.ToString()+"日"] = "<font color=\"" + (rate >= 0.01 ? "red" : "green") + "\" >" + Math.Round((rate * 100), 2)+"%</font>";
             }
             double rateTotal = double.Parse(drNew["总计"].ToString());
-            
+
             drNew["总计"] = "<font color=\"" + (rateTotal >= 0.01 ? "red" : "green") + "\" >" + Math.Round((rateTotal * 100), 2)+"%</font>";
             dtNew.Rows.Add(drNew);
             lastDateString = ((DateTime)dr["日期"]).ToShortDateString();
