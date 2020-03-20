@@ -17,6 +17,8 @@
 
     public static int success1 = 0;
 
+    public static int fail = 0;
+
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -163,6 +165,10 @@
 
             drNew["总计"] = "<font color=\"" + (rateTotal >= 0.01 ? "red" : "green") + "\" >" + Math.Round((rateTotal * 100), 2)+"%</font>";
             dtNew.Rows.Add(drNew);
+            if (rateTotal < 0.01)
+            {
+                fail++;
+            }
             lastDateString = ((DateTime)dr["日期"]).ToShortDateString();
             lastGid = dr["代码"].ToString();
         }
@@ -212,6 +218,7 @@
         1板：<%=success5.ToString() %> / <%=count.ToString() %> = <%=Math.Round(100 * (double)success5/count, 2).ToString() %>%<br />
         2板：<%=success2.ToString() %> / <%=count.ToString() %> = <%=Math.Round(100 * (double)success2/count, 2).ToString() %>%<br />
         3板：<%=success1.ToString() %> / <%=count.ToString() %> = <%=Math.Round(100 * (double)success1/count, 2).ToString() %>%<br />
+        3失败：<%=fail.ToString() %> / <%=count.ToString() %> = <%=Math.Round(100 * (double)fail/count, 2).ToString() %>%<br />
         <asp:DataGrid runat="server" Width="100%" ID="dg" BackColor="White" BorderColor="#999999" BorderStyle="None" BorderWidth="1px" CellPadding="3" GridLines="Vertical" >
             <AlternatingItemStyle BackColor="#DCDCDC" />
             <FooterStyle BackColor="#CCCCCC" ForeColor="Black" />
