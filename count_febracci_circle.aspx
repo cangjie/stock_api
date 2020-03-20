@@ -115,7 +115,7 @@
                     success5++;
                 }
                 DataRow dr = dt.NewRow();
-                dr["日期"] = s.kLineDay[i].startDateTime.Date;
+                dr["日期"] = s.kLineDay[i+7].startDateTime.Date;
                 dr["代码"] = s.gid.Trim();
                 dr["名称"] = s.Name.Trim();
                 dr["买入"] = buyPrice;
