@@ -11,7 +11,7 @@
     public string sort = "总换手";
 
 
-   
+
 
     public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
 
@@ -23,7 +23,7 @@
         filter = Util.GetSafeRequestValue(Request, "filter", "");
         if (!IsPostBack)
         {
-            
+
 
 
             DataTable dt = GetData();
@@ -448,7 +448,7 @@
 
 
             double todayLowestPrice = 0;
-            
+
             DateTime footTime = DateTime.Now;
 
 
@@ -458,12 +458,12 @@
             double volumeToday = stock.kLineDay[currentIndex].VirtualVolume;  //Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(currentDate.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
 
             double volumeYesterday = stock.kLineDay[limitUpIndex].volume;// Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(stock.kLineDay[limitUpIndex].startDateTime.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
-                                                                         /*
-                                                                         for (int j = lowestIndex; j < currentIndex; j++)
-                                                                         {
-                                                                             volumeYesterday = Math.Max(volumeYesterday, stock.kLineDay[j].VirtualVolume);
-                                                                         }
-                                                                         */
+            /*
+            for (int j = lowestIndex; j < currentIndex; j++)
+            {
+                volumeYesterday = Math.Max(volumeYesterday, stock.kLineDay[j].VirtualVolume);
+            }
+            */
 
             double volumeReduce = volumeToday / maxVolume;
 
@@ -641,20 +641,15 @@
                 dr["信号"] = "<a title=\"过前高\">🚩</a>";
             }
 
-            double totalStockCount = stock.TotalStockCount(currentDate);
-            if (totalStockCount > 0)
-            {
-                dr["总换手"] = stock.kLineDay[currentIndex-1].volume / totalStockCount;
-            }
-            else
-            {
-                dr["总换手"] = 0;
-            }
 
-            if (stock.kLineDay[currentIndex - 1].volume / totalStockCount >= 0.1)
+            double turnOverRate = stock.kLineDay[currentIndex - 1].TurnOverRate;
+
+            if (turnOverRate >= 0.1)
             {
                 continue;
             }
+            dr["总换手"] = turnOverRate;
+            
 
             dr["KDJ30"] = Stock.KDJIndex(kArrHalfHour, currentIndexHalfHour);
             dr["KDJ60"] = Stock.KDJIndex(kArrHour, currentIndexHour);

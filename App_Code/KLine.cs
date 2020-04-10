@@ -293,6 +293,36 @@ public class KLine
         }
     }
 
+    public double TurnOverRate
+    {
+        get
+        {
+            double rate = 0;
+            DataTable dt = DBHelper.GetDataTable(" select * from turnover where gid = '" + gid.Trim() + "' and alert_date = '"
+                + startDateTime.Date.ToShortDateString() + "' ");
+            if (dt.Rows.Count > 0)
+            {
+                rate = double.Parse(dt.Rows[0]["turnover_rate"].ToString());
+            }
+            else
+            {
+                Stock s = new Stock(gid.Trim());
+                double total = s.TotalStockCount(startDateTime.Date);
+                if (total == 0)
+                {
+                    rate = 0;
+                }
+                else
+                {
+                    rate = VirtualVolume / total;
+                }
+                
+            }
+            dt.Dispose();
+            return rate;
+        }
+    }
+
     public static KLine[] GetKLine(string type, string gid, DateTime startDateTime, DateTime endDateTime)
     {
         KLine[] kLineArr = new KLine[0];
