@@ -20,6 +20,7 @@ public class TimeLine
     public double buy = 0;
     public double settle = 0;
     public double open = 0;
+    public double low = 0;
     public int volume = 0;
     public double amount = 0;
     public int volumeIncrease = 0;
@@ -60,9 +61,25 @@ public class TimeLine
 
     public static TimeLine[] GetTimeLineItem(string gid, DateTime start, DateTime end)
     {
-        DataTable dtTimeline = DBHelper.GetDataTable(" select * from  " + gid + "_timeline where ticktime >= '" + start.ToString() + "' and ticktime < '" + end.ToString() + "' order by ticktime ");
-        DataTable dtNormal = DBHelper.GetDataTable(" select * from " + gid + "  where convert(datetime, [date] + ' ' + [time]) >='"
-            + start.ToString() + "'  and  convert(datetime, [date] + ' ' + [time]) < '" + end.ToString() + "'  and 1 = 0 order by convert(datetime, [date] + ' ' + [time]) ");
+        DataTable dtTimeline = new DataTable();
+        try
+        {
+            dtTimeline = DBHelper.GetDataTable(" select * from  " + gid + "_timeline where ticktime >= '" + start.ToString() + "' and ticktime < '" + end.ToString() + "' order by ticktime ");
+        }
+        catch
+        { 
+        
+        }
+        DataTable dtNormal = new DataTable();
+        try
+        {
+            dtNormal = DBHelper.GetDataTable(" select * from " + gid + "  where convert(datetime, [date] + ' ' + [time]) >='"
+                + start.ToString() + "'  and  convert(datetime, [date] + ' ' + [time]) < '" + end.ToString() + "'  and 1 = 0 order by convert(datetime, [date] + ' ' + [time]) ");
+        }
+        catch
+        { 
+        
+        }
         int timeLineCount = Math.Max(dtTimeline.Rows.Count, dtNormal.Rows.Count);
         TimeLine[] timeLineArray = new TimeLine[timeLineCount * 2];
         int j = 0;
@@ -85,9 +102,17 @@ public class TimeLine
                 timeLineArray[j].gid = gid;
                 timeLineArray[j].name = dtNormal.Rows[i]["name"].ToString().Trim();
                 timeLineArray[j].trade = double.Parse(dtTimeline.Rows[i]["trade"].ToString().Trim());
-                timeLineArray[j].buy = double.Parse(dtTimeline.Rows[i]["buy"].ToString().Trim());
-                timeLineArray[j].sell = double.Parse(dtTimeline.Rows[i]["sell"].ToString().Trim());
-                timeLineArray[j].settle = double.Parse(dtTimeline.Rows[i]["settlement"].ToString().Trim());
+                try
+                {
+                    timeLineArray[j].buy = double.Parse(dtTimeline.Rows[i]["buy"].ToString().Trim());
+                    timeLineArray[j].sell = double.Parse(dtTimeline.Rows[i]["sell"].ToString().Trim());
+                    timeLineArray[j].settle = double.Parse(dtTimeline.Rows[i]["settlement"].ToString().Trim());
+                }
+                catch
+                { 
+                
+                }
+
                 timeLineArray[j].open = double.Parse(dtTimeline.Rows[i]["open"].ToString().Trim());
                 timeLineArray[j].volume = int.Parse(dtTimeline.Rows[i]["volume"].ToString().Trim());
                 timeLineArray[j].amount = double.Parse(dtTimeline.Rows[i]["amount"].ToString().Trim());
@@ -112,6 +137,7 @@ public class TimeLine
                 timeLineArray[j].sell5 = int.Parse(dtNormal.Rows[i]["sellFive"].ToString());
                 timeLineArray[j].sell5Amount = int.Parse(dtNormal.Rows[i]["sellFivePri"].ToString());
                 timeLineArray[j].tickTime = DateTime.Parse(dtTimeline.Rows[i]["ticktime"].ToString());
+                timeLineArray[j].low = double.Parse(dtTimeline.Rows[i]["todayMin"].ToString().Trim());
                 if (j > 0)
                 {
                     timeLineArray[j].volumeIncrease = timeLineArray[j].volume - timeLineArray[j - 1].volume;
@@ -129,13 +155,21 @@ public class TimeLine
                         timeLineArray[j].gid = gid;
                         timeLineArray[j].name = dtTimeline.Rows[i]["name"].ToString().Trim();
                         timeLineArray[j].trade = double.Parse(dtTimeline.Rows[i]["trade"].ToString().Trim());
-                        timeLineArray[j].buy = double.Parse(dtTimeline.Rows[i]["buy"].ToString().Trim());
-                        timeLineArray[j].sell = double.Parse(dtTimeline.Rows[i]["sell"].ToString().Trim());
-                        timeLineArray[j].settle = double.Parse(dtTimeline.Rows[i]["settlement"].ToString().Trim());
+                        try
+                        {
+                            timeLineArray[j].buy = double.Parse(dtTimeline.Rows[i]["buy"].ToString().Trim());
+                            timeLineArray[j].sell = double.Parse(dtTimeline.Rows[i]["sell"].ToString().Trim());
+                            timeLineArray[j].settle = double.Parse(dtTimeline.Rows[i]["settlement"].ToString().Trim());
+                        }
+                        catch
+                        { 
+                        
+                        }
                         timeLineArray[j].open = double.Parse(dtTimeline.Rows[i]["open"].ToString().Trim());
                         timeLineArray[j].volume = int.Parse(dtTimeline.Rows[i]["volume"].ToString().Trim());
                         timeLineArray[j].amount = double.Parse(dtTimeline.Rows[i]["amount"].ToString().Trim());
                         timeLineArray[j].tickTime = DateTime.Parse(dtTimeline.Rows[i]["ticktime"].ToString());
+                        timeLineArray[j].low = double.Parse(dtTimeline.Rows[i]["low"].ToString().Trim());
                         if (j > 0)
                         {
                             timeLineArray[j].volumeIncrease = timeLineArray[j].volume - timeLineArray[j - 1].volume;
@@ -195,6 +229,7 @@ public class TimeLine
                     timeLineArray[j].sell5 = int.Parse(dtNormal.Rows[i]["sellFive"].ToString());
                     timeLineArray[j].sell5Amount = double.Parse(dtNormal.Rows[i]["sellFivePri"].ToString());
                     timeLineArray[j].tickTime = DateTime.Parse(dtNormal.Rows[i]["date"].ToString() + " " + dtNormal.Rows[i]["time"].ToString());
+                    timeLineArray[j].low = double.Parse(dtNormal.Rows[i]["todayMin"].ToString());
                     if (j > 0)
                     {
                         timeLineArray[j].volumeIncrease = timeLineArray[j].volume - timeLineArray[j - 1].volume;
@@ -239,6 +274,7 @@ public class TimeLine
                             timeLineArray[j].sell5 = int.Parse(dtNormal.Rows[i]["sellFive"].ToString());
                             timeLineArray[j].sell5Amount = double.Parse(dtNormal.Rows[i]["sellFivePri"].ToString());
                             timeLineArray[j].tickTime = DateTime.Parse(dtNormal.Rows[i]["date"].ToString() + " " + dtNormal.Rows[i]["time"].ToString());
+                            timeLineArray[j].low = double.Parse(dtNormal.Rows[i]["todayMin"].ToString());
                             if (j > 0)
                             {
                                 timeLineArray[j].volumeIncrease = timeLineArray[j].volume - timeLineArray[j - 1].volume;
@@ -251,13 +287,21 @@ public class TimeLine
                     timeLineArray[j].gid = gid;
                     timeLineArray[j].name = dtTimeline.Rows[i]["name"].ToString().Trim();
                     timeLineArray[j].trade = double.Parse(dtTimeline.Rows[i]["trade"].ToString().Trim());
-                    timeLineArray[j].buy = double.Parse(dtTimeline.Rows[i]["buy"].ToString().Trim());
-                    timeLineArray[j].sell = double.Parse(dtTimeline.Rows[i]["sell"].ToString().Trim());
-                    timeLineArray[j].settle = double.Parse(dtTimeline.Rows[i]["settlement"].ToString().Trim());
+                    try
+                    {
+                        timeLineArray[j].buy = double.Parse(dtTimeline.Rows[i]["buy"].ToString().Trim());
+                        timeLineArray[j].sell = double.Parse(dtTimeline.Rows[i]["sell"].ToString().Trim());
+                        timeLineArray[j].settle = double.Parse(dtTimeline.Rows[i]["settlement"].ToString().Trim());
+                    }
+                    catch
+                    { 
+                    
+                    }
                     timeLineArray[j].open = double.Parse(dtTimeline.Rows[i]["open"].ToString().Trim());
                     timeLineArray[j].volume = int.Parse(dtTimeline.Rows[i]["volume"].ToString().Trim());
                     timeLineArray[j].amount = double.Parse(dtTimeline.Rows[i]["amount"].ToString().Trim());
                     timeLineArray[j].tickTime = DateTime.Parse(dtTimeline.Rows[i]["ticktime"].ToString());
+                    timeLineArray[j].low = double.Parse(dtTimeline.Rows[i]["low"].ToString().Trim());
                     if (j > 0)
                     {
                         timeLineArray[j].volumeIncrease = timeLineArray[j].volume - timeLineArray[j - 1].volume;
