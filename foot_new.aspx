@@ -632,7 +632,7 @@
             dr["MACD日"] = stock.macdDays(currentIndex);
             if ((int)dr["MACD日"] == -1)
             {
-                continue;
+                //continue;
             }
 
             double maxPrice = 0;
