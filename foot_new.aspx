@@ -624,7 +624,7 @@
             dr["现价"] = currentPrice;
 
             dr["评级"] = memo;
-            buyPrice = double.Parse(drOri["foot_price"].ToString()) * 1.015;
+            buyPrice = double.Parse(drOri["foot_price"].ToString()) * (1 + double.Parse(drOri["foot_rate"].ToString()));
             dr["买入"] = buyPrice;
 
             dr["KDJ日"] = stock.kdjDays(currentIndex);
