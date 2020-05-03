@@ -14,6 +14,7 @@
 
     public static Thread tQ = new Thread(tsQ);
 
+    public static double rate = 0.01;
 
     public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
 
@@ -23,6 +24,7 @@
     protected void Page_Load(object sender, EventArgs e)
     {
         sort = Util.GetSafeRequestValue(Request, "sort", "无影时 desc");
+        rate = double.Parse(Util.GetSafeRequestValue(Request, "rate", "6")) / 100;
         if (!IsPostBack)
         {
             try
@@ -40,7 +42,7 @@
                 Console.WriteLine(err.ToString());
             }
 
-           
+
 
 
             DataTable dt = GetData();
@@ -300,6 +302,7 @@
         dt.Columns.Add("缩量", Type.GetType("System.Double"));
         dt.Columns.Add("调整", Type.GetType("System.Int32"));
         dt.Columns.Add("现高", Type.GetType("System.Double"));
+        dt.Columns.Add("无影脚长", Type.GetType("System.Double"));
         dt.Columns.Add("F3", Type.GetType("System.Double"));
         dt.Columns.Add("F5", Type.GetType("System.Double"));
         dt.Columns.Add("前低", Type.GetType("System.Double"));
@@ -339,8 +342,8 @@
         DataTable dtIOVolumeNew = DBHelper.GetDataTable("exec proc_io_volume_monitor_new '" + currentDate.ToShortDateString() + "' ");
 
 
-        string sql = " select * from alert_foot_new where alert_date = '" + currentDate.Date.ToShortDateString() + "' and valid = 1 ";
-        
+        string sql = " select * from alert_foot_new where alert_date = '" + currentDate.Date.ToShortDateString() + "' and valid = 1 and foot_rate >= " + rate.ToString();
+
         DataTable dtIOVolume = DBHelper.GetDataTable(sql);
 
         //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
@@ -458,12 +461,12 @@
             double volumeToday = stock.kLineDay[currentIndex].VirtualVolume;  //Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(currentDate.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
 
             double volumeYesterday = stock.kLineDay[limitUpIndex].volume;// Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(stock.kLineDay[limitUpIndex].startDateTime.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
-                                                                         /*
-                                                                         for (int j = lowestIndex; j < currentIndex; j++)
-                                                                         {
-                                                                             volumeYesterday = Math.Max(volumeYesterday, stock.kLineDay[j].VirtualVolume);
-                                                                         }
-                                                                         */
+            /*
+            for (int j = lowestIndex; j < currentIndex; j++)
+            {
+                volumeYesterday = Math.Max(volumeYesterday, stock.kLineDay[j].VirtualVolume);
+            }
+            */
 
             double volumeReduce = volumeToday / maxVolume;
 
@@ -590,7 +593,7 @@
             dr["F5"] = f5;
             dr["前低"] = lowest;
             dr["幅度"] = width.ToString() + "%";
-
+            dr["无影脚长"] = double.Parse(drOri["foot_rate"].ToString().Trim());
 
             double f3ReverseRate = (stock.kLineDay[currentIndex].lowestPrice - f3) / f3;
             double f5ReverseRate = (stock.kLineDay[currentIndex].lowestPrice - f5) / f5;
@@ -621,7 +624,7 @@
             dr["现价"] = currentPrice;
 
             dr["评级"] = memo;
-            buyPrice = double.Parse(drOri["foot_price"].ToString()) * 1.015; 
+            buyPrice = double.Parse(drOri["foot_price"].ToString()) * 1.015;
             dr["买入"] = buyPrice;
 
             dr["KDJ日"] = stock.kdjDays(currentIndex);
@@ -710,7 +713,7 @@
 
 
 
-   
+
     /*
     public static bool foot(Core.Timeline[] tArr, out double lowestPrice, out double displayLowPrice, out DateTime footTime)
     {
@@ -780,10 +783,11 @@
                     <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号"></asp:BoundColumn>
+
                     <asp:BoundColumn DataField="缩量" HeaderText="缩量"></asp:BoundColumn>
                     <asp:BoundColumn DataField="无影价" HeaderText="无影价"></asp:BoundColumn>
                     <asp:BoundColumn DataField="无影时" HeaderText="无影时"></asp:BoundColumn>
-					
+                    <asp:BoundColumn DataField="无影脚长" HeaderText="无影脚长"></asp:BoundColumn>					
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD日|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
