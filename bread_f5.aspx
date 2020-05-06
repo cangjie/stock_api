@@ -281,10 +281,12 @@
             + "' and alert_date <= '" + currentDate.ToShortDateString() + "' ");
 
 
-        DataTable dtOri = DBHelper.GetDataTable(" select gid, alert_date from limit_up a where  alert_date >= '"
-            + limitStartUpDate.ToShortDateString() + "' and alert_date <= '" + Util.GetLastTransactDate(currentDate, 4).ToShortDateString()
+        DataTable dtOri = DBHelper.GetDataTable(" select a.gid, a.alert_date, alert_foot_new.alert_date as foot_date from limit_up a "
+            + " left join alert_foot_new on a.gid = alert_foot_new.gid and a.alert_date >=  dbo.func_GetLastTransactDate(alert_foot_new.alert_date, 3) "
+            + "where  a.alert_date >= '"
+            + limitStartUpDate.ToShortDateString() + "' and a.alert_date <= '" + Util.GetLastTransactDate(currentDate, 4).ToShortDateString()
             + "' and exists( select 'a' from limit_up b where a.gid = b.gid and b.alert_date = dbo.func_GetLastTransactDate(a.alert_date, 1)) "
-            + " order by alert_date desc ");
+            + " order by a.alert_date desc ");
 
         foreach (DataRow drOri in dtOri.Rows)
         {
@@ -459,7 +461,7 @@
                     dr["信号"] = dr["信号"].ToString() + "🗡";
                 }
             }
-            
+
 
 
             if (dtGragonTigerList.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
@@ -473,6 +475,18 @@
                     dr["信号"] = dr["信号"].ToString() + "<a title=\"龙虎榜\" >🐲</a>";
                 }
 
+            }
+
+            if (!drOri["foot_date"].ToString().Equals(""))
+            {
+                if (DateTime.Parse(drOri["alert_date"].ToString()).ToShortDateString().Equals(DateTime.Parse(drOri["foot_date"].ToString()).ToShortDateString()))
+                {
+                    dr["信号"] = dr["信号"].ToString() + "<a title=\"当日无影脚\" >🦶</a>";
+                }
+                else
+                { 
+                    dr["信号"] = dr["信号"].ToString() + "<a title=\"后三日无影脚\" >🦵</a>";
+                }
             }
 
             dr["总计"] = (computeMaxPrice - buyPrice) / buyPrice;

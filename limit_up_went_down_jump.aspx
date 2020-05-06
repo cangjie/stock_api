@@ -10,7 +10,7 @@
 
     public string sort = "缩量";
 
-    
+
     public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
 
     protected void Page_Load(object sender, EventArgs e)
@@ -18,7 +18,7 @@
         sort = Util.GetSafeRequestValue(Request, "sort", "幅度 desc");
         if (!IsPostBack)
         {
-            
+
 
 
             DataTable dt = GetData();
@@ -133,12 +133,12 @@
                             dr[i] = "<font color=\"" + (currentValuePrice > currentPrice ? "red" : (currentValuePrice == currentPrice ? "gray" : "green")) + "\"  >"
                                 + Math.Round(currentValuePrice, 2).ToString() + "</font>";
                             break;
-                        
+
                         case "价差":
                             double currentValuePrice1 = (double)drOri[i];
                             dr[i] = Math.Round(currentValuePrice1, 2).ToString();
                             break;
-                        
+
                         default:
                             if (System.Text.RegularExpressions.Regex.IsMatch(drArr[0].Table.Columns[i].Caption.Trim(), "\\d日")
                                 || drArr[0].Table.Columns[i].Caption.Trim().Equals("总计"))
@@ -478,12 +478,12 @@
             double volumeToday = stock.kLineDay[currentIndex].VirtualVolume;  //Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(currentDate.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
 
             double volumeYesterday = stock.kLineDay[limitUpIndex].volume;// Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(stock.kLineDay[limitUpIndex].startDateTime.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
-                                                                         /*
-                                                                         for (int j = lowestIndex; j < currentIndex; j++)
-                                                                         {
-                                                                             volumeYesterday = Math.Max(volumeYesterday, stock.kLineDay[j].VirtualVolume);
-                                                                         }
-                                                                         */
+            /*
+            for (int j = lowestIndex; j < currentIndex; j++)
+            {
+                volumeYesterday = Math.Max(volumeYesterday, stock.kLineDay[j].VirtualVolume);
+            }
+            */
 
             double volumeReduce = volumeToday / maxVolume;
 
@@ -742,6 +742,10 @@
             else if (isSortCase)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title='剑鞘' >➖</a>";
+            }
+            if ((int)dr["MACD日"] >= 0)
+            { 
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"MACD金叉\" >🌟</a>";
             }
             dt.Rows.Add(dr);
 

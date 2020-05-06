@@ -14,7 +14,7 @@
 
     public static Thread tQ = new Thread(tsQ);
 
-   
+
 
     public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
 
@@ -38,7 +38,7 @@
                 Console.WriteLine(err.ToString());
             }
 
-           
+
 
             DataTable dt = GetData();
             dg.DataSource = dt;
@@ -501,12 +501,12 @@
             double volumeToday = stock.kLineDay[currentIndex].VirtualVolume;  //Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(currentDate.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
 
             double volumeYesterday = stock.kLineDay[limitUpIndex].volume;// Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(stock.kLineDay[limitUpIndex].startDateTime.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
-                                                                         /*
-                                                                         for (int j = lowestIndex; j < currentIndex; j++)
-                                                                         {
-                                                                             volumeYesterday = Math.Max(volumeYesterday, stock.kLineDay[j].VirtualVolume);
-                                                                         }
-                                                                         */
+            /*
+            for (int j = lowestIndex; j < currentIndex; j++)
+            {
+                volumeYesterday = Math.Max(volumeYesterday, stock.kLineDay[j].VirtualVolume);
+            }
+            */
 
             double volumeReduce = volumeToday / maxVolume;
 
@@ -754,7 +754,10 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"30分钟MACD金叉\" >30min</a>";
             }
-
+            if ((int)dr["MACD日"] >= 0)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"MACD金叉\" >🌟</a>";
+            }
             double totalStockCount = stock.TotalStockCount(currentDate);
             if (highIndex == limitUpIndex)
             {
