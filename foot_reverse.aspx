@@ -687,6 +687,11 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"外盘高\" >✅</a>";
             }
 
+            if (Math.Abs((double)dr["无影价"] - line3Price) / line3Price < 0.005)
+            { 
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"踩3线\" >3⃣️</a>";
+            }
+
             dt.Rows.Add(dr);
 
         }
