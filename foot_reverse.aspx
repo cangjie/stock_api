@@ -322,6 +322,7 @@
         dt.Columns.Add("类型", Type.GetType("System.String"));
         dt.Columns.Add("形态", Type.GetType("System.String"));
         dt.Columns.Add("DMP", Type.GetType("System.Double"));
+        dt.Columns.Add("板数", Type.GetType("System.Int32"));
         for (int i = 0; i <= 5; i++)
         {
             dt.Columns.Add(i.ToString() + "日", Type.GetType("System.Double"));
@@ -396,6 +397,7 @@
             int lowestIndex = 0;
             double lowest = double.MaxValue;// GetFirstLowestPrice(stock.kLineDay, limitUpIndex, out lowestIndex);
             double highest = 0;
+            int limitUpNum = 0;
 
             for (int i = startIndex; i < currentIndex; i++)
             {
@@ -408,6 +410,10 @@
                 {
                     highest = stock.kLineDay[i].highestPrice;
                     highIndex = i;
+                }
+                if (stock.IsLimitUp(i))
+                {
+                    limitUpNum++;
                 }
             }
 
@@ -603,7 +609,7 @@
             }
             double dmp = 0;
             if (Math.Abs(footPrice - dmp) / dmp <= 0.005)
-            { 
+            {
                 dr["形态"] = "DMP";
             }
             if (Math.Abs(footPrice - line3Price) / line3Price <= 0.005)
@@ -611,7 +617,7 @@
                 dr["形态"] = "3线";
             }
             dr["DMP"] = dmp;
-
+            dr["板数"] = limitUpNum;
 
             /*
             dr["信号"] = (stock.kLineDay[currentIndex].endPrice <= f3 * 1.01) ? "📈" : "";
@@ -866,10 +872,12 @@
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号"></asp:BoundColumn>
                     <asp:BoundColumn DataField="形态" HeaderText="形态"></asp:BoundColumn>
+
                     <asp:BoundColumn DataField="缩量" HeaderText="缩量"></asp:BoundColumn>
                     <asp:BoundColumn DataField="幅度" HeaderText="幅度"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="MACD日" HeaderText="MACD日" ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="板数" HeaderText="板数" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="无影价" HeaderText="无影价"></asp:BoundColumn>
                     <asp:BoundColumn DataField="无影时" HeaderText="无影时"></asp:BoundColumn>
                     <asp:BoundColumn DataField="无影脚长" HeaderText="无影脚长"></asp:BoundColumn>				
