@@ -601,7 +601,7 @@
             {
                 dr["形态"] = "前低";
             }
-            double dmp = stock.dmp(currentIndex);
+            double dmp = 0;
             if (Math.Abs(footPrice - dmp) / dmp <= 0.005)
             { 
                 dr["形态"] = "DMP";
@@ -880,7 +880,6 @@
                     <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>
                     <asp:BoundColumn DataField="现高" HeaderText="现高"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="DMP" HeaderText="DMP"></asp:BoundColumn>
                     <asp:BoundColumn DataField="现价" HeaderText="现价"></asp:BoundColumn>
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日" SortExpression="1日|desc" ></asp:BoundColumn>
