@@ -375,6 +375,11 @@ public class Stock
         return days;
     }
 
+    public double dmp(int index)
+    {
+        return KLine.ComputeDMP(kLineDay, index);
+    }
+
     public static int macdItems(int index, KLine[] kArr)
     {
         int itmes = -1;

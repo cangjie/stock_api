@@ -144,6 +144,7 @@
                         case "现高":
                         case "3线":
                         case "无影价":
+                        case "DMP":
                             double currentValuePrice = (double)drOri[i];
                             dr[i] = "<font color=\"" + (currentValuePrice > currentPrice ? "red" : (currentValuePrice == currentPrice ? "gray" : "green")) + "\"  >"
                                 + Math.Round(currentValuePrice, 2).ToString() + "</font>";
@@ -319,7 +320,8 @@
         dt.Columns.Add("价差", Type.GetType("System.Double"));
         dt.Columns.Add("价差abs", Type.GetType("System.Double"));
         dt.Columns.Add("类型", Type.GetType("System.String"));
-
+        dt.Columns.Add("形态", Type.GetType("System.String"));
+        dt.Columns.Add("DMP", Type.GetType("System.Double"));
         for (int i = 0; i <= 5; i++)
         {
             dt.Columns.Add(i.ToString() + "日", Type.GetType("System.Double"));
@@ -561,10 +563,56 @@
 
 
             DataRow dr = dt.NewRow();
+
+
+
+
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
-            dr["无影价"] = double.Parse(drOri["foot_price"].ToString());
+
+            double footPrice = double.Parse(drOri["foot_price"].ToString());
+            dr["无影价"] = footPrice;
             dr["无影时"] = DateTime.Parse(drOri["foot_time"].ToString()).ToShortTimeString();
+
+            dr["形态"] = "";
+
+            if (footPrice > stock.kLineDay[currentIndex - 1].highestPrice)
+            {
+                dr["形态"] = "缺口";
+                if (stock.IsLimitUp(currentIndex - 1))
+                {
+                    dr["形态"] = "马头";
+                }
+                if (footPrice > highest)
+                {
+                    dr["形态"] = "过前高";
+                }
+            }
+            if (Math.Abs(footPrice - f3) / f3 <= 0.005)
+            {
+                dr["形态"] = "F3";
+            }
+            if (Math.Abs(footPrice - f5) / f5 <= 0.005)
+            {
+                dr["形态"] = "F5";
+            }
+
+            if (Math.Abs(footPrice - lowest) / lowest <= 0.005)
+            {
+                dr["形态"] = "前低";
+            }
+            double dmp = stock.dmp(currentIndex);
+            if (Math.Abs(footPrice - dmp) / dmp <= 0.005)
+            { 
+                dr["形态"] = "DMP";
+            }
+            if (Math.Abs(footPrice - line3Price) / line3Price <= 0.005)
+            {
+                dr["形态"] = "3线";
+            }
+            dr["DMP"] = dmp;
+
+
             /*
             dr["信号"] = (stock.kLineDay[currentIndex].endPrice <= f3 * 1.01) ? "📈" : "";
             if (dr["信号"].ToString().Trim().Equals("") && StockWatcher.HaveAlerted(stock.gid.Trim(), "limit_up_box", currentDate))
@@ -688,7 +736,7 @@
             }
 
             if (Math.Abs((double)dr["无影价"] - line3Price) / line3Price < 0.005)
-            { 
+            {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"踩3线\" >3⃣️</a>";
             }
 
@@ -817,18 +865,24 @@
                     <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="幅度" HeaderText="幅度"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="形态" HeaderText="形态"></asp:BoundColumn>
                     <asp:BoundColumn DataField="缩量" HeaderText="缩量"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="幅度" HeaderText="幅度"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="MACD日" HeaderText="MACD日" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="无影价" HeaderText="无影价"></asp:BoundColumn>
                     <asp:BoundColumn DataField="无影时" HeaderText="无影时"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="无影脚长" HeaderText="无影脚长"></asp:BoundColumn>					
-                    <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD日|asc"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="无影脚长" HeaderText="无影脚长"></asp:BoundColumn>				
+
+
+                    <asp:BoundColumn DataField="前低" HeaderText="前低"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="F5" HeaderText="F5"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="现高" HeaderText="现高"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
-                    
+                    <asp:BoundColumn DataField="DMP" HeaderText="DMP"></asp:BoundColumn>
                     <asp:BoundColumn DataField="现价" HeaderText="现价"></asp:BoundColumn>
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
-                    <asp:BoundColumn DataField="0日" HeaderText="0日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日" SortExpression="1日|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="2日" HeaderText="2日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3日" HeaderText="3日"></asp:BoundColumn>
