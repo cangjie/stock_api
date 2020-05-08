@@ -377,7 +377,7 @@ public class Stock
 
     public double dmp(int index)
     {
-        DataTable dt = DBHelper.GetDataTable(" select * from dmp where alert_date = '" + kLineDay[index].startDateTime.ToLongDateString() 
+        DataTable dt = DBHelper.GetDataTable(" select * from dmp where alert_date = '" + kLineDay[index].startDateTime.ToShortDateString()
             + "' and gid = '" + gid.Trim() + "' ");
         double dmp = 0;
         if (dt.Rows.Count == 0)
@@ -385,7 +385,7 @@ public class Stock
             dmp = KLine.ComputeDMP(kLineDay, index);
             try
             {
-                DBHelper.InsertData("dmp", new string[,] {{"alert_date", "datetime", kLineDay[index].startDateTime.ToLongDateString() },
+                DBHelper.InsertData("dmp", new string[,] {{"alert_date", "datetime", kLineDay[index].startDateTime.ToShortDateString() },
                 {"gid", "varchar", gid.Trim() } });
             }
             catch
