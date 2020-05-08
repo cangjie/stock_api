@@ -386,11 +386,11 @@ public class Stock
             try
             {
                 DBHelper.InsertData("dmp", new string[,] {{"alert_date", "datetime", kLineDay[index].startDateTime.ToShortDateString() },
-                {"gid", "varchar", gid.Trim() } });
+                {"gid", "varchar", gid.Trim() }, { "dmp_price", "float", dmp.ToString()} });
             }
-            catch
+            catch(Exception err)
             { 
-            
+                
             }
             
         }
