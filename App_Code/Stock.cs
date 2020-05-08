@@ -377,7 +377,29 @@ public class Stock
 
     public double dmp(int index)
     {
-        return KLine.ComputeDMP(kLineDay, index);
+        DataTable dt = DBHelper.GetDataTable(" select * from dmp where alert_date = '" + kLineDay[index].startDateTime.ToLongDateString() 
+            + "' and gid = '" + gid.Trim() + "' ");
+        double dmp = 0;
+        if (dt.Rows.Count == 0)
+        {
+            dmp = KLine.ComputeDMP(kLineDay, index);
+            try
+            {
+                DBHelper.InsertData("dmp", new string[,] {{"alert_date", "datetime", kLineDay[index].startDateTime.ToLongDateString() },
+                {"gid", "varchar", gid.Trim() } });
+            }
+            catch
+            { 
+            
+            }
+            
+        }
+        else
+        {
+            dmp = double.Parse(dt.Rows[0]["dmp_price"].ToString()); 
+        }
+        dt.Dispose();
+        return dmp;
     }
 
     public static int macdItems(int index, KLine[] kArr)
