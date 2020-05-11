@@ -293,6 +293,55 @@
 
     }
 
+
+    public static void SaveData(DataTable dt, DateTime currentDate)
+    {
+        //DBHelper.UpdateData("alert_foot_reverse", new string[,] { { "valid", "int", "0" } },
+        //    new string[,] { { "alert_date", "datetime", currentDate.ToShortDateString() } }, Util.conStr.Trim());
+        foreach (DataRow dr in dt.Rows)
+        {
+            bool needInsert = false;
+            DataTable dtExists = DBHelper.GetDataTable(" select * from alert_foot_reverse where gid = '" + dr["代码"].ToString() + "' and alert_date = '"
+                + currentDate.ToShortDateString() + "' and valid = 1 ");
+            if (dtExists.Rows.Count == 0)
+            {
+                needInsert = true;
+            }
+            else
+            {
+                DataRow drExists = dtExists.Rows[0];
+                if ((DateTime.Parse(drExists["no_shaddow_time"].ToString()) == DateTime.Parse(dr["无影时"].ToString()))
+                    && (double.Parse(drExists["no_shaddow_price"].ToString()) == double.Parse(dr["无影价"].ToString())))
+                {
+                    needInsert = false;
+                }
+            }
+            dtExists.Dispose();
+            if (needInsert)
+            {
+                try
+                {
+                    DBHelper.UpdateData("alert_foot_reverse", new string[,] { { "valid", "int", "0" } },
+                        new string[,] { { "alert_date", "datetime", currentDate.ToShortDateString() },
+                        {"gid", "varchar", dr["代码"].ToString().Trim() } }, Util.conStr.Trim());
+                    DBHelper.InsertData("alert_foot_reverse", new string[,] {
+                        {"gid", "varchar", dr["代码"].ToString().Trim()}, {"name", "varchar", dr["名称"].ToString().Trim()}, 
+                        {"alert_date", "datetime", currentDate.ToShortDateString() }, {"lowest", "float", dr["前低"].ToString().Trim() },
+                        {"shape", "varchar", dr["形态"].ToString().Trim()}, {"volume", "float", dr["缩量"].ToString().Trim() }, {"kdj", "int", dr["KDJ日"].ToString().Trim() },
+                        {"macd", "int", dr["MACD日"].ToString().Trim() }, {"limit_up_times", "int", dr["板数"].ToString().Trim() },
+                        {"no_shaddow_time", "datetime", dr["无影时"].ToString().Trim() }, {"no_shaddow_rate","float" ,dr["无影脚长"].ToString().Trim() },
+                        {"highest", "float", dr["现高"].ToString().Trim() }, {"line3", "float", dr["3线"].ToString().Trim() }, {"dmp", "float", dr["DMP"].ToString().Trim() },
+                        {"buy_price", "float", dr["买入"].ToString() }, {"no_shaddow_price", "float", dr["无影价"].ToString().Trim()  }
+                });
+                }
+                catch
+                { 
+                
+                }
+            }
+        }
+    }
+
     public static DataTable GetData(DateTime currentDate)
     {
         currentDate = Util.GetDay(currentDate);
@@ -654,20 +703,14 @@
                 }
             }
 
-            if (!jumpEmpty)
-            {
-                dr["信号"] = "📈";
-            }
+            
 
             if (line3Price <= currentPrice)
             {
-                dr["信号"] = dr["信号"].ToString().Trim() + "🌟";
+                dr["信号"] = dr["信号"].ToString().Trim() + "<a title=\"3线上\" >🌟</a>";
             }
 
-            if (stock.kLineDay[highIndex].volume / avarageVolume >= 2.5 && stock.kLineDay[highIndex].volume / avarageVolume <= 3.5)
-            {
-                dr["信号"] = dr["信号"] + "👍";
-            }
+            
 
             dr["调整"] = 0;
             dr["缩量"] = volumeReduce;
@@ -688,7 +731,7 @@
                 dr["类型"] = "F5";
                 if (widthRate  > 0.25 && line3Price <= f5)
                 {
-                    dr["信号"] = dr["信号"].ToString().Trim() + "🔥";
+                    //dr["信号"] = dr["信号"].ToString().Trim() + "🔥";
                 }
             }
             else
@@ -719,7 +762,7 @@
             }
 
             double maxPrice = 0;
-            dr["0日"] = (buyPrice - stock.kLineDay[currentIndex].startPrice) / stock.kLineDay[currentIndex].startPrice;
+            dr["0日"] = (buyPrice - double.Parse(drOri["foot_price"].ToString())) / double.Parse(drOri["foot_price"].ToString());
             for (int i = 1; i <= 5; i++)
             {
                 if (currentIndex + i >= stock.kLineDay.Length)
@@ -731,15 +774,9 @@
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
 
 
-            if (currentIndex > 0 && (stock.kLineDay[currentIndex - 1].volume / maxVolume) < 0.65)
-            {
-                dr["信号"] = dr["信号"].ToString() + "📍";
-            }
+            
 
-            if (dtIOVolumeNew.Select("gid = '" + stock.gid.Trim() + "' ").Length > 0)
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"外盘高\" >✅</a>";
-            }
+            
 
             if (Math.Abs((double)dr["无影价"] - line3Price) / line3Price < 0.005)
             {
@@ -750,6 +787,7 @@
 
         }
         //rc.Dispose();
+        SaveData(dt, currentDate);
         return dt;
     }
 
@@ -891,7 +929,8 @@
                     <asp:BoundColumn DataField="DMP" HeaderText="DMP"></asp:BoundColumn>
                     <asp:BoundColumn DataField="现价" HeaderText="现价"></asp:BoundColumn>
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
-                    <asp:BoundColumn DataField="1日" HeaderText="1日" SortExpression="1日|desc" ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="0日" HeaderText="0日"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="1日" HeaderText="1日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="2日" HeaderText="2日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3日" HeaderText="3日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="4日" HeaderText="4日"></asp:BoundColumn>
