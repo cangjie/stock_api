@@ -325,7 +325,7 @@
                         new string[,] { { "alert_date", "datetime", currentDate.ToShortDateString() },
                         {"gid", "varchar", dr["代码"].ToString().Trim() } }, Util.conStr.Trim());
                     DBHelper.InsertData("alert_foot_reverse", new string[,] {
-                        {"gid", "varchar", dr["代码"].ToString().Trim()}, {"name", "varchar", dr["名称"].ToString().Trim()}, 
+                        {"gid", "varchar", dr["代码"].ToString().Trim()}, {"name", "varchar", dr["名称"].ToString().Trim()},
                         {"alert_date", "datetime", currentDate.ToShortDateString() }, {"lowest", "float", dr["前低"].ToString().Trim() },
                         {"shape", "varchar", dr["形态"].ToString().Trim()}, {"volume", "float", dr["缩量"].ToString().Trim() }, {"kdj", "int", dr["KDJ日"].ToString().Trim() },
                         {"macd", "int", dr["MACD日"].ToString().Trim() }, {"limit_up_times", "int", dr["板数"].ToString().Trim() },
@@ -335,8 +335,8 @@
                 });
                 }
                 catch
-                { 
-                
+                {
+
                 }
             }
         }
@@ -703,14 +703,14 @@
                 }
             }
 
-            
+
 
             if (line3Price <= currentPrice)
             {
                 dr["信号"] = dr["信号"].ToString().Trim() + "<a title=\"3线上\" >🌟</a>";
             }
 
-            
+
 
             dr["调整"] = 0;
             dr["缩量"] = volumeReduce;
@@ -774,13 +774,18 @@
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
 
 
-            
 
-            
+
+
 
             if (Math.Abs((double)dr["无影价"] - line3Price) / line3Price < 0.005)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"踩3线\" >3⃣️</a>";
+            }
+
+            if (stock.IsLimitUp(currentIndex))
+            { 
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"涨停\" >🆙</a>";
             }
 
             dt.Rows.Add(dr);
