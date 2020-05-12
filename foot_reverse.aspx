@@ -296,8 +296,6 @@
 
     public static void SaveData(DataTable dt, DateTime currentDate)
     {
-        //DBHelper.UpdateData("alert_foot_reverse", new string[,] { { "valid", "int", "0" } },
-        //    new string[,] { { "alert_date", "datetime", currentDate.ToShortDateString() } }, Util.conStr.Trim());
         foreach (DataRow dr in dt.Rows)
         {
             bool needInsert = false;
@@ -338,6 +336,15 @@
                 {
 
                 }
+            }
+        }
+        DataTable dtReverse = DBHelper.GetDataTable(" select * from alert_foot_reverse where alert_date = '" + currentDate.ToShortDateString() + "' and valid = 1");
+        foreach (DataRow drReverse in dtReverse.Rows)
+        {
+            if (dt.Select("代码 = '" + drReverse["gid"].ToString() + "' ").Length == 0)
+            {
+                DBHelper.UpdateData("alert_foot_reverse", new string[,] { { "valid", "int", "0" } }, 
+                    new string[,] { { "id", "int", drReverse["id"].ToString() } }, Util.conStr.Trim());
             }
         }
     }
@@ -784,7 +791,7 @@
             }
 
             if (stock.IsLimitUp(currentIndex))
-            { 
+            {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"涨停\" >🆙</a>";
             }
 
