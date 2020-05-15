@@ -249,6 +249,7 @@
         dt.Columns.Add("名称", Type.GetType("System.String"));
         dt.Columns.Add("信号", Type.GetType("System.String"));
         dt.Columns.Add("缩量", Type.GetType("System.Double"));
+        dt.Columns.Add("差值", Type.GetType("System.Double"));
         dt.Columns.Add("板数", Type.GetType("System.Int32"));
         dt.Columns.Add("现高", Type.GetType("System.Double"));
         dt.Columns.Add("F3", Type.GetType("System.Double"));
@@ -284,11 +285,20 @@
 
         foreach (DataRow drOri in dtOri.Rows)
         {
+
+            if (dt.Select(" 代码 = '" + drOri["gid"].ToString().Trim() + "' ").Length > 0)
+            {
+                continue;
+            }
+
+
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
             stock.LoadKLineDay();
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
+
+
 
             int currentIndex = stock.GetItemIndex(currentDate);
             if (currentIndex < 1)
@@ -300,13 +310,33 @@
             {
                 continue;
             }
-
-            if (Math.Abs((stock.kLineDay[currentIndex].lowestPrice - stock.kLineDay[currentIndex - 1].lowestPrice)/stock.kLineDay[currentIndex - 1].lowestPrice) >= 0.005
-                && Math.Abs((stock.kLineDay[currentIndex].lowestPrice - stock.kLineDay[currentIndex - 2].lowestPrice)/stock.kLineDay[currentIndex - 2].lowestPrice) >= 0.005)
+            double diff1 = Math.Abs((stock.kLineDay[currentIndex].lowestPrice - stock.kLineDay[currentIndex - 1].lowestPrice) / stock.kLineDay[currentIndex - 1].lowestPrice);
+            double diff2 = Math.Abs((stock.kLineDay[currentIndex].lowestPrice - stock.kLineDay[currentIndex - 2].lowestPrice) / stock.kLineDay[currentIndex - 2].lowestPrice);
+            if (diff1 >= 0.005 && diff2 >= 0.005)
             {
                 continue;
             }
 
+            int footIndex = 0;
+
+            if (DBHelper.GetDataTable(" select 'a' from alert_foot_new where valid = 1 and gid = '" + stock.gid.Trim()
+                + "' and alert_date = '" + stock.kLineDay[currentIndex].startDateTime.ToShortDateString() + "' ").Rows.Count > 0)
+            {
+                footIndex = currentIndex;
+            }
+            else
+            {
+                int tempIndex = currentIndex - 1;
+                if (diff1 > diff2)
+                {
+                    tempIndex--;
+                }
+                if (DBHelper.GetDataTable(" select 'a' from alert_foot_new where valid = 1 and gid = '" + stock.gid.Trim()
+                    + "' and alert_date = '" + stock.kLineDay[tempIndex].startDateTime.ToShortDateString() + "' ").Rows.Count > 0)
+                {
+                    footIndex = tempIndex;
+                }
+            }
 
 
             int limitUpNum = 0;
@@ -366,7 +396,7 @@
             dr["名称"] = stock.Name.Trim();
             dr["信号"] = "";
 
-
+            dr["差值"] = Math.Min(diff1, diff2);
 
 
             dr["板数"] = limitUpNum.ToString();
@@ -411,6 +441,18 @@
                 {
                     dr["信号"] = dr["信号"].ToString() + "📉";
                 }
+            }
+            if (diff1 < diff2 && stock.IsLimitUp(currentIndex - 1) && stock.IsLimitUp(currentIndex - 2))
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"二连板后两条腿\" >🚩</a>";
+            }
+            if (footIndex == currentIndex)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"当日无影脚\" >🦶</a>";
+            }
+            else if (footIndex > 0)
+            { 
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"上一条腿无影脚\" >🦵 </a>";
             }
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
             dt.Rows.Add(dr);
@@ -474,6 +516,7 @@
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号" SortExpression="信号|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="缩量" HeaderText="缩量"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="差值" HeaderText="差值"></asp:BoundColumn>
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD日|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="板数" HeaderText="板数" ></asp:BoundColumn>
