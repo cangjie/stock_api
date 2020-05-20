@@ -12,7 +12,7 @@
     {
         if (!IsPostBack)
         {
-            dt = DBHelper.GetDataTable(" select * from alert_foot_reverse where alert_date = '" + currentDate.ToShortDateString() + "'  order by  (highest-lowest)/lowest desc " );
+            dt = DBHelper.GetDataTable(" select * from alert_foot_reverse where alert_date = '" + currentDate.ToShortDateString() + "'  order by  no_shaddow_rate desc " );
         }
     }
 
