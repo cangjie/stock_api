@@ -10,6 +10,9 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
+
+        currentDate = Util.GetSafeRequestValue(Request, "date", DateTime.Now.ToShortDateString());
+
         if (!IsPostBack)
         {
             dt = DBHelper.GetDataTable(" select * from alert_foot_reverse where alert_date = '" + currentDate.ToShortDateString() + "'  order by  kdj,macd,limit_up_times desc " );
