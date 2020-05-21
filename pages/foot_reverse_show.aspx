@@ -52,8 +52,8 @@
                 <div class="container">
                     <div class="row justify-content-md-center" >
                         <div class="col" ><b>形态</b></div>
-                        <div class="col" ><b>3线</b></div>
-                        <div class="col"><b>DMP</b></div>
+                        <div class="col" ><b>KDJ</b></div>
+                        <div class="col"><b>MACD</b></div>
                         <div class="col"><b>幅度</b></div>
                         <div class="col"><b>前高</b></div>
                         <div class="col"><b>F3</b></div>
@@ -95,9 +95,9 @@
                         <div class="col" <% if (invalid)
                 { %> style="text-decoration:line-through" <%} %>><%=dr["shape"].ToString().Trim() %></div>
                         <div class="col text-right" <% if (invalid)
-                { %> style="text-decoration:line-through" <%} %> ><%=FormatFloat(double.Parse(dr["line3"].ToString().Trim())) %></div>
+                { %> style="text-decoration:line-through" <%} %> ><%=FormatFloat(double.Parse(dr["kdj"].ToString().Trim())) %></div>
                         <div class="col text-right" <% if (invalid)
-                { %> style="text-decoration:line-through" <%} %> ><%=FormatFloat(double.Parse(dr["dmp"].ToString().Trim())) %></div>
+                { %> style="text-decoration:line-through" <%} %> ><%=FormatFloat(double.Parse(dr["macd"].ToString().Trim())) %></div>
                         <div class="col text-right" <% if (invalid)
                 { %> style="text-decoration:line-through" <%} %> ><%=FormatFloat(100*(highest-lowest)/lowest) %>%</div>
                         <div class="col text-right" <% if (invalid)
