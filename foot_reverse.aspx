@@ -23,7 +23,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "幅度 desc");
+        sort = Util.GetSafeRequestValue(Request, "sort", "KDJ日,MACD日,板数 desc");
         rate = double.Parse(Util.GetSafeRequestValue(Request, "rate", "1")) / 100;
         if (!IsPostBack)
         {
