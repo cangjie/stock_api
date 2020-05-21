@@ -95,9 +95,9 @@
                         <div class="col" <% if (invalid)
                 { %> style="text-decoration:line-through" <%} %>><%=dr["shape"].ToString().Trim() %></div>
                         <div class="col text-right" <% if (invalid)
-                { %> style="text-decoration:line-through" <%} %> ><%=FormatFloat(double.Parse(dr["kdj"].ToString().Trim())) %></div>
+                { %> style="text-decoration:line-through" <%} %> ><%=dr["kdj"].ToString().Trim() %></div>
                         <div class="col text-right" <% if (invalid)
-                { %> style="text-decoration:line-through" <%} %> ><%=FormatFloat(double.Parse(dr["macd"].ToString().Trim())) %></div>
+                { %> style="text-decoration:line-through" <%} %> ><%=dr["macd"].ToString().Trim() %></div>
                         <div class="col text-right" <% if (invalid)
                 { %> style="text-decoration:line-through" <%} %> ><%=FormatFloat(100*(highest-lowest)/lowest) %>%</div>
                         <div class="col text-right" <% if (invalid)
