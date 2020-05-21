@@ -11,7 +11,7 @@
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        currentDate = Util.GetSafeRequestValue(Request, "date", DateTime.Now.ToShortDateString());
+        currentDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "date", DateTime.Now.ToShortDateString()));
 
         if (!IsPostBack)
         {
