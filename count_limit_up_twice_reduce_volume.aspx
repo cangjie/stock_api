@@ -62,8 +62,12 @@
             }
             if (s.kLineDay[currentIndex + 1].highestPrice <= s.kLineDay[currentIndex].highestPrice)
             {
-                newHighCount++;
+
                 newHigh = false;
+            }
+            if (newHigh)
+            {
+                newHighCount++;
             }
             int buyIndex = currentIndex + 1;
             if (s.kLineDay[buyIndex].lowestPrice > s.kLineDay[currentIndex + 2].lowestPrice)
@@ -87,11 +91,11 @@
                 finalRate = Math.Max(finalRate, rate);
                 if (rate >= 0.01)
                 {
-                    dr[j.ToString() + "日"] = "<font color=red >" + (rate * 100).ToString() + "%</font>";
+                    dr[j.ToString() + "日"] = "<font color=red >" + Math.Round(rate * 100, 2).ToString() + "%</font>";
                 }
                 else
                 {
-                    dr[j.ToString() + "日"] = "<font color=green >" + (rate * 100).ToString() + "%</font>";
+                    dr[j.ToString() + "日"] = "<font color=green >" + Math.Round(rate * 100, 2).ToString() + "%</font>";
                 }
             }
             if (finalRate >= 0.01)
@@ -101,11 +105,11 @@
                 {
                     newHighSuc++;
                 }
-                dr["总计"] = "<font color=red >" + (finalRate * 100).ToString() + "%</font>";
+                dr["总计"] = "<font color=red >" + Math.Round(finalRate * 100, 2).ToString() + "%</font>";
             }
             else
             {
-                dr["总计"] = "<font color=green >" + (finalRate * 100).ToString() + "%</font>";
+                dr["总计"] = "<font color=green >" + Math.Round(finalRate * 100, 2).ToString() + "%</font>";
             }
             dt.Rows.Add(dr);
         }
