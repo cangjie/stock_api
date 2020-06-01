@@ -26,6 +26,7 @@
         dt.Columns.Add("日期");
         dt.Columns.Add("代码");
         dt.Columns.Add("名称");
+        dt.Columns.Add("新高");
         dt.Columns.Add("买入");
         dt.Columns.Add("1日");
         dt.Columns.Add("2日");
@@ -81,6 +82,14 @@
             dr["代码"] = s.gid.Trim();
             dr["名称"] = s.Name.Trim();
             dr["买入"] = buyPrice.ToString();
+            if (newHigh)
+            {
+                dr["新高"] = "是";
+            }
+            else
+            { 
+                dr["新高"] = "否";
+            }
             double finalRate = double.MinValue;
             for (int j = 1; j <= 5; j++)
             {
