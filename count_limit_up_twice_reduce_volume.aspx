@@ -39,7 +39,7 @@
             + " order by a.alert_date desc ");
         foreach (DataRow drOri in dtOri.Rows)
         {
-            count++;
+
             bool newHigh = true;
             Stock s = GetStock(drOri["gid"].ToString().Trim());
             int currentIndex = s.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
@@ -65,10 +65,7 @@
 
                 newHigh = false;
             }
-            if (newHigh)
-            {
-                newHighCount++;
-            }
+
             int buyIndex = currentIndex + 1;
             if (s.kLineDay[buyIndex].lowestPrice > s.kLineDay[currentIndex + 2].lowestPrice)
             {
@@ -110,6 +107,11 @@
             else
             {
                 dr["总计"] = "<font color=green >" + Math.Round(finalRate * 100, 2).ToString() + "%</font>";
+            }
+            count++;
+            if (newHigh)
+            {
+                newHighCount++;
             }
             dt.Rows.Add(dr);
         }
