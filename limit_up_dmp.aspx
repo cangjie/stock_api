@@ -328,10 +328,7 @@
             {
                 limitUpMaxVolume = Math.Max(limitUpMaxVolume, stock.kLineDay[j].volume);
             }
-            if (stock.kLineDay[currentIndex].volume >= limitUpMaxVolume)
-            {
-                continue;
-            }
+            
 
 
 
