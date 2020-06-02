@@ -284,7 +284,7 @@
             + "' and alert_date <= '" + currentDate.ToShortDateString() + "' ");
 
 
-        DataTable dtOri = DBHelper.GetDataTable("select * from limit_up where alert_date >= '" + limitUpDate.ToShortDateString() 
+        DataTable dtOri = DBHelper.GetDataTable("select distinct gid from limit_up where alert_date >= '" + limitUpDate.ToShortDateString() 
             + "' and alert_date  < '" + currentDate.ToShortDateString() + "'   order by alert_date desc");
         /*
         DataTable dtOri = DBHelper.GetDataTable(" select  * from limit_up a where exists(select 'a' from limit_up b where a.gid = b.gid and b.alert_date = dbo.func_GetLastTransactDate(a.alert_date, 1))  "
