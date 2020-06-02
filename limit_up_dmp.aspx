@@ -284,7 +284,7 @@
             + "' and alert_date <= '" + currentDate.ToShortDateString() + "' ");
 
 
-        DataTable dtOri = DBHelper.GetDataTable("select distinct gid from limit_up where alert_date >= '" + limitUpDate.ToShortDateString() 
+        DataTable dtOri = DBHelper.GetDataTable("select distinct gid from limit_up where alert_date >= '" + limitUpDate.ToShortDateString()
             + "' and alert_date  < '" + currentDate.ToShortDateString() + "'   ");
         /*
         DataTable dtOri = DBHelper.GetDataTable(" select  * from limit_up a where exists(select 'a' from limit_up b where a.gid = b.gid and b.alert_date = dbo.func_GetLastTransactDate(a.alert_date, 1))  "
@@ -303,14 +303,19 @@
             if (currentIndex < 1)
                 continue;
 
-            int limitUpIndex = stock.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
 
-            if (limitUpIndex == -1)
+            int limitUpIndex = -1;
+
+            for (int j = currentIndex; j >= 0 ; j--)
             {
-                continue;
+                if (stock.IsLimitUp(j))
+                {
+                    limitUpIndex = j;
+                    break;
+                }
             }
 
-            if (!stock.IsLimitUp(limitUpIndex))
+            if (limitUpIndex == -1)
             {
                 continue;
             }
@@ -328,7 +333,7 @@
             {
                 limitUpMaxVolume = Math.Max(limitUpMaxVolume, stock.kLineDay[j].volume);
             }
-            
+
 
 
 
