@@ -292,7 +292,7 @@
         DataTable dtOri = DBHelper.GetDataTable("select distinct gid from limit_up where alert_date >= '" + limitUpDate.ToShortDateString()
             + "' and alert_date  < '" + currentDate.ToShortDateString() + "'   ");
 
-        DataTable dtFoot = DBHelper.GetDataTable(" select * from alert_foot_new where alert_date = '" + currentDate.ToShortDateString() + "' ");
+        DataTable dtFoot = DBHelper.GetDataTable(" select * from alert_foot_new where valid = 1 and alert_date = '" + currentDate.ToShortDateString() + "' ");
 
 
 
