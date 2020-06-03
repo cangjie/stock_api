@@ -286,6 +286,11 @@
 
         DataTable dtOri = DBHelper.GetDataTable("select distinct gid from limit_up where alert_date >= '" + limitUpDate.ToShortDateString()
             + "' and alert_date  < '" + currentDate.ToShortDateString() + "'   ");
+
+        DataTable dtFoot = DBHelper.GetDataTable(" select * from alert_foot_new where alert_date = '" + currentDate.ToShortDateString() + "' ");
+
+
+
         /*
         DataTable dtOri = DBHelper.GetDataTable(" select  * from limit_up a where exists(select 'a' from limit_up b where a.gid = b.gid and b.alert_date = dbo.func_GetLastTransactDate(a.alert_date, 1))  "
             + " and a.alert_date = '" + lastTransactDate.ToShortDateString() + "' ");
@@ -294,6 +299,9 @@
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
+
+
+
             stock.LoadKLineDay(rc);
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
@@ -528,6 +536,10 @@
             if (line3Reverse)
             {
                 dr["信号"] = "3线" + dr["信号"].ToString().Trim();
+            }
+            if (dtFoot.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
+            {
+                dr["总计"] = dr["总计"].ToString() + "🦶";
             }
             dr["总计"] = (computeMaxPrice - buyPrice) / buyPrice;
             dt.Rows.Add(dr);
