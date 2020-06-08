@@ -140,6 +140,10 @@
                         dr[(i + 1).ToString() + "日最高"] = "-";
                     }
                 }
+                if (s.kLineDay[currentIndex].highestPrice > s.kLineDay[currentIndex - 1].highestPrice)
+                {
+                    dr["信号"] = dr["信号"].ToString() + "<a title='新高' >🚩</a>";
+                }
                 dt.Rows.Add(dr);
             }
         }
