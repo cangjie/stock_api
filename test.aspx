@@ -10,9 +10,9 @@
     protected void Page_Load(object sender, EventArgs e)
     {
         //KeyValuePair<Stock, DateTime>[] gidArr = Util.GetDoubleLimitUpFrom3Line();
-        Stock s = new Stock("sh600107");
+        Stock s = new Stock("sz300703");
         s.LoadKLineDay();
-        int currentIndex = s.kLineDay.Length - 1;
+        int currentIndex = s.kLineDay.Length - 2;
         Response.Write(s.dmp(currentIndex).ToString());
     }
 

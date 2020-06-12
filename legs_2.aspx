@@ -293,6 +293,8 @@
 
 
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
+
+
             stock.LoadKLineDay();
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
@@ -451,7 +453,7 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"当日无影脚\" >🦶</a>";
             }
             else if (footIndex > 0)
-            { 
+            {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"上一条腿无影脚\" >🦵 </a>";
             }
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;

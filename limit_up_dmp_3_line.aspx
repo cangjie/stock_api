@@ -305,7 +305,7 @@
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
 
-
+            
 
             stock.LoadKLineDay(rc);
             KLine.ComputeMACD(stock.kLineDay);
@@ -319,7 +319,7 @@
 
             int limitUpIndex = -1;
 
-            for (int j = currentIndex; j >= 0 ; j--)
+            for (int j = currentIndex - 1; j >= 0 ; j--)
             {
                 if (stock.IsLimitUp(j))
                 {
