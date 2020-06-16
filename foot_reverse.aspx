@@ -343,7 +343,7 @@
         {
             if (dt.Select("代码 = '" + drReverse["gid"].ToString() + "' ").Length == 0)
             {
-                DBHelper.UpdateData("alert_foot_reverse", new string[,] { { "valid", "int", "0" } }, 
+                DBHelper.UpdateData("alert_foot_reverse", new string[,] { { "valid", "int", "0" } },
                     new string[,] { { "id", "int", drReverse["id"].ToString() } }, Util.conStr.Trim());
             }
         }
@@ -400,6 +400,7 @@
             */
         DataTable dtIOVolumeNew = DBHelper.GetDataTable("exec proc_io_volume_monitor_new '" + currentDate.ToShortDateString() + "' ");
 
+        DataTable dtTimeline = DBHelper.GetDataTable(" select * from alert_avarage_timeline where alert_date = '" + currentDate.ToShortDateString() + "' ");
 
         string sql = " select * from alert_foot_new where alert_date = '" + currentDate.Date.ToShortDateString() + "' and valid = 1 and foot_rate >= " + rate.ToString();
 
@@ -674,6 +675,11 @@
             }
             dr["DMP"] = dmp;
             dr["板数"] = limitUpNum;
+
+            if (dtTimeline.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
+            { 
+                dr["信号"] = dr["信号"].ToString() + "<a title='基本上在日均线以上' >📈</a>";
+            }
 
             /*
             dr["信号"] = (stock.kLineDay[currentIndex].endPrice <= f3 * 1.01) ? "📈" : "";
