@@ -344,7 +344,7 @@
         DataTable dtDtl = DBHelper.GetDataTable(" select gid, alert_date, price from alert_foot where alert_date > '"
             + currentDate.ToShortDateString() + "' and alert_date < '" + currentDate.AddDays(1).ToShortDateString() + "'  order by alert_date desc ");
 
-        DataTable dtOri = DBHelper.GetDataTable(" select gid, alert_date from limit_up where alert_date >= '" + limitUpStartDate.ToShortDateString()
+        DataTable dtOri = DBHelper.GetDataTable(" select gid, alert_date from limit_up    where alert_date >= '" + limitUpStartDate.ToShortDateString()
             + "' and alert_date <= '" + lastTransactDate.ToShortDateString() + "' order by alert_date desc ");
         DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor '" + currentDate.ToShortDateString() + "' ");
 
@@ -353,6 +353,8 @@
         DataTable dtMonthGold = DBHelper.GetDataTable(" select * from  alert_month_k_line_gold  where alert_date = '" + Util.GetLastTransactDate(currentDate, 1).ToShortDateString() + "' ");
 
         DataTable dtWeekGold = DBHelper.GetDataTable(" select * from  alert_week_k_line_gold  where alert_date = '" + Util.GetLastTransactDate(currentDate, 1).ToShortDateString() + "' ");
+
+        DataTable dtTurnOver = DBHelper.GetDataTable(" select * from turnover where alert_date =  '" + currentDate.ToShortDateString() + "' ");
 
         //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
         foreach (DataRow drOri in dtOri.Rows)
@@ -642,15 +644,7 @@
                 }
             }
 
-            if (!jumpEmpty)
-            {
-                dr["信号"] = "📈";
-            }
 
-            if (line3Price <= currentPrice)
-            {
-                dr["信号"] = dr["信号"].ToString().Trim() + "🌟";
-            }
             /*
             if (stock.kLineDay[highIndex].volume / avarageVolume >= 2.5 && stock.kLineDay[highIndex].volume / avarageVolume <= 3.5)
             {
@@ -658,10 +652,7 @@
             }
             */
 
-            if (stock.kLineDay[stock.kLineDay.Length - 1].endPrice >= highest)
-            {
-                dr["信号"] = dr["信号"] + "<a title='过前高' >🚩</a>";
-            }
+
 
 
             dr["调整"] = currentIndex - limitUpIndex;
@@ -714,6 +705,17 @@
             }
             dr["无影时"] = footTime;
             dr["无影"] = todayLowestPrice;
+
+            double turnOver = 0;
+            DataRow[] drTurnOverArr = dtTurnOver.Select(" gid = '" + stock.gid.Trim() + "' ");
+            if (drTurnOverArr.Length > 0)
+            {
+                turnOver = double.Parse(drTurnOverArr[0]["turnover_rate"].ToString());
+            }
+
+            dr["总换手"] = turnOver;
+
+
             double maxPrice = 0;
             dr["0日"] = (currentPrice - supportPrice) / supportPrice;
             for (int i = 1; i <= 5; i++)
@@ -727,61 +729,8 @@
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
 
 
-            if (currentIndex > 0 && (stock.kLineDay[currentIndex - 1].volume / maxVolume) < 0.65)
-            {
-                dr["信号"] = dr["信号"].ToString() + "📍";
-            }
 
-            if (dtIOVolume.Select("gid = '" + stock.gid.Trim() + "' ").Length > 0)
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"外盘高\" >✅</a>";
-            }
-            if (dtFoot.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"无影脚\" >🦶</a>";
-            }
-            if (dtMonthGold.Select(" gid = '" + stock.gid.Trim() + "'").Length > 0)
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"月双金叉\" >月</a>";
-            }
-
-            if (kArrHour[kArrHour.Length - 1].macd >= 0)
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"60分钟MACD金叉\" >时</a>";
-            }
-
-            if (kArrHalfHour[kArrHalfHour.Length - 1].macd >= 0)
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"30分钟MACD金叉\" >30min</a>";
-            }
-            if ((int)dr["MACD日"] >= 0)
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"MACD金叉\" >🌟</a>";
-            }
-            double totalStockCount = stock.TotalStockCount(currentDate);
-            if (highIndex == limitUpIndex)
-            {
-                highIndex++;
-            }
-            else
-            {
-                if (stock.kLineDay[highIndex].startPrice >= stock.kLineDay[limitUpIndex].endPrice
-                    && stock.kLineDay[highIndex].endPrice >= stock.kLineDay[limitUpIndex].endPrice
-                    && stock.kLineDay[highIndex].VirtualVolume / totalStockCount > 0.1
-                    && stock.kLineDay[highIndex].VirtualVolume / totalStockCount < 0.25)
-                {
-                    dr["信号"] = dr["信号"].ToString().Trim() + "🔥";
-                }
-            }
-
-            if ((Math.Min(stock.kLineDay[currentIndex].startPrice, stock.kLineDay[currentIndex].endPrice)
-                - stock.kLineDay[currentIndex].lowestPrice) / stock.kLineDay[currentIndex].lowestPrice > 0.01)
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"大长腿\" >腿</a>";
-            }
-
-
-
+            /*
             if (totalStockCount > 0)
             {
                 dr["总换手"] = stock.kLineDay[highIndex].VirtualVolume / totalStockCount;
@@ -790,13 +739,58 @@
             {
                 dr["总换手"] = 0;
             }
-            if (isHorseHead)
+            */
+            if (stock.kLineDay[currentIndex].endPrice > line3Price)
             {
-                dr["信号"] = dr["信号"].ToString() + "<a title='马头' >🐴</a>";
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"3线上\" >3⃣️</a>";
             }
-            else if (isSortCase)
+
+            if (currentIndex >= 2
+                && (Math.Abs(stock.kLineDay[currentIndex].lowestPrice - stock.kLineDay[currentIndex - 1].lowestPrice) / stock.kLineDay[currentIndex - 1].lowestPrice < 0.005
+                || (Math.Abs(stock.kLineDay[currentIndex].lowestPrice - stock.kLineDay[currentIndex - 2].lowestPrice) / stock.kLineDay[currentIndex - 1].lowestPrice < 0.005
+                && stock.kLineDay[currentIndex - 1].lowestPrice > stock.kLineDay[currentIndex].lowestPrice && stock.kLineDay[currentIndex - 1].lowestPrice > stock.kLineDay[currentIndex - 2].lowestPrice)))
             {
-                dr["信号"] = dr["信号"].ToString() + "<a title='剑鞘' >➖</a>";
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"两条腿\" >🚶‍</a>";
+            }
+
+            if (dtFoot.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"无影脚\" >🦶</a>";
+            }
+
+            int lastLimitUpInddex = currentIndex;
+            for (int i = currentIndex-1; i >= 0 && stock.kLineDay[i].startDateTime.Date >= DateTime.Parse(drOri["alert_date"].ToString().Trim()).Date  ; i--)
+            {
+                if (stock.IsLimitUp(i))
+                {
+                    lastLimitUpInddex = i;
+                    break;
+                }
+            }
+            //if (stock.kLineDay[currentIndex].VirtualVolume )
+
+            double currentVolume = stock.kLineDay[lastLimitUpInddex+1].volume;
+            if (stock.kLineDay[currentIndex].endDateTime.Date == DateTime.Now.Date && DateTime.Now.Hour < 15)
+            {
+                currentVolume = stock.kLineDay[currentIndex].VirtualVolume;
+            }
+
+            if (currentVolume < stock.kLineDay[lastLimitUpInddex].volume)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"缩量\" >📈</a>";
+            }
+
+            if (Math.Abs(stock.kLineDay[currentIndex].lowestPrice - line3Price) / line3Price < 0.05)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"回踩3线\" >🌟</a>";
+            }
+            else
+            {
+                double dmp = stock.dmp(currentIndex);
+                if (Math.Abs(stock.kLineDay[currentIndex].lowestPrice - dmp) / dmp < 0.05)
+                {
+                    dr["信号"] = dr["信号"].ToString() + "<a title=\"回踩DMP\" >🔥</a>";
+                }
             }
             dt.Rows.Add(dr);
 
