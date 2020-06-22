@@ -672,7 +672,7 @@
 
             if (stock.kLineDay[currentIndex].endPrice > line3Price)
             {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"3线上\" >3⃣️</a>";
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"3线上\" >🌟</a>";
             }
 
             if (currentIndex >= 2
@@ -707,19 +707,19 @@
 
             if (currentVolume < stock.kLineDay[lastLimitUpInddex].volume)
             {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"缩量\" >📈</a>";
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"缩量\" >缩</a>";
             }
 
             if (Math.Abs(stock.kLineDay[currentIndex].lowestPrice - line3Price) / line3Price < 0.05)
             {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"回踩3线\" >🌟</a>";
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"回踩3线\" >3⃣️</a>";
             }
             else
             {
                 double dmp = stock.dmp(currentIndex);
                 if (Math.Abs(stock.kLineDay[currentIndex].lowestPrice - dmp) / dmp < 0.05)
                 {
-                    dr["信号"] = dr["信号"].ToString() + "<a title=\"回踩DMP\" >🔥</a>";
+                    dr["信号"] = dr["信号"].ToString() + "<a title=\"回踩DMP\" >D</a>";
                 }
             }
 
