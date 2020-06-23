@@ -59,7 +59,12 @@
             {
                 continue;
             }
-           
+
+            if (s.kLineDay[currentIndex + 1].startPrice == s.kLineDay[currentIndex + 1].endPrice
+                && s.kLineDay[currentIndex + 1].highestPrice == s.kLineDay[currentIndex+1].lowestPrice)
+            {
+                continue;
+            }
 
             int buyIndex = currentIndex + 1;
 
@@ -70,7 +75,7 @@
             dr["名称"] = s.Name.Trim();
             dr["买入"] = buyPrice.ToString();
             dr["缩量"] = Math.Round(100 * s.kLineDay[currentIndex + 1].volume / s.kLineDay[currentIndex].volume, 2).ToString() + "%";
-           
+
             double finalRate = double.MinValue;
             for (int j = 1; j <= 5; j++)
             {
