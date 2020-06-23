@@ -65,15 +65,8 @@
             }
 
             int buyIndex = currentIndex + 1;
-            if (s.kLineDay[buyIndex].lowestPrice > s.kLineDay[currentIndex + 2].lowestPrice)
-            {
-                buyIndex = currentIndex + 2;
-            }
-            if (s.kLineDay[buyIndex].lowestPrice > s.kLineDay[currentIndex + 3].lowestPrice)
-            {
-                buyIndex = currentIndex + 3;
-            }
-            double buyPrice = s.kLineDay[buyIndex].endPrice;
+            
+            double buyPrice = s.kLineDay[currentIndex+1].endPrice;
             DataRow dr = dt.NewRow();
             dr["日期"] = s.kLineDay[currentIndex + 1].endDateTime.ToShortDateString();
             dr["代码"] = s.gid.Trim();
