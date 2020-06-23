@@ -28,6 +28,7 @@
         dt.Columns.Add("名称");
         dt.Columns.Add("新高");
         dt.Columns.Add("买入");
+        dt.Columns.Add("缩量");
         dt.Columns.Add("1日");
         dt.Columns.Add("2日");
         dt.Columns.Add("3日");
@@ -65,13 +66,14 @@
             }
 
             int buyIndex = currentIndex + 1;
-            
+
             double buyPrice = s.kLineDay[currentIndex+1].endPrice;
             DataRow dr = dt.NewRow();
             dr["日期"] = s.kLineDay[currentIndex + 1].endDateTime.ToShortDateString();
             dr["代码"] = s.gid.Trim();
             dr["名称"] = s.Name.Trim();
             dr["买入"] = buyPrice.ToString();
+            dr["缩量"] = Math.Round(100 * s.kLineDay[currentIndex + 1].volume / s.kLineDay[currentIndex].volume, 2).ToString() + "%";
             if (newHigh)
             {
                 dr["新高"] = "是";
