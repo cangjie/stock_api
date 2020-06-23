@@ -60,11 +60,11 @@
                 continue;
             }
 
-            if (s.kLineDay[currentIndex + 1].startPrice == s.kLineDay[currentIndex + 1].endPrice
-                && s.kLineDay[currentIndex + 1].highestPrice == s.kLineDay[currentIndex+1].lowestPrice)
+            if (s.IsLimitUp(currentIndex+1))
             {
                 continue;
             }
+
 
             int buyIndex = currentIndex + 1;
 
