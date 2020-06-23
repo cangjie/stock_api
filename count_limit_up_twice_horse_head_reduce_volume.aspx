@@ -146,7 +146,7 @@
     <form id="form1" runat="server">
         <div>
             总计：<%=count.ToString() %> / <%=Math.Round((double)100*suc/(double)count, 2).ToString() %>%<br />
-            创新高：<%=newHighCount.ToString() %> / <%=Math.Round((double)100*newHighSuc/(double)newHighCount, 2).ToString() %>%
+            <!--创新高：<%=newHighCount.ToString() %> / <%=Math.Round((double)100*newHighSuc/(double)newHighCount, 2).ToString() %>-->
         </div>
         <div>
             <asp:DataGrid runat="server" id="dg" Width="100%" BackColor="White" BorderColor="#999999" BorderStyle="None" BorderWidth="1px" CellPadding="3" GridLines="Vertical" >
