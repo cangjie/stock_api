@@ -321,7 +321,7 @@
 
             int limitUpIndex = stock.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
 
-            
+
 
             double limitUpMaxVolume = 0;
 
@@ -329,7 +329,7 @@
             {
                 limitUpMaxVolume = Math.Max(limitUpMaxVolume, stock.kLineDay[j].volume);
             }
-           
+
 
 
 
@@ -483,6 +483,15 @@
             if (stock.kLineDay[currentIndex].volume / stock.TotalStockCount(currentDate) <= 0.1)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"换手小于10%\" >📈</a>";
+            }
+
+            if (limitUpIndex > 0 && limitUpIndex < stock.kLineDay.Length - 1)
+            {
+                if (stock.kLineDay[limitUpIndex].endPrice < stock.kLineDay[limitUpIndex + 1].startPrice
+                    && stock.kLineDay[limitUpIndex].endPrice < stock.kLineDay[limitUpIndex + 1].endPrice)
+                { 
+                    dr["信号"] = dr["信号"].ToString() + "<a title='马头' >🐴</a>";
+                }
             }
 
             dr["总计"] = (computeMaxPrice - buyPrice) / buyPrice;
