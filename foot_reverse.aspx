@@ -456,6 +456,19 @@
             double highest = 0;
             int limitUpNum = 0;
 
+            int limitUpIndex = 0;
+
+            for (int i = currentIndex - 1; i >= 0; i--)
+            {
+                if (stock.IsLimitUp(i))
+                {
+                    limitUpIndex = i;
+                    break;
+                }
+            }
+
+
+
             for (int i = startIndex; i < currentIndex; i++)
             {
                 if (lowest > stock.kLineDay[i].lowestPrice)
@@ -491,7 +504,12 @@
             }
             avarageVolume = (int)Math.Round((double)avarageVolume / (double)(highIndex - lowestIndex), 0);
 
+            double limitUpVolume = 0;
 
+            if (limitUpIndex <= highIndex && limitUpIndex >= lowestIndex)
+            {
+                limitUpVolume = stock.kLineDay[limitUpIndex].volume;
+            }
 
             double f3 = highest - (highest - lowest) * 0.382;
             double f5 = highest - (highest - lowest) * 0.618;
@@ -677,7 +695,7 @@
             dr["板数"] = limitUpNum;
 
             if (dtTimeline.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
-            { 
+            {
                 dr["信号"] = dr["信号"].ToString() + "<a title='基本上在日均线以上' >📈</a>";
             }
 
@@ -726,7 +744,28 @@
 
 
             dr["调整"] = 0;
-            dr["缩量"] = volumeReduce;
+            if (limitUpVolume > 0)
+            {
+                if (limitUpIndex < stock.kLineDay.Length)
+                {
+                    double currentVolume = stock.kLineDay[limitUpIndex + 1].volume;
+                    if (stock.kLineDay[limitUpIndex + 1].endDateTime.Date == DateTime.Now.Date
+                        && DateTime.Now.Hour < 15)
+                    {
+                        currentVolume = stock.kLineDay[limitUpIndex + 1].VirtualVolume;
+                    }
+                    dr["缩量"] = currentVolume / limitUpVolume;
+                }
+                else
+                {
+                    dr["缩量"] = 0;
+                }
+            }
+            else
+            {
+                dr["缩量"] = 0;
+            }
+            //dr["缩量"] = volumeReduce;
             dr["现高"] = highest;
             dr["F3"] = f3;
             dr["F5"] = f5;

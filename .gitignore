@@ -244,3 +244,5 @@ ModelManifest.xml
 /cache/*
 
 /Global.asax
+/packages.config
+/stock_api.sln
