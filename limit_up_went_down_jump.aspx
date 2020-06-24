@@ -15,7 +15,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "幅度 desc");
+        sort = Util.GetSafeRequestValue(Request, "sort", "缩量");
         if (!IsPostBack)
         {
 
@@ -414,11 +414,7 @@
                 buyPrice = stock.kLineDay[currentIndex].lowestPrice;
             }
 
-            double maxVolume = 0;
-            for (int i = lowestIndex; i < currentIndex; i++)
-            {
-                maxVolume = Math.Max(maxVolume, stock.kLineDay[i].volume);
-            }
+            double maxVolume = stock.kLineDay[limitUpIndex].volume;
 
 
             int tochSupportStatus = 0;
@@ -474,8 +470,16 @@
 
 
             //double f3Distance = 0.382 - (highest - stock.kLineDay[currentIndex].lowestPrice) / (highest - lowest);
+            double volumeToday = 0;
 
-            double volumeToday = stock.kLineDay[currentIndex].VirtualVolume;  //Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(currentDate.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
+            if (limitUpIndex + 1 < stock.kLineDay.Length)
+            {
+                volumeToday = stock.kLineDay[limitUpIndex+1].volume;
+                if(stock.kLineDay[limitUpIndex+1].endDateTime.Date == DateTime.Now.Date && DateTime.Now.Hour < 15)
+                { 
+                    volumeToday = stock.kLineDay[limitUpIndex+1].VirtualVolume;
+                }
+            }
 
             double volumeYesterday = stock.kLineDay[limitUpIndex].volume;// Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(stock.kLineDay[limitUpIndex].startDateTime.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
             /*
