@@ -69,11 +69,15 @@
                 continue;
             }
             int limitUpNum = 0;
-
+            int lastLimitUpInex = 0;
             for (int i = currentIndex - 1; i >= 0 && s.kLineDay[i].endPrice >= s.GetAverageSettlePrice(i, 3, 3); i--)
             {
                 if (s.IsLimitUp(i))
                 {
+                    if (lastLimitUpInex == 0)
+                    {
+                        lastLimitUpInex = i;
+                    }
                     limitUpNum++;
                 }
             }
@@ -143,6 +147,14 @@
                 if (s.kLineDay[currentIndex].highestPrice > s.kLineDay[currentIndex - 1].highestPrice)
                 {
                     dr["信号"] = dr["信号"].ToString() + "<a title='新高' >🚩</a>";
+                }
+                if (lastLimitUpInex > 0 && lastLimitUpInex < s.kLineDay.Length-1)
+                {
+                    if (s.kLineDay[lastLimitUpInex + 1].startPrice > s.kLineDay[lastLimitUpInex].endPrice
+                        && s.kLineDay[lastLimitUpInex + 1].endPrice > s.kLineDay[lastLimitUpInex].endPrice)
+                    { 
+                        dr["信号"] = dr["信号"].ToString() + "<a title='马头' >🐴</a>";
+                    }
                 }
                 dt.Rows.Add(dr);
             }
