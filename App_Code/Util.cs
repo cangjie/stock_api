@@ -261,7 +261,8 @@ public class Util
             || (date.Date >= DateTime.Parse("2019-10-1") && (date.Date <= DateTime.Parse("2019-10-7")))
             || (date.Date == DateTime.Parse("2020-1-1") || (date.Date >= DateTime.Parse("2020-1-24") && (date.Date <= DateTime.Parse("2020-2-2"))))
             || date.Date == DateTime.Parse("2020-4-6")
-            || (date.Date >= DateTime.Parse("2020-5-1") && date.Date <= DateTime.Parse("2020-5-5") )
+            || (date.Date >= DateTime.Parse("2020-5-1") && date.Date <= DateTime.Parse("2020-5-5") 
+            || (date.Date >= DateTime.Parse("2020-6-25") && date.Date <= DateTime.Parse("2020-6-28")))
             )
             ret = false;
         return ret;
