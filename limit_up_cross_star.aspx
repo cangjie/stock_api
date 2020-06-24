@@ -10,14 +10,14 @@
 
     public string sort = "MACD日,KDJ日,综指 desc";
 
-    
+
 
     protected void Page_Load(object sender, EventArgs e)
     {
         sort = Util.GetSafeRequestValue(Request, "sort", "缩量");
         if (!IsPostBack)
         {
-            
+
 
 
             DataTable dt = GetData();
@@ -306,6 +306,11 @@
                 continue;
             }
 
+            if (stock.IsLimitUp(currentIndex))
+            {
+                continue;
+            }
+
             int limitUpNum = 0;
 
             for (int i = currentIndex - 1; i > 0 && stock.kLineDay[currentIndex].endPrice >= stock.GetAverageSettlePrice(i, 3, 3); i--)
@@ -362,7 +367,7 @@
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
             dr["信号"] = "";
-            
+
 
 
 
@@ -441,7 +446,7 @@
         return ret;
     }
 
-  
+
 </script>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
