@@ -327,7 +327,7 @@
             double f5 = highest - (highest - lowest) * 0.618;
             double line3Price = KLine.GetAverageSettlePrice(stock.kLineDay, currentIndex, 3, 3);
             double currentPrice = stock.kLineDay[currentIndex].endPrice;
-            double buyPrice = 0;
+            double buyPrice = stock.kLineDay[currentIndex].endPrice;
             double f3Distance = 0.382 - (highest - stock.kLineDay[currentIndex].lowestPrice) / (highest - lowest);
 
             double volumeToday = stock.kLineDay[currentIndex].volume;  //Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(currentDate.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
@@ -336,7 +336,7 @@
 
 
             double volumeReduce = volumeToday / volumeYesterday;
-
+            /*
             if (currentIndex == stock.kLineDay.Length - 1)
             {
                 buyPrice = stock.kLineDay[currentIndex].endPrice;
@@ -345,6 +345,7 @@
             {
                 buyPrice = stock.kLineDay[currentIndex+1].startPrice;
             }
+            */
             /*
             if (stock.kLineDay[currentIndex].startPrice > f3 * 0.99 && stock.kLineDay[currentIndex].lowestPrice < f3 * 1.01 )
             {
@@ -392,10 +393,8 @@
                     break;
 
                 double highPrice = stock.kLineDay[currentIndex + i].highestPrice;
-                if (i > 1)
-                {
-                    computeMaxPrice = Math.Max(computeMaxPrice, highPrice);
-                }
+                computeMaxPrice = Math.Max(computeMaxPrice, highPrice);
+                
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
 
 
