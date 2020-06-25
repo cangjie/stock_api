@@ -36,7 +36,7 @@
             currentDate = Util.GetDay(DateTime.Now);
         else
             currentDate = Util.GetDay(calendar.SelectedDate);
-        DataTable dtOri = GetData(currentDate, int.Parse(Util.GetSafeRequestValue(Request, "days", "13")), 
+        DataTable dtOri = GetData(currentDate, int.Parse(Util.GetSafeRequestValue(Request, "days", "13")),
             int.Parse(Util.GetSafeRequestValue(Request, "limitnum", "6")));
         return RenderHtml(dtOri.Select("", sort));
     }
@@ -291,6 +291,8 @@
             + " and a.alert_date = '" + lastTransactDate.ToShortDateString() + "' ");
         */
 
+        DataTable dtRunAboveAvarage = DBHelper.GetDataTable(" select * from alert_avarage_timeline where alert_date =  '" + currentDate.Date.ToShortDateString() + "' ");
+
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
@@ -314,7 +316,7 @@
             {
                 continue;
             }
-           
+
 
             double supportSettle = stock.kLineDay[currentIndex - 1].endPrice;
             int lowestIndex = 0;
@@ -448,6 +450,11 @@
                     dr["信号"] = dr["信号"].ToString() + "<a title=\"龙虎榜\" >🐲</a>";
                 }
 
+            }
+
+            if (dtRunAboveAvarage.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
+            { 
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"日均线上\" >📈</a>";
             }
 
             dr["总计"] = (computeMaxPrice - buyPrice) / buyPrice;
