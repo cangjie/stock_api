@@ -263,6 +263,8 @@
     public static DataTable GetData(DateTime currentDate, string days)
     {
         DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor_new '" + currentDate.ToShortDateString() + "' ");
+        DataTable dtRunAboveAvarage = DBHelper.GetDataTable(" select * from alert_avarage_timeline where alert_date =  '" + currentDate.Date.ToShortDateString() + "' ");
+
         DateTime alertDate = Util.GetLastTransactDate(currentDate, 1);
         DataTable dtOri = new DataTable();
         SqlDataAdapter da = new SqlDataAdapter(" select *  from alert_above_3_line_for_days where alert_date = '" + alertDate.ToShortDateString() + "'  "
@@ -484,18 +486,22 @@
                 dr["信号"] = "🔥";
             }
             highestPrice = KLine.GetHighestPrice(stock.kLineDay, currentIndex - 1, 40);
+            /*
             if (kdjDays >= 0 && macdDays >= 0 && todayRaise < 0 && Math.Abs(todayRaise)/avgRaiseRate < 0.34 && kdjDays <= 4 && macdDays <= 4 && kdjDays <= macdDays
                 && stock.kLineDay[currentIndex].endDateTime.Date == currentDate.Date)
             {
                 dr["信号"] = dr["信号"].ToString() + "📈";
             }
-
+            */
             if (dtIOVolume.Select("gid = '" + stock.gid.Trim() + "' ").Length > 0)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"外盘高\" >✅</a>";
             }
 
-
+            if (dtRunAboveAvarage.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
+            { 
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"日均线上\" >📈</a>";
+            }
 
             //if (totalScore !=0 && (stock.kLineDay[currentIndex].highestPrice - settlePrice) / settlePrice < 0.07 )
             dt.Rows.Add(dr);
