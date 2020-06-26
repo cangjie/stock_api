@@ -32,7 +32,7 @@
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        sort = Util.GetSafeRequestValue(Request, "sort", "KDJ,放量 desc");
+        sort = Util.GetSafeRequestValue(Request, "sort", "KDJ,放量");
         if (!IsPostBack)
         {
             try
