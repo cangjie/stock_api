@@ -498,10 +498,10 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"外盘高\" >✅</a>";
             }
 
-            double line3Price = stock.GetAverageSettlePrice(currentIndex, 3, 3);
+            double line3Price = stock.GetAverageSettlePrice(currentIndex+1, 3, 3);
 
             if (dtRunAboveAvarage.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0
-                && Math.Abs(stock.kLineDay[currentIndex].lowestPrice - line3Price) / line3Price < 0.05)
+                && Math.Abs(stock.kLineDay[currentIndex+1].lowestPrice - line3Price) / line3Price < 0.05)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"日均线上 且回踩3线\" >📈</a>";
             }
