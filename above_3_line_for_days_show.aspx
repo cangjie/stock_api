@@ -32,7 +32,7 @@
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        sort = Util.GetSafeRequestValue(Request, "sort", "KDJ,MACD,放量 desc");
+        sort = Util.GetSafeRequestValue(Request, "sort", "KDJ,放量 desc");
         if (!IsPostBack)
         {
             try
@@ -148,7 +148,7 @@
         drShit["今开"] = Math.Round(100 * (double)shitCount / (double)drOriArr.Length, 2).ToString() + "%";
 
         DataRow drRaise = dt.NewRow();
-        drRaise["名称"] = "双金叉";
+        drRaise["名称"] = "日均线上且回踩3线";
         drRaise["信号"] = "📈";
         drRaise["昨收"] = raiseCount.ToString();
         DataRow drFire = dt.NewRow();
