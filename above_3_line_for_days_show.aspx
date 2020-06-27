@@ -382,7 +382,8 @@
 
             int days3Line = KLine.Above3LineDays(stock, currentIndex);
             dr["3线日"] = daysAbove3Line;
-            dr["3线"] = stock.GetAverageSettlePrice(currentIndex, 3, 3);
+            double line3Price = stock.GetAverageSettlePrice(currentIndex, 3, 3);
+            dr["3线"] = line3Price;
             double buyPrice = stock.kLineDay[currentIndex].endPrice;
             double lowestPrice = stock.LowestPrice(currentDate, 20);
             double highestPrice = stock.HighestPrice(currentDate, 40);
@@ -461,14 +462,11 @@
 
             dr["综指"] = totalScore;
 
-            if (currentPrice <= buyPrice * 1.005)
-            {
-                dr["信号"] = dr["信号"].ToString().Trim() + "🛍️";
-            }
+            
 
             if (ma5 >= ma10 && ma10 >= ma20 && ma20 >= ma30)
             {
-                dr["信号"] = dr["信号"].ToString().Trim() + "👨‍👩‍👧‍👦";
+                dr["信号"] = dr["信号"].ToString().Trim() + "<a title=\"均线多头排列\"  >👨‍👩‍👧‍👦</a>";
             }
 
             if (kdjDays >= 0 && kdjDays <= 1 && (int)dr["TD"] <= 4)
@@ -498,10 +496,10 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"外盘高\" >✅</a>";
             }
 
-            double line3Price = stock.GetAverageSettlePrice(currentIndex+1, 3, 3);
+            
 
             if (dtRunAboveAvarage.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0
-                && (currentIndex + 1) < stock.kLineDay.Length && Math.Abs(stock.kLineDay[currentIndex+1].lowestPrice - line3Price) / line3Price < 0.005)
+                && (currentIndex) < stock.kLineDay.Length && Math.Abs(stock.kLineDay[currentIndex].lowestPrice - line3Price) / line3Price < 0.005)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"日均线上 且回踩3线\" >📈</a>";
             }
