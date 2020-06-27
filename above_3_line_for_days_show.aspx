@@ -466,7 +466,7 @@
 
             if (ma5 >= ma10 && ma10 >= ma20 && ma20 >= ma30)
             {
-                dr["信号"] = dr["信号"].ToString().Trim() + "<a title=\"均线多头排列\"  >👨‍👩‍👧‍👦</a>";
+                //dr["信号"] = dr["信号"].ToString().Trim() + "<a title=\"均线多头排列\"  >👨‍👩‍👧‍👦</a>";
             }
 
             if (kdjDays >= 0 && kdjDays <= 1 && (int)dr["TD"] <= 4)
@@ -499,9 +499,10 @@
             
 
             if (dtRunAboveAvarage.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0
+                && (ma5 >= ma10 && ma10 >= ma20 && ma20 >= ma30)
                 && (currentIndex) < stock.kLineDay.Length && Math.Abs(stock.kLineDay[currentIndex].lowestPrice - line3Price) / line3Price < 0.005)
             {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"日均线上 且回踩3线\" >📈</a>";
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"日均线上 且回踩3线 均线多头排列\" >📈</a>";
             }
 
             
