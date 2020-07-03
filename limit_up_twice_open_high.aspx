@@ -357,7 +357,7 @@
             double volumeReduce = Math.Abs(volumeYesterday - volumeToday)/ volumeYesterday;
 
 
-            buyPrice = stock.kLineDay[currentIndex].startPrice;
+            buyPrice = stock.kLineDay[currentIndex].endPrice;
 
             /*
             if (stock.kLineDay[currentIndex].startPrice > f3 * 0.99 && stock.kLineDay[currentIndex].lowestPrice < f3 * 1.01 )
