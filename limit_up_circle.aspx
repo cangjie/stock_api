@@ -288,7 +288,7 @@
         //    + " and exists (select 'a' from limit_up b where alert_date = '" + currentDate.ToShortDateString() + "' and a.gid = b.gid ) group by gid having count(*) >=  " + limitNum.ToString() );
 
         DataTable dtOri = DBHelper.GetDataTable("select gid, count(*) as limit_up_num from limit_up a where alert_date >= '" + Util.GetLastTransactDate(currentDate, days).ToShortDateString() + "' "
-            + " and alert_date < '" + currentDate.ToShortDateString() + "' group by gid having count(*) >=  " + limitNum.ToString() );
+            + " and alert_date <= '" + currentDate.ToShortDateString() + "' group by gid having count(*) >=  " + limitNum.ToString() );
 
 
         /*
