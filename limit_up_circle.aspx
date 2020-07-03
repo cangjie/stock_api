@@ -314,7 +314,7 @@
 
             if (!stock.IsLimitUp(currentIndex))
             {
-                continue;
+                //continue;
             }
 
 
