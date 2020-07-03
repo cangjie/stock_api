@@ -187,6 +187,17 @@
                     DateTime footTime = (DateTime)drOri[i];
                     dr[i] = footTime.Hour.ToString() + ":" + footTime.Minute.ToString();
                 }
+                else if (drArr[0].Table.Columns[i].Caption.Trim().Equals("调整"))
+                {
+                    if (drOri[i].ToString().Trim().Equals("2") || drOri[i].ToString().Trim().Equals("4"))
+                    {
+                        dr[i] = "<font color='red' >" + drOri[i].ToString() + "</font>";
+                    }
+                    else
+                    { 
+                        dr[i] = drOri[i].ToString();
+                    }
+                }
                 else
                 {
                     dr[i] = drOri[i].ToString();
@@ -503,7 +514,7 @@
             {
                 volumeToday = stock.kLineDay[limitUpIndex+1].volume;
                 if(stock.kLineDay[limitUpIndex+1].endDateTime.Date == DateTime.Now.Date && DateTime.Now.Hour < 15)
-                { 
+                {
                     volumeToday = stock.kLineDay[limitUpIndex+1].VirtualVolume;
                 }
             }
@@ -522,7 +533,7 @@
             if (lowest == 0 || line3Price == 0)
             {
                 continue;
-            }                               
+            }
             //buyPrice = Math.Max(f3, stock.kLineDay[currentIndex].lowestPrice);
             string memo = "";
 
