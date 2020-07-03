@@ -394,7 +394,7 @@
 
                 double highPrice = stock.kLineDay[currentIndex + i].highestPrice;
                 computeMaxPrice = Math.Max(computeMaxPrice, highPrice);
-                
+
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
 
 
@@ -452,8 +452,13 @@
             }
 
             if (dtRunAboveAvarage.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
-            { 
+            {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"日均线上\" >📈</a>";
+            }
+
+            if (stock.IsLimitUp(currentIndex))
+            { 
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"已涨停\" >🆙</a>";
             }
 
             dr["总计"] = (computeMaxPrice - buyPrice) / buyPrice;
