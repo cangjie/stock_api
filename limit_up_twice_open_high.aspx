@@ -284,6 +284,9 @@
         DataTable dtOri = DBHelper.GetDataTable(" select  * from limit_up a where exists(select 'a' from limit_up b where a.gid = b.gid and b.alert_date = dbo.func_GetLastTransactDate(a.alert_date, 1))  "
             + " and a.alert_date = '" + lastTransactDate.ToShortDateString() + "' ");
 
+        DataTable dtRunAboveAvarage = DBHelper.GetDataTable(" select * from alert_avarage_timeline where alert_date =  '" + currentDate.Date.ToShortDateString() + "' ");
+
+
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
@@ -440,10 +443,9 @@
             double yesterdayVolume = stock.kLineDay[currentIndex - 1].volume;
             double beforeYesterdayVolume = stock.kLineDay[currentIndex - 2].volume;
             double volumeIncreateRate = (yesterdayVolume - beforeYesterdayVolume) / beforeYesterdayVolume;
-            if (stock.kLineDay[currentIndex-1].volume/stock.TotalStockCount(stock.kLineDay[currentIndex-1].startDateTime) <= 0.1)
-            { 
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"低换手\" >📈</a>";
-            }
+            
+
+
             if (!stock.IsLimitUp(currentIndex)
                 && stock.kLineDay[currentIndex].endPrice > stock.kLineDay[currentIndex-1].highestPrice)
             {
@@ -462,7 +464,10 @@
                 }
 
             }
-            
+            if (dtRunAboveAvarage.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"日均线上\" >📈</a>";
+            }
             dr["总计"] = (computeMaxPrice - buyPrice) / buyPrice;
             dt.Rows.Add(dr);
 
