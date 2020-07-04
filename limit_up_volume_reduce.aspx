@@ -434,10 +434,9 @@
                     break;
 
                 double highPrice = stock.kLineDay[currentIndex + i].highestPrice;
-                if (i > 1)
-                {
-                    computeMaxPrice = Math.Max(computeMaxPrice, highPrice);
-                }
+            
+
+                computeMaxPrice = Math.Max(computeMaxPrice, highPrice);
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
 
 
