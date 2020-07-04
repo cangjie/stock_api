@@ -367,6 +367,9 @@
 
         DataTable dtTurnOver = DBHelper.GetDataTable(" select * from turnover where alert_date =  '" + currentDate.ToShortDateString() + "' ");
 
+        DataTable dtTimeline = DBHelper.GetDataTable(" select * from alert_avarage_timeline where alert_date = '" + currentDate.ToShortDateString() + "' ");
+
+
         //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
         foreach (DataRow drOri in dtOri.Rows)
         {
@@ -810,6 +813,13 @@
                     dr["信号"] = dr["信号"].ToString() + "<a title=\"回踩DMP\" >D</a>";
                 }
             }
+
+
+            if (dtTimeline.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title='基本上在日均线以上' >📈</a>";
+            }
+
             dt.Rows.Add(dr);
 
         }
