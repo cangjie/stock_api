@@ -404,6 +404,8 @@
 
         DataTable dtFoot = DBHelper.GetDataTable(" select * from alert_foot where alert_date > '" + currentDate.Date.ToShortDateString() + "' and alert_date < '" + currentDate.AddDays(1).ToShortDateString() + "' ");
 
+        DataTable dtTimeline = DBHelper.GetDataTable(" select * from alert_avarage_timeline where alert_date = '" + currentDate.ToShortDateString() + "' ");
+
 
         //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
         foreach (DataRow drOri in dtOri.Rows)
@@ -647,9 +649,9 @@
                 dr["信号"] = "<a title='跳空' >🌟</a>" + dr["信号"].ToString().Trim();
             }
 
-            if (stock.kLineDay[highestIndex].volume / stock.TotalStockCount(stock.kLineDay[highestIndex].endDateTime.Date) <= 0.15)
+            if (dtTimeline.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
             {
-                dr["信号"] = "<a title='低换手' >📈</a>" + dr["信号"].ToString().Trim();
+                dr["信号"] = dr["信号"].ToString() + "<a title='基本上在日均线以上' >📈</a>";
             }
 
 

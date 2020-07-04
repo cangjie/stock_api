@@ -393,6 +393,8 @@
 
         DataTable dtFoot = DBHelper.GetDataTable(" select * from alert_foot where alert_date > '" + currentDate.Date.ToShortDateString() + "' and alert_date < '" + currentDate.AddDays(1).ToShortDateString() + "' ");
 
+        DataTable dtTimeline = DBHelper.GetDataTable(" select * from alert_avarage_timeline where alert_date = '" + currentDate.ToShortDateString() + "' ");
+
 
         //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
         foreach (DataRow drOri in dtOri.Rows)
@@ -591,10 +593,7 @@
             dr["总计"] = (maxPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice;
 
 
-            if (dtIOVolume.Select("gid = '" + stock.gid.Trim() + "' ").Length > 0)
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"外盘高\" >✅</a>";
-            }
+            
             if (dtFoot.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"无影脚\" >🦶</a>";
@@ -610,7 +609,10 @@
             {
                 dr["信号"] = dr["信号"] + "<a title='跳空F3' >🔥</a>";
             }
-
+            if (dtIOVolume.Select("gid = '" + stock.gid.Trim() + "' ").Length > 0)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"外盘高\" >✅</a>";
+            }
 
             bool overPreviousHigh = false;
             for (int i = currentIndex + 1; i < stock.kLineDay.Length && i < maxIndex; i++)
@@ -637,11 +639,7 @@
                 dr["信号"] = "<a title='跳空' >🌟</a>" + dr["信号"].ToString().Trim();
             }
 
-            if (stock.kLineDay[highestIndex].volume / stock.TotalStockCount(stock.kLineDay[highestIndex].endDateTime.Date) <= 0.15)
-            {
-                dr["信号"] = "<a title='低换手' >📈</a>" + dr["信号"].ToString().Trim();
-            }
-
+            
             int lowestIndex = Util.GetLowestIndex(stock.kLineDay, highestIndex, lowestPrice);
 
 
@@ -663,6 +661,10 @@
             else if (isSortCase)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title='剑鞘' >➖</a>";
+            }
+            if (dtTimeline.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title='基本上在日均线以上' >📈</a>";
             }
             dt.Rows.Add(dr);
 
