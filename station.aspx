@@ -268,6 +268,9 @@
         DataTable dtMonthGold = DBHelper.GetDataTable(" select * from  alert_month_k_line_gold  where alert_date = '" + Util.GetLastTransactDate(currentDate, 1).ToShortDateString() + "' ");
 
         DataTable dtWeekGold = DBHelper.GetDataTable(" select * from  alert_week_k_line_gold  where alert_date = '" + Util.GetLastTransactDate(currentDate, 1).ToShortDateString() + "' " );
+        
+        DataTable dtRunAboveAvarage = DBHelper.GetDataTable(" select * from alert_avarage_timeline where alert_date =  '" + currentDate.Date.ToShortDateString() + "' ");
+
 
         foreach (DataRow drOri in dtOri.Rows)
         {
@@ -331,6 +334,11 @@
             double f5 = highest - (highest - lowest) * 0.618;
             double currentPrice = stock.kLineDay[currentIndex].endPrice;
             double buyPrice = stock.kLineDay[currentIndex].endPrice;
+
+
+
+
+
             DataRow dr = dt.NewRow();
 
             dr["代码"] = stock.gid.Trim();
@@ -405,7 +413,7 @@
             {
                 dr["信号"] = dr["信号"] + "<a title='过前高' >🚩</a>";
             }
-    
+
             double totalVolume = 0;
             for (int i = lowestIndex; i < currentIndex; i++)
             {
@@ -422,6 +430,28 @@
                 dr["总换手"] = 0;
             }
 
+
+            if (limitUpIndex + 1 <= currentIndex)
+            {
+                double currentVolume = stock.kLineDay[limitUpIndex + 1].volume;
+                if (limitUpIndex + 1 == currentIndex && DateTime.Now.Hour < 15)
+                {
+                    currentVolume = stock.kLineDay[currentIndex].VirtualVolume;
+                }
+                if (currentVolume < stock.kLineDay[limitUpIndex].volume)
+                {
+                    dr["信号"] = dr["信号"].ToString() + "缩";
+                }
+            }
+            if (dtRunAboveAvarage.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"日均线上\" >📈</a>";
+            }
+
+            if (stock.IsLimitUp(currentIndex))
+            { 
+                dr["信号"] = dr["信号"].ToString() + "🆙";
+            }
             dt.Rows.Add(dr);
 
         }
