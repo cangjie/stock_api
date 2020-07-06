@@ -468,6 +468,12 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"日均线上\" >📈</a>";
             }
+
+            if (stock.IsLimitUp(currentIndex))
+            { 
+                dr["信号"] = dr["信号"].ToString() + "🆙";
+            }
+
             dr["总计"] = (computeMaxPrice - buyPrice) / buyPrice;
             dt.Rows.Add(dr);
 
