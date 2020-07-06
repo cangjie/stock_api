@@ -10,13 +10,13 @@
 
     public string sort = "MACD日,KDJ日,综指 desc";
 
-    
+
     protected void Page_Load(object sender, EventArgs e)
     {
         sort = Util.GetSafeRequestValue(Request, "sort", "高开 desc, 缩量");
         if (!IsPostBack)
         {
-            
+
 
             DataTable dt = GetData();
             dg.DataSource = dt;
@@ -384,7 +384,7 @@
 
             bool foot = false;
 
-         
+
 
             buyPrice = stock.kLineDay[currentIndex - 1].endPrice;
 
@@ -485,6 +485,12 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"外盘高\" >✅</a>";
             }
+
+            if (stock.IsLimitUp(currentIndex))
+            { 
+                dr["信号"] = dr["信号"].ToString() + "🆙";
+            }
+
             dr["现高"] = highest;
             dr["F3"] = f3;
             dr["F5"] = f5;
