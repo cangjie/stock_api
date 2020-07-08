@@ -359,7 +359,7 @@
                     {
                         if (stock.IsLimitUp(i + 1))
                         {
-                            limitUpContinous = false;
+                            limitUpContinous = true;
                         }
                     }
                 }
