@@ -138,7 +138,7 @@
                         dr[i] = "<font color='red' >" + drOri[i].ToString() + "</font>";
                     }
                     else
-                    { 
+                    {
                         dr[i] = drOri[i].ToString();
                     }
                 }
@@ -312,7 +312,7 @@
                 continue;
             if (stock.IsLimitUp(currentIndex))
             {
-                continue;
+                //continue;
             }
 
             double currentVolume = stock.kLineDay[currentIndex].volume;
@@ -348,12 +348,20 @@
 
 
             int limitUpNum = 0;
+            bool limitUpContinous = false;
 
             for (int i = currentIndex - 1; i > 0 && stock.kLineDay[i].endPrice >= stock.GetAverageSettlePrice(i, 3, 3); i--)
             {
                 if (stock.IsLimitUp(i))
                 {
                     limitUpNum++;
+                    if (!limitUpContinous)
+                    {
+                        if (stock.IsLimitUp(i + 1))
+                        {
+                            limitUpContinous = false;
+                        }
+                    }
                 }
             }
 
@@ -434,7 +442,7 @@
                     break;
 
                 double highPrice = stock.kLineDay[currentIndex + i].highestPrice;
-            
+
 
                 computeMaxPrice = Math.Max(computeMaxPrice, highPrice);
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
@@ -493,7 +501,7 @@
 
             }
 
-            
+
 
             if (dtTimeline.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
             {
@@ -504,11 +512,19 @@
             {
                 if (stock.kLineDay[limitUpIndex].endPrice < stock.kLineDay[limitUpIndex + 1].startPrice
                     && stock.kLineDay[limitUpIndex].endPrice < stock.kLineDay[limitUpIndex + 1].endPrice)
-                { 
+                {
                     dr["信号"] = dr["信号"].ToString() + "<a title='马头' >🐴</a>";
                 }
             }
 
+            if (stock.IsLimitUp(currentIndex))
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"涨停\" >🆙</a>";
+            }
+            if (limitUpContinous)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"连板\" >🚩</a>";
+            }
             dr["总计"] = (computeMaxPrice - buyPrice) / buyPrice;
             dt.Rows.Add(dr);
 

@@ -324,12 +324,19 @@
 
             int limitUpNum = 0;
 
+            bool limitUpContinous = false;
+
             for (int i = currentIndex - 1; i > 0 && stock.kLineDay[i].endPrice >= stock.GetAverageSettlePrice(i, 3, 3); i--)
             {
                 if (stock.IsLimitUp(i))
                 {
                     limitUpNum++;
+                    if (!limitUpContinous && stock.IsLimitUp(i + 1))
+                    {
+                        limitUpContinous = true;
+                    }
                 }
+
             }
 
             double supportSettle = stock.kLineDay[currentIndex - 1].endPrice;
@@ -447,7 +454,7 @@
             }
 
             if (stock.IsLimitUp(currentIndex))
-            { 
+            {
                 dr["信号"] = dr["信号"].ToString() + "🆙";
             }
 
@@ -466,6 +473,10 @@
             if (dtRunAboveAvarage.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"日均线上\" >📈</a>";
+            }
+            if (limitUpContinous)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"连板\" >🚩</a>";
             }
             dr["总计"] = (computeMaxPrice - buyPrice) / buyPrice;
             dt.Rows.Add(dr);
