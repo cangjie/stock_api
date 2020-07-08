@@ -480,6 +480,10 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title='基本上在日均线以上' >📈</a>";
             }
+            if (volumeReduce < 1)
+            { 
+                dr["信号"] = dr["信号"].ToString() + "缩";
+            }
             dr["总计"] = (computeMaxPrice - buyPrice) / buyPrice;
             dt.Rows.Add(dr);
 
