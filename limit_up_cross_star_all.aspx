@@ -288,6 +288,8 @@
         DataTable dtOri = DBHelper.GetDataTable(" select gid, alert_date from limit_up where  alert_date = '"
             + lastTransactDate.ToShortDateString() + "' order by alert_date desc ");
 
+        DataTable dtRunAboveAvarage = DBHelper.GetDataTable(" select * from alert_avarage_timeline where alert_date =  '" + currentDate.Date.ToShortDateString() + "' ");
+
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
@@ -461,7 +463,10 @@
                 }
 
             }
-
+            if (dtRunAboveAvarage.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"日均线上\" >📈</a>";
+            }
             dr["总计"] = (computeMaxPrice - buyPrice) / buyPrice;
             dt.Rows.Add(dr);
 
