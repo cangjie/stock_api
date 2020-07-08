@@ -131,6 +131,17 @@
                             break;
                     }
                 }
+                else if (drArr[0].Table.Columns[i].Caption.Trim().Equals("调整"))
+                {
+                    if (drOri[i].ToString().Trim().Equals("2") || drOri[i].ToString().Trim().Equals("4"))
+                    {
+                        dr[i] = "<font color='red' >" + drOri[i].ToString() + "</font>";
+                    }
+                    else
+                    { 
+                        dr[i] = drOri[i].ToString();
+                    }
+                }
                 else
                 {
                     dr[i] = drOri[i].ToString();
@@ -289,6 +300,9 @@
             + " and a.alert_date = '" + lastTransactDate.ToShortDateString() + "' ");
         */
 
+        DataTable dtTimeline = DBHelper.GetDataTable(" select * from alert_avarage_timeline where alert_date = '" + currentDate.ToShortDateString() + "' ");
+
+
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
@@ -420,10 +434,9 @@
                     break;
 
                 double highPrice = stock.kLineDay[currentIndex + i].highestPrice;
-                if (i > 1)
-                {
-                    computeMaxPrice = Math.Max(computeMaxPrice, highPrice);
-                }
+            
+
+                computeMaxPrice = Math.Max(computeMaxPrice, highPrice);
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
 
 
@@ -480,9 +493,11 @@
 
             }
 
-            if (stock.kLineDay[currentIndex].volume / stock.TotalStockCount(currentDate) <= 0.1)
+            
+
+            if (dtTimeline.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
             {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"换手小于10%\" >📈</a>";
+                dr["信号"] = dr["信号"].ToString() + "<a title='基本上在日均线以上' >📈</a>";
             }
 
             if (limitUpIndex > 0 && limitUpIndex < stock.kLineDay.Length - 1)
