@@ -355,12 +355,10 @@
                 if (stock.IsLimitUp(i))
                 {
                     limitUpNum++;
-                    if (!limitUpContinous)
+                    if (!limitUpContinous && i < currentIndex - 1 && stock.IsLimitUp(i + 1))
                     {
-                        if (stock.IsLimitUp(i + 1))
-                        {
-                            limitUpContinous = true;
-                        }
+                      limitUpContinous = true;
+                      
                     }
                 }
             }
