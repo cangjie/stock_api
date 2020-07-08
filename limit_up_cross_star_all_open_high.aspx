@@ -22,8 +22,6 @@
             dg.DataSource = dt;
             dg.DataBind();
         }
-
-
     }
 
     public DataTable GetData()
@@ -282,6 +280,8 @@
         DataTable dtOri = DBHelper.GetDataTable(" select gid, alert_date from limit_up where  alert_date >= '"
             + limitUpStartDate.ToShortDateString() + "' and alert_date  <= '" + limitUpEndDate.ToShortDateString() + "'  order by alert_date desc ");
 
+        DataTable dtTimeline = DBHelper.GetDataTable(" select * from alert_avarage_timeline where alert_date = '" + currentDate.ToShortDateString() + "' ");
+
         foreach (DataRow drOri in dtOri.Rows)
         {
             if (dt.Select(" 代码 = '" + drOri["gid"].ToString().Trim() + "' ").Length > 0)
@@ -315,7 +315,7 @@
                 continue;
             }
 
-           
+
 
             if (stock.kLineDay[limitUpIndex + 1].endPrice <= stock.kLineDay[limitUpIndex].highestPrice
                 || stock.kLineDay[limitUpIndex + 1].startPrice <= stock.kLineDay[limitUpIndex].highestPrice)
@@ -337,12 +337,17 @@
 
 
             int limitUpNum = 0;
+            bool limitUpContinous = false;
 
             for (int i = currentIndex - 1; i > 0 && stock.kLineDay[currentIndex].endPrice >= stock.GetAverageSettlePrice(i, 3, 3); i--)
             {
                 if (stock.IsLimitUp(i))
                 {
                     limitUpNum++;
+                    if (i < currentIndex - 1 && !limitUpContinous && stock.IsLimitUp(i + 1))
+                    {
+                        limitUpContinous = true;
+                    }
                 }
             }
 
@@ -368,6 +373,11 @@
             double f3Distance = 0.382 - (highest - stock.kLineDay[currentIndex].lowestPrice) / (highest - lowest);
 
             double volumeToday = stock.kLineDay[currentIndex].volume;  //Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(currentDate.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
+
+            if (stock.kLineDay[currentIndex].endDateTime.Date == DateTime.Now.Date && DateTime.Now.Hour < 15)
+            {
+                volumeToday = stock.kLineDay[currentIndex].VirtualVolume;
+            }
 
             double volumeYesterday = stock.kLineDay[currentIndex - 1].volume;// Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(stock.kLineDay[limitUpIndex].startDateTime.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
 
@@ -458,7 +468,18 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "🌟";
             }
-
+            if (stock.IsLimitUp(currentIndex))
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"涨停\" >🆙</a>";
+            }
+            if (limitUpContinous)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"连板\" >🚩</a>";
+            }
+            if (dtTimeline.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title='基本上在日均线以上' >📈</a>";
+            }
             dr["总计"] = (computeMaxPrice - buyPrice) / buyPrice;
             dt.Rows.Add(dr);
 
