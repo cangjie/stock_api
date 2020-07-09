@@ -17,9 +17,6 @@
         sort = Util.GetSafeRequestValue(Request, "sort", "缩量");
         if (!IsPostBack)
         {
-
-
-
             DataTable dt = GetData();
             dg.DataSource = dt;
             dg.DataBind();
@@ -276,7 +273,6 @@
 
         DateTime lastTransactDate = Util.GetLastTransactDate(currentDate, 1);
         DateTime beforeLastTransDate = Util.GetLastTransactDate(lastTransactDate, 1);
-        //DateTime limitUpStartDate = Util.GetLastTransactDate(lastTransactDate, 4);
 
         DataTable dtTimeline = DBHelper.GetDataTable(" select * from alert_avarage_timeline where alert_date = '" + currentDate.ToShortDateString() + "' ");
 
@@ -295,6 +291,7 @@
 
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
 
+          
 
             stock.LoadKLineDay(Util.rc);
             KLine.ComputeMACD(stock.kLineDay);
