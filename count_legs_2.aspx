@@ -33,50 +33,31 @@
         dt.Columns.Add("4日");
         dt.Columns.Add("5日");
         dt.Columns.Add("总计");
-        DataTable dtOri = DBHelper.GetDataTable(" select * from limit_up order by alert_date desc ");
+        DataTable dtOri = DBHelper.GetDataTable(" select * from limit_up a where exists( select 'a' from limit_up b where a.gid = b.gid and b.alert_date = dbo.func_GetLastTransactDate(a.alert_date, 1) ) "
+            + "  and exists( select 'a' from limit_up c where a.gid = c.gid and c.alert_date = dbo.func_GetLastTransactDate(a.alert_date, 2) )  order by alert_date desc ");
         foreach (DataRow drOri in dtOri.Rows)
         {
             bool newHigh = true;
 
-            
             Stock s = GetStock(drOri["gid"].ToString().Trim());
-
-
-
             int currentIndex = s.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
             if (currentIndex + 7 >= s.kLineDay.Length)
             {
                 continue;
             }
 
-
-
-            int countIndex = 0;
-
-            if (Math.Abs(s.kLineDay[currentIndex + 1].lowestPrice - s.kLineDay[currentIndex].lowestPrice) / s.kLineDay[currentIndex].lowestPrice < 0.005
-                || Math.Abs(s.kLineDay[currentIndex + 1].lowestPrice - s.kLineDay[currentIndex - 1].lowestPrice) / s.kLineDay[currentIndex - 1].lowestPrice < 0.005)
-            {
-                countIndex = currentIndex + 1;
-            }
-            else if (Math.Abs(s.kLineDay[currentIndex + 2].lowestPrice - s.kLineDay[currentIndex].lowestPrice) / s.kLineDay[currentIndex].lowestPrice < 0.005
-                || Math.Abs(s.kLineDay[currentIndex + 2].lowestPrice - s.kLineDay[currentIndex + 1].lowestPrice) / s.kLineDay[currentIndex + 1].lowestPrice < 0.005)
-            {
-                countIndex = currentIndex + 2;
-            }
-
-
-            if (countIndex == 0 || !s.IsLimitUp(currentIndex - 1) || !s.IsLimitUp(countIndex)
-                || dt.Select(" 日期 = '" + s.kLineDay[countIndex].startDateTime.Date.ToShortDateString() + "' and 代码 =  '" + s.gid.Trim() + "' " ).Length > 0)
+            if (Math.Abs(s.kLineDay[currentIndex].lowestPrice - s.kLineDay[currentIndex - 1].lowestPrice) / s.kLineDay[currentIndex - 1].lowestPrice > 0.005)
             {
                 continue;
             }
 
-
-            int buyIndex = countIndex;
-
-            double buyPrice = s.kLineDay[countIndex].endPrice;
+            if (!s.IsLimitUp(currentIndex) || !s.IsLimitUp(currentIndex - 1) || !s.IsLimitUp(currentIndex - 2))
+            {
+                continue;
+            }
+            double buyPrice = s.kLineDay[currentIndex].endPrice;
             DataRow dr = dt.NewRow();
-            dr["日期"] = s.kLineDay[countIndex].endDateTime.ToShortDateString();
+            dr["日期"] = s.kLineDay[currentIndex].endDateTime.ToShortDateString();
             dr["代码"] = s.gid.Trim();
             dr["名称"] = s.Name.Trim();
             dr["买入"] = buyPrice.ToString();
@@ -84,7 +65,7 @@
             double finalRate = double.MinValue;
             for (int j = 1; j <= 5; j++)
             {
-                double rate = (s.kLineDay[buyIndex + j].highestPrice - buyPrice) / buyPrice;
+                double rate = (s.kLineDay[currentIndex + j].highestPrice - buyPrice) / buyPrice;
                 finalRate = Math.Max(finalRate, rate);
                 if (rate >= 0.01)
                 {
