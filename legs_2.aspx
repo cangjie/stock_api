@@ -296,7 +296,7 @@
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
 
 
-            stock.LoadKLineDay();
+            stock.LoadKLineDay(Util.rc);
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
@@ -436,14 +436,14 @@
             }
 
 
-            
+
 
             if (stock.kLineDay[currentIndex].endPrice > line3Price)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title='3线上' >🌟</a>";
             }
             if (stock.IsLimitUp(currentIndex))
-            { 
+            {
                 dr["信号"] = dr["信号"].ToString() + "<a title='涨停' >🆙</a>";
             }
             if (currentIndex + 1 < stock.kLineDay.Length)
