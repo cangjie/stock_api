@@ -436,10 +436,7 @@
             }
 
 
-            if (dtTimeline.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title='基本上在日均线以上' >📈</a>";
-            }
+            
 
             if (stock.kLineDay[currentIndex].endPrice > line3Price)
             {
@@ -467,6 +464,10 @@
             else if (footIndex > 0)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"上一条腿无影脚\" >🦵 </a>";
+            }
+            if (dtTimeline.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title='基本上在日均线以上' >📈</a>";
             }
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
             dt.Rows.Add(dr);
