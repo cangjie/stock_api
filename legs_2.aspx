@@ -450,7 +450,7 @@
             {
                 if (stock.kLineDay[currentIndex + 1].lowestPrice <= f5 + 0.02)
                 {
-                    dr["信号"] = dr["信号"].ToString() + "📉";
+                    dr["信号"] = dr["信号"].ToString() + "<a title='最低到F5' >📉</a>";
                 }
             }
             if (diff1 < diff2 && stock.IsLimitUp(currentIndex - 1) && stock.IsLimitUp(currentIndex - 2))
