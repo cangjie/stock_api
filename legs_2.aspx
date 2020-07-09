@@ -433,9 +433,13 @@
                     }
                 }
             }
-            if ((stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice <= 0.095)
+            if (stock.kLineDay[currentIndex].endPrice > line3Price)
             {
-                dr["信号"] = dr["信号"].ToString() + "🌟";
+                dr["信号"] = dr["信号"].ToString() + "<a title='3线上' >🌟</a>";
+            }
+            if (stock.IsLimitUp(currentIndex))
+            { 
+                dr["信号"] = dr["信号"].ToString() + "<a title='涨停' >🆙</a>";
             }
             if (currentIndex + 1 < stock.kLineDay.Length)
             {
