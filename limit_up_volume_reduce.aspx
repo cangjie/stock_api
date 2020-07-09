@@ -312,7 +312,7 @@
                 continue;
             if (stock.IsLimitUp(currentIndex))
             {
-                //continue;
+                continue;
             }
 
             double currentVolume = stock.kLineDay[currentIndex].volume;
@@ -331,10 +331,7 @@
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
 
-            if (stock.IsLimitUp(currentIndex))
-            {
-                continue;
-            }
+            
 
             int limitUpIndex = stock.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
 
