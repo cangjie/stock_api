@@ -335,7 +335,19 @@
             double currentPrice = stock.kLineDay[currentIndex].endPrice;
             double buyPrice = stock.kLineDay[currentIndex].endPrice;
 
+            bool limitUpContinous = false;
 
+            for (int i = currentIndex - 1; i > 0 && stock.kLineDay[i].endPrice >= stock.GetAverageSettlePrice(i, 3, 3); i--)
+            {
+                if (stock.IsLimitUp(i))
+                {
+                    if (!limitUpContinous && i < currentIndex - 1 && stock.IsLimitUp(i + 1))
+                    {
+                        limitUpContinous = true;
+                        break;
+                    }
+                }
+            }
 
 
 
@@ -345,7 +357,7 @@
             dr["名称"] = stock.Name.Trim();
             if (stock.kLineDay[currentIndex].highestPrice > highest)
             {
-                dr["信号"] = "🔥";
+                dr["信号"] = "<a title='过前高' >🔥</a>";
             }
             //dr["信号"] = "";
             dr["现高"] = highest;
@@ -408,12 +420,12 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"周双金叉\" >周</a>";
             }
 
-
+            /*
             if (stock.kLineDay[stock.kLineDay.Length - 1].endPrice >= highest)
             {
                 dr["信号"] = dr["信号"] + "<a title='过前高' >🚩</a>";
             }
-
+            */
             double totalVolume = 0;
             for (int i = lowestIndex; i < currentIndex; i++)
             {
@@ -451,6 +463,10 @@
             if (stock.IsLimitUp(currentIndex))
             { 
                 dr["信号"] = dr["信号"].ToString() + "🆙";
+            }
+            if (limitUpContinous)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"连板\" >🚩</a>";
             }
             dt.Rows.Add(dr);
 
