@@ -138,7 +138,7 @@
                         dr[i] = "<font color='red' >" + drOri[i].ToString() + "</font>";
                     }
                     else
-                    { 
+                    {
                         dr[i] = drOri[i].ToString();
                     }
                 }
@@ -331,7 +331,10 @@
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
 
-
+            if (stock.IsLimitUp(currentIndex))
+            {
+                continue;
+            }
 
             int limitUpIndex = stock.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
 
@@ -434,7 +437,7 @@
                     break;
 
                 double highPrice = stock.kLineDay[currentIndex + i].highestPrice;
-            
+
 
                 computeMaxPrice = Math.Max(computeMaxPrice, highPrice);
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
@@ -493,7 +496,7 @@
 
             }
 
-            
+
 
             if (dtTimeline.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
             {
@@ -504,7 +507,7 @@
             {
                 if (stock.kLineDay[limitUpIndex].endPrice < stock.kLineDay[limitUpIndex + 1].startPrice
                     && stock.kLineDay[limitUpIndex].endPrice < stock.kLineDay[limitUpIndex + 1].endPrice)
-                { 
+                {
                     dr["信号"] = dr["信号"].ToString() + "<a title='马头' >🐴</a>";
                 }
             }
