@@ -278,6 +278,7 @@
         DateTime beforeLastTransDate = Util.GetLastTransactDate(lastTransactDate, 1);
         //DateTime limitUpStartDate = Util.GetLastTransactDate(lastTransactDate, 4);
 
+        DataTable dtTimeline = DBHelper.GetDataTable(" select * from alert_avarage_timeline where alert_date = '" + currentDate.ToShortDateString() + "' ");
 
 
         DataTable dtOri = DBHelper.GetDataTable(" select gid, alert_date from limit_up where (alert_date = '"
@@ -429,10 +430,17 @@
                 {
                     if (stock.kLineDay[currentIndex + 1].startPrice > stock.kLineDay[currentIndex].highestPrice)
                     {
-                        dr["信号"] = dr["信号"].ToString() + "<a title=\"次日高开过前高\" >📈</a>";
+                        //dr["信号"] = dr["信号"].ToString() + "<a title=\"次日高开过前高\" >📈</a>";
                     }
                 }
             }
+
+
+            if (dtTimeline.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title='基本上在日均线以上' >📈</a>";
+            }
+
             if (stock.kLineDay[currentIndex].endPrice > line3Price)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title='3线上' >🌟</a>";
