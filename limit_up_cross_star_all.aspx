@@ -288,6 +288,8 @@
         DataTable dtOri = DBHelper.GetDataTable(" select gid, alert_date from limit_up where  alert_date = '"
             + lastTransactDate.ToShortDateString() + "' order by alert_date desc ");
 
+        DataTable dtRunAboveAvarage = DBHelper.GetDataTable(" select * from alert_avarage_timeline where alert_date =  '" + currentDate.Date.ToShortDateString() + "' ");
+
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
@@ -307,6 +309,11 @@
                 continue;
             }
 
+            if (!stock.IsLimitUp(currentIndex - 1))
+            {
+                continue;
+            }
+
 
 
             if (stock.kLineDay[currentIndex].endPrice <= stock.kLineDay[currentIndex-1].highestPrice
@@ -317,12 +324,19 @@
 
             int limitUpNum = 0;
 
+            bool limitUpContinous = false;
+
             for (int i = currentIndex - 1; i > 0 && stock.kLineDay[i].endPrice >= stock.GetAverageSettlePrice(i, 3, 3); i--)
             {
                 if (stock.IsLimitUp(i))
                 {
                     limitUpNum++;
+                    if (!limitUpContinous && stock.IsLimitUp(i + 1))
+                    {
+                        limitUpContinous = true;
+                    }
                 }
+
             }
 
             double supportSettle = stock.kLineDay[currentIndex - 1].endPrice;
@@ -439,6 +453,11 @@
                 dr["信号"] = dr["信号"].ToString() + "🌟";
             }
 
+            if (stock.IsLimitUp(currentIndex))
+            {
+                dr["信号"] = dr["信号"].ToString() + "🆙";
+            }
+
             if (dtGragonTigerList.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
             {
                 if (dtGragonTigerList.Select(" gid = '" + stock.gid.Trim() + "' and alert_date = '" + Util.GetLastTransactDate(currentDate, 1).ToShortDateString() + "' ").Length > 0)
@@ -449,9 +468,16 @@
                 {
                     dr["信号"] = dr["信号"].ToString() + "<a title=\"龙虎榜\" >🐲</a>";
                 }
-                
-            }
 
+            }
+            if (dtRunAboveAvarage.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"日均线上\" >📈</a>";
+            }
+            if (limitUpContinous)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"连板\" >🚩</a>";
+            }
             dr["总计"] = (computeMaxPrice - buyPrice) / buyPrice;
             dt.Rows.Add(dr);
 
