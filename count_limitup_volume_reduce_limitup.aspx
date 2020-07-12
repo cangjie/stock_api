@@ -5,7 +5,7 @@
 
 <script runat="server">
 
-    public static Stock[] gidArr;
+    public  ArrayList gidArr = new ArrayList();
 
     public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
 
@@ -20,7 +20,7 @@
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        FillStockArr();
+      
 
         DataTable dt = new DataTable();
         dt.Columns.Add("日期", Type.GetType("System.DateTime"));
@@ -38,7 +38,7 @@
 
 
 
-        DataTable dtOri = DBHelper.GetDataTable(" select alert_date, gid from limit_up a "
+        DataTable dtOri = DBHelper.GetDataTable(" select  alert_date, gid from limit_up a "
             + " where exists (select 'a' from limit_up b where a.gid = b.gid  "
             + " and dbo.func_GetLastTransactDate(a.alert_date, 16) <= b.alert_date  "
             + " and b.alert_date <= dbo.func_GetLastTransactDate(a.alert_date, 2) ) and a.alert_date >= '2020-1-1' ");
@@ -55,15 +55,16 @@
                 int prevLimitUpVolumeReduceIndex = 0;
                 for (int i = currentIndex - 2; i >= currentIndex - 16; i--)
                 {
-                    if (s.IsLimitUp(i) && s.kLineDay[i].volume < s.kLineDay[i + 1].volume && !s.IsLimitUp(i + 1))
+                    if (s.IsLimitUp(i) && s.kLineDay[i].volume > s.kLineDay[i + 1].volume && !s.IsLimitUp(i + 1))
                     {
                         prevLimitUpVolumeReduceIndex = i;
                         break;
                     }
                 }
-                DataRow dr = dt.NewRow();
-                if (dt.Select(" 日期 = '" + s.kLineDay[prevLimitUpVolumeReduceIndex].startDateTime.Date.ToShortDateString() + "' and 代码 = '" + s.gid.Trim() + "' ").Length == 0)
+                if (prevLimitUpVolumeReduceIndex > 0 
+                    && dt.Select(" 日期 = '" + s.kLineDay[prevLimitUpVolumeReduceIndex].startDateTime.Date.ToShortDateString() + "' and 代码 = '" + s.gid.Trim() + "' ").Length == 0)
                 {
+                    DataRow dr = dt.NewRow();
                     dr["日期"] = s.kLineDay[prevLimitUpVolumeReduceIndex].startDateTime.Date;
                     dr["代码"] = s.gid.Trim();
                     dr["名称"] = s.Name.Trim();
@@ -80,14 +81,13 @@
                             reLimitUpDays++;
                         }
                     }
-                    dr["再次涨停天数"] = reLimitUpDays.ToString();
-
+                    dr["再次涨停天数"] = (1+reLimitUpDays).ToString();
+                    dt.Rows.Add(dr);
                 }
-                dt.Rows.Add(dr);
             }
             catch
-            { 
-            
+            {
+
             }
         }
 
@@ -113,27 +113,26 @@
 
     }
 
-    public void FillStockArr()
-    {
-        DataTable dt = DBHelper.GetDataTable(" select distinct gid from limit_up where next_day_cross_star_un_limit_up = 1 ");
-        gidArr = new Stock[dt.Rows.Count];
-        for (int i = 0; i < dt.Rows.Count; i++)
-        {
-            gidArr[i] = new Stock(dt.Rows[i][0].ToString().Trim());
-            gidArr[i].LoadKLineDay(rc);
-        }
-    }
+   
 
     public Stock GetStock(string gid)
     {
         Stock s = new Stock();
-        foreach (Stock st in gidArr)
+        bool found = false;
+        foreach (object o in gidArr)
         {
-            if (st.gid.Trim().Equals(gid))
+            if (((Stock)o).gid.Trim().Equals(gid))
             {
-                s = st;
+                found = true;
+                s = (Stock)o;
                 break;
             }
+        }
+        if (!found)
+        {
+            s = new Stock(gid);
+            s.LoadKLineDay(Util.rc);
+            gidArr.Add(s);
         }
         return s;
     }
