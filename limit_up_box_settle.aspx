@@ -194,7 +194,7 @@
                         dr[i] = "<font color='red' >" + drOri[i].ToString() + "</font>";
                     }
                     else
-                    { 
+                    {
                         dr[i] = drOri[i].ToString();
                     }
                 }
@@ -789,7 +789,10 @@
                 }
             }
             //if (stock.kLineDay[currentIndex].VirtualVolume )
-
+            if (lastLimitUpInddex == currentIndex)
+            {
+                break;
+            }
             double currentVolume = stock.kLineDay[lastLimitUpInddex+1].volume;
             if (stock.kLineDay[currentIndex].endDateTime.Date == DateTime.Now.Date && DateTime.Now.Hour < 15)
             {
