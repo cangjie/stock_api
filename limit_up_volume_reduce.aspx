@@ -327,11 +327,17 @@
                 continue;
             }
 
+            if ((stock.kLineDay[currentIndex].lowestPrice - stock.kLineDay[currentIndex - 1].endPrice)
+                / stock.kLineDay[currentIndex - 1].endPrice < -0.095)
+            {
+                continue;
+            }
+
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
 
-            
+
 
             int limitUpIndex = stock.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
 
@@ -357,8 +363,8 @@
                     limitUpNum++;
                     if (!limitUpContinous && i < currentIndex - 1 && stock.IsLimitUp(i + 1))
                     {
-                      limitUpContinous = true;
-                      
+                        limitUpContinous = true;
+
                     }
                 }
             }
