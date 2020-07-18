@@ -305,6 +305,7 @@
         DataTable dtOri = DBHelper.GetDataTable(" select * from alert_over_ma where alert_date = '" + currentDate + "' ");
         DataTable dtAlert = DBHelper.GetDataTable(" select * from stock_alert_message where alert_date = '" + currentDate.ToShortDateString() + "' and alert_type = 'bull' ");
         DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor_new '" + currentDate.ToShortDateString() + "' ");
+        DataTable dtTimeline = DBHelper.GetDataTable(" select * from alert_avarage_timeline where alert_date = '" + currentDate.ToShortDateString() + "' ");
 
         DataTable dt = new DataTable();
         dt.Columns.Add("代码", Type.GetType("System.String"));
@@ -355,7 +356,13 @@
         }
         foreach (DataRow drOri in dtOri.Rows)
         {
+            if (dtTimeline.Select(" gid = '" + drOri["gid"].ToString().Trim() + "'  ").Length <= 0)
+            {
+                continue;
+            }
+
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
+
 
 
             if (stock.gid.Trim().Equals("sz300338"))
@@ -456,7 +463,7 @@
             double ma20 = stock.GetAverageSettlePrice(currentIndex, 20, 0);
             double ma30 = stock.GetAverageSettlePrice(currentIndex, 30, 0);
 
-            if (stock.kLineDay[currentIndex - 1].endPrice > Math.Max(Math.Max(Math.Max(ma5, ma10), ma20), ma30) 
+            if (stock.kLineDay[currentIndex - 1].endPrice > Math.Max(Math.Max(Math.Max(ma5, ma10), ma20), ma30)
                 && stock.kLineDay[currentIndex - 1].macd > 0)
             {
                 continue;
