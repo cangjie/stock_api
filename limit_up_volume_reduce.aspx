@@ -566,7 +566,7 @@
         string content = "";
         foreach (DataRow dr in dtDownload.Rows)
         {
-            string gid = dr["代码"].ToString().Trim();
+            string gid = dr["代码"].ToString().Trim().ToUpper();
             try
             {
                 gid = gid.Substring(gid.IndexOf(">"), gid.Length - gid.IndexOf(">"));
