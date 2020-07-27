@@ -174,7 +174,7 @@
                         dr[i] = "<font color='red' >" + drOri[i].ToString() + "</font>";
                     }
                     else
-                    { 
+                    {
                         dr[i] = drOri[i].ToString();
                     }
                 }
@@ -488,7 +488,7 @@
             {
                 volumeToday = stock.kLineDay[limitUpIndex+1].volume;
                 if(stock.kLineDay[limitUpIndex+1].endDateTime.Date == DateTime.Now.Date && DateTime.Now.Hour < 15)
-                { 
+                {
                     volumeToday = stock.kLineDay[limitUpIndex+1].VirtualVolume;
                 }
             }
@@ -714,18 +714,19 @@
                 }
             }
             //if (stock.kLineDay[currentIndex].VirtualVolume )
-
-            double currentVolume = stock.kLineDay[lastLimitUpInddex+1].volume;
-            if (stock.kLineDay[currentIndex].endDateTime.Date == DateTime.Now.Date && DateTime.Now.Hour < 15)
+            if (lastLimitUpInddex < currentIndex)
             {
-                currentVolume = stock.kLineDay[currentIndex].VirtualVolume;
-            }
+                double currentVolume = stock.kLineDay[lastLimitUpInddex + 1].volume;
+                if (stock.kLineDay[currentIndex].endDateTime.Date == DateTime.Now.Date && DateTime.Now.Hour < 15)
+                {
+                    currentVolume = stock.kLineDay[currentIndex].VirtualVolume;
+                }
 
-            if (currentVolume < stock.kLineDay[lastLimitUpInddex].volume)
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"缩量\" >缩</a>";
+                if (currentVolume < stock.kLineDay[lastLimitUpInddex].volume)
+                {
+                    dr["信号"] = dr["信号"].ToString() + "<a title=\"缩量\" >缩</a>";
+                }
             }
-
             if (Math.Abs(stock.kLineDay[currentIndex].lowestPrice - line3Price) / line3Price < 0.05)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"回踩3线\" >3⃣️</a>";
