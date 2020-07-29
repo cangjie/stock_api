@@ -172,42 +172,43 @@
 
         foreach (DataRow drOri in drOriArr)
         {
-            if (drOri["信号"].ToString().IndexOf("💩") < 0)
+            totalCount++;
+            if (drOri["信号"].ToString().IndexOf("📈") >= 0)
             {
-                totalCount++;
-                if (drOri["信号"].ToString().IndexOf("📈") >= 0)
+                raiseCount++;
+            }
+            if (drOri["信号"].ToString().IndexOf("🔥") >= 0)
+            {
+                fireCount++;
+            }
+            if (drOri["信号"].ToString().IndexOf("🌟") >= 0)
+            {
+                starCount++;
+            }
+            for (int i = 1; i < 7; i++)
+            {
+                string colName = ((i == 6) ? "总计" : i.ToString() + "日");
+                if (!drOri[colName].ToString().Equals("") && (double)(drOri[colName]) >= 0.01)
                 {
-                    raiseCount++;
-                }
-                if (drOri["信号"].ToString().IndexOf("🔥") >= 0)
-                {
-                    fireCount++;
-                }
-                if (drOri["信号"].ToString().IndexOf("🌟") >= 0)
-                {
-                    starCount++;
-                }
-                for (int i = 1; i < 7; i++)
-                {
-                    string colName = ((i == 6) ? "总计" : i.ToString() + "日");
-                    if (!drOri[colName].ToString().Equals("") && (double)(drOri[colName]) >= 0.01)
+                    totalSum[i - 1]++;
+                    if (drOri["信号"].ToString().IndexOf("📈") >= 0)
                     {
-                        totalSum[i - 1]++;
-                        if (drOri["信号"].ToString().IndexOf("📈") >= 0)
-                        {
-                            raiseSum[i - 1]++;
-                        }
-                        if (drOri["信号"].ToString().IndexOf("🔥") >= 0)
-                        {
-                            fireSum[i - 1]++;
-                        }
-                        if (drOri["信号"].ToString().IndexOf("🌟") >= 0)
-                        {
-                            starSum[i - 1]++;
-                        }
+                        raiseSum[i - 1]++;
+                    }
+                    if (drOri["信号"].ToString().IndexOf("🔥") >= 0)
+                    {
+                        fireSum[i - 1]++;
+                    }
+                    if (drOri["信号"].ToString().IndexOf("🌟") >= 0)
+                    {
+                        starSum[i - 1]++;
                     }
                 }
+            }
 
+            if (drOri["信号"].ToString().IndexOf("💩") < 0)
+            {
+ 
             }
             else
             {
