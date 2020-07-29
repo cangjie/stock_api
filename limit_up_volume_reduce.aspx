@@ -327,7 +327,7 @@
                 continue;
             }
 
-            
+
 
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
@@ -370,7 +370,7 @@
             int lowestIndex = 0;
             double lowest = GetFirstLowestPrice(stock.kLineDay, limitUpIndex, out lowestIndex);
             double highest = 0;
-            for (int i = limitUpIndex; i < currentIndex; i++)
+            for (int i = limitUpIndex; i <= currentIndex; i++)
             {
                 if (highest < stock.kLineDay[i].highestPrice)
                 {
@@ -529,6 +529,17 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"触及跌停\" >💩</a>";
             }
+
+            if (Math.Abs(stock.kLineDay[currentIndex].lowestPrice - f3) / f3 <= 0.005)
+            { 
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"最低价触及F3\" >F3</a>";
+            }
+
+            if (Math.Abs(stock.kLineDay[currentIndex].lowestPrice - f5) / f5 <= 0.005)
+            { 
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"最低价触及F5\" >F5</a>";
+            }
+
             dr["总计"] = (computeMaxPrice - buyPrice) / buyPrice;
             dt.Rows.Add(dr);
 
@@ -573,8 +584,8 @@
                 gid = gid.Substring(gid.IndexOf(">"), gid.Length - gid.IndexOf(">"));
             }
             catch
-            { 
-            
+            {
+
             }
             gid = gid.Replace("</a>", "").Replace(">", "").ToUpper();
             content += gid + "\r\n";
