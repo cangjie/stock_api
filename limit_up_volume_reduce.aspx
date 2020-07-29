@@ -327,11 +327,7 @@
                 continue;
             }
 
-            if ((stock.kLineDay[currentIndex].lowestPrice - stock.kLineDay[currentIndex - 1].endPrice)
-                / stock.kLineDay[currentIndex - 1].endPrice < -0.095)
-            {
-                continue;
-            }
+            
 
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
@@ -527,6 +523,11 @@
             if (limitUpContinous)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"连板\" >🚩</a>";
+            }
+            if ((stock.kLineDay[currentIndex].lowestPrice - stock.kLineDay[currentIndex - 1].endPrice)
+                / stock.kLineDay[currentIndex - 1].endPrice < -0.095)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"触及跌停\" >💩</a>";
             }
             dr["总计"] = (computeMaxPrice - buyPrice) / buyPrice;
             dt.Rows.Add(dr);
