@@ -291,7 +291,7 @@
 
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
 
-          
+
 
             stock.LoadKLineDay(Util.rc);
             KLine.ComputeMACD(stock.kLineDay);
@@ -378,7 +378,7 @@
             double volumeReduce = volumeToday / volumeYesterday;
 
 
-            buyPrice = stock.kLineDay[currentIndex].lowestPrice;
+            buyPrice = stock.kLineDay[currentIndex].endPrice;
 
             /*
             if (stock.kLineDay[currentIndex].startPrice > f3 * 0.99 && stock.kLineDay[currentIndex].lowestPrice < f3 * 1.01 )
@@ -466,6 +466,20 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title='基本上在日均线以上' >📈</a>";
             }
+
+            if (limitUpIndex + 1 < stock.kLineDay.Length)
+            {
+                double currentVolume = stock.kLineDay[limitUpIndex + 1].volume;
+                if (stock.kLineDay[limitUpIndex + 1].endDateTime.Date == DateTime.Now.Date && DateTime.Now.Hour < 15)
+                {
+                    currentVolume = stock.kLineDay[limitUpIndex + 1].VirtualVolume;
+                }
+                if (stock.kLineDay[limitUpIndex].volume > currentVolume)
+                { 
+                    dr["信号"] = dr["信号"].ToString() + "缩";
+                }
+            }
+
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
             dt.Rows.Add(dr);
 
