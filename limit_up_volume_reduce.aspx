@@ -530,13 +530,13 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"触及跌停\" >💩</a>";
             }
 
-            if (Math.Abs(stock.kLineDay[currentIndex].lowestPrice - f3) / f3 <= 0.005)
-            { 
+            if (Math.Abs(stock.kLineDay[currentIndex].lowestPrice - (double)dr["F3"]) / (double)dr["F3"] <= 0.005)
+            {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"最低价触及F3\" >F3</a>";
             }
 
-            if (Math.Abs(stock.kLineDay[currentIndex].lowestPrice - f5) / f5 <= 0.005)
-            { 
+            if (Math.Abs(stock.kLineDay[currentIndex].lowestPrice - (double)dr["F5"]) / (double)dr["F3"] <= 0.005)
+            {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"最低价触及F5\" >F5</a>";
             }
 
