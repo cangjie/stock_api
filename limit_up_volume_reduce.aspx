@@ -208,7 +208,7 @@
 
             if (drOri["信号"].ToString().IndexOf("💩") < 0)
             {
- 
+
             }
             else
             {
@@ -318,7 +318,7 @@
 
             double currentVolume = stock.kLineDay[currentIndex].volume;
 
-            if (currentDate.Date == DateTime.Now.Date && DateTime.Now.Hour < 15)
+            if (currentDate.Date == DateTime.Now.Date && DateTime.Now.Hour < 14)
             {
                 currentVolume = stock.kLineDay[currentIndex].VirtualVolume;
             }
@@ -339,14 +339,16 @@
             int limitUpIndex = stock.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
 
 
-
+            /*
             double limitUpMaxVolume = 0;
 
             for (int j = currentIndex - 1; j >= 0 && stock.IsLimitUp(j); j--)
             {
                 limitUpMaxVolume = Math.Max(limitUpMaxVolume, stock.kLineDay[j].volume);
             }
+            */
 
+            double limitUpMaxVolume = stock.kLineDay[limitUpIndex].volume;
 
 
 
@@ -386,12 +388,12 @@
             double buyPrice = 0;
             double f3Distance = 0.382 - (highest - stock.kLineDay[currentIndex].lowestPrice) / (highest - lowest);
 
-            double volumeToday = stock.kLineDay[currentIndex].volume;  //Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(currentDate.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
+            //double volumeToday = stock.kLineDay[currentIndex].volume;  //Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(currentDate.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
 
-            double volumeYesterday = stock.kLineDay[currentIndex - 1].volume;// Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(stock.kLineDay[limitUpIndex].startDateTime.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
+            //double volumeYesterday = stock.kLineDay[currentIndex - 1].volume;// Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(stock.kLineDay[limitUpIndex].startDateTime.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
 
 
-            double volumeReduce = stock.kLineDay[currentIndex].volume / limitUpMaxVolume;
+            double volumeReduce = currentVolume / stock.kLineDay[currentIndex - 1].volume;
 
             buyPrice = stock.kLineDay[currentIndex].endPrice;
 
@@ -410,10 +412,6 @@
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
             dr["信号"] = "";
-
-
-
-
             dr["板数"] = limitUpNum.ToString();
             dr["缩量"] = volumeReduce;
             dr["现高"] = highest;
