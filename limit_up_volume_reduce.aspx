@@ -348,7 +348,7 @@
             }
             */
 
-            double limitUpMaxVolume = stock.kLineDay[limitUpIndex].volume;
+            //double limitUpMaxVolume = stock.kLineDay[limitUpIndex].volume;
 
 
 
