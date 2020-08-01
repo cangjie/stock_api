@@ -10,7 +10,6 @@
 
     public string sort = "缩量";
 
-
     public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
 
     protected void Page_Load(object sender, EventArgs e)
@@ -645,7 +644,7 @@
                 supportPrice = f3;
                 dr["类型"] = "F3";
 
-                continue;
+                //continue;
             }
 
 
