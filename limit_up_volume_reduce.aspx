@@ -3,7 +3,6 @@
 <%@ Import Namespace="System.Data.SqlClient" %>
 <%@ Import Namespace="System.Threading" %>
 <!DOCTYPE html>
-
 <script runat="server">
 
     public DateTime currentDate = Util.GetDay(DateTime.Now);
