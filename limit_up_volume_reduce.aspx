@@ -337,6 +337,10 @@
 
             int limitUpIndex = stock.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
 
+            if (!stock.IsLimitUp(limitUpIndex))
+            {
+                continue;
+            }
 
             /*
             double limitUpMaxVolume = 0;
