@@ -541,7 +541,10 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"最低价触及F5\" >F5🔥</a>";
             }
-
+            if (stock.kLineDay[currentIndex - 2].macd < 0 && stock.kLineDay[currentIndex - 1].macd > 0 && stock.kLineDay[currentIndex].macd > 0)
+            { 
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"调整不碰DMP\" >DMP</a>";
+            }
             dr["总计"] = (computeMaxPrice - buyPrice) / buyPrice;
             dt.Rows.Add(dr);
 
