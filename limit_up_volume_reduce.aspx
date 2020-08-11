@@ -460,7 +460,15 @@
                 }
 
 
+                if (i <= 3 && currentIndex + i < stock.kLineDay.Length && dr["信号"].ToString().IndexOf("3⃣️") < 0)
+                {
+                    double tempLine3 = stock.GetAverageSettlePrice(currentIndex + i, 3, 3);
+                    if (stock.kLineDay[currentIndex + i].lowestPrice <= tempLine3 * 1.01 && stock.kLineDay[currentIndex + i].endPrice > tempLine3)
+                    { 
+                        dr["信号"] = dr["信号"].ToString() + "<a title=\"3天内碰3线\" >3⃣️</a>";
 
+                    }
+                }
 
                 if (stock.kLineDay[currentIndex + i].startPrice > maxPrice && !stock.IsLimitUp(currentIndex) && !haveLimitUp)
                 {
@@ -542,7 +550,7 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"最低价触及F5\" >F5🔥</a>";
             }
             if (stock.kLineDay[currentIndex - 2].macd < 0 && stock.kLineDay[currentIndex - 1].macd > 0 && stock.kLineDay[currentIndex].macd > 0)
-            { 
+            {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"调整不碰DMP\" >DMP</a>";
             }
             dr["总计"] = (computeMaxPrice - buyPrice) / buyPrice;
