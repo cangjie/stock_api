@@ -213,6 +213,7 @@ public class DBHelper
         DataTable dt = new DataTable();
 
         SqlDataAdapter da = new SqlDataAdapter(sql, connectionString.Trim());
+        da.SelectCommand.CommandTimeout = 3600;
         da.Fill(dt);
         da.Dispose();
         return dt;
