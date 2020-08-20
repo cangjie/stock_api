@@ -312,7 +312,7 @@
             }
             double diff1 = Math.Abs((stock.kLineDay[currentIndex].lowestPrice - stock.kLineDay[currentIndex - 1].lowestPrice) / stock.kLineDay[currentIndex - 1].lowestPrice);
             double diff2 = Math.Abs((stock.kLineDay[currentIndex].lowestPrice - stock.kLineDay[currentIndex - 2].lowestPrice) / stock.kLineDay[currentIndex - 2].lowestPrice);
-            if (diff1 >= 0.005 && diff2 >= 0.005)
+            if (diff1 >= 0.01 && diff2 >= 0.01)
             {
                 continue;
             }
