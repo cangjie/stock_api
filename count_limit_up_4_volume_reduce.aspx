@@ -52,9 +52,9 @@
 
 
         DataTable dtOri = DBHelper.GetDataTable(" select  alert_date, gid from limit_up a where alert_date  >= '2020-1-1' "
-            + " and  exists( select 'a' from limit_up b where a.gid = b.gid and a.alert_date = dbo.func_GetLastTransactDate(b.alert_date, 1) ) "
-            + " and  exists( select 'a' from limit_up c where a.gid = c.gid and a.alert_date = dbo.func_GetLastTransactDate(c.alert_date, 2) ) "
-            + " and  exists( select 'a' from limit_up d where a.gid = d.gid and a.alert_date = dbo.func_GetLastTransactDate(d.alert_date, 3) ) "
+            + " and  exists( select 'a' from limit_up b where a.gid = b.gid and b.alert_date = dbo.func_GetLastTransactDate(a.alert_date, 1) ) "
+            + " and  exists( select 'a' from limit_up c where a.gid = c.gid and c.alert_date = dbo.func_GetLastTransactDate(a.alert_date, 2) ) "
+            + " and  exists( select 'a' from limit_up d where a.gid = d.gid and d.alert_date = dbo.func_GetLastTransactDate(a.alert_date, 3) ) "
             + "order by alert_date desc ");
         foreach (DataRow drOri in dtOri.Rows)
         {
@@ -62,16 +62,15 @@
             {
                 Stock s = GetStock(drOri["gid"].ToString().Trim());
                 int currentIndex = s.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
+
+                
                 if (currentIndex < 1 || currentIndex + 6 >= s.kLineDay.Length)
                 {
                     continue;
                 }
 
-                if (s.kLineDay[currentIndex - 1].volume < s.kLineDay[currentIndex].volume)
-                {
-                    //continue;
-                }
-                if (!s.IsLimitUp(currentIndex) || s.IsLimitUp(currentIndex - 1)
+                
+                if (!s.IsLimitUp(currentIndex) || !s.IsLimitUp(currentIndex - 1)
                     || !s.IsLimitUp(currentIndex - 2) || !s.IsLimitUp(currentIndex - 3) || s.IsLimitUp(currentIndex+1))
                 {
                     continue;
@@ -80,12 +79,12 @@
                 double volumeReduce = (s.kLineDay[currentIndex].volume - s.kLineDay[currentIndex + 1].volume) / s.kLineDay[currentIndex].volume;
                 if (volumeReduce < 0)
                 {
-                    //continue;
+                    continue;
                 }
 
                 if (s.kLineDay[currentIndex + 1].endPrice < s.kLineDay[currentIndex].endPrice)
                 {
-                    //continue;
+                    continue;
                 }
 
                 if (dt.Select(" 日期 = '" + s.kLineDay[currentIndex+2].startDateTime.Date.ToShortDateString() + "' and 代码 = '" + s.gid.Trim() + "' ").Length == 0)
