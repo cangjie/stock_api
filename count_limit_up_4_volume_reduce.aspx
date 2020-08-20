@@ -71,7 +71,8 @@
 
                 
                 if (!s.IsLimitUp(currentIndex) || !s.IsLimitUp(currentIndex - 1)
-                    || !s.IsLimitUp(currentIndex - 2) || !s.IsLimitUp(currentIndex - 3) || s.IsLimitUp(currentIndex+1))
+                    || !s.IsLimitUp(currentIndex - 2) || !s.IsLimitUp(currentIndex - 3) 
+                    || (s.IsLimitUp(currentIndex+1) && s.kLineDay[currentIndex+1].startPrice == s.kLineDay[currentIndex+1].endPrice ))
                 {
                     continue;
                 }
