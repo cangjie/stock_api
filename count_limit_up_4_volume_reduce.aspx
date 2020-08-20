@@ -96,7 +96,7 @@
                     dr["缩量"] = Math.Round(100 * volumeReduce, 2).ToString() + "%";
                     dr["高开幅度"] = (s.kLineDay[currentIndex + 1].startPrice - s.kLineDay[currentIndex].endPrice) / s.kLineDay[currentIndex].endPrice;
                     dr["买入"] = Math.Round(s.kLineDay[currentIndex + 1].endPrice, 2).ToString();
-                    double buyPrice = s.kLineDay[currentIndex + 2].startPrice;
+                    double buyPrice = s.kLineDay[currentIndex + 1].endPrice;
                     double maxPrice = 0;
                     for (int i = 1; i <= 5; i++)
                     {
