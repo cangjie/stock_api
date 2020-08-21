@@ -97,7 +97,7 @@
                     double maxPrice = 0;
                     for (int i = 1; i <= 5; i++)
                     {
-                        maxPrice = Math.Max(maxPrice, s.kLineDay[currentIndex + 2 + i].highestPrice);
+                        maxPrice = Math.Max(maxPrice, s.kLineDay[currentIndex + 1 + i].highestPrice);
                         dr[i.ToString() + "日"] = (s.kLineDay[currentIndex + 2 + i].highestPrice - buyPrice) / buyPrice;
                     }
                     dr["总计"] = (maxPrice - buyPrice) / buyPrice;
