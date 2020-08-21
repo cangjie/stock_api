@@ -102,7 +102,7 @@
                     for (int i = 1; i <= 5; i++)
                     {
                         maxPrice = Math.Max(maxPrice, s.kLineDay[currentIndex + 1 + i].highestPrice);
-                        dr[i.ToString() + "日"] = (s.kLineDay[currentIndex + 2 + i].highestPrice - buyPrice) / buyPrice;
+                        dr[i.ToString() + "日"] = (s.kLineDay[currentIndex + 1 + i].highestPrice - buyPrice) / buyPrice;
                     }
                     dr["总计"] = (maxPrice - buyPrice) / buyPrice;
                     if ((double)dr["总计"] >= 0.2)
