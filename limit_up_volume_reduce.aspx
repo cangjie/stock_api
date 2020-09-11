@@ -94,17 +94,28 @@
                             double buyPrice = Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2);
                             dr[i] = "<font color=\"" + ((buyPrice > currentPrice) ? "red" : ((buyPrice==currentPrice)? "gray" : "green")) + "\" >" + Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2).ToString() + "</font>";
                             break;
+                        case "F3":
+                        case "F5":
+                            double supportPrice = (double)drOri[i];
+                            dr[i] = "<font color=\"gray\"  >" + Math.Round(supportPrice, 2).ToString() + "</font>";
+                            if (!drOri["支撑"].ToString().Trim().Equals(""))
+                            {
+                                dr[drOri["支撑"].ToString()] = "<font color=\"red\"  >" + Math.Round(supportPrice, 2).ToString() + "</font>";
+                            }
+                            break;
                         case "今开":
                         case "现价":
                         case "前低":
                         case "F1":
-                        case "F3":
-                        case "F5":
                         case "现高":
                         case "3线":
                             double currentValuePrice = (double)drOri[i];
                             dr[i] = "<font color=\"" + (currentValuePrice > currentPrice ? "red" : (currentValuePrice == currentPrice ? "gray" : "green")) + "\"  >"
                                 + Math.Round(currentValuePrice, 2).ToString() + "</font>";
+                            break;
+                        case "价差":
+                            double priceDiff = (double)drOri[i];
+                            dr[i] = "<font color=\"gray\"  >"  + Math.Round(priceDiff, 2).ToString() + "</font>";
                             break;
                         case "今涨":
                         default:
@@ -268,11 +279,12 @@
         dt.Columns.Add("F3", Type.GetType("System.Double"));
         dt.Columns.Add("F5", Type.GetType("System.Double"));
         dt.Columns.Add("前低", Type.GetType("System.Double"));
+        dt.Columns.Add("支撑", Type.GetType("System.String"));
         dt.Columns.Add("幅度", Type.GetType("System.String"));
         dt.Columns.Add("3线", Type.GetType("System.Double"));
         dt.Columns.Add("今涨", Type.GetType("System.Double"));
         dt.Columns.Add("现价", Type.GetType("System.Double"));
-        dt.Columns.Add("距F3", Type.GetType("System.Double"));
+        dt.Columns.Add("价差", Type.GetType("System.Double"));
         dt.Columns.Add("买入", Type.GetType("System.Double"));
         dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
@@ -420,11 +432,24 @@
             dr["现高"] = highest;
             dr["F3"] = f3;
             dr["F5"] = f5;
+            dr["支撑"] = "";
+            if (Math.Abs(stock.kLineDay[currentIndex].lowestPrice - f3) <= 0.04)
+            {
+                dr["支撑"] = "F3";
+            }
+            if (Math.Abs(stock.kLineDay[currentIndex].lowestPrice - f5) <= 0.04)
+            {
+                dr["支撑"] = "F5";
+            }
             dr["前低"] = lowest;
             dr["幅度"] = Math.Round(100 * (highest - lowest) / lowest, 2).ToString() + "%";
             dr["3线"] = line3Price;
             dr["现价"] = currentPrice;
-            dr["距F3"] = f3Distance;
+            dr["价差"] = 0;
+            if (!dr["支撑"].ToString().Trim().Equals(""))
+            {
+                dr["价差"] = Math.Abs(stock.kLineDay[currentIndex].lowestPrice - double.Parse(dr[dr["支撑"].ToString()].ToString()));
+            }
             dr["买入"] = buyPrice;
             dr["KDJ日"] = stock.kdjDays(currentIndex);
             dr["MACD日"] = stock.macdDays(currentIndex);
@@ -460,7 +485,15 @@
                 }
 
 
+                if (i <= 3 && currentIndex + i < stock.kLineDay.Length && dr["信号"].ToString().IndexOf("3⃣️") < 0)
+                {
+                    double tempLine3 = stock.GetAverageSettlePrice(currentIndex + i, 3, 3);
+                    if (stock.kLineDay[currentIndex + i].lowestPrice <= tempLine3 * 1.01 && stock.kLineDay[currentIndex + i].endPrice > tempLine3)
+                    {
+                        dr["信号"] = dr["信号"].ToString() + "<a title=\"3天内碰3线\" >3⃣️</a>";
 
+                    }
+                }
 
                 if (stock.kLineDay[currentIndex + i].startPrice > maxPrice && !stock.IsLimitUp(currentIndex) && !haveLimitUp)
                 {
@@ -541,7 +574,10 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"最低价触及F5\" >F5🔥</a>";
             }
-
+            if (stock.kLineDay[currentIndex - 2].macd < 0 && stock.kLineDay[currentIndex - 1].macd > 0 && stock.kLineDay[currentIndex].macd > 0)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"调整不碰DMP\" >DMP</a>";
+            }
             dr["总计"] = (computeMaxPrice - buyPrice) / buyPrice;
             dt.Rows.Add(dr);
 
@@ -644,7 +680,7 @@
                     <asp:BoundColumn DataField="幅度" HeaderText="幅度"></asp:BoundColumn>
                     <asp:BoundColumn DataField="现价" HeaderText="现价"></asp:BoundColumn>
                     <asp:BoundColumn DataField="今涨" HeaderText="今涨"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="距F3" HeaderText="距F3"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="价差" HeaderText="价差"></asp:BoundColumn>
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日" SortExpression="1日|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="2日" HeaderText="2日"></asp:BoundColumn>
