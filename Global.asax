@@ -15,7 +15,7 @@
 
         
         KLineCache.kLineDayCache = new CachedKLine[Util.GetAllGids().Length];
-        StockWatcher.tKLineRefresher.Start();
+        //StockWatcher.tKLineRefresher.Start();
         StockWatcher.tWatchEachStock.Start();
         //StockWatcher.tLogQuota.Start();
         
