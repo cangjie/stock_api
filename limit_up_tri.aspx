@@ -11,7 +11,7 @@
     public string sort = "缩量";
 
 
-    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+    public static Core.RedisClient rc = new Core.RedisClient("52.82.51.144");
 
     public static string filter = "";
 
@@ -336,7 +336,7 @@
         DataTable dtFoot = DBHelper.GetDataTable(" select * from alert_foot where alert_date > '" + currentDate.Date.ToShortDateString() + "' and alert_date < '" + currentDate.AddDays(1).ToShortDateString() + "' ");
 
 
-        //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+        //Core.RedisClient rc = new Core.RedisClient("52.82.51.144");
         foreach (DataRow drOri in dtOri.Rows)
         {
 

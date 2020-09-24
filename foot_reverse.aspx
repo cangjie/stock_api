@@ -16,7 +16,7 @@
 
     public static double rate = 0.01;
 
-    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+    public static Core.RedisClient rc = new Core.RedisClient("52.82.51.144");
 
     //DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor '" + currentDate.ToShortDateString() + "' ");
 
@@ -406,7 +406,7 @@
 
         DataTable dtIOVolume = DBHelper.GetDataTable(sql);
 
-        //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+        //Core.RedisClient rc = new Core.RedisClient("52.82.51.144");
         foreach (DataRow drOri in dtIOVolume.Rows)
         {
 
