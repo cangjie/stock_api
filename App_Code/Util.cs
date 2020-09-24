@@ -20,6 +20,8 @@ public class Util
 
     public static string physicalPath = "";
 
+    public static ArrayList allGids = new ArrayList();
+
     public Util()
     {
         //
