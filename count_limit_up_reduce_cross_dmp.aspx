@@ -48,7 +48,7 @@
 
 
 
-        DataTable dtOri = DBHelper.GetDataTable(" select  alert_date, gid from limit_up where alert_date  > '2020-6-1' order by alert_date desc ");
+        DataTable dtOri = DBHelper.GetDataTable(" select  alert_date, gid from limit_up where alert_date  > '2020-7-1' order by alert_date desc ");
         foreach (DataRow drOri in dtOri.Rows)
         {
             try
