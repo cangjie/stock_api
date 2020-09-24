@@ -16,7 +16,7 @@
 
     public static Thread tQ = new Thread(tsQ);
 
-    public static Core.RedisClient rc = new Core.RedisClient("52.82.51.144");
+    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
 
     public static void RunData()
     {

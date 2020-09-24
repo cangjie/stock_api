@@ -176,6 +176,10 @@
             {
                 continue;
             }
+            if (stock.kLineDay[currentIndex + 1].volume >= stock.kLineDay[currentIndex].volume)
+            {
+                continue;
+            }
             double buyPrice = stock.kLineDay[currentIndex + 1].endPrice;
             double highPrice = stock.kLineDay[currentIndex + 1].highestPrice;
             double lowPrice = stock.kLineDay[currentIndex + 2].lowestPrice;
