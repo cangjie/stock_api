@@ -49,7 +49,10 @@
             {
                 continue;
             }
-
+            if (currentIndex < 0)
+            {
+                continue;
+            }
             if (s.kLineDay[currentIndex].volume <= s.kLineDay[currentIndex + 1].volume)
             {
                 continue;
