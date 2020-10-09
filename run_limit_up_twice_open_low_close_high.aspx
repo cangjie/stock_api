@@ -6,14 +6,14 @@
 
     public  ArrayList gidArr = new ArrayList();
 
-    
+
     public static int count = 0;
 
     public static int over1Per = 0;
 
     public static int over5Per = 0;
 
-   
+
 
     public  Stock GetStock(string gid)
     {
@@ -172,6 +172,10 @@
             {
                 continue;
             }
+            if (stock.kLineDay[currentIndex + 1].lowestPrice <= stock.kLineDay[currentIndex].lowestPrice)
+            {
+                continue;
+            }
             double buyPrice = stock.kLineDay[currentIndex + 1].endPrice;
             double highPrice = stock.kLineDay[currentIndex + 1].highestPrice;
             double lowPrice = stock.kLineDay[currentIndex + 2].lowestPrice;
@@ -191,7 +195,7 @@
             double totalRate = (maxPrice - buyPrice) / buyPrice;
             dr["总计"] = totalRate;
 
-            
+
             if (stock.kLineDay[currentIndex + 2].startPrice <= stock.kLineDay[currentIndex + 2].endPrice)
             {
                 dr["信号"] = "<font color='green' >" + dr["信号"].ToString() + "</font>";
