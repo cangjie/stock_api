@@ -495,7 +495,8 @@
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock s = new Stock(drOri["gid"].ToString().Trim());
-            s.kLineDay = Stock.LoadLocalKLineFromDB(s.gid, "day");
+            //s.kLineDay = Stock.LoadLocalKLineFromDB(s.gid, "day");
+            s.LoadKLineDay(Util.rc);
             s.kArr = s.kLineDay;
             int currentIndex = s.GetItemIndex(currentDate);
             int break3LineIndex = s.GetItemIndex(break3LineDate);
