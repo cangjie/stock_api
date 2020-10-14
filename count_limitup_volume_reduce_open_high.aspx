@@ -80,10 +80,10 @@
 
 
 
-                if (dt.Select(" 日期 = '" + s.kLineDay[currentIndex+2].startDateTime.Date.ToShortDateString() + "' and 代码 = '" + s.gid.Trim() + "' ").Length == 0)
+                if (dt.Select(" 日期 = '" + s.kLineDay[currentIndex+1].startDateTime.Date.ToShortDateString() + "' and 代码 = '" + s.gid.Trim() + "' ").Length == 0)
                 {
                     DataRow dr = dt.NewRow();
-                    dr["日期"] = s.kLineDay[currentIndex+2].startDateTime.Date;
+                    dr["日期"] = s.kLineDay[currentIndex+1].startDateTime.Date;
                     dr["代码"] = s.gid.Trim();
                     dr["名称"] = s.Name.Trim();
                     dr["缩量"] = Math.Round(100 * s.kLineDay[currentIndex + 1].volume / s.kLineDay[currentIndex].volume, 2).ToString() + "%";
