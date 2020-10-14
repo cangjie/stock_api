@@ -69,11 +69,11 @@
                     continue;
                 }
 
-                if (s.kLineDay[currentIndex].volume < s.kLineDay[currentIndex + 1].volume)
+                if (s.kLineDay[currentIndex].volume * 1.1 < s.kLineDay[currentIndex + 1].volume)
                 {
                     continue;
                 }
-                if (s.kLineDay[currentIndex + 2].startPrice <= s.kLineDay[currentIndex + 1].endPrice)
+                if (s.kLineDay[currentIndex + 2].startPrice < s.kLineDay[currentIndex + 1].endPrice * 1.06)
                 {
                     continue;
                 }
