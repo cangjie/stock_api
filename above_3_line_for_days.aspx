@@ -504,7 +504,7 @@
             for (int i = 0; i < days; i++)
             {
                 
-                if ((break3LineIndex + i) < s.kLineDay.Length &&  break3LineIndex + i < s.kLineDay.Length && s.kLineDay[break3LineIndex + i].endPrice < s.GetAverageSettlePrice(break3LineIndex + i, 3, 3))
+                if (break3LineIndex > 20 && (break3LineIndex + i) < s.kLineDay.Length && s.kLineDay[break3LineIndex + i].endPrice < s.GetAverageSettlePrice(break3LineIndex + i, 3, 3))
                 {
                     isAlwaysAbove3Line = false;
                     break;
