@@ -9,9 +9,9 @@
 
     public static Core.RedisClient rc = new Core.RedisClient("52.82.51.144");
 
-    public static int suc = 0;
-    public static int sucMax = 0;
-    public static int count = 0;
+    public  int suc = 0;
+    public  int sucMax = 0;
+    public  int count = 0;
 
 
 
