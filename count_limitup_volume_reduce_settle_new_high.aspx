@@ -74,8 +74,8 @@
                 {
                     continue;
                 }
-                if (s.kLineDay[currentIndex + 2].highestPrice < s.kLineDay[currentIndex + 1].highestPrice
-                    || s.kLineDay[currentIndex + 2].highestPrice < s.kLineDay[currentIndex].highestPrice)
+                if (s.kLineDay[currentIndex + 2].endPrice < s.kLineDay[currentIndex + 1].highestPrice
+                    || s.kLineDay[currentIndex + 2].endPrice < s.kLineDay[currentIndex].highestPrice)
                 {
                     continue;
                 }
