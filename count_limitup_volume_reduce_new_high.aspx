@@ -53,7 +53,7 @@
 
 
         DataTable dtOri = DBHelper.GetDataTable(" select  alert_date, gid from limit_up a where alert_date  >= '2019-1-1' and not exists("
-            + " select 'a' from limit_up b where a.gid = b.gid and a.alert_date = dbo.func_GetLastTransactDate(b.alert_date, 2) )  order by alert_date desc ");
+            + " select 'a' from limit_up b where a.gid = b.gid and (a.alert_date = dbo.func_GetLastTransactDate(b.alert_date, 2) or a.alert_date = dbo.func_GetLastTransactDate(b.alert_date, 1)) )  order by alert_date desc ");
         foreach (DataRow drOri in dtOri.Rows)
         {
             try
