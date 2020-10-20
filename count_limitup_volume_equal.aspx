@@ -76,7 +76,11 @@
                 {
                     continue;
                 }
-                
+
+                if ((s.kLineDay[currentIndex - 1].lowestPrice - s.kLineDay[currentIndex - 2].endPrice) / s.kLineDay[currentIndex - 2].endPrice < -0.095)
+                {
+                    continue;
+                }
 
                 if (dt.Select(" 日期 = '" + s.kLineDay[currentIndex+2].startDateTime.Date.ToShortDateString() + "' and 代码 = '" + s.gid.Trim() + "' ").Length == 0)
                 {

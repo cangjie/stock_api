@@ -548,7 +548,7 @@
 
             if (dtTimeline.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
             {
-                dr["信号"] = dr["信号"].ToString() + "<a title='基本上在日均线以上' >📈</a>";
+                dr["信号"] = dr["信号"].ToString() + "<a title='基本上在日均线以上' >🆙</a>";
             }
 
             if (limitUpIndex > 0 && limitUpIndex < stock.kLineDay.Length - 1)
@@ -563,7 +563,7 @@
             if (buyPrice > stock.kLineDay[currentIndex-1].highestPrice 
                 && buyPrice > stock.kLineDay[currentIndex - 2].highestPrice)
             {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"收盘在高于前两日高点\" >🆙</a>";
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"收盘在高于前两日高点\" >📈</a>";
             }
             if (limitUpContinous)
             {
