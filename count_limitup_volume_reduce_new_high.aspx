@@ -12,6 +12,8 @@
     public  int suc = 0;
     public  int sucMax = 0;
     public  int count = 0;
+    public int horseHeadSuc = 0;
+    public int horseHeadCount = 0;
 
 
 
@@ -24,6 +26,7 @@
         dt.Columns.Add("日期", Type.GetType("System.DateTime"));
         dt.Columns.Add("代码");
         dt.Columns.Add("名称");
+        dt.Columns.Add("信号");
         dt.Columns.Add("缩量");
         dt.Columns.Add("买入");
         //dt.Columns.Add("高开幅度", Type.GetType("System.Double"));
@@ -40,6 +43,7 @@
         dtNew.Columns.Add("日期");
         dtNew.Columns.Add("代码");
         dtNew.Columns.Add("名称");
+        dtNew.Columns.Add("信号");
         dtNew.Columns.Add("缩量");
         //dtNew.Columns.Add("高开幅度");
         dtNew.Columns.Add("买入");
@@ -56,6 +60,7 @@
             + " select 'a' from limit_up b where a.gid = b.gid and (a.alert_date = dbo.func_GetLastTransactDate(b.alert_date, 2) or a.alert_date = dbo.func_GetLastTransactDate(b.alert_date, 1)) )  order by alert_date desc ");
         foreach (DataRow drOri in dtOri.Rows)
         {
+            bool isHorseHead = false;
             try
             {
                 Stock s = GetStock(drOri["gid"].ToString().Trim());
@@ -97,13 +102,23 @@
                         dr[i.ToString() + "日"] = (s.kLineDay[currentIndex + 2 + i].highestPrice - buyPrice) / buyPrice;
                     }
                     dr["总计"] = (maxPrice - buyPrice) / buyPrice;
+                    if (s.kLineDay[currentIndex - 1].endPrice > s.kLineDay[currentIndex - 2].endPrice
+                        && s.kLineDay[currentIndex - 1].startPrice > s.kLineDay[currentIndex - 2].endPrice)
+                    {
+                        isHorseHead = true;
+                        horseHeadCount++;
+                        dr["信号"] = "🐴";
+                    }
                     if ((double)dr["总计"] >= 0.01)
                     {
                         suc++;
                         if ((double)dr["总计"] >= 0.05)
                         {
                             sucMax++;
-
+                            if (isHorseHead)
+                            {
+                                horseHeadSuc++;
+                            }
                         }
                     }
                     dt.Rows.Add(dr);
@@ -177,6 +192,7 @@
     <form id="form1" runat="server">
     <div>涨幅过1%概率：<%= Math.Round(100*(double)suc/(double)count, 2).ToString() %>%</div>
     <div>涨幅过5%概率：<%= Math.Round(100*(double)sucMax/(double)count, 2).ToString() %>%</div>
+    <div>马头涨幅过5%概率：<%= Math.Round(100*(double)horseHeadSuc/(double)horseHeadCount, 2).ToString() %>%</div>
     <div>
         <asp:DataGrid runat="server" Width="100%" ID="dg" BackColor="White" BorderColor="#999999" BorderStyle="None" BorderWidth="1px" CellPadding="3" GridLines="Vertical" >
             <AlternatingItemStyle BackColor="#DCDCDC" />
