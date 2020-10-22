@@ -66,11 +66,11 @@ public class LimitUpVolumeReduce
                 double f5 = high - (high - low) * 0.618;
                 int buyIndex = currentIndex;
 
-                if (s.kLineDay[currentIndex].lowestPrice < f5 && s.kLineDay[currentIndex].endPrice > f5)
+                if (s.kLineDay[currentIndex].lowestPrice < f5 && s.kLineDay[currentIndex].endPrice > f5 && !s.IsLimitUp(currentIndex - 2))
                 {
                     sigal = "F5";
                 }
-                else if (s.kLineDay[currentIndex].lowestPrice < f3 && s.kLineDay[currentIndex].endPrice > f3)
+                else if (s.kLineDay[currentIndex].lowestPrice < f3 && s.kLineDay[currentIndex].endPrice > f3 && !s.IsLimitUp(currentIndex - 2))
                 {
                     sigal = "F3";
                 }
