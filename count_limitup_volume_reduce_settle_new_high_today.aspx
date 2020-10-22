@@ -57,7 +57,7 @@
 
 
         DataTable dtOri = DBHelper.GetDataTable(" select  alert_date, gid from limit_up a where alert_date  >= '2019-1-1' and not exists("
-            + " select 'a' from limit_up b where a.gid = b.gid and (a.alert_date = dbo.func_GetLastTransactDate(b.alert_date, 2) or a.alert_date = dbo.func_GetLastTransactDate(b.alert_date, 1)) )  order by alert_date desc ");
+            + " select 'a' from limit_up b where a.gid = b.gid and  a.alert_date = dbo.func_GetLastTransactDate(b.alert_date, 1))   order by alert_date desc ");
         foreach (DataRow drOri in dtOri.Rows)
         {
             bool isHorseHead = false;
@@ -79,8 +79,7 @@
                 {
                     continue;
                 }
-                if (s.kLineDay[currentIndex + 2].endPrice < s.kLineDay[currentIndex + 1].highestPrice
-                    || s.kLineDay[currentIndex + 2].endPrice < s.kLineDay[currentIndex].highestPrice)
+                if (s.kLineDay[currentIndex + 1].endPrice < s.kLineDay[currentIndex].highestPrice)
                 {
                     continue;
                 }
@@ -94,13 +93,13 @@
                     dr["信号"] = "";
                     dr["缩量"] = Math.Round(100 * s.kLineDay[currentIndex + 1].volume / s.kLineDay[currentIndex].volume, 2).ToString() + "%";
                     //dr["高开幅度"] = (s.kLineDay[currentIndex + 2].startPrice - s.kLineDay[currentIndex + 1].endPrice) / s.kLineDay[currentIndex + 1].endPrice;
-                    double buyPrice = s.kLineDay[currentIndex + 2].endPrice;
+                    double buyPrice = s.kLineDay[currentIndex + 1].endPrice;
                     dr["买入"] = Math.Round(buyPrice, 2).ToString();
                     
                     double maxPrice = 0;
                     for (int i = 1; i <= 5; i++)
                     {
-                        maxPrice = Math.Max(maxPrice, s.kLineDay[currentIndex + 2 + i].highestPrice);
+                        maxPrice = Math.Max(maxPrice, s.kLineDay[currentIndex + 1 + i].highestPrice);
                         dr[i.ToString() + "日"] = (s.kLineDay[currentIndex + 2 + i].highestPrice - buyPrice) / buyPrice;
                     }
                     dr["总计"] = (maxPrice - buyPrice) / buyPrice;
