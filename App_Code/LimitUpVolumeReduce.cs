@@ -88,7 +88,7 @@ public class LimitUpVolumeReduce
                         sigal = sigal + "3⃣️";
                     }
                 }
-                if (s.kLineDay[currentIndex + 1].endPrice > high)
+                if (s.kLineDay[currentIndex + 1].endPrice > high && !s.IsLimitUp(currentIndex + 1))
                 {
                     buyIndex = currentIndex + 1;
                     sigal = sigal + "<a title=\"新高\" >📈</a>";
