@@ -88,7 +88,7 @@ public class LimitUpVolumeReduce
                         sigal = sigal + "3⃣️";
                     }
                 }
-                if (s.kLineDay[currentIndex + 1].endPrice > high && !s.IsLimitUp(currentIndex + 1))
+                if (s.kLineDay[currentIndex + 1].endPrice > high )
                 {
                     buyIndex = currentIndex + 1;
                     sigal = sigal + "<a title=\"新高\" >📈</a>";
@@ -104,7 +104,7 @@ public class LimitUpVolumeReduce
                 }
                 if (s.kLineDay[buyIndex].startDateTime.Date >= start && s.kLineDay[buyIndex].startDateTime.Date <= end  && !sigal.Trim().Equals("") 
                     && dt.Select(" 日期 = '" + s.kLineDay[currentIndex + 2].startDateTime.Date.ToShortDateString() 
-                    + "' and 代码 = '" + s.gid.Trim() + "' ").Length == 0)
+                    + "' and 代码 = '" + s.gid.Trim() + "' ").Length == 0 && !s.IsLimitUp(buyIndex) )
                 {
                     DataRow dr = dt.NewRow();
                     dr["日期"] = s.kLineDay[buyIndex].startDateTime.Date;
