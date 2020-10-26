@@ -44,10 +44,6 @@ public class LimitUpVolumeReduce
             try
             {
                 Stock s = GetStock(drOri["gid"].ToString().Trim());
-                if (s.gid.Trim().Equals("sz300820"))
-                {
-                    string aa = "aa";
-                }
                 int currentIndex = s.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
                 if (currentIndex < 2)
                 {
@@ -110,7 +106,7 @@ public class LimitUpVolumeReduce
                     
                 
                 
-                if (currentIndex < s.kLineDay.Length - 1 && s.kLineDay[currentIndex + 1].endPrice > high )
+                if (currentIndex < s.kLineDay.Length - 1 && s.kLineDay[currentIndex + 1].highestPrice > high )
                 {
                     buyIndex = currentIndex + 1;
                     sigal = sigal + "<a title=\"新高\" >📈</a>";
