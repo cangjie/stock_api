@@ -44,6 +44,10 @@ public class LimitUpVolumeReduce
             try
             {
                 Stock s = GetStock(drOri["gid"].ToString().Trim());
+                if (s.gid.Trim().Equals("sz300820"))
+                {
+                    string aa = "aa";
+                }
                 int currentIndex = s.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
                 if (currentIndex < 2)
                 {
@@ -121,7 +125,7 @@ public class LimitUpVolumeReduce
                     sigal = sigal + "<a title=\"连板\" >🚩</a>";
                 }
                 if (s.kLineDay[buyIndex].startDateTime.Date >= start && s.kLineDay[buyIndex].startDateTime.Date <= end  && !sigal.Trim().Equals("") 
-                    && dt.Select(" 日期 = '" + s.kLineDay[currentIndex + 2].startDateTime.Date.ToShortDateString() 
+                    && dt.Select(" 日期 = '" + s.kLineDay[buyIndex].startDateTime.Date.ToShortDateString() 
                     + "' and 代码 = '" + s.gid.Trim() + "' ").Length == 0 && !s.IsLimitUp(buyIndex) )
                 {
                     DataRow dr = dt.NewRow();
