@@ -50,7 +50,7 @@ public class LimitUpVolumeReduce
                     continue;
                 }
 
-                if (currentIndex + 1 >= s.kLineDay.Length)
+                if (currentIndex  >= s.kLineDay.Length)
                 {
                     continue;
                 }
@@ -74,21 +74,39 @@ public class LimitUpVolumeReduce
                 {
                     sigal = "F3";
                 }
-                double current3Line = s.GetAverageSettlePrice(currentIndex, 3, 3);
-                double next3Line = s.GetAverageSettlePrice(currentIndex + 1, 3, 3);
-                if (s.kLineDay[currentIndex].lowestPrice < current3Line && s.kLineDay[currentIndex].endPrice > current3Line)
+
+
+                bool line3 = false;
+
+                if (currentIndex < s.kLineDay.Length)
+                {
+                    double current3Line = s.GetAverageSettlePrice(currentIndex, 3, 3);
+                    if (s.kLineDay[currentIndex].lowestPrice < current3Line && s.kLineDay[currentIndex].endPrice > current3Line)
+                    {
+                        line3 = true;
+                    }
+                }
+                else
+                {
+                    if (currentIndex < s.kLineDay.Length - 1)
+                    {
+                        double next3Line = s.GetAverageSettlePrice(currentIndex + 1, 3, 3);
+                        if (s.kLineDay[currentIndex + 1].lowestPrice < next3Line && s.kLineDay[currentIndex + 1].endPrice > next3Line)
+                        {
+                            line3 = true;
+                            buyIndex = currentIndex + 1;
+                        }
+                    }
+                }
+                if (line3)
                 {
                     sigal = sigal + "3⃣️";
                 }
-                if (s.kLineDay[currentIndex + 1].lowestPrice < next3Line && s.kLineDay[currentIndex + 1].endPrice > next3Line)
-                {
-                    buyIndex = currentIndex + 1;
-                    if (sigal.IndexOf("3⃣️") < 0)
-                    {
-                        sigal = sigal + "3⃣️";
-                    }
-                }
-                if (s.kLineDay[currentIndex + 1].endPrice > high )
+
+                    
+                
+                
+                if (currentIndex < s.kLineDay.Length - 1 && s.kLineDay[currentIndex + 1].endPrice > high )
                 {
                     buyIndex = currentIndex + 1;
                     sigal = sigal + "<a title=\"新高\" >📈</a>";
