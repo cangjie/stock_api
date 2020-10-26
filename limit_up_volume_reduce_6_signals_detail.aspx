@@ -4,6 +4,8 @@
 
 <script runat="server">
 
+    public static Core.RedisClient rc = new Core.RedisClient("52.82.51.144");
+
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack)
@@ -84,7 +86,25 @@
                 dr["代码"] = drOri["代码"].ToString();
                 dr["名称"] = drOri["名称"].ToString();
                 dr["缩量"] = drOri["缩量"].ToString();
-                dr["信号"] = drOri["信号"].ToString();
+                if (type.Trim().Equals("新高"))
+                {
+                    Stock s = new Stock(drOri["代码"].ToString());
+                    s.LoadKLineDay(rc);
+                    int currentIndex = s.GetItemIndex((DateTime)drOri["日期"]);
+                    if (currentIndex < 1)
+                    {
+                        continue;
+                    }
+                    if (s.kLineDay[currentIndex].endPrice > s.kLineDay[currentIndex - 1].highestPrice)
+                    {
+                        dr["信号"] = drOri["信号"].ToString();
+                    }
+                    else
+                    {
+                        dr["信号"] = "";
+                    }
+                }
+
                 dr["买入"] = Math.Round(double.Parse(drOri["买入"].ToString()), 2).ToString();
 
                 for (int i = 1; i <= 5; i++)
