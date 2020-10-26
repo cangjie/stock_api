@@ -126,7 +126,7 @@ public class LimitUpVolumeReduce
                 }
                 if (s.kLineDay[buyIndex].startDateTime.Date >= start && s.kLineDay[buyIndex].startDateTime.Date <= end  && !sigal.Trim().Equals("") 
                     && dt.Select(" 日期 = '" + s.kLineDay[buyIndex].startDateTime.Date.ToShortDateString() 
-                    + "' and 代码 = '" + s.gid.Trim() + "' ").Length == 0 && !s.IsLimitUp(buyIndex) )
+                    + "' and 代码 = '" + s.gid.Trim() + "' ").Length == 0  )
                 {
                     DataRow dr = dt.NewRow();
                     dr["日期"] = s.kLineDay[buyIndex].startDateTime.Date;

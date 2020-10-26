@@ -50,8 +50,8 @@
     {
         if (!IsPostBack)
         {
-            txtStartDate.Text = Util.GetLastTransactDate(DateTime.Now.Date, 6).ToShortDateString();
-            txtEndDate.Text = Util.GetLastTransactDate(DateTime.Now.Date, 1).ToShortDateString();
+            txtStartDate.Text = DateTime.Now.ToShortDateString().Trim();
+            txtEndDate.Text = DateTime.Now.ToShortDateString().Trim();;
             GetData();
         }
     }
