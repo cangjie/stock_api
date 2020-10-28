@@ -104,6 +104,10 @@
                         dr["信号"] = "";
                     }
                 }
+                else
+                { 
+                    dr["信号"] = drOri["信号"].ToString();
+                }
 
                 dr["买入"] = Math.Round(double.Parse(drOri["买入"].ToString()), 2).ToString();
 
