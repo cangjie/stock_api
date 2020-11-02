@@ -14,12 +14,30 @@
 
     public static Core.RedisClient rc = new Core.RedisClient("52.82.51.144");
 
+    public static ThreadStart ts = new ThreadStart(PageWatcher);
+
+    public static Thread t = new Thread(ts);
+
     protected void Page_Load(object sender, EventArgs e)
     {
 
         sort = Util.GetSafeRequestValue(Request, "sort", "缩量");
         if (!IsPostBack)
         {
+            try
+            {
+                if (t.ThreadState != ThreadState.Running && t.ThreadState != ThreadState.WaitSleepJoin)
+                {
+                    t.Abort();
+                    t = new Thread(ts);
+                    t.Start();
+
+                }
+            }
+            catch
+            {
+
+            }
             rate = int.Parse(Util.GetSafeRequestValue(Request, "rate", "100").Trim());
             DataTable dt = GetData();
             dg.DataSource = dt;
@@ -569,6 +587,68 @@
             }
         }
         return ret;
+    }
+    public static void PageWatcher()
+    {
+        for(; true; )
+        {
+            DateTime currentDate = DateTime.Now.Date;
+            if (Util.IsTransacDay(currentDate) && Util.IsTransacTime(DateTime.Now))
+            {
+                DataTable dt = GetData(currentDate);
+                
+                foreach(DataRow dr in dt.Rows)
+                {
+                    double buyPrice = double.Parse(dr["F5"].ToString());
+                    string message = dr["代码"].ToString() + " " + dr["名称"].ToString() + "缩量后跌破F5";
+                    if (StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()),
+                                dr["代码"].ToString().Trim(),
+                                "volume_reduce_f5",
+                                dr["名称"].ToString().Trim(),
+                                message.Trim()))
+                        {
+                            StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(),
+                                dr["名称"].ToString() + " " + message, Math.Round(buyPrice, 2), "volume_reduce_f5");
+                        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    /*
+                    //if (dr["信号"].ToString().IndexOf("🛍️") >= 0
+                    //    && (dr["信号"].ToString().IndexOf("📈") >= 0 || dr["信号"].ToString().IndexOf("🔥") >= 0 || dr["信号"].ToString().IndexOf("🌟") >= 0)
+                    //    && (   (dr["MACD日"].ToString().Equals("0") &&  dr["KDJ日"].ToString().Equals("0")) || (dr["KDJ日"].ToString().Equals("-1") && int.Parse(dr["MACD日"].ToString()) > 0 )  ))
+                    if (dr["信号"].ToString().IndexOf("🛍️") >= 0 && dr["信号"].ToString().IndexOf("📈") >= 0)
+                    {
+                        string message = dr["信号"].ToString().Trim() + " " + dr["代码"].ToString() + " " + dr["名称"].ToString()
+                            + " 均涨：" + Math.Round(double.Parse(dr["均涨"].ToString()) * 100, 2).ToString()  + "% 调整日：" + dr["调整日"].ToString();
+                        double price = Math.Round(double.Parse(dr["买入"].ToString()), 2);
+                        if (StockWatcher.AddAlert(DateTime.Parse(DateTime.Now.ToShortDateString()),
+                                dr["代码"].ToString().Trim(),
+                                "break_3_line_twice",
+                                dr["名称"].ToString().Trim(),
+                                "买入价：" + price.ToString() + " " + message.Trim()))
+                        {
+                            StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(),
+                                dr["名称"].ToString() + " " + message, price, "break_3_line_twice");
+                        }
+
+                    }
+                    */
+                }
+            }
+            Thread.Sleep(600000);
+        }
     }
 
 </script>

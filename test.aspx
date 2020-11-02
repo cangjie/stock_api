@@ -9,7 +9,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        
+        StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", "600031", "三一重工", 10.01, "above_3_line_for_days");
 
         //KeyValuePair<Stock, DateTime>[] gidArr = Util.GetDoubleLimitUpFrom3Line();
 
