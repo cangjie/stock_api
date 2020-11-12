@@ -17,6 +17,8 @@
     {
 
         sort = Util.GetSafeRequestValue(Request, "sort", "缩量");
+        rate = int.Parse(Util.GetSafeRequestValue(Request, "rate", "10"));
+
         if (!IsPostBack)
         {
             rate = int.Parse(Util.GetSafeRequestValue(Request, "rate", "100").Trim());
@@ -339,7 +341,9 @@
                 continue;
             }
 
-            if (stock.kLineDay[currentIndex - 1].volume > stock.kLineDay[currentIndex - 2].volume )
+            
+
+            if (100*(stock.kLineDay[currentIndex - 1].volume  -  stock.kLineDay[currentIndex - 2].volume)/ stock.kLineDay[currentIndex - 1].volume  > rate )
             {
                 continue;
             }
