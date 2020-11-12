@@ -17,9 +17,11 @@
     {
 
         sort = Util.GetSafeRequestValue(Request, "sort", "缩量");
+        rate = int.Parse(Util.GetSafeRequestValue(Request, "rate", "10"));
+
         if (!IsPostBack)
         {
-            rate = int.Parse(Util.GetSafeRequestValue(Request, "rate", "100").Trim());
+            rate = int.Parse(Util.GetSafeRequestValue(Request, "rate", "10").Trim());
             DataTable dt = GetData();
             dg.DataSource = dt;
             dg.DataBind();
@@ -320,6 +322,7 @@
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
             stock.LoadKLineDay(rc);
+           
             int currentIndex = stock.GetItemIndex(currentDate);
             if (currentIndex < 2)
                 continue;
@@ -339,18 +342,20 @@
                 continue;
             }
 
-            if (stock.kLineDay[currentIndex - 1].volume > stock.kLineDay[currentIndex - 2].volume )
+
+
+            if (100*(stock.kLineDay[currentIndex - 1].volume  -  stock.kLineDay[currentIndex - 2].volume)/ stock.kLineDay[currentIndex - 1].volume  > rate )
             {
                 continue;
             }
 
             if (stock.kLineDay[currentIndex].highestPrice < stock.kLineDay[currentIndex - 1].highestPrice
                 || stock.kLineDay[currentIndex ].highestPrice < stock.kLineDay[currentIndex - 2].highestPrice)
-            { 
+            {
                 continue;
             }
 
-            
+
 
 
             KLine.ComputeMACD(stock.kLineDay);
@@ -361,7 +366,7 @@
 
             int limitUpIndex = stock.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
 
-           
+
 
             /*
             double limitUpMaxVolume = 0;
@@ -560,7 +565,7 @@
                 }
             }
 
-            if (buyPrice > stock.kLineDay[currentIndex-1].highestPrice 
+            if (buyPrice > stock.kLineDay[currentIndex-1].highestPrice
                 && buyPrice > stock.kLineDay[currentIndex - 2].highestPrice)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"收盘在高于前两日高点\" >📈</a>";
