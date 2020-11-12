@@ -5,15 +5,14 @@
 <%@ Import Namespace="System.Data.SqlClient" %>
 <script runat="server">
 
-    //public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+    //public static Core.RedisClient rc = new Core.RedisClient("52.82.51.144");
 
     protected void Page_Load(object sender, EventArgs e)
     {
+        StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", "600031", "三一重工", 10.01, "above_3_line_for_days");
+
         //KeyValuePair<Stock, DateTime>[] gidArr = Util.GetDoubleLimitUpFrom3Line();
-        Stock s = new Stock("sz300703");
-        s.LoadKLineDay();
-        int currentIndex = s.kLineDay.Length - 2;
-        Response.Write(s.dmp(currentIndex).ToString());
+
     }
 
     public static double GetFirstLowestPrice(KLine[] kArr, int index, out int lowestIndex)

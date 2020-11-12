@@ -16,9 +16,11 @@ public class Util
 {
     public static string conStr = System.Configuration.ConfigurationSettings.AppSettings["constr"].Trim();
 
-    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+    public static Core.RedisClient rc = new Core.RedisClient("52.82.51.144");
 
     public static string physicalPath = "";
+
+    public static ArrayList allGids = new ArrayList();
 
     public Util()
     {
@@ -263,6 +265,7 @@ public class Util
             || date.Date == DateTime.Parse("2020-4-6")
             || (date.Date >= DateTime.Parse("2020-5-1") && date.Date <= DateTime.Parse("2020-5-5") 
             || (date.Date >= DateTime.Parse("2020-6-25") && date.Date <= DateTime.Parse("2020-6-28")))
+            || (date.Date >= DateTime.Parse("2020-10-1") && date.Date <= DateTime.Parse("2020-10-8"))
             )
             ret = false;
         return ret;

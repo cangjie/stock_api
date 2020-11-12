@@ -71,7 +71,15 @@ public class Stock
         this.gid = gid;
         try
         {
-            this.name = rc.redisDb.HashGet("gid_name", gid.Trim()).ToString();
+            foreach (object objGidName in Util.allGids)
+            {
+                string gidName = objGidName.ToString().Trim();
+                if (gidName.Split(' ')[0].Trim().Equals(gid.Trim()))
+                {
+                    this.name = gidName.Split(' ')[1].Trim();
+                    break;
+                }
+            }
         }
         catch
         {
@@ -96,15 +104,19 @@ public class Stock
     {
         get
         {
-            if (this.name.Trim().Equals(""))
+
+            if (this.name == null || this.name.Trim().Equals(""))
             {
                 string ret = "";
-                DataTable dt = DBHelper.GetDataTable(" select top 1 [name] from " + gid.Trim() + "_timeline order by ticktime desc ");
-                if (dt.Rows.Count > 0)
+                foreach (object objGidName in Util.allGids)
                 {
-                    ret = dt.Rows[0][0].ToString().Trim();
+                    string gidName = objGidName.ToString().Trim();
+                    if (gidName.Split(' ')[0].Trim().Equals(gid.Trim()))
+                    {
+                        ret = gidName.Split(' ')[1].Trim();
+                        break;
+                    }
                 }
-                dt.Dispose();
                 return ret;
             }
             else
@@ -845,7 +857,7 @@ public class Stock
 
     public static KLine[] LoadRedisKLine(string gid, string type, Core.RedisClient rc)
     {
-        //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+        //Core.RedisClient rc = new Core.RedisClient("52.82.51.144");
         string key = gid + "_kline_" + type;
         try
         {

@@ -10,7 +10,7 @@
     public string allGids = "";
 
    
-    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+    public static Core.RedisClient rc = new Core.RedisClient("52.82.51.144");
 
     public string sort = "3线下 desc";
 

@@ -11,7 +11,7 @@
     public string sort = "放量";
 
    
-    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+    public static Core.RedisClient rc = new Core.RedisClient("52.82.51.144");
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -339,7 +339,7 @@
 
 
 
-        //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+        //Core.RedisClient rc = new Core.RedisClient("52.82.51.144");
         foreach (DataRow drOri in dtOri.Rows)
         {
             //DateTime alertDate = DateTime.Parse(drOri["alert_time"].ToString().Trim());

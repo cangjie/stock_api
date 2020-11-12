@@ -298,7 +298,7 @@
         DataTable dtOri = DBHelper.GetDataTable(" select gid, alert_date, p1, p2, s1, s2 from limit_up where alert_date = '"
             + lastTransactDate.ToShortDateString() + "'  order by alert_date desc ");
 
-        Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+        Core.RedisClient rc = new Core.RedisClient("52.82.51.144");
         foreach (DataRow drOri in dtOri.Rows)
         {
             try

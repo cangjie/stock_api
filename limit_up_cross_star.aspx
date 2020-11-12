@@ -7,7 +7,7 @@
 <script runat="server">
 
     public DateTime currentDate = Util.GetDay(DateTime.Now);
-
+    
     public string sort = "MACD日,KDJ日,综指 desc";
 
 
@@ -288,7 +288,7 @@
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
-            stock.LoadKLineDay();
+            stock.LoadKLineDay(Util.rc);
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
