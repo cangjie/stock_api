@@ -6,7 +6,10 @@
 <script runat="server">
 
 
+<<<<<<< HEAD
     //public static Core.RedisClient rc = new Core.RedisClient("52.82.51.144");
+=======
+>>>>>>> b7bf3f08c3825b84dbf316d8c8ce813daaa7037f
 
     public static int count = 0;
 

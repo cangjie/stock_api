@@ -322,7 +322,14 @@
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
             stock.LoadKLineDay(rc);
+<<<<<<< HEAD
            
+=======
+            if (stock.gid.Trim().Equals("sz300164"))
+            {
+                string aa = "aa";
+            }
+>>>>>>> b7bf3f08c3825b84dbf316d8c8ce813daaa7037f
             int currentIndex = stock.GetItemIndex(currentDate);
             if (currentIndex < 2)
                 continue;
