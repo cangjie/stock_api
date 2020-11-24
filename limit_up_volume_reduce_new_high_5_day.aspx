@@ -333,7 +333,7 @@
             if (limitUpIndex < 0)
                 continue;
 
-            if (stock.IsLimitUp(currentIndex))
+            if (stock.IsLimitUp(limitUpIndex+1))
             {
                 continue;
             }
