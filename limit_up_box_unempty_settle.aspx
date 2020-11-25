@@ -341,6 +341,13 @@
         DataTable dtFoot = DBHelper.GetDataTable(" select * from alert_foot where alert_date > '" + currentDate.Date.ToShortDateString() + "' and alert_date < '" + currentDate.AddDays(1).ToShortDateString() + "' ");
 
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+        //Core.RedisClient rc = new Core.RedisClient("52.82.51.144");
+=======
+>>>>>>> b7bf3f08c3825b84dbf316d8c8ce813daaa7037f
+>>>>>>> 0304c3ec97367963befcc559b77b607e500d4010
         foreach (DataRow drOri in dtOri.Rows)
         {
 

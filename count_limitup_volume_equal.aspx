@@ -9,13 +9,19 @@
 
     public static Core.RedisClient rc = new Core.RedisClient("52.82.51.144");
 
-    public static int suc = 0;
-    public static int count = 0;
+    public  int suc = 0;
+    public  int sucMax = 0;
+    public  int count = 0;
+
+    public int rate = 1;
 
 
 
     protected void Page_Load(object sender, EventArgs e)
     {
+
+        rate = int.Parse(Util.GetSafeRequestValue(Request, "rate", "1"));
+
         DataTable dt = new DataTable();
         dt.Columns.Add("日期", Type.GetType("System.DateTime"));
         dt.Columns.Add("代码");
@@ -48,7 +54,8 @@
 
 
 
-        DataTable dtOri = DBHelper.GetDataTable(" select  alert_date, gid from limit_up where alert_date  > '2020-7-1' order by alert_date desc ");
+        DataTable dtOri = DBHelper.GetDataTable(" select  alert_date, gid from limit_up a where alert_date  >= '2019-1-1' and not exists("
+            + " select 'a' from limit_up b where a.gid = b.gid and  a.alert_date = dbo.func_GetLastTransactDate(b.alert_date, 1) )  order by alert_date desc ");
         foreach (DataRow drOri in dtOri.Rows)
         {
             try
@@ -59,47 +66,47 @@
                 {
                     continue;
                 }
-                if (!s.IsLimitUp(currentIndex))
-                {
-                    continue;
-                }
-                if (currentIndex + 6 >= s.kLineDay.Length)
+
+                if (currentIndex + 7 >= s.kLineDay.Length)
                 {
                     continue;
                 }
 
-                if (s.kLineDay[currentIndex].volume < s.kLineDay[currentIndex + 1].volume)
-                {
-                    continue;
-                }
-                double dmp = s.dmp(currentIndex);
-                if (s.kLineDay[currentIndex].startPrice >= dmp || s.kLineDay[currentIndex].endPrice <= dmp)
+                if (100*Math.Abs(s.kLineDay[currentIndex].volume  - s.kLineDay[currentIndex + 1].volume) / s.kLineDay[currentIndex].volume > rate)
                 {
                     continue;
                 }
 
-
+                if ((s.kLineDay[currentIndex - 1].lowestPrice - s.kLineDay[currentIndex - 2].endPrice) / s.kLineDay[currentIndex - 2].endPrice < -0.095)
+                {
+                    continue;
+                }
 
                 if (dt.Select(" 日期 = '" + s.kLineDay[currentIndex+2].startDateTime.Date.ToShortDateString() + "' and 代码 = '" + s.gid.Trim() + "' ").Length == 0)
                 {
                     DataRow dr = dt.NewRow();
-                    dr["日期"] = s.kLineDay[currentIndex+1].startDateTime.Date;
+                    dr["日期"] = s.kLineDay[currentIndex+2].startDateTime.Date;
                     dr["代码"] = s.gid.Trim();
                     dr["名称"] = s.Name.Trim();
                     dr["缩量"] = Math.Round(100 * s.kLineDay[currentIndex + 1].volume / s.kLineDay[currentIndex].volume, 2).ToString() + "%";
                     //dr["高开幅度"] = (s.kLineDay[currentIndex + 2].startPrice - s.kLineDay[currentIndex + 1].endPrice) / s.kLineDay[currentIndex + 1].endPrice;
-                    dr["买入"] = Math.Round(s.kLineDay[currentIndex + 1].startPrice, 2).ToString();
-                    double buyPrice = s.kLineDay[currentIndex + 2].startPrice;
+                    dr["买入"] = Math.Round(s.kLineDay[currentIndex + 1].endPrice, 2).ToString();
+                    double buyPrice = s.kLineDay[currentIndex + 1].startPrice;
                     double maxPrice = 0;
                     for (int i = 1; i <= 5; i++)
                     {
-                        maxPrice = Math.Max(maxPrice, s.kLineDay[currentIndex + 2 + i].highestPrice);
-                        dr[i.ToString() + "日"] = (s.kLineDay[currentIndex + 2 + i].highestPrice - buyPrice) / buyPrice;
+                        maxPrice = Math.Max(maxPrice, s.kLineDay[currentIndex + 1 + i].highestPrice);
+                        dr[i.ToString() + "日"] = (s.kLineDay[currentIndex + 1 + i].highestPrice - buyPrice) / buyPrice;
                     }
                     dr["总计"] = (maxPrice - buyPrice) / buyPrice;
                     if ((double)dr["总计"] >= 0.01)
                     {
                         suc++;
+                        if ((double)dr["总计"] >= 0.05)
+                        {
+                            sucMax++;
+
+                        }
                     }
                     dt.Rows.Add(dr);
                 }
@@ -171,6 +178,7 @@
 <body>
     <form id="form1" runat="server">
     <div>涨幅过1%概率：<%= Math.Round(100*(double)suc/(double)count, 2).ToString() %>%</div>
+    <div>涨幅过5%概率：<%= Math.Round(100*(double)sucMax/(double)count, 2).ToString() %>%</div>
     <div>
         <asp:DataGrid runat="server" Width="100%" ID="dg" BackColor="White" BorderColor="#999999" BorderStyle="None" BorderWidth="1px" CellPadding="3" GridLines="Vertical" >
             <AlternatingItemStyle BackColor="#DCDCDC" />

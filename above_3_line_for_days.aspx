@@ -495,7 +495,8 @@
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock s = new Stock(drOri["gid"].ToString().Trim());
-            s.kLineDay = Stock.LoadLocalKLineFromDB(s.gid, "day");
+            //s.kLineDay = Stock.LoadLocalKLineFromDB(s.gid, "day");
+            s.LoadKLineDay(Util.rc);
             s.kArr = s.kLineDay;
             int currentIndex = s.GetItemIndex(currentDate);
             int break3LineIndex = s.GetItemIndex(break3LineDate);
@@ -503,7 +504,8 @@
             bool isAlwaysAbove3Line = true;
             for (int i = 0; i < days; i++)
             {
-                if (break3LineIndex + i < s.kLineDay.Length && s.kLineDay[break3LineIndex + i].endPrice < s.GetAverageSettlePrice(break3LineIndex + i, 3, 3))
+                
+                if (break3LineIndex > 20 && (break3LineIndex + i) < s.kLineDay.Length && s.kLineDay[break3LineIndex + i].endPrice < s.GetAverageSettlePrice(break3LineIndex + i, 3, 3))
                 {
                     isAlwaysAbove3Line = false;
                     break;

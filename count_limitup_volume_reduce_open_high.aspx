@@ -69,21 +69,21 @@
                     continue;
                 }
 
-                if (s.kLineDay[currentIndex].volume < s.kLineDay[currentIndex + 1].volume)
+                if (s.kLineDay[currentIndex].volume * 1.1 < s.kLineDay[currentIndex + 1].volume)
                 {
                     continue;
                 }
-                if (s.kLineDay[currentIndex + 2].startPrice <= s.kLineDay[currentIndex + 1].endPrice)
+                if (s.kLineDay[currentIndex + 2].startPrice < s.kLineDay[currentIndex + 1].endPrice * 1.06)
                 {
                     continue;
                 }
 
 
 
-                if (dt.Select(" 日期 = '" + s.kLineDay[currentIndex+2].startDateTime.Date.ToShortDateString() + "' and 代码 = '" + s.gid.Trim() + "' ").Length == 0)
+                if (dt.Select(" 日期 = '" + s.kLineDay[currentIndex+1].startDateTime.Date.ToShortDateString() + "' and 代码 = '" + s.gid.Trim() + "' ").Length == 0)
                 {
                     DataRow dr = dt.NewRow();
-                    dr["日期"] = s.kLineDay[currentIndex+2].startDateTime.Date;
+                    dr["日期"] = s.kLineDay[currentIndex+1].startDateTime.Date;
                     dr["代码"] = s.gid.Trim();
                     dr["名称"] = s.Name.Trim();
                     dr["缩量"] = Math.Round(100 * s.kLineDay[currentIndex + 1].volume / s.kLineDay[currentIndex].volume, 2).ToString() + "%";
@@ -170,7 +170,7 @@
 </head>
 <body>
     <form id="form1" runat="server">
-    <div>涨幅过1%概率：<%= Math.Round(100*(double)suc/(double)count, 2).ToString() %>%</div>
+    <!--div>涨幅过1%概率：<%= Math.Round(100*(double)suc/(double)count, 2).ToString() %>%</div-->
     <div>
         <asp:DataGrid runat="server" Width="100%" ID="dg" BackColor="White" BorderColor="#999999" BorderStyle="None" BorderWidth="1px" CellPadding="3" GridLines="Vertical" >
             <AlternatingItemStyle BackColor="#DCDCDC" />
