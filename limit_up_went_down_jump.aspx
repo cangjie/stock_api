@@ -10,7 +10,7 @@
 
     public string sort = "缩量";
 
-    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+    public static Core.RedisClient rc = new Core.RedisClient("52.82.51.144");
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -344,7 +344,7 @@
 
         DataTable dtTimeline = DBHelper.GetDataTable(" select * from alert_avarage_timeline where alert_date = '" + currentDate.ToShortDateString() + "' ");
 
-        //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+        //Core.RedisClient rc = new Core.RedisClient("52.82.51.144");
         foreach (DataRow drOri in dtOri.Rows)
         {
 

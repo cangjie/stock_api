@@ -5,7 +5,7 @@
 <%@ Import Namespace="System.Data.SqlClient" %>
 <script runat="server">
 
-    //public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+    //public static Core.RedisClient rc = new Core.RedisClient("52.82.51.144");
 
     protected void Page_Load(object sender, EventArgs e)
     {
