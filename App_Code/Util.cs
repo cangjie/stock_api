@@ -16,7 +16,7 @@ public class Util
 {
     public static string conStr = System.Configuration.ConfigurationSettings.AppSettings["constr"].Trim();
 
-    public static Core.RedisClient rc = new Core.RedisClient("52.82.51.144");
+    public static Core.RedisClient rc = new Core.RedisClient("52.81.252.140");
 
     public static string physicalPath = "";
 

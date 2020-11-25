@@ -12,7 +12,7 @@
 
     
 
-    public static Core.RedisClient rc = new Core.RedisClient("52.82.51.144");
+    public static Core.RedisClient rc = new Core.RedisClient("52.81.252.140");
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -304,7 +304,7 @@
         DataTable dtOri = DBHelper.GetDataTable(" select gid, alert_date from limit_up where alert_date >= '" + limitUpStartDate.ToShortDateString()
             + "' and alert_date <= '" + lastTransactDate.ToShortDateString() + "' order by alert_date desc ");
 
-        //Core.RedisClient rc = new Core.RedisClient("52.82.51.144");
+        //Core.RedisClient rc = new Core.RedisClient("52.81.252.140");
         foreach (DataRow drOri in dtOri.Rows)
         {
             DateTime alertDate = DateTime.Parse(drOri["alert_date"].ToString().Trim());

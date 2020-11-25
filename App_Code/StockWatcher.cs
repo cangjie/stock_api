@@ -117,7 +117,7 @@ public class StockWatcher
 
     public static void WatchEachStock()
     {
-        Core.RedisClient rc = new Core.RedisClient("52.82.51.144");
+        Core.RedisClient rc = new Core.RedisClient("52.81.252.140");
         for (; true;)
         {
             try

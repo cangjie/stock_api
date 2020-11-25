@@ -286,7 +286,7 @@
         }
 
 
-        Core.RedisClient rc = new Core.RedisClient("52.82.51.144");
+        Core.RedisClient rc = new Core.RedisClient("52.81.252.140");
         bool isPreview = false;
         if (DateTime.Now.Date >= Util.GetLastTransactDate(currentDate, 1).Date && DateTime.Now < currentDate.Date.AddHours(9).AddMinutes(30))
         {

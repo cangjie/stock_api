@@ -18,7 +18,7 @@
 
     public static Thread t = new Thread(ts);
 
-    public static Core.RedisClient rc = new Core.RedisClient("52.82.51.144");
+    public static Core.RedisClient rc = new Core.RedisClient("52.81.252.140");
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -345,7 +345,7 @@
         }
         */
         //foreach (DataRow drOri in dtOri.Select(" gid = 'sz300101'  "))
-        //Core.RedisClient rc = new Core.RedisClient("52.82.51.144");
+        //Core.RedisClient rc = new Core.RedisClient("52.81.252.140");
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());

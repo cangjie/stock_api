@@ -15,7 +15,7 @@
     public static Thread tQ = new Thread(tsQ);
     
 
-    public static Core.RedisClient rc = new Core.RedisClient("52.82.51.144");
+    public static Core.RedisClient rc = new Core.RedisClient("52.81.252.140");
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -346,7 +346,7 @@
 
 
 
-        //Core.RedisClient rc = new Core.RedisClient("52.82.51.144");
+        //Core.RedisClient rc = new Core.RedisClient("52.81.252.140");
         foreach (DataRow drOri in dtOri.Rows)
         {
             DateTime alertDate = DateTime.Parse(drOri["alert_date"].ToString().Trim());

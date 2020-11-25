@@ -857,7 +857,7 @@ public class Stock
 
     public static KLine[] LoadRedisKLine(string gid, string type, Core.RedisClient rc)
     {
-        //Core.RedisClient rc = new Core.RedisClient("52.82.51.144");
+        //Core.RedisClient rc = new Core.RedisClient("52.81.252.140");
         string key = gid + "_kline_" + type;
         try
         {

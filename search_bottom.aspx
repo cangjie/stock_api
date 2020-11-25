@@ -2,7 +2,7 @@
 
 <script runat="server">
 
-    public static Core.RedisClient rc = new Core.RedisClient("52.82.51.144");
+    public static Core.RedisClient rc = new Core.RedisClient("52.81.252.140");
 
     
 

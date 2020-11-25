@@ -16,7 +16,7 @@
 
     public int allCount = 0;
 
-    public static Core.RedisClient rc = new Core.RedisClient("52.82.51.144");
+    public static Core.RedisClient rc = new Core.RedisClient("52.81.252.140");
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -368,7 +368,7 @@
             + currentDate.ToShortDateString() + "' and alert_date < '" + currentDate.AddDays(1).ToShortDateString() + "'  ");
 
 
-        //Core.RedisClient rc = new Core.RedisClient("52.82.51.144");
+        //Core.RedisClient rc = new Core.RedisClient("52.81.252.140");
         foreach (DataRow drOri in dtOri.Rows)
         {
 

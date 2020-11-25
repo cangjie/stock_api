@@ -17,7 +17,7 @@
 
     public static Thread t = new Thread(ts);
 
-    public static Core.RedisClient rc = new Core.RedisClient("52.82.51.144");
+    public static Core.RedisClient rc = new Core.RedisClient("52.81.252.140");
 
     public static string filter = "";
 
@@ -397,7 +397,7 @@
 
 
 
-        //Core.RedisClient rc = new Core.RedisClient("52.82.51.144");
+        //Core.RedisClient rc = new Core.RedisClient("52.81.252.140");
         foreach (DataRow drOri in dtOri.Rows)
         {
 

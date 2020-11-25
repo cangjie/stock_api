@@ -7,7 +7,7 @@
 
     public static Stock[] gidArr;
 
-    public static Core.RedisClient rc = new Core.RedisClient("52.82.51.144");
+    public static Core.RedisClient rc = new Core.RedisClient("52.81.252.140");
 
     public static int touchCount = 0;
 
