@@ -12,7 +12,7 @@
 
     public static int rate = 10;
 
-    public static Core.RedisClient rc = new Core.RedisClient("52.82.51.144");
+    public static Core.RedisClient rc = new Core.RedisClient("52.81.252.140");
 
     public static ThreadStart ts = new ThreadStart(PageWatcher);
 

@@ -5,7 +5,7 @@
 
     public  ArrayList gidArr = new ArrayList();
 
-    public static Core.RedisClient rc = new Core.RedisClient("52.82.51.144");
+    public static Core.RedisClient rc = new Core.RedisClient("52.81.252.140");
 
     public int line3Count = 0;
     public int line3Suc2Great = 0;
