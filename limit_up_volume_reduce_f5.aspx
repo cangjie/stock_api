@@ -482,10 +482,7 @@
 
                 
 
-                if (stock.kLineDay[currentIndex].endPrice > line3Price)
-                { 
-                    dr["信号"] = dr["信号"].ToString() + "<a title=\"3线上\" >🌟</a>";
-                }
+                
 
 
                 if (stock.kLineDay[currentIndex + i].startPrice > maxPrice && !stock.IsLimitUp(currentIndex) && !haveLimitUp)
@@ -528,6 +525,10 @@
 
             }
 
+            if (stock.kLineDay[currentIndex].endPrice > line3Price)
+            { 
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"3线上\" >🌟</a>";
+            }
 
 
             if (dtTimeline.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
