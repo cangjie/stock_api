@@ -76,6 +76,19 @@
             {
                 buyIndex = currentIndex + 3;
             }
+            bool limitDown = false;
+            for (int j = currentIndex + 1; j <= buyIndex; j++)
+            {
+                if (((s.kLineDay[j].endPrice - s.kLineDay[j - 1].endPrice) / s.kLineDay[j - 1].endPrice) < -0.095)
+                {
+                    limitDown = true;
+                    break;
+                }
+            }
+            if (limitDown)
+            {
+                continue;
+            }
             double buyPrice = s.kLineDay[buyIndex].endPrice;
             DataRow dr = dt.NewRow();
             dr["日期"] = s.kLineDay[currentIndex + 1].endDateTime.ToShortDateString();
@@ -87,7 +100,7 @@
                 dr["新高"] = "是";
             }
             else
-            { 
+            {
                 dr["新高"] = "否";
             }
             double finalRate = double.MinValue;
