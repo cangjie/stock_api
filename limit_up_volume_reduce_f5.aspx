@@ -480,17 +480,9 @@
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
 
 
-                if (i == 1)
-                {
-                    if ((stock.kLineDay[currentIndex + 1].startPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice < 0.095
-                        && stock.kLineDay[currentIndex + 1].startPrice > stock.kLineDay[currentIndex].endPrice)
-                    {
-                        dr["信号"] = dr["信号"].ToString() + "<a title=\"高开未涨停\" >🌟</a>";
-                    }
-                    dr["今涨"] = (stock.kLineDay[currentIndex+1].startPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice;
-                }
+                
 
-
+                
 
 
                 if (stock.kLineDay[currentIndex + i].startPrice > maxPrice && !stock.IsLimitUp(currentIndex) && !haveLimitUp)
@@ -533,6 +525,10 @@
 
             }
 
+            if (stock.kLineDay[currentIndex].endPrice > line3Price)
+            { 
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"3线上\" >🌟</a>";
+            }
 
 
             if (dtTimeline.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
@@ -596,7 +592,7 @@
             if (Util.IsTransacDay(currentDate) && Util.IsTransacTime(DateTime.Now))
             {
                 DataTable dt = GetData(currentDate);
-                
+
                 foreach(DataRow dr in dt.Rows)
                 {
                     double buyPrice = double.Parse(dr["F5"].ToString());
@@ -606,10 +602,10 @@
                                 "volume_reduce_f5",
                                 dr["名称"].ToString().Trim(),
                                 message.Trim()))
-                        {
-                            StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(),
-                                dr["名称"].ToString() + " " + message, Math.Round(buyPrice, 2), "volume_reduce_f5");
-                        }
+                    {
+                        StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", dr["代码"].ToString().Trim(),
+                            dr["名称"].ToString() + " " + message, Math.Round(buyPrice, 2), "volume_reduce_f5");
+                    }
 
 
 
