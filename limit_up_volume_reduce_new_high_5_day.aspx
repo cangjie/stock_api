@@ -431,7 +431,7 @@
             //double volumeYesterday = stock.kLineDay[currentIndex - 1].volume;// Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(stock.kLineDay[limitUpIndex].startDateTime.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
 
 
-            double volumeReduce = stock.kLineDay[currentIndex - 1].volume / stock.kLineDay[currentIndex - 2].volume;
+            double volumeReduce = stock.kLineDay[currentIndex].volume / stock.kLineDay[currentIndex - 1].volume;
 
             buyPrice = stock.kLineDay[currentIndex].endPrice;
 
