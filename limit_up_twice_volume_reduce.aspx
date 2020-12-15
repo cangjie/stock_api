@@ -335,6 +335,10 @@
                 continue;
             }
 
+            if ((stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice < -0.095)
+            {
+                continue;
+            }
 
 
             int limitUpNum = 0;
@@ -376,7 +380,7 @@
             double volumeReduce = stock.kLineDay[currentIndex].volume / limitUpMaxVolume;
 
             buyPrice = stock.kLineDay[currentIndex].endPrice;
-            
+
             /*
             if (stock.kLineDay[currentIndex].startPrice > f3 * 0.99 && stock.kLineDay[currentIndex].lowestPrice < f3 * 1.01 )
             {
