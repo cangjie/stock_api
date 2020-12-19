@@ -23,15 +23,15 @@
         //{
         DateTime startDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "date", DateTime.Now.ToShortDateString()));
 
-        startDate = DateTime.Parse("2020-10-16");
+        startDate = DateTime.Parse("2020-10-17");
 
-        for (DateTime j = startDate; j < DateTime.Parse("2020-10-20"); j = j.AddDays(1))
+        for (DateTime j = startDate; j < DateTime.Parse("2020-12-20"); j = j.AddDays(1))
         {
             if (Util.IsTransacDay(j))
             {
                 for (int i = 8; i >= 6; i--)
                 {
-                    LogAbove3LineForDays(startDate, i);
+                    LogAbove3LineForDays(j, i);
                 }
             }
         }

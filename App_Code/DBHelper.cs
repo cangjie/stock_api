@@ -195,7 +195,15 @@ public class DBHelper
         cmd.Connection = conn;
         cmd.CommandText = sql;
         conn.Open();
-        int i = cmd.ExecuteNonQuery();
+        int i = 0;
+        try
+        {
+            i = cmd.ExecuteNonQuery();
+        }
+        catch
+        { 
+        
+        }
         conn.Close();
         cmd.Parameters.Clear();
         cmd.Dispose();
