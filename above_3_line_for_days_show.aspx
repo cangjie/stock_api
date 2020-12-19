@@ -462,7 +462,7 @@
 
             dr["综指"] = totalScore;
 
-            
+
 
             if (ma5 >= ma10 && ma10 >= ma20 && ma20 >= ma30)
             {
@@ -483,6 +483,12 @@
             {
                 dr["信号"] = "🔥";
             }
+
+            if ((stock.kLineDay[currentIndex].lowestPrice - line3Price) / line3Price < 0.01)
+            { 
+                dr["信号"] = "🌟";
+            }
+
             highestPrice = KLine.GetHighestPrice(stock.kLineDay, currentIndex - 1, 40);
             /*
             if (kdjDays >= 0 && macdDays >= 0 && todayRaise < 0 && Math.Abs(todayRaise)/avgRaiseRate < 0.34 && kdjDays <= 4 && macdDays <= 4 && kdjDays <= macdDays
@@ -496,7 +502,7 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"外盘高\" >✅</a>";
             }
 
-            
+
 
             if (dtRunAboveAvarage.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0
                 && (ma5 >= ma10 && ma10 >= ma20 && ma20 >= ma30)
@@ -505,7 +511,7 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"日均线上 且回踩3线 均线多头排列\" >📈</a>";
             }
 
-            
+
             /*
             if (Math.Abs(stock.kLineDay[currentIndex].lowestPrice - line3Price) / line3Price < 0.05)
             { 
