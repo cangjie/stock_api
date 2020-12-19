@@ -23,13 +23,16 @@
         //{
         DateTime startDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "date", DateTime.Now.ToShortDateString()));
 
-        //startDate = DateTime.Parse("2018-11-5");
+        startDate = DateTime.Parse("2020-10-16");
 
-        if (Util.IsTransacDay(startDate))
+        for (DateTime j = startDate; j < DateTime.Parse("2020-10-20"); j = j.AddDays(1))
         {
-            for (int i = 15; i >= 3; i--)
+            if (Util.IsTransacDay(j))
             {
-                LogAbove3LineForDays(startDate, i);
+                for (int i = 8; i >= 6; i--)
+                {
+                    LogAbove3LineForDays(startDate, i);
+                }
             }
         }
         //}
@@ -480,7 +483,7 @@
 
     public static void LogAbove3LineForDays(DateTime currentDate, int days)
     {
-        
+
         DateTime  break3LineDate = Util.GetLastTransactDate(currentDate, days);
         if (DateTime.Now.Hour >= 16)
         {
@@ -504,7 +507,7 @@
             bool isAlwaysAbove3Line = true;
             for (int i = 0; i < days; i++)
             {
-                
+
                 if (break3LineIndex > 20 && (break3LineIndex + i) < s.kLineDay.Length && s.kLineDay[break3LineIndex + i].endPrice < s.GetAverageSettlePrice(break3LineIndex + i, 3, 3))
                 {
                     isAlwaysAbove3Line = false;
