@@ -32,7 +32,7 @@
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        sort = Util.GetSafeRequestValue(Request, "sort", "放量");
+        sort = Util.GetSafeRequestValue(Request, "sort", "日均涨幅 desc");
         if (!IsPostBack)
         {
             try
