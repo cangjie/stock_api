@@ -488,10 +488,7 @@
                 dr["信号"] = "🔥";
             }
 
-            if ((stock.kLineDay[currentIndex].lowestPrice - line3Price) / line3Price < 0.01)
-            {
-                dr["信号"] = "🌟";
-            }
+            
 
             highestPrice = KLine.GetHighestPrice(stock.kLineDay, currentIndex - 1, 40);
             /*
