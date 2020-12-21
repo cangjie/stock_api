@@ -259,7 +259,7 @@
         DateTime alertDate = Util.GetLastTransactDate(currentDate, 5);
         DataTable dtOri = new DataTable();
         SqlDataAdapter da = new SqlDataAdapter(" select *  from alert_above_3_line_for_days where alert_date > '" + alertDate.ToShortDateString() + "'  "
-            + " and  alert_date <= '" + currentDate.Date.ToShortDateString() + "'  "
+            + " and  alert_date < '" + currentDate.Date.ToShortDateString() + "'  "
             + (!days.Trim().Equals("")? " and above_3_line_days  in (" + days + ") " : "  "), Util.conStr);
         da.Fill(dtOri);
         DataTable dt = new DataTable();
@@ -310,14 +310,30 @@
 
             stock.LoadKLineDay(rc);
             int currentIndex = stock.GetItemIndex(currentDate);
-            if (currentIndex == -1)
+            if (currentIndex < 10)
             {
-                DateTime lastTDate = Util.GetLastTransactDate(currentDate, 1);
-                currentIndex = stock.GetItemIndex(lastTDate);
+                continue;
             }
             int daysAbove3Line = int.Parse(drOri["above_3_line_days"].ToString());
-            if (currentIndex - daysAbove3Line - 1 < 0)
+
+            int alertIndex = stock.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
+            if (alertIndex < 10)
+            {
                 continue;
+            }
+            bool settleUnder3Line = false;
+            for (int k = alertIndex - int.Parse(drOri["above_3_line_days"].ToString()) + 1; k <= currentIndex; k++)
+            {
+                if (stock.kLineDay[k].endPrice <= stock.GetAverageSettlePrice(k, 3, 3))
+                {
+                    settleUnder3Line = true;
+                    break;
+                }
+            }
+            if (settleUnder3Line)
+            {
+                continue;
+            }
 
             double startRaisePrice = stock.kLineDay[currentIndex - daysAbove3Line - 1].endPrice;
 
@@ -348,6 +364,8 @@
             {
                 continue;
             }
+
+
 
             //if (currentIndex < 1)
             //   continue;
