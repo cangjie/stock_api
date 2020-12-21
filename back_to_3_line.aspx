@@ -299,7 +299,15 @@
 
         foreach (DataRow drOri in dtOri.Rows)
         {
+            if (dt.Select(" 代码 = '" + drOri["gid"].ToString().Trim() + "' ").Length > 0)
+            {
+                continue;
+            }
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
+
+
+
+
             stock.LoadKLineDay(rc);
             int currentIndex = stock.GetItemIndex(currentDate);
             if (currentIndex == -1)
@@ -664,20 +672,15 @@
                     <asp:BoundColumn DataField="放量" HeaderText="放量" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ" HeaderText="KDJ" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="MACD" HeaderText="MACD" ></asp:BoundColumn>
-                    <asp:BoundColumn DataField="KDJ60" HeaderText="KDJ60" ></asp:BoundColumn>
-                    <asp:BoundColumn DataField="KDJ30" HeaderText="KDJ30" ></asp:BoundColumn>
 
 
                     <asp:BoundColumn DataField="3线" HeaderText="3线" ></asp:BoundColumn>
-					<asp:BoundColumn DataField="3线日" HeaderText="3线日" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="日均涨幅" HeaderText="日均涨幅"  ></asp:BoundColumn>
     
                    			
                     <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F5" HeaderText="F5"></asp:BoundColumn>
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
-			        <asp:BoundColumn DataField="今开" HeaderText="今开" ></asp:BoundColumn>
-                    <asp:BoundColumn DataField="0日" HeaderText="0日" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="2日" HeaderText="2日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3日" HeaderText="3日"></asp:BoundColumn>
