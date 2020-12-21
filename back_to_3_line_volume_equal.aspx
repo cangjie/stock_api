@@ -339,7 +339,7 @@
             }
 
 
-            if (stock.kLineDay[currentIndex].startPrice < stock.kLineDay[currentIndex].endPrice)
+            if (stock.kLineDay[currentIndex].startPrice >= stock.kLineDay[currentIndex].endPrice)
             {
                 continue;
             }
@@ -677,7 +677,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title></title>
+    <title>8天三线上后碰三线调整，阳线，量持平10日均量</title>
 </head>
 <body>
     <form id="form1" runat="server">
