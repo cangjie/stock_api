@@ -488,7 +488,7 @@
                 dr["信号"] = "🔥";
             }
 
-            
+
 
             highestPrice = KLine.GetHighestPrice(stock.kLineDay, currentIndex - 1, 40);
             /*
@@ -638,6 +638,31 @@
         }
     }
 
+    protected void btnDownload_Click(object sender, EventArgs e)
+    {
+        DataTable dtDownload = GetData();
+        string content = "";
+        foreach (DataRow dr in dtDownload.Rows)
+        {
+            string gid = dr["代码"].ToString().Trim();
+            try
+            {
+                gid = gid.Substring(gid.IndexOf(">"), gid.Length - gid.IndexOf(">"));
+            }
+            catch
+            {
+
+            }
+            gid = gid.Replace("</a>", "").Replace(">", "").ToUpper();
+            content += gid + "\r\n";
+        }
+        Response.Clear();
+        Response.ContentType = "text/plain";
+        Response.Headers.Add("Content-Disposition", "attachment; filename=volume_reduce_"
+            + calendar.SelectedDate.ToShortDateString() + ".txt");
+        Response.Write(content.Trim());
+        Response.End();
+    }
 </script>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -648,6 +673,9 @@
     <form id="form1" runat="server">
     <div>
         <table width="100%" >
+            <tr>
+                <td><asp:Button runat="server" Text=" 下 载 " ID="btnDownload" OnClick="btnDownload_Click" /></td>
+            </tr>
             <tr>
                 <td><asp:Calendar runat="server" id="calendar" Width="100%" OnSelectionChanged="calendar_SelectionChanged" BackColor="White" BorderColor="Black" BorderStyle="Solid" CellSpacing="1" Font-Names="Verdana" Font-Size="9pt" ForeColor="Black" Height="250px" NextPrevFormat="ShortMonth" >
                     <DayHeaderStyle Font-Bold="True" Font-Size="8pt" ForeColor="#333333" Height="8pt" />
