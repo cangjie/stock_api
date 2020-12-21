@@ -339,7 +339,10 @@
             }
 
 
-
+            if (stock.kLineDay[currentIndex].startPrice < stock.kLineDay[currentIndex].endPrice)
+            {
+                continue;
+            }
 
 
             //if (currentIndex < 1)
