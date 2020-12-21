@@ -373,7 +373,7 @@
 
             DateTime lastDate = DateTime.Parse(stock.kLineDay[currentIndex - 1].startDateTime.ToShortDateString());
 
-            double volumeChange = stock.kLineDay[currentIndex].volume / Stock.GetAvarageVolume(stock.kLineDay, currentIndex, 20);
+            double volumeChange = stock.kLineDay[currentIndex].volume / Stock.GetAvarageVolume(stock.kLineDay, currentIndex, 10);
 
             if (Math.Abs(1 - volumeChange) > 0.15)
             {
