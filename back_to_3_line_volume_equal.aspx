@@ -373,7 +373,14 @@
 
             DateTime lastDate = DateTime.Parse(stock.kLineDay[currentIndex - 1].startDateTime.ToShortDateString());
 
-            dr["放量"] = stock.kLineDay[currentIndex].volume / Stock.GetAvarageVolume(stock.kLineDay, currentIndex, 20);
+            double volumeChange = stock.kLineDay[currentIndex].volume / Stock.GetAvarageVolume(stock.kLineDay, currentIndex, 20);
+
+            if (Math.Abs(1 - volumeChange) > 0.15)
+            {
+                continue;
+            }
+
+            dr["放量"] = volumeChange;
             int kdjDays = stock.kdjDays(currentIndex);
             if (kdjDays == -1 || macdDays == -1)
                 continue;
