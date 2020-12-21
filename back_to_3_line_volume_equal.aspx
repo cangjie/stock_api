@@ -344,7 +344,7 @@
                 continue;
             }
 
-            if ((stock.kLineDay[currentIndex].highestPrice - stock.kLineDay[currentIndex].lowestPrice) / stock.kLineDay[currentIndex].lowestPrice < 0.05)
+            if ((stock.kLineDay[currentIndex].highestPrice - stock.kLineDay[currentIndex].lowestPrice) / stock.kLineDay[currentIndex].lowestPrice < 0.03)
             {
                 continue;
             }
