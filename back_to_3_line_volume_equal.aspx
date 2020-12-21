@@ -344,6 +344,10 @@
                 continue;
             }
 
+            if ((stock.kLineDay[currentIndex].highestPrice - stock.kLineDay[currentIndex].lowestPrice) / stock.kLineDay[currentIndex].lowestPrice < 0.05)
+            {
+                continue;
+            }
 
             //if (currentIndex < 1)
             //   continue;
@@ -677,7 +681,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title>8天三线上后碰三线调整，阳线，量持平10日均量</title>
+    <title>8天三线上后碰三线调整，阳线，量持平10日均量 日振幅大于5%</title>
 </head>
 <body>
     <form id="form1" runat="server">
