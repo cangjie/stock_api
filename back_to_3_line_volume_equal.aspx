@@ -304,13 +304,6 @@
                 continue;
             }
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
-
-            if (stock.gid.Trim().Equals("sz002287"))
-            {
-                string aa = "aa";
-            }
-
-
             stock.LoadKLineDay(rc);
             int currentIndex = stock.GetItemIndex(currentDate);
             if (currentIndex < 10)
@@ -403,7 +396,7 @@
 
             double volumeChange = stock.kLineDay[currentIndex].volume / Stock.GetAvarageVolume(stock.kLineDay, currentIndex, 10);
 
-            if (Math.Abs(1 - volumeChange) > 0.15)
+            if (Math.Abs(1 - volumeChange) > 0.25)
             {
                 continue;
             }
