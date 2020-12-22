@@ -99,8 +99,12 @@
                     }
                     if (s.kLineDay[currentIndex].endPrice > s.GetAverageSettlePrice(currentIndex, 3, 3) &&
                         s.kLineDay[currentIndex - 1].endPrice < s.GetAverageSettlePrice(currentIndex - 1, 3, 3))
-                    { 
+                    {
                         dr["信号"] = dr["信号"].ToString() + " 3线 ";
+                    }
+                    if (dr["信号"].ToString().Equals(""))
+                    {
+                        continue;
                     }
                     double maxPrice = 0;
                     for (int i = 1; i <= 5; i++)
