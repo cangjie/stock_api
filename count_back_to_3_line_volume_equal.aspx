@@ -9,15 +9,15 @@
 
     public static Core.RedisClient rc = new Core.RedisClient("52.81.252.140");
 
-    public static int highCount = 0;
+    public  int highCount = 0;
 
-    public static int highSuccess = 0;
+    public  int highSuccess = 0;
 
-    public static int lowCount = 0;
+    public  int lowCount = 0;
 
-    public static int lowSuccess = 0;
+    public  int lowSuccess = 0;
 
-    public static int count = 0;
+    public  int count = 0;
 
     protected void Page_Load(object sender, EventArgs e)
     {
