@@ -362,11 +362,11 @@
             }
 
             bool isNewHigh = true;
-            double highPrice = Math.Max(stock.kLineDay[currentIndex].highestPrice, stock.kLineDay[currentIndex - 1].highestPrice);
+            double higesthPrice = Math.Max(stock.kLineDay[currentIndex].highestPrice, stock.kLineDay[currentIndex - 1].highestPrice);
 
             for (int j = currentIndex - 2; j >= 0 && stock.kLineDay[j].endPrice > stock.GetAverageSettlePrice(j, 3, 3); j--)
             {
-                if (highPrice <= stock.kLineDay[j].highestPrice)
+                if (higesthPrice <= stock.kLineDay[j].highestPrice)
                 {
                     isNewHigh = false;
                     break;
