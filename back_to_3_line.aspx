@@ -393,9 +393,7 @@
 
             dr["放量"] = stock.kLineDay[currentIndex].volume / Stock.GetAvarageVolume(stock.kLineDay, currentIndex, 20);
             int kdjDays = stock.kdjDays(currentIndex);
-            if (kdjDays == -1 || macdDays == -1)
-                continue;
-
+            
             dr["kdj"] = kdjDays.ToString();
 
             dr["KDJ30"] = Stock.KDJIndex(kArrHalfHour, currentIndexHalfHour);

@@ -305,7 +305,10 @@
             }
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
 
-
+            if (stock.gid.Trim().Equals("sz002287"))
+            {
+                string aa = "aa";
+            }
 
 
             stock.LoadKLineDay(rc);
@@ -407,8 +410,7 @@
 
             dr["放量"] = volumeChange;
             int kdjDays = stock.kdjDays(currentIndex);
-            if (kdjDays == -1 || macdDays == -1)
-                continue;
+            
 
             dr["kdj"] = kdjDays.ToString();
 

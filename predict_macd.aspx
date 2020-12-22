@@ -17,7 +17,7 @@
         foreach (string gid in Util.GetAllGids())
         {
             Stock stock = new Stock(gid);
-            stock.LoadKLineDay();
+            stock.LoadKLineDay(Util.rc);
             int currentIndex = stock.GetItemIndex(currentDate);
             if (currentIndex < 0)
             {
@@ -42,7 +42,7 @@
             {
                 kArr[kArr.Length - 1].endPrice = predictPrice;
                 KLine.ComputeMACD(kArr);
-                if (kArr[kArr.Length - 1].macd >= 0 && kArr[kArr.Length - 2].macd < 0)
+                if (kArr[kArr.Length - 1].macd > 0 && kArr[kArr.Length - 2].macd < 0)
                 {
                     try
                     {
