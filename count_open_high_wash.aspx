@@ -92,7 +92,7 @@
                     dr["代码"] = s.gid.Trim();
                     dr["名称"] = s.Name.Trim();
                     dr["信号"] = "";
-                    dr["缩量"] = Math.Round(100 * s.kLineDay[currentIndex + 1].volume / s.kLineDay[currentIndex].volume, 2).ToString() + "%";
+                    dr["缩量"] = Math.Round(100 * s.kLineDay[currentIndex].volume / s.kLineDay[currentIndex-1].volume, 2).ToString() + "%";
                     //dr["高开幅度"] = (s.kLineDay[currentIndex + 2].startPrice - s.kLineDay[currentIndex + 1].endPrice) / s.kLineDay[currentIndex + 1].endPrice;
                     double buyPrice = s.kLineDay[currentIndex].endPrice;
                     dr["买入"] = Math.Round(buyPrice, 2).ToString();
