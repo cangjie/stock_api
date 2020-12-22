@@ -76,7 +76,7 @@
                 KLine.ComputeMACD(s.kLineDay);
 
                 if (s.kLineDay[currentIndex].endPrice >= s.kLineDay[currentIndex].startPrice
-                    || s.kLineDay[currentIndex].endPrice <= s.kLineDay[currentIndex-1].highestPrice)
+                    || s.kLineDay[currentIndex].lowestPrice <= s.kLineDay[currentIndex-1].highestPrice)
                 {
                     continue;
                 }
