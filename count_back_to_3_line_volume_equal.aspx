@@ -53,7 +53,7 @@
         dtNew.Columns.Add("总计");
 
 
-        DataTable dtOri = DBHelper.GetDataTable(" select *  from alert_above_3_line_for_days where alert_date >= '2020-1-1' and above_3_line_days = 7 ");
+        DataTable dtOri = DBHelper.GetDataTable(" select *  from alert_above_3_line_for_days where alert_date >= '2019-1-1' and above_3_line_days = 7 ");
         foreach (DataRow drOri in dtOri.Rows)
         {
             try
