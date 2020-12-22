@@ -75,10 +75,7 @@
                 }
                 KLine.ComputeMACD(s.kLineDay);
 
-                if (s.kLineDay[currentIndex - 1].macd >= 0 || s.kLineDay[currentIndex].macd <= 0
-                    || s.kLineDay[currentIndex - 1].endPrice >= s.GetAverageSettlePrice(currentIndex - 1, 3, 3)
-                    || s.kLineDay[currentIndex].endPrice <= s.GetAverageSettlePrice(currentIndex, 3, 3)
-                    || s.kLineDay[currentIndex].endPrice >= s.kLineDay[currentIndex].startPrice
+                if (s.kLineDay[currentIndex].endPrice >= s.kLineDay[currentIndex].startPrice
                     || s.kLineDay[currentIndex].endPrice <= s.kLineDay[currentIndex-1].highestPrice)
                 {
                     continue;
@@ -96,7 +93,15 @@
                     //dr["高开幅度"] = (s.kLineDay[currentIndex + 2].startPrice - s.kLineDay[currentIndex + 1].endPrice) / s.kLineDay[currentIndex + 1].endPrice;
                     double buyPrice = s.kLineDay[currentIndex].endPrice;
                     dr["买入"] = Math.Round(buyPrice, 2).ToString();
-
+                    if (s.kLineDay[currentIndex].macd > 0 && s.kLineDay[currentIndex - 1].macd < 0)
+                    {
+                        dr["信号"] = dr["信号"].ToString() + " DMP ";
+                    }
+                    if (s.kLineDay[currentIndex].endPrice > s.GetAverageSettlePrice(currentIndex, 3, 3) &&
+                        s.kLineDay[currentIndex - 1].endPrice < s.GetAverageSettlePrice(currentIndex - 1, 3, 3))
+                    { 
+                        dr["信号"] = dr["信号"].ToString() + " 3线 ";
+                    }
                     double maxPrice = 0;
                     for (int i = 1; i <= 5; i++)
                     {
