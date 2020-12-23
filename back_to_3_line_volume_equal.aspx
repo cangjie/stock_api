@@ -453,7 +453,7 @@
             for (int i = 1; i <= 10; i++)
             {
                 if (i == 1 && currentIndex + i < stock.kLineDay.Length 
-                    && stock.kLineDay[currentIndex + i].startPrice >= stock.kLineDay[currentIndex + i].endPrice)
+                    && stock.kLineDay[currentIndex + i].startPrice > stock.kLineDay[currentIndex + i].endPrice)
                 {
                     dr["信号"] = "<a title=\"首日收阴\" >💩</a>";
                 }
