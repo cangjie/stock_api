@@ -452,6 +452,10 @@
             dr["0日"] = (buyPrice - stock.kLineDay[currentIndex].startPrice) / stock.kLineDay[currentIndex].startPrice;
             for (int i = 1; i <= 10; i++)
             {
+                if (i == 1 && stock.kLineDay[currentIndex + i].startPrice >= stock.kLineDay[currentIndex + i].endPrice)
+                {
+                    dr["信号"] = "<a title=\"首日收阴\" >💩</a>";
+                }
                 if (currentIndex + i >= stock.kLineDay.Length)
                     break;
                 double highPrice = stock.kLineDay[currentIndex + i].highestPrice;
