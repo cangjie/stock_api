@@ -391,6 +391,10 @@
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
             double avgRaiseRate = (stock.kLineDay[currentIndex].endPrice - startRaisePrice) / (startRaisePrice * daysAbove3Line) ;
+            if (avgRaiseRate < 0.01)
+            {
+                continue;
+            }
             dr["日均涨幅"] = avgRaiseRate;
 
             double settlePrice = stock.kLineDay[currentIndex - 1].endPrice;
