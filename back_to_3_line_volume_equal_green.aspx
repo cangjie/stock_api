@@ -304,7 +304,12 @@
                 continue;
             }
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
+            if (stock.gid.Trim().Equals("sz300347"))
+            {
+                string aa = "aa";
+            }
             stock.LoadKLineDay(rc);
+            KLine.ComputeMACD(stock.kLineDay);
             int currentIndex = stock.GetItemIndex(currentDate);
             if (currentIndex < 10)
             {
@@ -318,6 +323,7 @@
                 continue;
             }
             bool settleUnder3Line = false;
+            int upDmpCount = 0;
             for (int k = alertIndex - int.Parse(drOri["above_3_line_days"].ToString()) + 1; k <= currentIndex; k++)
             {
                 if (stock.kLineDay[k].endPrice <= stock.GetAverageSettlePrice(k, 3, 3))
@@ -325,6 +331,29 @@
                     settleUnder3Line = true;
                     break;
                 }
+                else
+                {
+                    if (stock.kLineDay[k].macd > 0)
+                    {
+                        upDmpCount++;
+                        if (upDmpCount == 8 && currentIndex == k)
+                        {
+                            break;
+                        }
+                    }
+                    else
+                    { 
+                        if (upDmpCount > 0)
+                        {
+                            upDmpCount = -1;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (upDmpCount != 8)
+            {
+                continue;
             }
             if (settleUnder3Line)
             {
@@ -452,7 +481,7 @@
             dr["0日"] = (buyPrice - stock.kLineDay[currentIndex].startPrice) / stock.kLineDay[currentIndex].startPrice;
             for (int i = 1; i <= 10; i++)
             {
-                if (i == 1 && currentIndex + i < stock.kLineDay.Length 
+                if (i == 1 && currentIndex + i < stock.kLineDay.Length
                     && stock.kLineDay[currentIndex + i].startPrice > stock.kLineDay[currentIndex + i].endPrice)
                 {
                     dr["信号"] = "<a title=\"首日收阴\" >💩</a>";
@@ -716,7 +745,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title>8天三线上后碰三线调整，阴线，量持平10日均量 日振幅大于5%</title>
+    <title>8天三线DMP上后碰三线调整，阴线，量持平10日均量 日振幅大于5%</title>
 </head>
 <body>
     <form id="form1" runat="server">
