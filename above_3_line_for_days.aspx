@@ -25,7 +25,7 @@
 
         startDate = DateTime.Parse("2020-10-9");
 
-        for (DateTime j = startDate; j <= DateTime.Parse("2020-12-21"); j = j.AddDays(1))
+        for (DateTime j = startDate; j <= DateTime.Now.Date; j = j.AddDays(1))
         {
             if (Util.IsTransacDay(j))
             {
