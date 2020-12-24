@@ -87,7 +87,8 @@
 
         foreach (DataRow drOri in drOriArr)
         {
-            if (drOri["信号"].ToString().IndexOf("💩") < 0)
+            //if (drOri["信号"].ToString().IndexOf("💩") < 0)
+            if (true)
             {
                 totalCount++;
                 if (drOri["信号"].ToString().IndexOf("📈") >= 0)

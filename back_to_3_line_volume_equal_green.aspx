@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" %>
+﻿f<%@ Page Language="C#" %>
 <%@ Import Namespace="System.Data" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
 <%@ Import Namespace="System.Threading" %>
@@ -9,7 +9,7 @@
     public string sort = "";
 
     public static ThreadStart ts = new ThreadStart(PageWatcher);
-
+    
     public static Thread t = new Thread(ts);
 
     public static ThreadStart tsQ = new ThreadStart(StockWatcher.LogQuota);
@@ -87,7 +87,8 @@
 
         foreach (DataRow drOri in drOriArr)
         {
-            if (drOri["信号"].ToString().IndexOf("💩") < 0)
+            //if (drOri["信号"].ToString().IndexOf("💩") < 0)
+            if (true)
             {
                 totalCount++;
                 if (drOri["信号"].ToString().IndexOf("📈") >= 0)
