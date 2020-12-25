@@ -29,7 +29,7 @@
         {
             if (Util.IsTransacDay(j))
             {
-                for (int i = 8; i >= 6; i--)
+                for (int i = 8; i >= 4; i--)
                 {
                     LogAbove3LineForDays(j, i);
                 }
