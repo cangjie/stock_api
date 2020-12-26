@@ -312,12 +312,14 @@
                 continue;
             }
             int daysAbove3Line = int.Parse(drOri["above_3_line_days"].ToString());
-
+            
             int alertIndex = stock.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
+            daysAbove3Line = daysAbove3Line + (currentIndex - alertIndex);
             if (alertIndex < 10)
             {
                 continue;
             }
+
             bool settleUnder3Line = false;
             for (int k = alertIndex - int.Parse(drOri["above_3_line_days"].ToString()) + 1; k <= currentIndex; k++)
             {

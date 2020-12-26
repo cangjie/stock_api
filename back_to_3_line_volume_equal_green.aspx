@@ -305,10 +305,7 @@
                 continue;
             }
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
-            if (stock.gid.Trim().Equals("sz300347"))
-            {
-                string aa = "aa";
-            }
+            
             stock.LoadKLineDay(rc);
             KLine.ComputeMACD(stock.kLineDay);
             int currentIndex = stock.GetItemIndex(currentDate);
@@ -319,10 +316,12 @@
             int daysAbove3Line = int.Parse(drOri["above_3_line_days"].ToString());
 
             int alertIndex = stock.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
+            daysAbove3Line = daysAbove3Line + (currentIndex - alertIndex);
             if (alertIndex < 10)
             {
                 continue;
             }
+
             bool settleUnder3Line = false;
             int upDmpCount = 0;
             for (int k = alertIndex - int.Parse(drOri["above_3_line_days"].ToString()) + 1; k <= currentIndex; k++)
