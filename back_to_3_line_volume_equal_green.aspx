@@ -778,6 +778,7 @@
 
 
                     <asp:BoundColumn DataField="3线" HeaderText="3线" ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="3线日" HeaderText="3线日" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="日均涨幅" HeaderText="日均涨幅"  ></asp:BoundColumn>
     
                    			
