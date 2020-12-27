@@ -456,9 +456,10 @@
             for (int i = 1; i <= 10; i++)
             {
                 if (i == 1 && currentIndex + i < stock.kLineDay.Length 
-                    && stock.kLineDay[currentIndex + i].startPrice > stock.kLineDay[currentIndex + i].endPrice)
+                    && stock.kLineDay[currentIndex + i].highestPrice <= stock.kLineDay[currentIndex].highestPrice
+                    && stock.kLineDay[currentIndex+i].lowestPrice <= stock.kLineDay[currentIndex].lowestPrice)
                 {
-                    dr["信号"] = "<a title=\"首日收阴\" >💩</a>";
+                    dr["信号"] = "<a title=\"首日下跌\" >💩</a>";
                 }
                 if (currentIndex + i >= stock.kLineDay.Length)
                     break;
