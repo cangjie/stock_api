@@ -67,6 +67,9 @@ public class DBHelper
             case "bigint":
                 sqlType = SqlDbType.BigInt;
                 break;
+            case "float":
+                sqlType = SqlDbType.Float;
+                break;
             default:
                 sqlType = SqlDbType.VarChar;
                 break;
@@ -200,7 +203,7 @@ public class DBHelper
         {
             i = cmd.ExecuteNonQuery();
         }
-        catch
+        catch(Exception err)
         { 
         
         }

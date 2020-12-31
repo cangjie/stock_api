@@ -4,7 +4,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        DateTime currentDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "date", DateTime.Now.ToShortDateString()));
+        DateTime currentDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "date", "2020-12-20"));
         if (DateTime.Now.Hour < 15 && currentDate.ToShortDateString().Equals(DateTime.Now.ToShortDateString()))
         {
             currentDate = Util.GetLastTransactDate(currentDate, 1);
