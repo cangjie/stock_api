@@ -64,7 +64,7 @@
         DateTime currentDate = calendar.SelectedDate;
         if (currentDate.Year < 2000)
             currentDate = DateTime.Now;
-        DataTable dtOri = GetData(currentDate, Util.GetSafeRequestValue(Request, "days", "7"));
+        DataTable dtOri = GetData(currentDate, Util.GetSafeRequestValue(Request, "days", "5,6,7"));
         DataRow[] drOriArr = dtOri.Select(Util.GetSafeRequestValue(Request, "whereclause", "   ").Trim(), sort);
         return RenderHtml(drOriArr);
     }
@@ -256,10 +256,12 @@
     {
         DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor_new '" + currentDate.ToShortDateString() + "' ");
         DataTable dtRunAboveAvarage = DBHelper.GetDataTable(" select * from alert_avarage_timeline where alert_date =  '" + currentDate.Date.ToShortDateString() + "' ");
-
+        
         DateTime alertDate = Util.GetLastTransactDate(currentDate, 5);
         DataTable dtOri = new DataTable();
-        SqlDataAdapter da = new SqlDataAdapter(" select *  from alert_above_3_line_for_days where alert_date > '" + alertDate.ToShortDateString() + "'  "
+        SqlDataAdapter da = new SqlDataAdapter(" select *  from alert_above_3_line_for_days "
+            + " left join alert_demark on alert_above_3_line_for_days.gid = alert_demark.gid and alert_time = '" + currentDate.ToShortDateString() + " 15:00:00' "
+            + " where alert_date > '" + alertDate.ToShortDateString() + "'  "
             + " and  alert_date < '" + currentDate.Date.ToShortDateString() + "'  "
             + (!days.Trim().Equals("")? " and above_3_line_days  in (" + days + ") " : "  "), Util.conStr);
         da.Fill(dtOri);
@@ -312,7 +314,7 @@
                 continue;
             }
             int daysAbove3Line = int.Parse(drOri["above_3_line_days"].ToString());
-            
+
             int alertIndex = stock.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
             daysAbove3Line = daysAbove3Line + (currentIndex - alertIndex);
             if (alertIndex < 10)
@@ -408,7 +410,16 @@
             dr["今收"] = currentPrice;
             int macdDays = stock.macdDays(currentIndex);
             dr["MACD"] = macdDays;
-            dr["TD"] = currentIndex - KLine.GetLastDeMarkBuyPointIndex(stock.kLineDay, currentIndex);
+            int td = 0;
+            try
+            {
+                td = int.Parse(drOri["value"].ToString().Trim());
+            }
+            catch
+            { 
+            
+            }
+            dr["TD"] = td;
             double todayRaise = (stock.kLineDay[currentIndex].startPrice - settlePrice) / settlePrice;
             dr["今涨"] = todayRaise;
 
@@ -455,7 +466,7 @@
             dr["0日"] = (buyPrice - stock.kLineDay[currentIndex].startPrice) / stock.kLineDay[currentIndex].startPrice;
             for (int i = 1; i <= 10; i++)
             {
-                if (i == 1 && currentIndex + i < stock.kLineDay.Length 
+                if (i == 1 && currentIndex + i < stock.kLineDay.Length
                     && stock.kLineDay[currentIndex + i].highestPrice <= stock.kLineDay[currentIndex].highestPrice
                     && stock.kLineDay[currentIndex+i].lowestPrice <= stock.kLineDay[currentIndex].lowestPrice)
                 {
@@ -748,9 +759,10 @@
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="放量" HeaderText="放量" ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="TD" HeaderText="TD" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ" HeaderText="KDJ" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="MACD" HeaderText="MACD" ></asp:BoundColumn>
-
+                    <%--  --%>
 
                     <asp:BoundColumn DataField="3线" HeaderText="3线" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线日" HeaderText="3线日" ></asp:BoundColumn>
