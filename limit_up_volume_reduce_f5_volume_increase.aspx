@@ -461,7 +461,7 @@
             int volumeIncreaseIndex = 0;
             for (int i = touchF5Index; i <= currentIndex; i++)
             {
-                if (stock.kLineDay[i].lowestPrice <= f5)
+                if (stock.kLineDay[i].endPrice <= f5)
                 {
                     break;
                 }
