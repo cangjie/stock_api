@@ -416,10 +416,7 @@
 
 
 
-            if (stock.kLineDay[currentIndex].endPrice <= f5)
-            {
-                continue;
-            }
+            
             /*
             bool touchedF5 = false;
             for (int i = highIndex; i < currentIndex; i++)
@@ -448,7 +445,7 @@
             int touchF5Index = 0;
             for (int i = highIndex; i <= currentIndex; i++)
             {
-                if (stock.kLineDay[i].lowestPrice <= f5 && stock.kLineDay[i].endPrice > f5)
+                if (stock.kLineDay[i].lowestPrice <= f5 )
                 {
                     touchF5Index = i;
                     break;
@@ -461,7 +458,7 @@
             int volumeIncreaseIndex = 0;
             for (int i = touchF5Index; i <= currentIndex; i++)
             {
-                if (stock.kLineDay[i].endPrice <= f5)
+                if (stock.kLineDay[i].endPrice <= f5 && i > touchF5Index)
                 {
                     break;
                 }
@@ -471,11 +468,15 @@
                     break;
                 }
             }
-            if (currentIndex > volumeIncreaseIndex)
+            if (currentIndex != volumeIncreaseIndex)
             {
                 continue;
             }
-            if (stock.kLineDay[currentIndex].endPrice < line3Price)
+            if (stock.kLineDay[currentIndex].endPrice <= line3Price)
+            {
+                continue;
+            }
+            if (stock.kLineDay[currentIndex].endPrice <= f5)
             {
                 continue;
             }
