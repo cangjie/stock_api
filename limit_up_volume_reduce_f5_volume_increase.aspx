@@ -460,7 +460,7 @@
                 continue;
             }
             int volumeIncreaseIndex = 0;
-            for (int i = touchF5Index; i <= touchF5Index + 1; i++)
+            for (int i = touchF5Index; i <= touchF5Index + 1 && i < stock.kLineDay.Length; i++)
             {
                 if (stock.kLineDay[i].endPrice <= f5 && i > touchF5Index)
                 {
