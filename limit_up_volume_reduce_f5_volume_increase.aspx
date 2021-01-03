@@ -471,6 +471,10 @@
             {
                 continue;
             }
+            if (stock.kLineDay[currentIndex].endPrice < line3Price)
+            {
+                continue;
+            }
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
@@ -684,7 +688,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title>涨停后缩量，然后触碰f5后，放量</title>
+    <title>涨停后缩量，然后触碰f5后，放量 3线上</title>
 </head>
 <body>
     <form id="form2" runat="server">
