@@ -863,13 +863,23 @@ public class Stock
         {
             StackExchange.Redis.RedisValue[] rvArr = rc.redisDb.SortedSetRangeByScore((StackExchange.Redis.RedisKey)key);
             KLine[] kArr = new KLine[rvArr.Length];
+            int realCount = 0;
             for (int i = 0; i < rvArr.Length; i++)
             {
                 string[] rvItems = rvArr[i].ToString().Trim().Split(',');
                 kArr[i] = new KLine();
                 kArr[i].gid = gid.Trim();
                 kArr[i].type = type.Trim();
-                kArr[i].startDateTime = DateTime.Parse(rvItems[1].Trim());
+                DateTime startDate = DateTime.Parse(rvItems[1].Trim());
+                if (!Util.IsTransacDay(startDate))
+                {
+                    startDate = DateTime.MinValue;
+                }
+                else 
+                {
+                    realCount++;
+                }
+                kArr[i].startDateTime = startDate;
                 kArr[i].startPrice = double.Parse(rvItems[2].Trim());
                 kArr[i].endPrice = double.Parse(rvItems[3].Trim());
                 kArr[i].highestPrice = double.Parse(rvItems[4].Trim());
@@ -877,8 +887,27 @@ public class Stock
                 kArr[i].volume = int.Parse(rvItems[6].Trim());
                 kArr[i].amount = double.Parse(rvItems[7].Trim());
             }
+            KLine[] kArrNew = new KLine[realCount];
+            int j = 0;
+            for (int i = 0; i < kArr.Length && j < realCount; i++)
+            {
+                if (kArr[i].startDateTime > DateTime.MinValue)
+                {
+                    kArrNew[j] = new KLine();
+                    kArrNew[j].gid = kArr[i].gid;
+                    kArrNew[j].type = kArr[i].type;
+                    kArrNew[j].startDateTime = kArr[i].startDateTime;
+                    kArrNew[j].startPrice = kArr[i].startPrice;
+                    kArrNew[j].endPrice = kArr[i].endPrice;
+                    kArrNew[j].highestPrice = kArr[i].highestPrice;
+                    kArrNew[j].lowestPrice = kArr[i].lowestPrice;
+                    kArrNew[j].volume = kArr[i].volume;
+                    kArrNew[j].amount = kArr[i].amount;
+                    j++;
+                }
+            }
             //rc.Dispose();
-            return kArr;
+            return kArrNew;
         }
         catch
         {
