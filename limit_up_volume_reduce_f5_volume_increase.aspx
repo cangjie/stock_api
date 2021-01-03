@@ -312,7 +312,7 @@
             + "' and alert_date <= '" + currentDate.ToShortDateString() + "' ");
 
 
-        DataTable dtOri = DBHelper.GetDataTable("select * from limit_up_volume_reduce where alert_date >= '" + Util.GetLastTransactDate(currentDate, 5).ToShortDateString() + "' ");
+        DataTable dtOri = DBHelper.GetDataTable("select * from limit_up_volume_reduce where alert_date >= '" + Util.GetLastTransactDate(currentDate, 10).ToShortDateString() + "' ");
         /*
         DataTable dtOri = DBHelper.GetDataTable(" select  * from limit_up a where exists(select 'a' from limit_up b where a.gid = b.gid and b.alert_date = dbo.func_GetLastTransactDate(a.alert_date, 1))  "
             + " and a.alert_date = '" + lastTransactDate.ToShortDateString() + "' ");
@@ -324,6 +324,10 @@
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
+            if (stock.gid.Trim().Equals("sz300265"))
+            {
+                string aa = "aa";
+            }
             stock.LoadKLineDay(rc);
             int currentIndex = stock.GetItemIndex(currentDate);
             if (currentIndex < 1)
@@ -416,7 +420,7 @@
 
 
 
-            
+
             /*
             bool touchedF5 = false;
             for (int i = highIndex; i < currentIndex; i++)
@@ -443,7 +447,7 @@
             */
 
             int touchF5Index = 0;
-            for (int i = highIndex; i <= currentIndex; i++)
+            for (int i = alertIndex; i <= currentIndex; i++)
             {
                 if (stock.kLineDay[i].lowestPrice <= f5 )
                 {
@@ -464,19 +468,16 @@
                 }
                 if (stock.kLineDay[i].volume > stock.kLineDay[i - 1].volume)
                 {
-                    volumeIncreaseIndex = i;
-                    break;
+                    if (currentIndex == i && stock.kLineDay[currentIndex].endPrice > stock.GetAverageSettlePrice(i, 3, 3)
+                        && stock.kLineDay[currentIndex].endPrice > f5)
+                    {
+                        volumeIncreaseIndex = i;
+                        break;
+                    }
+
                 }
             }
-            if (currentIndex != volumeIncreaseIndex)
-            {
-                continue;
-            }
-            if (stock.kLineDay[currentIndex].endPrice <= line3Price)
-            {
-                continue;
-            }
-            if (stock.kLineDay[currentIndex].endPrice <= f5)
+            if (volumeIncreaseIndex == 0)
             {
                 continue;
             }

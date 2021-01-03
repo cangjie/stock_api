@@ -34,7 +34,7 @@
         dt.Columns.Add("4日");
         dt.Columns.Add("5日");
         dt.Columns.Add("总计");
-        DataTable dtOri = DBHelper.GetDataTable(" select * from limit_up_volume_reduce where alert_date >= '2019-12-1'order by alert_date desc " );
+        DataTable dtOri = DBHelper.GetDataTable(" select * from limit_up_volume_reduce where alert_date >= '2019-12-1' and gid = 'sz300265'  order by alert_date desc " );
         foreach (DataRow drOri in dtOri.Rows)
         {
 
@@ -49,7 +49,7 @@
             {
                 continue;
             }
-            
+
             if (s.kLineDay[alertIndex].volume >= s.kLineDay[alertIndex - 1].volume * 1.1)
             {
                 continue;
@@ -91,6 +91,10 @@
                 }
             }
             if (buyIndex == 0)
+            {
+                continue;
+            }
+            if (f5Index - alertIndex > 5)
             {
                 continue;
             }
