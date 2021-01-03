@@ -294,7 +294,7 @@
         dt.Columns.Add("买入", Type.GetType("System.Double"));
         dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
-
+        dt.Columns.Add("调整", Type.GetType("System.Int32"));
         for (int i = 1; i <= 5; i++)
         {
             dt.Columns.Add(i.ToString() + "日", Type.GetType("System.Double"));
@@ -460,8 +460,10 @@
                 continue;
             }
             int volumeIncreaseIndex = 0;
+            int lowWaveDays = 0;
             for (int i = touchF5Index; i <= touchF5Index + 2 && i < stock.kLineDay.Length; i++)
             {
+                lowWaveDays++;
                 if (stock.kLineDay[i].endPrice <= f5 && i > touchF5Index)
                 {
                     break;
@@ -508,7 +510,7 @@
             dr["买入"] = buyPrice;
             dr["KDJ日"] = stock.kdjDays(currentIndex);
             dr["MACD日"] = stock.macdDays(currentIndex);
-
+            dr["调整"] = lowWaveDays;
             //dr["今涨"] = (stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
             dr["今涨"] = 0;
             double maxPrice = Math.Max(highest, stock.kLineDay[currentIndex].highestPrice);
@@ -734,8 +736,8 @@
                     <asp:BoundColumn DataField="F5" HeaderText="F5"></asp:BoundColumn>
                     <asp:BoundColumn DataField="前低" HeaderText="前低"></asp:BoundColumn>
                     <asp:BoundColumn DataField="幅度" HeaderText="幅度"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="现价" HeaderText="现价"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="今涨" HeaderText="今涨"></asp:BoundColumn>
+                    
+                    <asp:BoundColumn DataField="调整" HeaderText="调整"></asp:BoundColumn>
                     <asp:BoundColumn DataField="距F3" HeaderText="距F3"></asp:BoundColumn>
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日" SortExpression="1日|desc" ></asp:BoundColumn>
