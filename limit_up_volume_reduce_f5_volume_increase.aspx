@@ -481,6 +481,12 @@
             {
                 continue;
             }
+            double upShaddow = stock.kLineDay[currentIndex].highestPrice - stock.kLineDay[currentIndex].endPrice;
+            double entity = stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex].startPrice;
+            if (entity <= 0 || upShaddow > entity / 2)
+            {
+                continue;
+            }
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
