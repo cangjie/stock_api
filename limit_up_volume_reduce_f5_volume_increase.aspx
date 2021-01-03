@@ -324,7 +324,7 @@
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
-            if (stock.gid.Trim().Equals("sz300340"))
+            if (stock.gid.Trim().Equals("sz300389"))
             {
                 string aa = "aa";
             }
@@ -460,7 +460,7 @@
                 continue;
             }
             int volumeIncreaseIndex = 0;
-            for (int i = touchF5Index; i <= currentIndex; i++)
+            for (int i = touchF5Index; i <= touchF5Index + 1; i++)
             {
                 if (stock.kLineDay[i].endPrice <= f5 && i > touchF5Index)
                 {
