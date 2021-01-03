@@ -324,7 +324,7 @@
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
-            if (stock.gid.Trim().Equals("sz300265"))
+            if (stock.gid.Trim().Equals("sz300340"))
             {
                 string aa = "aa";
             }
@@ -447,7 +447,7 @@
             */
 
             int touchF5Index = 0;
-            for (int i = alertIndex; i <= currentIndex; i++)
+            for (int i = highIndex; i <= currentIndex; i++)
             {
                 if (stock.kLineDay[i].lowestPrice <= f5 )
                 {
