@@ -297,16 +297,19 @@
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
 
-            if (stock.gid.Trim().Equals("sz002670"))
-            {
-                string aa = "aa";
-            }
+
 
 
 
             int currentIndex = stock.GetItemIndex(currentDate);
             if (currentIndex < 1)
                 continue;
+
+            if ((stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice <= 0.095)
+            {
+                continue;
+            }
+
 
             int limitUpIndex = stock.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
 
@@ -507,7 +510,7 @@
 
             if ((stock.kLineDay[currentIndex].endPrice > stock.kLineDay[currentIndex].startPrice && stock.kLineDay[currentIndex].volume < stock.kLineDay[currentIndex - 1].volume)
                 || (stock.kLineDay[currentIndex].endPrice < stock.kLineDay[currentIndex].startPrice && stock.kLineDay[currentIndex].volume > stock.kLineDay[currentIndex - 1].volume))
-            { 
+            {
                 dr["信号"] = dr["信号"].ToString() + "<a title='收阳缩量收阴放量' >🔥</a>";
             }
 
