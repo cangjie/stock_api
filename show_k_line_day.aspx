@@ -24,7 +24,7 @@
         gidArr = Util.GetSafeRequestValue(Request, "gids", "").Split(',');
 
         Stock s = new Stock(gid);
-        s.LoadKLineDay();
+        s.LoadKLineDay(Util.rc);
         if (s.kLineDay[s.kLineDay.Length - 1].startDateTime.ToShortDateString().Equals(DateTime.Now.ToShortDateString()))
         {
             todayVolume = Stock.GetVolumeAndAmount(s.gid, DateTime.Now)[0];
