@@ -465,14 +465,12 @@
                 {
                     break;
                 }
-                if (stock.kLineDay[i].volume > stock.kLineDay[i - 1].volume)
+                if (stock.kLineDay[i].volume * 1.5  > stock.kLineDay[i - 1].volume && currentIndex == i 
+                    && stock.kLineDay[currentIndex].endPrice > stock.GetAverageSettlePrice(i, 3, 3)
+                    && stock.kLineDay[currentIndex].endPrice > f5)
                 {
-                    if (currentIndex == i && stock.kLineDay[currentIndex].endPrice > stock.GetAverageSettlePrice(i, 3, 3)
-                        && stock.kLineDay[currentIndex].endPrice > f5)
-                    {
-                        volumeIncreaseIndex = i;
-                        break;
-                    }
+                    volumeIncreaseIndex = i;
+                       
 
                 }
             }
