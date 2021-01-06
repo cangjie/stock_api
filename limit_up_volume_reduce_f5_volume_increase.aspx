@@ -324,10 +324,7 @@
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
-            if (stock.gid.Trim().Equals("sz300389"))
-            {
-                string aa = "aa";
-            }
+            
             stock.LoadKLineDay(rc);
             int currentIndex = stock.GetItemIndex(currentDate);
             if (currentIndex < 1)
@@ -342,7 +339,7 @@
             {
                 continue;
             }
-            if (stock.kLineDay[currentIndex].volume <= stock.kLineDay[currentIndex - 1].volume)
+            if (stock.kLineDay[currentIndex].volume * 1.5 <= stock.kLineDay[currentIndex - 1].volume)
             {
                 continue;
             }
