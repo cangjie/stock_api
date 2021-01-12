@@ -224,7 +224,8 @@
             double lastLine3Price = stock.GetAverageSettlePrice(currentIndex - 1, 3, 3);
             double lastLine5Price = stock.GetAverageSettlePrice(currentIndex - 1, 5, 5);
             if (lastLine5Price < lastLine3Price || currentLine3Price <= currentLine5Price
-                || stock.kLineDay[currentIndex].endPrice <= currentLine3Price)
+                || stock.kLineDay[currentIndex].endPrice <= currentLine3Price
+                || (stock.kLineDay[currentIndex].startPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].startPrice >= 0.03)
             {
                 continue;
             }
