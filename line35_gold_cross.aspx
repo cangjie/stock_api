@@ -203,6 +203,7 @@
         dt.Columns.Add("MACD", Type.GetType("System.Int32"));
         dt.Columns.Add("3线", Type.GetType("System.Double"));
         dt.Columns.Add("3线日", Type.GetType("System.Int32"));
+        dt.Columns.Add("日差", Type.GetType("System.Int32"));
         dt.Columns.Add("买入", Type.GetType("System.Double"));
         for (int i = 0; i <= 10; i++)
         {
@@ -267,12 +268,13 @@
             dr["名称"] = stock.Name.Trim();
             dr["信号"] = "";
             dr["KDJ"] = stock.kdjDays(currentIndex);
-            dr["MACD"] = stock.macdDays(currentIndex);
+            int macdDays = stock.macdDays(currentIndex);
+            dr["MACD"] = macdDays;
             dr["3线"] = currentLine3Price;
             dr["3线日"] = line3Days;
             dr["买入"] = buyPrice;
             dr["放量"] = volumeIncrease;
-
+            dr["日差"] = line3Days - macdDays;
             double maxPrice = 0;
             dr["0日"] = (buyPrice - currentLine3Price) / currentLine3Price;
             for (int i = 1; i <= 10; i++)
@@ -392,7 +394,7 @@
 
                     <asp:BoundColumn DataField="3线" HeaderText="3线" ></asp:BoundColumn>
 					<asp:BoundColumn DataField="3线日" HeaderText="3线日" ></asp:BoundColumn>
-                   
+                    <asp:BoundColumn DataField="日差" HeaderText="日差" ></asp:BoundColumn>
                    			
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
 			        
