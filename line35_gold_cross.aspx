@@ -94,17 +94,17 @@
         drTotal["名称"] = "总计";
         drTotal["买入"] = totalCount.ToString();
 
-        
+
 
         for (int i = 1; i < 12; i++)
         {
             string columeCaption = ((i == 11) ? "总计" : i.ToString() + "日");
             drTotal[columeCaption] = Math.Round(100 * (double)totalSum[i - 1] / (double)totalCount, 2).ToString() + "%";
-            
+
         }
 
         dt.Rows.Add(drTotal);
-       
+
     }
 
     public DataTable RenderHtml(DataRow[] drArr)
@@ -120,7 +120,7 @@
         foreach (DataRow drOri in drArr)
         {
             DataRow dr = dt.NewRow();
-           
+
             double currentPrice = Math.Round((double)drOri["买入"], 2);
             for (int i = 0; i < drArr[0].Table.Columns.Count; i++)
             {
@@ -139,7 +139,7 @@
                             double buyPrice = Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2);
                             dr[i] = "<font color=\"" + ((buyPrice > currentPrice) ? "red" : ((buyPrice==currentPrice)? "gray" : "green")) + "\" >" + Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2).ToString() + "</font>";
                             break;
-                        
+
                         case "低点":
                         case "F1":
                         case "F3":
@@ -233,6 +233,12 @@
             KLine.ComputeKDJ(stock.kLineDay);
             double buyPrice = stock.kLineDay[currentIndex].endPrice;
 
+            double volumeIncrease = stock.kLineDay[currentIndex].volume / stock.kLineDay[currentIndex - 1].volume;
+            if (volumeIncrease <= 0.75)
+            {
+                continue;
+            }
+
             int line3Days = 0;
             for (int i = currentIndex; i >= 0 && stock.kLineDay[i].endPrice >= stock.GetAverageSettlePrice(i, 3, 3); i--)
             {
@@ -248,7 +254,7 @@
             dr["3线"] = currentLine3Price;
             dr["3线日"] = line3Days;
             dr["买入"] = buyPrice;
-            dr["放量"] = stock.kLineDay[currentIndex].volume / stock.kLineDay[currentIndex - 1].volume;
+            dr["放量"] = volumeIncrease;
 
             double maxPrice = 0;
             dr["0日"] = (buyPrice - currentLine3Price) / currentLine3Price;
