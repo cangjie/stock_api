@@ -245,6 +245,26 @@
                 line3Days++;
             }
 
+            int lastCrossIndex = 0;
+            bool haveCross = false;
+            for (int i = currentIndex - 1; i > 0 && lastCrossIndex == 0 ; i--)
+            {
+                if (!haveCross && stock.GetAverageSettlePrice(i, 3, 3) > stock.GetAverageSettlePrice(i, 5, 5))
+                {
+                    haveCross = true;
+                }
+                if (haveCross && stock.GetAverageSettlePrice(i, 3, 3) < stock.GetAverageSettlePrice(i, 5, 5))
+                {
+                    lastCrossIndex = i;
+                    break;
+                }
+            }
+
+            if (stock.GetAverageSettlePrice(lastCrossIndex, 5, 5) >= stock.GetAverageSettlePrice(currentIndex, 5, 5))
+            {
+                continue;
+            }
+
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
