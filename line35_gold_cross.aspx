@@ -246,21 +246,18 @@
             }
 
             int lastCrossIndex = 0;
-            bool haveCross = false;
+            
             for (int i = currentIndex - 1; i > 0 && lastCrossIndex == 0 ; i--)
             {
-                if (!haveCross && stock.GetAverageSettlePrice(i, 3, 3) > stock.GetAverageSettlePrice(i, 5, 5))
-                {
-                    haveCross = true;
-                }
-                if (haveCross && stock.GetAverageSettlePrice(i, 3, 3) < stock.GetAverageSettlePrice(i, 5, 5))
+                if (stock.GetAverageSettlePrice(i, 3, 3) > stock.GetAverageSettlePrice(i, 5, 5))
                 {
                     lastCrossIndex = i;
                     break;
                 }
+                
             }
 
-            if (stock.GetAverageSettlePrice(lastCrossIndex, 5, 5) >= stock.GetAverageSettlePrice(currentIndex, 5, 5))
+            if (lastCrossIndex == 0 ||  stock.GetAverageSettlePrice(lastCrossIndex, 5, 5) >= stock.GetAverageSettlePrice(currentIndex, 5, 5))
             {
                 continue;
             }
