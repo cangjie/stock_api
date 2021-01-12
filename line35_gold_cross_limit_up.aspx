@@ -12,7 +12,7 @@
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        sort = Util.GetSafeRequestValue(Request, "sort", "放量 desc");
+        sort = Util.GetSafeRequestValue(Request, "sort", "涨停");
         if (!IsPostBack)
         {
             dg.DataSource = GetData();
@@ -204,6 +204,7 @@
         dt.Columns.Add("3线", Type.GetType("System.Double"));
         dt.Columns.Add("3线日", Type.GetType("System.Int32"));
         dt.Columns.Add("日差", Type.GetType("System.Int32"));
+        dt.Columns.Add("涨停", Type.GetType("System.Int32"));
         dt.Columns.Add("买入", Type.GetType("System.Double"));
         for (int i = 0; i <= 10; i++)
         {
@@ -225,8 +226,7 @@
             double lastLine3Price = stock.GetAverageSettlePrice(currentIndex - 1, 3, 3);
             double lastLine5Price = stock.GetAverageSettlePrice(currentIndex - 1, 5, 5);
             if (lastLine5Price < lastLine3Price || currentLine3Price <= currentLine5Price
-                || stock.kLineDay[currentIndex].endPrice <= currentLine3Price
-                || (stock.kLineDay[currentIndex].startPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].startPrice >= 0.03)
+                || stock.kLineDay[currentIndex].endPrice <= currentLine3Price)
             {
                 continue;
             }
@@ -234,11 +234,7 @@
             KLine.ComputeKDJ(stock.kLineDay);
             double buyPrice = stock.kLineDay[currentIndex].endPrice;
 
-            double volumeIncrease = stock.kLineDay[currentIndex].volume / stock.kLineDay[currentIndex - 1].volume;
-            if (volumeIncrease <= 0.75)
-            {
-                continue;
-            }
+
 
             int line3Days = 0;
             for (int i = currentIndex; i >= 0 && stock.kLineDay[i].endPrice >= stock.GetAverageSettlePrice(i, 3, 3); i--)
@@ -247,7 +243,7 @@
             }
 
             int lastCrossIndex = 0;
-            
+
             for (int i = currentIndex - 1; i > 0 && lastCrossIndex == 0 ; i--)
             {
                 if (stock.GetAverageSettlePrice(i, 3, 3) > stock.GetAverageSettlePrice(i, 5, 5))
@@ -255,13 +251,31 @@
                     lastCrossIndex = i;
                     break;
                 }
-                
+
             }
 
             if (lastCrossIndex == 0 || 1.01 * stock.GetAverageSettlePrice(lastCrossIndex, 5, 5) >= stock.GetAverageSettlePrice(currentIndex, 5, 5))
             {
                 continue;
             }
+
+            int limitUpDays = 0;
+            bool haveLimitUp = false;
+            for (int i = currentIndex - 1; i >= 0 && i >= currentIndex - 10 && !haveLimitUp; i--)
+            {
+                if (stock.IsLimitUp(i))
+                {
+                    haveLimitUp = true;
+                }
+                limitUpDays++;
+            }
+
+            if (limitUpDays == 0)
+            {
+                continue;
+            }
+
+            double volumeIncrease = stock.kLineDay[currentIndex].volume / stock.kLineDay[currentIndex - 1].volume;
 
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
@@ -275,6 +289,7 @@
             dr["买入"] = buyPrice;
             dr["放量"] = volumeIncrease;
             dr["日差"] = line3Days - macdDays;
+            dr["涨停"] = limitUpDays;
             double maxPrice = 0;
             dr["0日"] = (buyPrice - currentLine3Price) / currentLine3Price;
             for (int i = 1; i <= 10; i++)
@@ -315,7 +330,7 @@
     }
 
 
-   
+
 
 </script>
 
@@ -353,7 +368,7 @@
                     <asp:BoundColumn DataField="3线" HeaderText="3线" ></asp:BoundColumn>
 					<asp:BoundColumn DataField="3线日" HeaderText="3线日" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="日差" HeaderText="日差" ></asp:BoundColumn>
-                   			
+                   	<asp:BoundColumn DataField="涨停" HeaderText="涨停" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
 			        
                     <asp:BoundColumn DataField="0日" HeaderText="0日" ></asp:BoundColumn>
