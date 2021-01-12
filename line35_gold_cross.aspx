@@ -250,7 +250,7 @@
             dr["放量"] = stock.kLineDay[currentIndex].volume / stock.kLineDay[currentIndex - 1].volume;
 
             double maxPrice = 0;
-            dr["0日"] = (buyPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
+            dr["0日"] = (buyPrice - currentLine3Price) / currentLine3Price;
             for (int i = 1; i <= 10; i++)
             {
                 if (currentIndex + i >= stock.kLineDay.Length)
