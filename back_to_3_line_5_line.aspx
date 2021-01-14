@@ -256,7 +256,7 @@
     {
         DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor_new '" + currentDate.ToShortDateString() + "' ");
         DataTable dtRunAboveAvarage = DBHelper.GetDataTable(" select * from alert_avarage_timeline where alert_date =  '" + currentDate.Date.ToShortDateString() + "' ");
-        
+
         DateTime alertDate = Util.GetLastTransactDate(currentDate, 5);
         DataTable dtOri = new DataTable();
         SqlDataAdapter da = new SqlDataAdapter(" select *  from alert_above_3_line_for_days "
@@ -331,7 +331,7 @@
                     break;
                 }
             }
-            
+
 
             double startRaisePrice = stock.kLineDay[currentIndex - daysAbove3Line - 1].endPrice;
 
@@ -347,10 +347,10 @@
             int currentIndexHour = Stock.GetItemIndex(kArrHour, currentHourTime);
             int currentIndexHalfHour = Stock.GetItemIndex(kArrHalfHour, currentHalfHourTime);
             double line3Price = stock.GetAverageSettlePrice(currentIndex, 3, 3);
-            
 
 
-       
+
+
 
             bool isNewHigh = true;
             double higesthPrice = Math.Max(stock.kLineDay[currentIndex].highestPrice, stock.kLineDay[currentIndex - 1].highestPrice);
@@ -363,7 +363,7 @@
                     break;
                 }
             }
-            
+
             //if (currentIndex < 1)
             //   continue;
 
@@ -399,8 +399,8 @@
                 td = int.Parse(drOri["value"].ToString().Trim());
             }
             catch
-            { 
-            
+            {
+
             }
             dr["TD"] = td;
             double todayRaise = (stock.kLineDay[currentIndex].startPrice - settlePrice) / settlePrice;
@@ -460,6 +460,19 @@
                 double highPrice = stock.kLineDay[currentIndex + i].highestPrice;
                 maxPrice = Math.Max(maxPrice, highPrice);
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
+
+                if (stock.kLineDay[currentIndex + i].endPrice <= stock.GetAverageSettlePrice(currentIndex + i, 5, 5))
+                {
+                    if (stock.kLineDay[currentIndex + i].startDateTime.Date == DateTime.Now.Date)
+                    {
+                        dr["信号"] = "❌";
+                    }
+                    else
+                    { 
+                        dr["信号"] = "💡";
+                    }
+                }
+
             }
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
 
