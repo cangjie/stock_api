@@ -374,9 +374,19 @@
             int currentIndexHalfHour = Stock.GetItemIndex(kArrHalfHour, currentHalfHourTime);
             double line3Price = stock.GetAverageSettlePrice(currentIndex, 3, 3);
 
-
-
-
+            bool line5Trend = true;
+            for (int i = currentIndex - daysAbove3Line - 1; i < currentIndex; i++)
+            {
+                if (stock.GetAverageSettlePrice(i, 5, 5) > stock.GetAverageSettlePrice(i + 1, 5, 5))
+                {
+                    line5Trend = false;
+                    break;
+                }
+            }
+            if (!line5Trend)
+            {
+                continue;
+            }
 
             bool isNewHigh = true;
             double higesthPrice = Math.Max(stock.kLineDay[currentIndex].highestPrice, stock.kLineDay[currentIndex - 1].highestPrice);
@@ -436,7 +446,7 @@
 
             double volumeChange = stock.kLineDay[currentIndex].volume / Stock.GetAvarageVolume(stock.kLineDay, currentIndex, 10);
 
-            
+
 
             dr["放量"] = volumeChange;
             int kdjDays = stock.kdjDays(currentIndex);
@@ -485,7 +495,7 @@
                 maxPrice = Math.Max(maxPrice, highPrice);
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
 
-                
+
 
 
 
@@ -575,11 +585,11 @@
                 dr["信号"] = dr["信号"].ToString() + "📈";
             }
             */
-            
 
 
 
-            
+
+
 
 
             /*
