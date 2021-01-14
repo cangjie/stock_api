@@ -385,7 +385,7 @@
             }
             if (!line5Trend)
             {
-                continue;
+                //continue;
             }
 
             bool isNewHigh = true;
