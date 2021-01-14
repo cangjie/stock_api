@@ -468,9 +468,15 @@
                         dr["信号"] = "❌";
                     }
                     else
-                    { 
+                    {
                         dr["信号"] = "💡";
                     }
+                }
+                if (stock.kLineDay[currentIndex + i].endPrice > stock.GetAverageSettlePrice(currentIndex + i, 5, 5)
+                    && stock.kLineDay[currentIndex + i - 1].endPrice <= stock.GetAverageSettlePrice(currentIndex + i - 1, 5, 5)
+                    && stock.kLineDay[currentIndex + i].startDateTime.Date == DateTime.Now.Date)
+                { 
+                    dr["信号"] = "🛍️";
                 }
 
             }
