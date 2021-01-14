@@ -17,7 +17,7 @@
     {
         if (!IsPostBack)
         {
-            if (Util.GetSafeRequestValue(Request, "suc", "0".Trim().Equals("0")))
+            if (Util.GetSafeRequestValue(Request, "suc", "0").Trim().Equals("0"))
             {
                 needSuc = false;
             }
