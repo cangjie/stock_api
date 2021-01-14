@@ -47,7 +47,7 @@
             bool newHigh = true;
             Stock s = GetStock(drOri["gid"].ToString().Trim());
             int currentIndex = s.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
-            if (currentIndex + 6 >= s.kLineDay.Length)
+            if (currentIndex + 6 >= s.kLineDay.Length || currentIndex < 5)
             {
                 continue;
             }
