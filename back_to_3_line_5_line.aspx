@@ -463,7 +463,7 @@
 
                 if (stock.kLineDay[currentIndex + i].endPrice <= stock.GetAverageSettlePrice(currentIndex + i, 5, 5))
                 {
-                    if (stock.kLineDay[currentIndex + i].startDateTime.Date == DateTime.Now.Date)
+                    if (stock.kLineDay[currentIndex + i].startDateTime.Date == DateTime.Now.Date || i == 10)
                     {
                         dr["信号"] = "❌";
                     }
