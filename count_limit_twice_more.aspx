@@ -11,10 +11,16 @@
     public int count = 0;
     public int newHighCount = 0;
 
+    public bool needSuc = true;
+
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack)
         {
+            if (Util.GetSafeRequestValue(Request, "suc", "0".Trim().Equals("0")))
+            {
+                needSuc = false;
+            }
             DataTable dt = GetData();
             count = dt.Rows.Count;
             dg.DataSource = dt;
@@ -69,9 +75,22 @@
             dr["买入"] = buyPrice.ToString();
             dr["缩量"] = Math.Round(100 * s.kLineDay[currentIndex].volume / s.kLineDay[currentIndex-1].volume, 2).ToString() + "%";
 
-            if (s.IsLimitUp(currentIndex + 2))
+
+
+            if (needSuc)
             {
-                suc++;
+                if (!s.IsLimitUp(currentIndex + 2))
+                {
+                    continue;
+                }
+
+            }
+            else
+            { 
+                if (s.IsLimitUp(currentIndex + 2))
+                {
+                    continue;
+                }
             }
 
             double finalRate = double.MinValue;
