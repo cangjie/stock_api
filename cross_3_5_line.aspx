@@ -383,10 +383,7 @@
                     break;
                 }
             }
-            if (!line5Trend)
-            {
-                //continue;
-            }
+
 
             bool isNewHigh = true;
             double higesthPrice = Math.Max(stock.kLineDay[currentIndex].highestPrice, stock.kLineDay[currentIndex - 1].highestPrice);
@@ -572,10 +569,12 @@
             }
             if (stock.IsLimitUp(currentIndex))
             {
-                dr["信号"] = "<a title=\"涨停\" >📈</a>";
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"涨停\" >🌟</a>";
             }
-
-
+            if (line5Trend)
+            { 
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"5线不回踩\" >📈</a>";
+            }
 
             highestPrice = KLine.GetHighestPrice(stock.kLineDay, currentIndex - 1, 40);
             /*
