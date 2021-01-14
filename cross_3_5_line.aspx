@@ -323,9 +323,12 @@
             int daysAbove3Line = int.Parse(drOri["above_3_line_days"].ToString());
 
             int alertIndex = stock.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
-
+            if (alertIndex <= 0)
+            {
+                continue;
+            }
             bool haveCross = false;
-            for (int i = alertIndex + 1; i < currentIndex; i++)
+            for (int i = alertIndex + 1; i > 0 && i < currentIndex ; i++)
             {
                 if (stock.kLineDay[i - 1].endPrice < Math.Min(stock.GetAverageSettlePrice(i - 1, 3, 3), stock.GetAverageSettlePrice(i - 1, 5, 5))
                     && stock.kLineDay[i].endPrice > Math.Max(stock.GetAverageSettlePrice(i, 3, 3), stock.GetAverageSettlePrice(i, 5, 5)))
