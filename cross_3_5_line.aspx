@@ -23,7 +23,7 @@
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        sort = Util.GetSafeRequestValue(Request, "sort", "日均涨幅 desc");
+        sort = Util.GetSafeRequestValue(Request, "sort", "放量 desc");
         if (!IsPostBack)
         {
             try
@@ -64,7 +64,7 @@
         DateTime currentDate = calendar.SelectedDate;
         if (currentDate.Year < 2000)
             currentDate = DateTime.Now;
-        DataTable dtOri = GetData(currentDate, Util.GetSafeRequestValue(Request, "days", "7"));
+        DataTable dtOri = GetData(currentDate, Util.GetSafeRequestValue(Request, "days", "5,6,7,8"));
         DataRow[] drOriArr = dtOri.Select(Util.GetSafeRequestValue(Request, "whereclause", "   ").Trim(), sort);
         return RenderHtml(drOriArr);
     }
@@ -140,7 +140,7 @@
         drShit["今开"] = Math.Round(100 * (double)shitCount / (double)drOriArr.Length, 2).ToString() + "%";
 
         DataRow drRaise = dt.NewRow();
-        drRaise["名称"] = "日均线上且回踩3线";
+        drRaise["名称"] = "当日涨停";
         drRaise["信号"] = "📈";
         drRaise["昨收"] = raiseCount.ToString();
         DataRow drFire = dt.NewRow();
@@ -404,7 +404,7 @@
 
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
-            double avgRaiseRate = (stock.kLineDay[currentIndex].endPrice - startRaisePrice) / (startRaisePrice * daysAbove3Line) ;
+            double avgRaiseRate = (stock.kLineDay[alertIndex].endPrice - startRaisePrice) / (startRaisePrice * daysAbove3Line) ;
             if (avgRaiseRate < 0.01)
             {
                 continue;
@@ -436,10 +436,7 @@
 
             double volumeChange = stock.kLineDay[currentIndex].volume / Stock.GetAvarageVolume(stock.kLineDay, currentIndex, 10);
 
-            if (Math.Abs(1 - volumeChange) > 0.25)
-            {
-                continue;
-            }
+            
 
             dr["放量"] = volumeChange;
             int kdjDays = stock.kdjDays(currentIndex);
@@ -472,7 +469,7 @@
             double kdjDegree = KLine.ComputeKdjDegree(stock.kLineDay, currentIndex);
             dr["KDJ率"] = stock.kLineDay[currentIndex].j;
             double maxPrice = 0;
-            dr["0日"] = (buyPrice - stock.kLineDay[currentIndex].startPrice) / stock.kLineDay[currentIndex].startPrice;
+            dr["0日"] = (buyPrice - stock.kLineDay[currentIndex-1].endPrice) / stock.kLineDay[currentIndex-1].endPrice;
             bool up = true;
             for (int i = 1; i <= 10; i++)
             {
@@ -488,20 +485,7 @@
                 maxPrice = Math.Max(maxPrice, highPrice);
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
 
-                if (up && stock.kLineDay[currentIndex + i].endPrice <= Math.Min(stock.GetAverageSettlePrice(currentIndex + i, 5, 5), stock.GetAverageSettlePrice(currentIndex + i, 3, 3)))
-                {
-                    up = false;
-                    dr["信号"] = "❌";
-                }
-                if (!up && stock.kLineDay[currentIndex + i].endPrice > Math.Max(stock.GetAverageSettlePrice(currentIndex + i, 5, 5), stock.GetAverageSettlePrice(currentIndex + i, 3, 3)))
-                {
-                    up = true;
-                    dr["信号"] = "💡";
-                    if (stock.kLineDay[currentIndex + i].startDateTime.Date == DateTime.Now.Date)
-                    {
-                        dr["信号"] = "🛍";
-                    }
-                }
+                
 
 
 
@@ -576,9 +560,9 @@
             {
                 //dr["信号"] = "📈";
             }
-            if (stock.kLineDay[currentIndex].lowestPrice > stock.kLineDay[currentIndex - 1].highestPrice )
+            if (stock.IsLimitUp(currentIndex))
             {
-                dr["信号"] = "🔥";
+                dr["信号"] = "<a title=\"涨停\" >📈</a>";
             }
 
 
@@ -591,19 +575,11 @@
                 dr["信号"] = dr["信号"].ToString() + "📈";
             }
             */
-            if (dtIOVolume.Select("gid = '" + stock.gid.Trim() + "' ").Length > 0)
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"外盘高\" >✅</a>";
-            }
+            
 
 
 
-            if (dtRunAboveAvarage.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0
-                && (ma5 >= ma10 && ma10 >= ma20 && ma20 >= ma30)
-                && (currentIndex) < stock.kLineDay.Length && Math.Abs(stock.kLineDay[currentIndex].lowestPrice - line3Price) / line3Price < 0.005)
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"日均线上 且回踩3线 均线多头排列\" >📈</a>";
-            }
+            
 
 
             /*
@@ -801,6 +777,7 @@
                     <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F5" HeaderText="F5"></asp:BoundColumn>
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="0日" HeaderText="0日"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="2日" HeaderText="2日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3日" HeaderText="3日"></asp:BoundColumn>
