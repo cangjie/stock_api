@@ -447,6 +447,7 @@
             dr["KDJ率"] = stock.kLineDay[currentIndex].j;
             double maxPrice = 0;
             dr["0日"] = (buyPrice - stock.kLineDay[currentIndex].startPrice) / stock.kLineDay[currentIndex].startPrice;
+            bool up = true;
             for (int i = 1; i <= 10; i++)
             {
                 if (i == 1 && currentIndex + i < stock.kLineDay.Length
@@ -461,23 +462,23 @@
                 maxPrice = Math.Max(maxPrice, highPrice);
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
 
-                if (stock.kLineDay[currentIndex + i].endPrice <= Math.Min(stock.GetAverageSettlePrice(currentIndex + i, 5, 5), stock.GetAverageSettlePrice(currentIndex + i, 3, 3)) )
+                if (up && stock.kLineDay[currentIndex + i].endPrice <= Math.Min(stock.GetAverageSettlePrice(currentIndex + i, 5, 5), stock.GetAverageSettlePrice(currentIndex + i, 3, 3)))
                 {
-                    if (stock.kLineDay[currentIndex + i].startDateTime.Date == DateTime.Now.Date || i == 10)
-                    {
-                        dr["信号"] = "❌";
-                    }
-                    else
-                    {
-                        dr["信号"] = "💡";
+                    up = false;
+                    dr["信号"] = "❌";
+                }
+                if (!up && stock.kLineDay[currentIndex + i].endPrice > Math.Max(stock.GetAverageSettlePrice(currentIndex + i, 5, 5), stock.GetAverageSettlePrice(currentIndex + i, 3, 3)))
+                {
+                    up = true;
+                    dr["信号"] = "💡";
+                    if (stock.kLineDay[currentIndex + i].startDateTime.Date == DateTime.Now.Date)
+                    { 
+                        dr["信号"] = "🛍";
                     }
                 }
-                if (stock.kLineDay[currentIndex + i].endPrice > Math.Max(stock.GetAverageSettlePrice(currentIndex + i, 5, 5), stock.GetAverageSettlePrice(currentIndex + i, 3, 3))
-                    && stock.kLineDay[currentIndex + i - 1].endPrice <= Math.Min(stock.GetAverageSettlePrice(currentIndex + i - 1, 5, 5), stock.GetAverageSettlePrice(currentIndex + i - 1, 3, 3))
-                    && stock.kLineDay[currentIndex + i].startDateTime.Date == DateTime.Now.Date)
-                { 
-                    dr["信号"] = "🛍️";
-                }
+
+
+                
 
             }
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
