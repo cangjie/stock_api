@@ -23,7 +23,7 @@
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        sort = Util.GetSafeRequestValue(Request, "sort", "放量 desc");
+        sort = Util.GetSafeRequestValue(Request, "sort", "日均涨幅 desc");
         if (!IsPostBack)
         {
             try
@@ -491,7 +491,7 @@
                 }
                 if (currentIndex + i >= stock.kLineDay.Length)
                     break;
-                double highPrice = stock.kLineDay[currentIndex + i].highestPrice;
+                double highPrice = stock.kLineDay[currentIndex + i].endPrice;
                 maxPrice = Math.Max(maxPrice, highPrice);
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
 
