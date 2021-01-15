@@ -26,34 +26,7 @@
         sort = Util.GetSafeRequestValue(Request, "sort", "日均涨幅 desc");
         if (!IsPostBack)
         {
-            try
-            {
-                if (t.ThreadState != ThreadState.Running && t.ThreadState != ThreadState.WaitSleepJoin)
-                {
-                    t.Abort();
-                    ts = new ThreadStart(PageWatcher);
-                    t = new Thread(ts);
-                    //t.Start();
-                }
-            }
-            catch(Exception err)
-            {
-                Console.WriteLine(err.ToString());
-            }
-            try
-            {
-                if (tQ.ThreadState != ThreadState.Running && tQ.ThreadState != ThreadState.WaitSleepJoin)
-                {
-                    tQ.Abort();
-                    tsQ = new ThreadStart(StockWatcher.LogQuota);
-                    tQ = new Thread(tsQ);
-                    //tQ.Start();
-                }
-            }
-            catch(Exception err)
-            {
-                Console.WriteLine(err.ToString());
-            }
+
             dg.DataSource = GetData();
             dg.DataBind();
         }
@@ -254,15 +227,13 @@
 
     public static DataTable GetData(DateTime currentDate, string days)
     {
-        DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor_new '" + currentDate.ToShortDateString() + "' ");
-        DataTable dtRunAboveAvarage = DBHelper.GetDataTable(" select * from alert_avarage_timeline where alert_date =  '" + currentDate.Date.ToShortDateString() + "' ");
-
+       
         DateTime alertDate = Util.GetLastTransactDate(currentDate, 11);
         DataTable dtOri = new DataTable();
         SqlDataAdapter da = new SqlDataAdapter(" select *  from alert_above_3_line_for_days "
             + " left join alert_demark on alert_above_3_line_for_days.gid = alert_demark.gid and alert_time = '" + currentDate.ToShortDateString() + " 15:00:00' "
             + " where alert_date > '" + alertDate.ToShortDateString() + "'  "
-            + " and  alert_date < '" + currentDate.Date.ToShortDateString() + "'  "
+            + " and  alert_date < '" + currentDate.Date.ToShortDateString() + "' "//and alert_above_3_line_for_days.gid='sz000633'  "
             + (!days.Trim().Equals("")? " and above_3_line_days  in (" + days + ") " : "  "), Util.conStr);
         da.Fill(dtOri);
         DataTable dt = new DataTable();
@@ -281,6 +252,7 @@
         dt.Columns.Add("TD", Type.GetType("System.Int32"));
         dt.Columns.Add("3线日", Type.GetType("System.Int32"));
         dt.Columns.Add("日均涨幅", Type.GetType("System.Double"));
+        dt.Columns.Add("日均调整", Type.GetType("System.Double"));
         dt.Columns.Add("3线", Type.GetType("System.Double"));
         dt.Columns.Add("低点", Type.GetType("System.Double"));
         dt.Columns.Add("F1", Type.GetType("System.Double"));
@@ -292,8 +264,7 @@
         dt.Columns.Add("涨幅", Type.GetType("System.Double"));
         dt.Columns.Add("跌幅", Type.GetType("System.Double"));
         dt.Columns.Add("震幅", Type.GetType("System.Double"));
-        dt.Columns.Add("KDJ60", Type.GetType("System.Int32"));
-        dt.Columns.Add("KDJ30", Type.GetType("System.Int32"));
+
         for (int i = 0; i <= 10; i++)
         {
             dt.Columns.Add(i.ToString() + "日", Type.GetType("System.Double"));
@@ -320,8 +291,6 @@
                 continue;
             }
 
-            int daysAbove3Line = int.Parse(drOri["above_3_line_days"].ToString());
-
             int alertIndex = stock.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
             if (alertIndex <= 0)
             {
@@ -342,36 +311,72 @@
                 continue;
             }
 
-            daysAbove3Line = daysAbove3Line + (currentIndex - alertIndex);
-            if (alertIndex < 10)
+
+            int daysAbove3Line = int.Parse(drOri["above_3_line_days"].ToString());
+
+
+
+           
+
+
+
+            double startRaisePrice = stock.kLineDay[currentIndex - daysAbove3Line - 1].endPrice;
+            int highestIndex = 0;
+            double highestPrice = 0;
+            for (int i = alertIndex - daysAbove3Line - 1; i > 5 && i < currentIndex; i++)
+            {
+                if (stock.kLineDay[i].highestPrice > highestPrice)
+                {
+                    highestPrice = stock.kLineDay[i].highestPrice;
+                    highestIndex = i;
+                }
+            }
+            if (highestIndex == 0)
             {
                 continue;
             }
 
-            bool settleUnder3Line = false;
-            for (int k = alertIndex - int.Parse(drOri["above_3_line_days"].ToString()) + 1; k <= currentIndex; k++)
+            double lowestPrice = double.MaxValue;
+            int lowestIndex = 0;
+            int countStatus = 0;
+            for (int i = alertIndex; i > 0 && countStatus < 2; i--)
             {
-                if (stock.kLineDay[k].endPrice <= stock.GetAverageSettlePrice(k, 3, 3))
+                if (stock.kLineDay[i].lowestPrice < lowestPrice)
                 {
-                    settleUnder3Line = true;
-                    break;
+                    lowestPrice = stock.kLineDay[i].lowestPrice;
+                    lowestIndex = i;
+                }
+                if (countStatus == 0 && stock.kLineDay[i].endPrice < stock.GetAverageSettlePrice(i, 3, 3)
+                    && stock.kLineDay[i].endPrice < stock.GetAverageSettlePrice(i, 5, 5))
+                {
+                    countStatus = 1;
+                }
+                if (countStatus == 1 && stock.kLineDay[i].endPrice > stock.GetAverageSettlePrice(i, 3, 3)
+                    && stock.kLineDay[i].endPrice > stock.GetAverageSettlePrice(i, 5, 5))
+                {
+                    countStatus = 2;
                 }
             }
-
-
-            double startRaisePrice = stock.kLineDay[currentIndex - daysAbove3Line - 1].endPrice;
+            if (lowestIndex == 0 || highestIndex == lowestIndex || highestIndex - lowestIndex < 5)
+            {
+                continue;
+            }
+            double midPrice = double.MaxValue;
+            double midInddex = 0;
+            for (int i = highestIndex; i < currentIndex; i++)
+            {
+                if (stock.kLineDay[i].lowestPrice < midPrice)
+                {
+                    midPrice = stock.kLineDay[i].lowestPrice;
+                    midInddex = i;
+                }
+            }
 
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
 
 
-            KLine[] kArrHour = Stock.LoadRedisKLine(stock.gid, "60min", rc);
-            KLine[] kArrHalfHour = Stock.LoadRedisKLine(stock.gid, "30min", rc);
-            DateTime currentHalfHourTime = Stock.GetCurrentKLineEndDateTime(currentDate, 30);
-            DateTime currentHourTime = Stock.GetCurrentKLineEndDateTime(currentDate, 60);
-            int currentIndexHour = Stock.GetItemIndex(kArrHour, currentHourTime);
-            int currentIndexHalfHour = Stock.GetItemIndex(kArrHalfHour, currentHalfHourTime);
             double line3Price = stock.GetAverageSettlePrice(currentIndex, 3, 3);
 
             bool line5Trend = true;
@@ -411,13 +416,10 @@
 
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
-            double avgRaiseRate = (stock.kLineDay[alertIndex].endPrice - startRaisePrice) / (startRaisePrice * daysAbove3Line) ;
-            if (avgRaiseRate < 0.01)
-            {
-                continue;
-            }
-            dr["日均涨幅"] = avgRaiseRate;
+            double avgRaiseRate = (higesthPrice - lowestPrice) / ((highestIndex - lowestIndex) * lowestPrice) ;
 
+            dr["日均涨幅"] = avgRaiseRate;
+            dr["日均调整"] = (higesthPrice - midPrice) / ((midInddex - highestIndex)*higesthPrice);
             double settlePrice = stock.kLineDay[currentIndex - 1].endPrice;
             double openPrice = stock.kLineDay[currentIndex].startPrice;
             double currentPrice = stock.kLineDay[currentIndex].endPrice;
@@ -451,17 +453,14 @@
 
             dr["kdj"] = kdjDays.ToString();
 
-            dr["KDJ30"] = Stock.KDJIndex(kArrHalfHour, currentIndexHalfHour);
-            dr["KDJ60"] = Stock.KDJIndex(kArrHour, currentIndexHour);
 
 
-            int days3Line = KLine.Above3LineDays(stock, currentIndex);
-            dr["3线日"] = daysAbove3Line;
+           
+            dr["3线日"] = highestIndex - lowestIndex;
 
             dr["3线"] = line3Price;
             double buyPrice = stock.kLineDay[currentIndex].endPrice;
-            double lowestPrice = stock.LowestPrice(currentDate, 20);
-            double highestPrice = stock.HighestPrice(currentDate, 40);
+
             double f1 = lowestPrice + (highestPrice - lowestPrice) * 0.236;
             double f3 = lowestPrice + (highestPrice - lowestPrice) * 0.382;
             double f5 = lowestPrice + (highestPrice - lowestPrice) * 0.618;
@@ -572,7 +571,7 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"涨停\" >🌟</a>";
             }
             if (line5Trend)
-            { 
+            {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"5线不回踩\" >📈</a>";
             }
 
@@ -781,7 +780,7 @@
                     <asp:BoundColumn DataField="3线" HeaderText="3线" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线日" HeaderText="3线日" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="日均涨幅" HeaderText="日均涨幅"  ></asp:BoundColumn>
-    
+                    <asp:BoundColumn DataField="日均调整" HeaderText="日均调整"  ></asp:BoundColumn>
                    			
                     <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F5" HeaderText="F5"></asp:BoundColumn>
