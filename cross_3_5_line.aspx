@@ -582,7 +582,10 @@
             }
             if (line5Trend)
             {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"5线不回踩\" >📈</a>";
+                if (limitUpNum == 0)
+                    dr["信号"] = dr["信号"].ToString() + "<a title=\"5线不回踩\" >📈</a>";
+                else
+                    dr["信号"] = dr["信号"].ToString() + "<a title=\"5线不回踩，且含涨停板\" >🔥</a>";
             }
 
             highestPrice = KLine.GetHighestPrice(stock.kLineDay, currentIndex - 1, 40);
