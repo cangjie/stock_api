@@ -227,7 +227,7 @@
 
     public static DataTable GetData(DateTime currentDate, string days)
     {
-       
+
         DateTime alertDate = Util.GetLastTransactDate(currentDate, 11);
         DataTable dtOri = new DataTable();
         SqlDataAdapter da = new SqlDataAdapter(" select *  from alert_above_3_line_for_days "
@@ -264,7 +264,7 @@
         dt.Columns.Add("涨幅", Type.GetType("System.Double"));
         dt.Columns.Add("跌幅", Type.GetType("System.Double"));
         dt.Columns.Add("震幅", Type.GetType("System.Double"));
-
+        dt.Columns.Add("板数", Type.GetType("System.Int32"));
         for (int i = 0; i <= 10; i++)
         {
             dt.Columns.Add(i.ToString() + "日", Type.GetType("System.Double"));
@@ -316,7 +316,7 @@
 
 
 
-           
+
 
 
 
@@ -405,6 +405,16 @@
             //if (currentIndex < 1)
             //   continue;
 
+            int limitUpNum = 0;
+
+            for (int i = lowestIndex; i < currentIndex; i++)
+            {
+                if (stock.IsLimitUp(i))
+                {
+                    limitUpNum++;
+                }
+            }
+
 
             double ma5 = stock.GetAverageSettlePrice(currentIndex, 5, 0);
             //double prevMa5 = stock.GetAverageSettlePrice(currentIndex - 1, 5, 0);
@@ -453,9 +463,9 @@
 
             dr["kdj"] = kdjDays.ToString();
 
+            dr["板数"] = limitUpNum;
 
 
-           
             dr["3线日"] = highestIndex - lowestIndex;
 
             dr["3线"] = line3Price;
@@ -781,7 +791,7 @@
                     <asp:BoundColumn DataField="3线日" HeaderText="3线日" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="日均涨幅" HeaderText="日均涨幅"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="日均调整" HeaderText="日均调整"  ></asp:BoundColumn>
-                   			
+                    <asp:BoundColumn DataField="板数" HeaderText="板数"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F5" HeaderText="F5"></asp:BoundColumn>
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
