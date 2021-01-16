@@ -429,7 +429,7 @@
             int line5Days = 0;
             for (int i = currentIndex; i >= 10; i--)
             {
-                if (stock.GetAverageSettlePrice(currentIndex, 5, 5) >= stock.GetAverageSettlePrice(currentIndex - 1, 5, 5))
+                if (stock.GetAverageSettlePrice(i, 5, 5) >= stock.GetAverageSettlePrice(i - 1, 5, 5))
                 {
                     line5Days++;
                 }
