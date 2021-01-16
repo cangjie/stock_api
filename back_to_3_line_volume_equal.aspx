@@ -294,6 +294,7 @@
         dt.Columns.Add("震幅", Type.GetType("System.Double"));
         dt.Columns.Add("KDJ60", Type.GetType("System.Int32"));
         dt.Columns.Add("KDJ30", Type.GetType("System.Int32"));
+        dt.Columns.Add("5线涨", Type.GetType("System.Int32"));
         for (int i = 0; i <= 10; i++)
         {
             dt.Columns.Add(i.ToString() + "日", Type.GetType("System.Double"));
@@ -390,7 +391,18 @@
             double ma10 = stock.GetAverageSettlePrice(currentIndex, 10, 0);
             double ma20 = stock.GetAverageSettlePrice(currentIndex, 20, 0);
             double ma30 = stock.GetAverageSettlePrice(currentIndex, 30, 0);
-
+            int line5Days = 0;
+            for (int i = currentIndex; i >= 10; i--)
+            {
+                if (stock.GetAverageSettlePrice(i, 5, 5) >= stock.GetAverageSettlePrice(i - 1, 5, 5))
+                {
+                    line5Days++;
+                }
+                else
+                {
+                    break;
+                }
+            }
             DataRow dr = dt.NewRow();
 
             dr["代码"] = stock.gid.Trim();
@@ -401,7 +413,7 @@
                 continue;
             }
             dr["日均涨幅"] = avgRaiseRate;
-
+            dr["5线涨"] = line5Days;
             double settlePrice = stock.kLineDay[currentIndex - 1].endPrice;
             double openPrice = stock.kLineDay[currentIndex].startPrice;
             double currentPrice = stock.kLineDay[currentIndex].endPrice;
@@ -767,7 +779,7 @@
                     <asp:BoundColumn DataField="3线" HeaderText="3线" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线日" HeaderText="3线日" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="日均涨幅" HeaderText="日均涨幅"  ></asp:BoundColumn>
-    
+                    <asp:BoundColumn DataField="5线涨" HeaderText="5线涨"  ></asp:BoundColumn>
                    			
                     <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F5" HeaderText="F5"></asp:BoundColumn>
