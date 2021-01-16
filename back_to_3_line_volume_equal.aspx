@@ -23,7 +23,7 @@
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        sort = Util.GetSafeRequestValue(Request, "sort", "日均涨幅 desc");
+        sort = Util.GetSafeRequestValue(Request, "sort", "5线涨 desc,日均涨幅 desc");
         if (!IsPostBack)
         {
             try
