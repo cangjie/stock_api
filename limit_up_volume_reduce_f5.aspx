@@ -21,7 +21,7 @@
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        sort = Util.GetSafeRequestValue(Request, "sort", "缩量 desc");
+        sort = Util.GetSafeRequestValue(Request, "sort", "5线涨 desc");
         if (!IsPostBack)
         {
             try
@@ -294,7 +294,7 @@
         dt.Columns.Add("买入", Type.GetType("System.Double"));
         dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
-
+        dt.Columns.Add("5线涨", Type.GetType("System.Int32"));
         for (int i = 1; i <= 5; i++)
         {
             dt.Columns.Add(i.ToString() + "日", Type.GetType("System.Double"));
@@ -438,6 +438,20 @@
             }
             */
 
+            int line5Days = 0;
+            for (int i = currentIndex; i >= 10; i--)
+            {
+                if (stock.GetAverageSettlePrice(i, 5, 5) >= stock.GetAverageSettlePrice(i - 1, 5, 5))
+                {
+                    line5Days++;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
@@ -459,7 +473,7 @@
             dr["买入"] = buyPrice;
             dr["KDJ日"] = stock.kdjDays(currentIndex);
             dr["MACD日"] = stock.macdDays(currentIndex);
-
+            dr["5线涨"] = line5Days;
             //dr["今涨"] = (stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
             dr["今涨"] = 0;
             double maxPrice = Math.Max(highest, stock.kLineDay[currentIndex].highestPrice);
