@@ -286,7 +286,8 @@
             }
 
             if (stock.kLineDay[currentIndex - 1].endPrice >= stock.GetAverageSettlePrice(currentIndex - 1, 3, 3)
-                || stock.kLineDay[currentIndex].endPrice <= stock.GetAverageSettlePrice(currentIndex, 3, 3))
+                || stock.kLineDay[currentIndex].endPrice <= stock.GetAverageSettlePrice(currentIndex, 3, 3)
+                || stock.kLineDay[currentIndex - 2].endPrice <= stock.GetAverageSettlePrice(currentIndex - 2, 3, 3))
             {
                 continue;
             }
