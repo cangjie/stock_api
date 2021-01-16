@@ -290,7 +290,7 @@
         dt.Columns.Add("买入", Type.GetType("System.Double"));
         dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
-
+        dt.Columns.Add("5线涨", Type.GetType("System.Int32"));
         for (int i = 1; i <= 5; i++)
         {
             dt.Columns.Add(i.ToString() + "日", Type.GetType("System.Double"));
@@ -322,7 +322,7 @@
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
             stock.LoadKLineDay(rc);
-           
+
             int currentIndex = stock.GetItemIndex(currentDate);
             if (currentIndex < 2)
                 continue;
@@ -426,22 +426,28 @@
 
             buyPrice = stock.kLineDay[currentIndex].endPrice;
 
-            /*
-            if (stock.kLineDay[currentIndex].startPrice > f3 * 0.99 && stock.kLineDay[currentIndex].lowestPrice < f3 * 1.01 )
+            int line5Days = 0;
+            for (int i = currentIndex; i >= 10; i--)
             {
-                buyPrice = f3 * 1.01 ;
+                if (stock.GetAverageSettlePrice(currentIndex, 5, 5) >= stock.GetAverageSettlePrice(currentIndex - 1, 5, 5))
+                {
+                    line5Days++;
+                }
+                else
+                {
+                    break;
+                }
             }
-            if (buyPrice == 0)
-            {
-                buyPrice = stock.kLineDay[currentIndex].endPrice;
-            }
-            */
+
+
+
 
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
             dr["信号"] = "";
             dr["板数"] = limitUpNum.ToString();
+            dr["5线涨"] = line5Days;
             dr["缩量"] = volumeReduce;
             dr["现高"] = highest;
             dr["F3"] = f3;
@@ -694,8 +700,8 @@
                     <asp:BoundColumn DataField="前低" HeaderText="前低"></asp:BoundColumn>
                     <asp:BoundColumn DataField="幅度" HeaderText="幅度"></asp:BoundColumn>
                     <asp:BoundColumn DataField="现价" HeaderText="现价"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="今涨" HeaderText="今涨"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="价差" HeaderText="价差"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="5线涨" HeaderText="5线涨"></asp:BoundColumn>
+                    
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日" SortExpression="1日|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="2日" HeaderText="2日"></asp:BoundColumn>
