@@ -256,7 +256,7 @@
     {
         DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor_new '" + currentDate.ToShortDateString() + "' ");
         DataTable dtRunAboveAvarage = DBHelper.GetDataTable(" select * from alert_avarage_timeline where alert_date =  '" + currentDate.Date.ToShortDateString() + "' ");
-        
+
         DateTime alertDate = Util.GetLastTransactDate(currentDate, 5);
         DataTable dtOri = new DataTable();
         SqlDataAdapter da = new SqlDataAdapter(" select *  from alert_above_3_line_for_days "
@@ -385,7 +385,20 @@
             //if (currentIndex < 1)
             //   continue;
 
+            bool near3Line = false;
 
+            for (int i = currentIndex - 1; i >= currentIndex - 5; i--)
+            {
+                if (stock.kLineDay[i].lowestPrice <= stock.GetAverageSettlePrice(i, 3, 3) * 1.01)
+                {
+                    near3Line = true;
+                    break;
+                }
+            }
+            if (near3Line)
+            {
+                continue;
+            }
             double ma5 = stock.GetAverageSettlePrice(currentIndex, 5, 0);
             //double prevMa5 = stock.GetAverageSettlePrice(currentIndex - 1, 5, 0);
             double ma10 = stock.GetAverageSettlePrice(currentIndex, 10, 0);
@@ -428,8 +441,8 @@
                 td = int.Parse(drOri["value"].ToString().Trim());
             }
             catch
-            { 
-            
+            {
+
             }
             dr["TD"] = td;
             double todayRaise = (stock.kLineDay[currentIndex].startPrice - settlePrice) / settlePrice;
@@ -441,7 +454,7 @@
 
             if (Math.Abs(1 - volumeChange) > 0.5)
             {
-                continue;
+                //continue;
             }
 
             dr["放量"] = volumeChange;
