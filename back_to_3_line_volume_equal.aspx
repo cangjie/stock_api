@@ -439,7 +439,7 @@
 
             double volumeChange = stock.kLineDay[currentIndex].volume / Stock.GetAvarageVolume(stock.kLineDay, currentIndex, 10);
 
-            if (Math.Abs(1 - volumeChange) > 0.25)
+            if (Math.Abs(1 - volumeChange) > 0.5)
             {
                 continue;
             }
