@@ -359,12 +359,12 @@
 
             if (stock.kLineDay[currentIndex].startPrice >= stock.kLineDay[currentIndex].endPrice)
             {
-                continue;
+                //continue;
             }
 
             if ((stock.kLineDay[currentIndex].highestPrice - stock.kLineDay[currentIndex].lowestPrice) / stock.kLineDay[currentIndex].lowestPrice < 0.03)
             {
-                continue;
+                //continue;
             }
 
             bool isNewHigh = true;
@@ -499,7 +499,7 @@
                 }
                 if (currentIndex + i >= stock.kLineDay.Length)
                     break;
-                double highPrice = stock.kLineDay[currentIndex + i].highestPrice;
+                double highPrice = stock.kLineDay[currentIndex + i].endPrice;
                 maxPrice = Math.Max(maxPrice, highPrice);
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
             }
