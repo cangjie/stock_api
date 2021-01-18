@@ -134,7 +134,7 @@
                     {
                         maxPrice = Math.Max(maxPrice, s.kLineDay[buyIndex + i].endPrice);
                         dr[i.ToString() + "日"] = (s.kLineDay[buyIndex + i].endPrice - buyPrice) / buyPrice;
-                        if ((s.kLineDay[buyIndex + i].highestPrice - buyIndex) / buyIndex >= 0.05 && !over5Percent)
+                        if ((s.kLineDay[buyIndex + i].highestPrice - buyPrice) / buyPrice >= 0.05 && !over5Percent)
                         {
                             over5Percent = true;
                             sucMax++;
