@@ -14,6 +14,7 @@
     public  int count = 0;
     public int horseHeadSuc = 0;
     public int horseHeadCount = 0;
+    public int limitUpSuc = 0;
 
 
 
@@ -75,7 +76,7 @@
                     continue;
                 }
 
-                int buyIndex = currentIndex+1;
+                int buyIndex = currentIndex+2;
                 if (dt.Select(" 日期 = '" + s.kLineDay[buyIndex].startDateTime.Date.ToShortDateString() + "' and 代码 = '" + s.gid.Trim() + "' ").Length == 0)
                 {
                     DataRow dr = dt.NewRow();
@@ -85,9 +86,12 @@
                     dr["信号"] = "";
                     dr["缩量"] = Math.Round(100 * s.kLineDay[currentIndex].volume / s.kLineDay[currentIndex-1].volume, 2).ToString() + "%";
                     dr["今涨"] = 0;
-                    double buyPrice = s.kLineDay[currentIndex].endPrice;
+                    double buyPrice = s.kLineDay[buyIndex].startPrice;
                     dr["买入"] = Math.Round(buyPrice, 2).ToString();
-
+                    if (s.IsLimitUp(currentIndex + 2))
+                    {
+                        limitUpSuc++;
+                    }
                     double maxPrice = 0;
                     for (int i = 1; i <= 5; i++)
                     {
@@ -101,7 +105,7 @@
                     if ((double)dr["总计"] >= 0.01)
                     {
                         suc++;
-                        if ((double)dr["总计"] >= 0.1)
+                        if ((double)dr["总计"] >= 0.05)
                         {
                             sucMax++;
 
@@ -179,6 +183,7 @@
     <form id="form1" runat="server">
     <div>涨幅过1%概率：<%= Math.Round(100*(double)suc/(double)count, 2).ToString() %>%</div>
     <div>涨幅过10%概率：<%= Math.Round(100*(double)sucMax/(double)count, 2).ToString() %>%</div>
+    <div>三连板概率：<%= Math.Round(100*(double)limitUpSuc/(double)count, 2).ToString() %>%</div>
     
     <div>
         <asp:DataGrid runat="server" Width="100%" ID="dg" BackColor="White" BorderColor="#999999" BorderStyle="None" BorderWidth="1px" CellPadding="3" GridLines="Vertical" >

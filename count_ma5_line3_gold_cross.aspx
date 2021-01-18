@@ -116,7 +116,7 @@
                     dr["信号"] = "";
                     dr["缩量"] = Math.Round(100 * s.kLineDay[currentIndex + 1].volume / s.kLineDay[currentIndex].volume, 2).ToString() + "%";
                     dr["今涨"] = 0;
-                    double buyPrice = s.kLineDay[currentIndex].endPrice;
+                    double buyPrice = s.kLineDay[buyIndex].endPrice;
                     dr["买入"] = Math.Round(buyPrice, 2).ToString();
 
                     double maxPrice = 0;
