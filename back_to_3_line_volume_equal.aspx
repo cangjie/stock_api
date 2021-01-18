@@ -756,7 +756,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title>8天三线上后碰三线调整，阳线，量持平10日均量 日振幅大于5%</title>
+    <title>8天三线上后碰三线调整,以5线持续上涨为优，和大盘关联强。</title>
 </head>
 <body>
     <form id="form1" runat="server">
