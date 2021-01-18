@@ -142,23 +142,24 @@
                     bool giveUp = false;
                     for (int i = 1; i <= 10; i++)
                     {
-                        if (i == 1 && (s.kLineDay[buyIndex + i].endPrice - buyPrice) / buyPrice <= -0.01
-                            && (s.kLineDay[buyIndex + i].highestPrice - buyPrice) / buyPrice <= 0.05 )
-                        {
-                            giveUp = true;
-                        }
+                       
                         maxPrice = Math.Max(maxPrice, s.kLineDay[buyIndex + i].endPrice);
                         dr[i.ToString() + "日"] = (s.kLineDay[buyIndex + i].endPrice - buyPrice) / buyPrice;
                         if ((s.kLineDay[buyIndex + i].highestPrice - buyPrice) / buyPrice >= 0.05 && !over5Percent)
                         {
+                            dr[i.ToString() + "日"] = (s.kLineDay[buyIndex + i].highestPrice - buyPrice) / buyPrice;
+                            maxPrice = Math.Max(maxPrice, s.kLineDay[buyIndex + i].highestPrice);
                             over5Percent = true;
                             sucMax++;
                         }
-
+                         if (i == 1 && (s.kLineDay[buyIndex + i].endPrice - buyPrice) / buyPrice <= -0.01 && !over5Percent )
+                        {
+                            giveUp = true;
+                        }
 
                     }
                     dr["总计"] = (maxPrice - buyPrice) / buyPrice;
-                    if ((double)dr["总计"] >= 0.01)
+                    if ((double)dr["总计"] >= 0.01 && !giveUp)
                     {
                         suc++;
                     }
