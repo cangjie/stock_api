@@ -128,12 +128,18 @@
                     dr["今涨"] = 0;
                     double buyPrice = s.kLineDay[buyIndex].endPrice;
                     dr["买入"] = Math.Round(buyPrice, 2).ToString();
-
+                    bool over5Percent = false;
                     double maxPrice = 0;
                     for (int i = 1; i <= 10; i++)
                     {
                         maxPrice = Math.Max(maxPrice, s.kLineDay[buyIndex + i].endPrice);
                         dr[i.ToString() + "日"] = (s.kLineDay[buyIndex + i].endPrice - buyPrice) / buyPrice;
+                        if ((s.kLineDay[buyIndex + i].highestPrice - buyIndex) / buyIndex >= 0.05 && !over5Percent)
+                        {
+                            over5Percent = true;
+                            sucMax++;
+                        }
+
                     }
                     dr["总计"] = (maxPrice - buyPrice) / buyPrice;
 
@@ -142,14 +148,7 @@
                     if ((double)dr["总计"] >= 0.01)
                     {
                         suc++;
-                        if ((double)dr["总计"] >= 0.05)
-                        {
-                            sucMax++;
-                            if (isHorseHead)
-                            {
-                                horseHeadSuc++;
-                            }
-                        }
+
                     }
 
                     dt.Rows.Add(dr);
