@@ -36,6 +36,11 @@
         dt.Columns.Add("3日", Type.GetType("System.Double"));
         dt.Columns.Add("4日", Type.GetType("System.Double"));
         dt.Columns.Add("5日", Type.GetType("System.Double"));
+        dt.Columns.Add("6日", Type.GetType("System.Double"));
+        dt.Columns.Add("7日", Type.GetType("System.Double"));
+        dt.Columns.Add("8日", Type.GetType("System.Double"));
+        dt.Columns.Add("9日", Type.GetType("System.Double"));
+        dt.Columns.Add("10日", Type.GetType("System.Double"));
         dt.Columns.Add("总计", Type.GetType("System.Double"));
 
 
@@ -52,6 +57,11 @@
         dtNew.Columns.Add("3日");
         dtNew.Columns.Add("4日");
         dtNew.Columns.Add("5日");
+        dtNew.Columns.Add("6日");
+        dtNew.Columns.Add("7日");
+        dtNew.Columns.Add("8日");
+        dtNew.Columns.Add("9日");
+        dtNew.Columns.Add("10日");
         dtNew.Columns.Add("总计");
 
 
@@ -120,7 +130,7 @@
                     dr["买入"] = Math.Round(buyPrice, 2).ToString();
 
                     double maxPrice = 0;
-                    for (int i = 1; i <= 5; i++)
+                    for (int i = 1; i <= 10; i++)
                     {
                         maxPrice = Math.Max(maxPrice, s.kLineDay[buyIndex + i].endPrice);
                         dr[i.ToString() + "日"] = (s.kLineDay[buyIndex + i].endPrice - buyPrice) / buyPrice;
