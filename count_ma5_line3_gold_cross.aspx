@@ -155,6 +155,7 @@
                          if (i == 1 && (s.kLineDay[buyIndex + i].endPrice - buyPrice) / buyPrice <= -0.01 && !over5Percent )
                         {
                             giveUp = true;
+                            break;
                         }
 
                     }
