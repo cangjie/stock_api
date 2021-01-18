@@ -14,7 +14,8 @@
     public  int count = 0;
     public int horseHeadSuc = 0;
     public int horseHeadCount = 0;
-
+    public int giveUpCount = 0;
+    public int totalCount = 0;
 
 
     protected void Page_Load(object sender, EventArgs e)
@@ -69,7 +70,7 @@
         DataTable dtOri = DBHelper.GetDataTable(" select  alert_date, gid from alert_ma5_line3_gold_cross where alert_date <= '2021-1-10' order by alert_date desc ");
         foreach (DataRow drOri in dtOri.Rows)
         {
-            bool isHorseHead = false;
+
             try
             {
                 Stock s = GetStock(drOri["gid"].ToString().Trim());
@@ -117,6 +118,9 @@
                 }
 
                 int buyIndex = currentIndex + 1;
+
+
+
                 if (dt.Select(" 日期 = '" + s.kLineDay[buyIndex].startDateTime.Date.ToShortDateString() + "' and 代码 = '" + s.gid.Trim() + "' ").Length == 0)
                 {
                     DataRow dr = dt.NewRow();
@@ -135,8 +139,14 @@
                     dr["买入"] = Math.Round(buyPrice, 2).ToString();
                     bool over5Percent = false;
                     double maxPrice = 0;
+                    bool giveUp = false;
                     for (int i = 1; i <= 10; i++)
                     {
+                        if (i == 1 && (s.kLineDay[buyIndex + i].endPrice - buyPrice) / buyPrice <= -0.01
+                            && (s.kLineDay[buyIndex + i].highestPrice - buyPrice) / buyPrice <= 0.05 )
+                        {
+                            giveUp = true;
+                        }
                         maxPrice = Math.Max(maxPrice, s.kLineDay[buyIndex + i].endPrice);
                         dr[i.ToString() + "日"] = (s.kLineDay[buyIndex + i].endPrice - buyPrice) / buyPrice;
                         if ((s.kLineDay[buyIndex + i].highestPrice - buyPrice) / buyPrice >= 0.05 && !over5Percent)
@@ -145,18 +155,23 @@
                             sucMax++;
                         }
 
+
                     }
                     dr["总计"] = (maxPrice - buyPrice) / buyPrice;
-
-
-
                     if ((double)dr["总计"] >= 0.01)
                     {
                         suc++;
-
+                    }
+                    totalCount++;
+                    if (!giveUp)
+                    {
+                        dt.Rows.Add(dr);
+                    }
+                    else
+                    {
+                        giveUpCount++;
                     }
 
-                    dt.Rows.Add(dr);
                 }
             }
             catch
@@ -225,9 +240,9 @@
 </head>
 <body>
     <form id="form1" runat="server">
-    <div>涨幅过1%概率：<%= Math.Round(100*(double)suc/(double)count, 2).ToString() %>%</div>
-    <div>涨幅过5%概率：<%= Math.Round(100*(double)sucMax/(double)count, 2).ToString() %>%</div>
-    
+    <div>收盘涨幅过1%概率：<%= Math.Round(100*(double)suc/(double)count, 2).ToString() %>%</div>
+    <div>盘中涨幅过5%概率：<%= Math.Round(100*(double)sucMax/(double)count, 2).ToString() %>%</div>
+    <div>首日赔钱止损概率：<%= Math.Round(100*(double)giveUpCount/(double)totalCount, 2).ToString() %>%</div>
     <div>
         <asp:DataGrid runat="server" Width="100%" ID="dg" BackColor="White" BorderColor="#999999" BorderStyle="None" BorderWidth="1px" CellPadding="3" GridLines="Vertical" >
             <AlternatingItemStyle BackColor="#DCDCDC" />
