@@ -279,7 +279,14 @@
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
-            dr["信号"] = "";
+            if (stock.kLineDay[currentIndex].volume >= stock.kLineDay[currentIndex + 1].volume * 1.1)
+            {
+                dr["信号"] = "缩";
+            }
+            else
+            {
+                dr["信号"] = "";
+            }
             dr["KDJ"] = stock.kdjDays(currentIndex);
             int macdDays = stock.macdDays(currentIndex);
             dr["MACD"] = macdDays;
