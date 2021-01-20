@@ -279,7 +279,7 @@
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
-            if (stock.kLineDay[currentIndex].volume >= stock.kLineDay[currentIndex + 1].volume * 1.1)
+            if (stock.kLineDay[currentIndex].volume * 1.1 >= stock.kLineDay[currentIndex + 1].volume)
             {
                 dr["信号"] = "缩";
             }
