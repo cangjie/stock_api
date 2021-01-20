@@ -247,7 +247,7 @@
                 continue;
             }
 
-            if (stock.kLineDay[currentIndex].volume <= stock.kLineDay[currentIndex + 1].volume)
+            if (stock.kLineDay[currentIndex].volume * 1.1 <= stock.kLineDay[currentIndex + 1].volume)
             {
                 continue;
             }
