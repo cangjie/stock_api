@@ -26,7 +26,7 @@
         dt.Columns.Add("日期");
         dt.Columns.Add("代码");
         dt.Columns.Add("名称");
-        dt.Columns.Add("新高");
+        dt.Columns.Add("涨停");
         dt.Columns.Add("买入");
         dt.Columns.Add("1日");
         dt.Columns.Add("2日");
@@ -72,6 +72,7 @@
             {
 
                 newHigh = true;
+                newHighCount++;
             }
 
             int buyIndex = currentIndex + 2;
@@ -91,11 +92,11 @@
             dr["买入"] = buyPrice.ToString();
             if (newHigh)
             {
-                dr["新高"] = "是";
+                dr["涨停"] = "是";
             }
             else
             {
-                dr["新高"] = "否";
+                dr["涨停"] = "否";
             }
             double finalRate = double.MinValue;
             for (int j = 1; j <= 5; j++)
@@ -116,7 +117,7 @@
                 suc++;
                 if (newHigh)
                 {
-                    newHighSuc++;
+                    //newHighSuc++;
                 }
                 dr["总计"] = "<font color=red >" + Math.Round(finalRate * 100, 2).ToString() + "%</font>";
             }
@@ -125,10 +126,7 @@
                 dr["总计"] = "<font color=green >" + Math.Round(finalRate * 100, 2).ToString() + "%</font>";
             }
             count++;
-            if (newHigh)
-            {
-                newHighCount++;
-            }
+            
             dt.Rows.Add(dr);
         }
         return dt;
@@ -167,7 +165,7 @@
     <form id="form1" runat="server">
         <div>
             总计：<%=count.ToString() %> / <%=Math.Round((double)100*suc/(double)count, 2).ToString() %>%<br />
-            涨停：<%=newHighCount.ToString() %> / <%=Math.Round((double)100*newHighSuc/(double)newHighCount, 2).ToString() %>%
+            涨停：<%=newHighCount.ToString() %> / <%=Math.Round((double)100*newHighCount/(double)count, 2).ToString() %>%
         </div>
         <div>
             <asp:DataGrid runat="server" id="dg" Width="100%" BackColor="White" BorderColor="#999999" BorderStyle="None" BorderWidth="1px" CellPadding="3" GridLines="Vertical" >
