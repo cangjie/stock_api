@@ -179,7 +179,10 @@
                 }
                 else
                 {
-                    firstGreen = true;
+                    if (j == 1)
+                    {
+                        firstGreen = true;
+                    }
                     dr[j.ToString() + "日"] = "<font color=green >" + Math.Round(rate * 100, 2).ToString() + "%</font>";
                 }
             }
