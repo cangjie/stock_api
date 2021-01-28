@@ -59,7 +59,7 @@
         {
 
             bool newHigh = false;
-            bool firstGreen = false;
+  
             Stock s = GetStock(drOri["gid"].ToString().Trim());
 
             int alertIndex = s.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
@@ -181,15 +181,12 @@
                 {
                     if (j == 1)
                     {
-                        firstGreen = true;
+                        firstGreenCount++;
                     }
                     dr[j.ToString() + "日"] = "<font color=green >" + Math.Round(rate * 100, 2).ToString() + "%</font>";
                 }
             }
-            if (firstGreen)
-            {
-                    firstGreenCount++;
-            }
+           
             if (finalRate >= 0.01)
             {
                 suc++;
@@ -246,7 +243,7 @@
         <div>
             总计：<%=count.ToString() %> / <%=Math.Round((double)100*suc/(double)count, 2).ToString() %>%<br />
             涨5%：<%=newHighCount.ToString() %> / <%=Math.Round((double)100*newHighCount/(double)count, 2).ToString() %>%<br />
-            首日止损：<%=Math.Round((double)100*firstGreenCount/(double)totalGreenCount, 2).ToString() %>%
+            首日止损：<%=Math.Round((double)100 * totalGreenCount /(double) firstGreenCount, 2).ToString() %>%
         </div>
         <div>
             <asp:DataGrid runat="server" id="dg" Width="100%" BackColor="White" BorderColor="#999999" BorderStyle="None" BorderWidth="1px" CellPadding="3" GridLines="Vertical" >
