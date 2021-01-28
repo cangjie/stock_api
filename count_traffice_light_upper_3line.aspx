@@ -11,6 +11,7 @@
     public int count = 0;
     public int newHighCount = 0;
     public int goingDownCount = 0;
+    public int totalGreenCount = 0;
 
 
     protected void Page_Load(object sender, EventArgs e)
@@ -197,6 +198,7 @@
                 {
                     goingDownCount++;
                 }
+                totalGreenCount++;
                 dr["总计"] = "<font color=green >" + Math.Round(finalRate * 100, 2).ToString() + "%</font>";
             }
             count++;
@@ -240,7 +242,7 @@
         <div>
             总计：<%=count.ToString() %> / <%=Math.Round((double)100*suc/(double)count, 2).ToString() %>%<br />
             涨5%：<%=newHighCount.ToString() %> / <%=Math.Round((double)100*newHighCount/(double)count, 2).ToString() %>%<br />
-            首日止损：<%=Math.Round((double)100*goingDownCount/(double)count, 2).ToString() %>
+            首日止损：<%=Math.Round((double)100*goingDownCount/(double)totalGreenCount, 2).ToString() %>%
         </div>
         <div>
             <asp:DataGrid runat="server" id="dg" Width="100%" BackColor="White" BorderColor="#999999" BorderStyle="None" BorderWidth="1px" CellPadding="3" GridLines="Vertical" >
