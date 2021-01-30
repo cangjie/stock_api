@@ -404,6 +404,29 @@
             }
 
             int limitUpIndex = stock.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
+
+
+
+
+             if (!stock.IsLimitUp(limitUpIndex))
+            {
+                continue;
+            }
+
+            bool isTrafficeLight = false;
+
+            if (limitUpIndex + 2 < stock.kLineDay.Length)
+            {
+                if (!stock.IsLimitUp(limitUpIndex + 1) && !stock.IsLimitUp(limitUpIndex + 2)
+                    && (stock.kLineDay[limitUpIndex + 1].endPrice - stock.kLineDay[limitUpIndex].endPrice) / stock.kLineDay[limitUpIndex].endPrice > -0.095
+                    && (stock.kLineDay[limitUpIndex + 2].endPrice - stock.kLineDay[limitUpIndex].endPrice) / stock.kLineDay[limitUpIndex + 1].endPrice > -0.095
+                    && stock.kLineDay[limitUpIndex + 1].startPrice > stock.kLineDay[limitUpIndex + 1].endPrice
+                    && stock.kLineDay[limitUpIndex + 2].startPrice < stock.kLineDay[limitUpIndex + 2].endPrice)
+                {
+                    isTrafficeLight = true;
+                }
+            }
+
             int highIndex = 0;
             int lowestIndex = 0;
             double lowest = GetFirstLowestPrice(stock.kLineDay, limitUpIndex, out lowestIndex);
@@ -772,6 +795,11 @@
                 && stock.kLineDay[currentIndex - 1].lowestPrice > stock.kLineDay[currentIndex].lowestPrice && stock.kLineDay[currentIndex - 1].lowestPrice > stock.kLineDay[currentIndex - 2].lowestPrice)))
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"两条腿\" >🚶‍</a>";
+            }
+
+            if (isTrafficeLight)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"红绿灯\" >🚥</a>";
             }
 
             if (dtFoot.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
