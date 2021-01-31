@@ -429,7 +429,7 @@
 
             double maxVolume = stock.kLineDay[limitUpIndex].volume;
 
-
+            /*
             int tochSupportStatus = 0;
             for (int i = currentIndex - 1; i >= highIndex; i--)
             {
@@ -457,7 +457,7 @@
                     break;
                 }
             }
-
+            */
 
 
 
@@ -551,6 +551,7 @@
             bool isSortCase = false;
             bool isHorseHead = false;
             int limitUpNum = 0;
+            /*
             for (int i = limitUpIndex; stock.kLineDay[i].endPrice >= stock.GetAverageSettlePrice(i, 3, 3) && i >= 0; i--)
             {
                 if (stock.IsLimitUp(i))
@@ -568,7 +569,7 @@
                 }
 
             }
-
+            */
 
 
             DataRow dr = dt.NewRow();
