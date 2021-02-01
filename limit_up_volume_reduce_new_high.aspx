@@ -366,6 +366,7 @@
 
             int limitUpIndex = stock.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
 
+            
 
 
             /*
@@ -439,7 +440,19 @@
                 }
             }
 
+            bool isTrafficeLight = false;
 
+            if (limitUpIndex + 2 < stock.kLineDay.Length)
+            {
+                if (!stock.IsLimitUp(limitUpIndex + 1) && !stock.IsLimitUp(limitUpIndex + 2)
+                    && (stock.kLineDay[limitUpIndex + 1].endPrice - stock.kLineDay[limitUpIndex].endPrice) / stock.kLineDay[limitUpIndex].endPrice > -0.095
+                    && (stock.kLineDay[limitUpIndex + 2].endPrice - stock.kLineDay[limitUpIndex].endPrice) / stock.kLineDay[limitUpIndex + 1].endPrice > -0.095
+                    && stock.kLineDay[limitUpIndex + 1].startPrice > stock.kLineDay[limitUpIndex + 1].endPrice
+                    && stock.kLineDay[limitUpIndex + 2].startPrice < stock.kLineDay[limitUpIndex + 2].endPrice)
+                {
+                    isTrafficeLight = true;
+                }
+            }
 
 
             DataRow dr = dt.NewRow();
@@ -598,6 +611,10 @@
             if (stock.kLineDay[currentIndex - 2].macd < 0 && stock.kLineDay[currentIndex - 1].macd > 0 && stock.kLineDay[currentIndex].macd > 0)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"调整不碰DMP\" >DMP</a>";
+            }
+            if (isTrafficeLight)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"红绿灯\" >🚥</a>";
             }
             dr["总计"] = (computeMaxPrice - buyPrice) / buyPrice;
             dt.Rows.Add(dr);
