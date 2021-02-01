@@ -193,8 +193,10 @@
 
         DataTable dtOri = DBHelper.GetDataTable(" select  alert_date, gid from alert_ma5_line3_gold_cross where alert_date = '"
             + Util.GetLastTransactDate(currentDate, 1).ToShortDateString() + "'  "
+            //+ " and exists ( select * from alert_traffic_light where alert_traffic_light.gid  = alert_ma5_line3_gold_cross.gid and alert_traffic_light.alert_date >= dbo.func_GetLastTransactDate(alert_ma5_line3_gold_cross.alert_date, 10) ) "
             //+ " and gid = 'sz300124' "
             );
+        DataTable dtTrafficLight = DBHelper.GetDataTable(" select *  from alert_traffic_light where alert_date >= '" + Util.GetLastTransactDate(currentDate, 10).ToShortDateString() + "'  ");
 
         /*
         SqlDataAdapter da = new SqlDataAdapter(" select *  from alert_line35_gold_cross where alert_date = '" + currentDate.ToShortDateString() + "'  ", Util.conStr);
@@ -279,6 +281,13 @@
             double width = (highestPrice - lowestPrice) / lowestPrice;
 
 
+            bool isTrafficLight = false;
+            DataRow[] drTrafficLightArr = dtTrafficLight.Select(" gid = '" + stock.gid.Trim() + "' and alert_date < '" + stock.kLineDay[buyIndex - 1].endDateTime.ToShortDateString() + "' ");
+            if (drTrafficLightArr.Length > 0)
+            {
+                isTrafficLight = true;
+            }
+
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
@@ -303,6 +312,10 @@
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
             }
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
+            if (isTrafficLight)
+            { 
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"红绿灯\" >🚥</a>";
+            }
             dt.Rows.Add(dr);
         }
         return dt;
