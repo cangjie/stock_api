@@ -291,7 +291,7 @@
         dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
         dt.Columns.Add("5线涨", Type.GetType("System.Int32"));
-        for (int i = 1; i <= 5; i++)
+        for (int i = 1; i <= 10; i++)
         {
             dt.Columns.Add(i.ToString() + "日", Type.GetType("System.Double"));
         }
@@ -494,7 +494,7 @@
             bool lowThanF3 = false;
             bool haveLimitUp = false;
             double computeMaxPrice = 0;
-            for (int i = 1; i <= 5; i++)
+            for (int i = 1; i <= 10; i++)
             {
 
                 if (currentIndex + i >= stock.kLineDay.Length)
@@ -725,6 +725,11 @@
                     <asp:BoundColumn DataField="3日" HeaderText="3日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="4日" HeaderText="4日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="5日" HeaderText="5日"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="6日" HeaderText="6日" SortExpression="1日|desc" ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="7日" HeaderText="7日"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="8日" HeaderText="8日"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="9日" HeaderText="9日"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="10日" HeaderText="10日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="总计" HeaderText="总计" SortExpression="总计|desc" ></asp:BoundColumn>
                 </Columns>
                 <FooterStyle BackColor="#CCCCCC" ForeColor="Black" />
