@@ -313,9 +313,19 @@
             }
             dr["总计"] = (maxPrice - buyPrice) / buyPrice;
             if (isTrafficLight)
-            { 
+            {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"红绿灯\" >🚥</a>";
+                try
+                {
+                    DBHelper.InsertData("alert_traffic_light_base_signal", new string[,] {{"alert_date", "datetime", currentDate.ToShortDateString() },
+                        {"gid", "varchar", stock.gid.Trim() }, {"base_page", "varchar", "ma5_line3_gold_cross" } });
+                }
+                catch
+                { 
+                
+                }
             }
+
             dt.Rows.Add(dr);
         }
         return dt;
