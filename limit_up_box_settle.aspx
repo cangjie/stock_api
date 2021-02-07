@@ -408,7 +408,7 @@
 
 
 
-             if (!stock.IsLimitUp(limitUpIndex))
+            if (!stock.IsLimitUp(limitUpIndex))
             {
                 continue;
             }
@@ -800,6 +800,15 @@
             if (isTrafficeLight)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"红绿灯\" >🚥</a>";
+                try
+                {
+                    DBHelper.InsertData("alert_traffic_light_base_signal", new string[,] {{"alert_date", "datetime", currentDate.ToShortDateString() },
+                        {"gid", "varchar", stock.gid.Trim() }, {"base_page", "varchar", "limit_up_box_settle" } });
+                }
+                catch
+                {
+
+                }
             }
 
             if (dtFoot.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
