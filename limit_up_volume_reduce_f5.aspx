@@ -452,6 +452,20 @@
             }
 
 
+            bool isTrafficeLight = false;
+
+            if (limitUpIndex + 2 < stock.kLineDay.Length)
+            {
+                if (!stock.IsLimitUp(limitUpIndex + 1) && !stock.IsLimitUp(limitUpIndex + 2)
+                    && (stock.kLineDay[limitUpIndex + 1].endPrice - stock.kLineDay[limitUpIndex].endPrice) / stock.kLineDay[limitUpIndex].endPrice > -0.095
+                    && (stock.kLineDay[limitUpIndex + 2].endPrice - stock.kLineDay[limitUpIndex].endPrice) / stock.kLineDay[limitUpIndex + 1].endPrice > -0.095
+                    && stock.kLineDay[limitUpIndex + 1].startPrice > stock.kLineDay[limitUpIndex + 1].endPrice
+                    && stock.kLineDay[limitUpIndex + 2].startPrice < stock.kLineDay[limitUpIndex + 2].endPrice)
+                {
+                    isTrafficeLight = true;
+                }
+            }
+
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
@@ -524,7 +538,10 @@
 
             }
 
-
+            if (isTrafficeLight)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"红绿灯\" >🚥</a>";
+            }
 
             if (dtGragonTigerList.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
             {
