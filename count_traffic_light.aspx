@@ -11,16 +11,19 @@
     public int count = 0;
     public int newHighCount = 0;
 
+    public string countPage = "limit_up_box_settle";
+
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack)
         {
-            dg.DataSource = GetData();
+            countPage = Util.GetSafeRequestValue(Request, "page", "limit_up_box_settle");
+            dg.DataSource = GetData(countPage);
             dg.DataBind();
         }
     }
 
-    public DataTable GetData()
+    public DataTable GetData(string countPage)
     {
         DataTable dt = new DataTable();
         dt.Columns.Add("日期");
@@ -39,7 +42,7 @@
         dt.Columns.Add("9日");
         dt.Columns.Add("10日");
         dt.Columns.Add("总计");
-        DataTable dtOri = DBHelper.GetDataTable(" select * from alert_traffic_light_base_signal where base_page = 'limit_up_box_settle' order by alert_date desc ");
+        DataTable dtOri = DBHelper.GetDataTable(" select * from alert_traffic_light_base_signal where base_page = '" + countPage + "' order by alert_date desc ");
         foreach (DataRow drOri in dtOri.Rows)
         {
 
