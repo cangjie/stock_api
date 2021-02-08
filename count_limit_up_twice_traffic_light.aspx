@@ -33,6 +33,11 @@
         dt.Columns.Add("3日");
         dt.Columns.Add("4日");
         dt.Columns.Add("5日");
+        dt.Columns.Add("6日");
+        dt.Columns.Add("7日");
+        dt.Columns.Add("8日");
+        dt.Columns.Add("9日");
+        dt.Columns.Add("10日");
         dt.Columns.Add("总计");
         DataTable dtOri = DBHelper.GetDataTable(" select a.alert_date as alert_date , a.gid as gid from limit_up a "
             + " where exists( select 'a' from limit_up b where a.gid = b.gid and dbo.func_GetLastTransactDate(a.alert_date, 1) = b.alert_date) "
@@ -72,7 +77,7 @@
             {
 
                 newHigh = true;
-                newHighCount++;
+                //newHighCount++;
             }
 
             int buyIndex = currentIndex + 2;
@@ -99,7 +104,7 @@
                 dr["涨停"] = "否";
             }
             double finalRate = double.MinValue;
-            for (int j = 1; j <= 5; j++)
+            for (int j = 1; j <= 10; j++)
             {
                 double rate = (s.kLineDay[buyIndex + j].highestPrice - buyPrice) / buyPrice;
                 finalRate = Math.Max(finalRate, rate);
@@ -115,9 +120,9 @@
             if (finalRate >= 0.01)
             {
                 suc++;
-                if (newHigh)
+                if (finalRate >= 0.05)
                 {
-                    //newHighSuc++;
+                    newHighSuc++;
                 }
                 dr["总计"] = "<font color=red >" + Math.Round(finalRate * 100, 2).ToString() + "%</font>";
             }
