@@ -45,7 +45,7 @@
             bool newHigh = false;
             Stock s = GetStock(drOri["gid"].ToString().Trim());
             int currentIndex = s.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
-            if (currentIndex + 10 >= s.kLineDay.Length)
+            if (currentIndex + 12 >= s.kLineDay.Length)
             {
                 continue;
             }
@@ -86,7 +86,7 @@
             }
 
             DataRow dr = dt.NewRow();
-            dr["日期"] = s.kLineDay[currentIndex].endDateTime.ToShortDateString();
+            dr["日期"] = s.kLineDay[currentIndex+2].endDateTime.ToShortDateString();
             dr["代码"] = s.gid.Trim();
             dr["名称"] = s.Name.Trim();
             dr["买入"] = buyPrice.ToString();
