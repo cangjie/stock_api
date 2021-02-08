@@ -122,7 +122,7 @@
                 suc++;
                 if (finalRate >= 0.05)
                 {
-                    newHighSuc++;
+                    newHighCount++;
                 }
                 dr["总计"] = "<font color=red >" + Math.Round(finalRate * 100, 2).ToString() + "%</font>";
             }
