@@ -67,7 +67,10 @@
 
 
 
-        DataTable dtOri = DBHelper.GetDataTable(" select  alert_date, gid from alert_ma5_line3_gold_cross where alert_date <= '2021-1-25' order by alert_date desc ");
+        DataTable dtOri = DBHelper.GetDataTable(" select distinct  alert_ma5_line3_gold_cross.alert_date, alert_ma5_line3_gold_cross.gid from alert_ma5_line3_gold_cross  "
+            + " left join alert_traffic_light on alert_traffic_light.gid = alert_ma5_line3_gold_cross.gid  "
+            + "  and alert_traffic_light.alert_date >= dbo.func_GetLastTransactDate(alert_ma5_line3_gold_cross.alert_date, 10)  "
+            + " where alert_ma5_line3_gold_cross.alert_date <= '2021-1-25' order by alert_date desc ");
         foreach (DataRow drOri in dtOri.Rows)
         {
 
@@ -108,6 +111,7 @@
                     continue;
                 }
                 */
+                /*
                 if (s.kLineDay[currentIndex - 1].endPrice <= s.kLineDay[currentIndex - 1].startPrice
                     || s.kLineDay[currentIndex].endPrice <= s.kLineDay[currentIndex].startPrice
                     || s.kLineDay[currentIndex+1].endPrice <= s.kLineDay[currentIndex+1].startPrice
@@ -116,6 +120,9 @@
                 {
                     continue;
                 }
+                */
+
+
 
                 int buyIndex = currentIndex + 1;
 
