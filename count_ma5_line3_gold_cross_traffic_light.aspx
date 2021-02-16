@@ -92,15 +92,34 @@
                 double last5Line = s.GetAverageSettlePrice(currentIndex - 1, 5, 5);
                 double last3Line = s.GetAverageSettlePrice(currentIndex - 1, 3, 3);
                 double lastMa5 = s.GetAverageSettlePrice(currentIndex - 1, 5, 0);
+                double lastPrice = s.kLineDay[currentIndex - 1].endPrice;
+                double lastStart = s.kLineDay[currentIndex - 1].startPrice;
+                double nextPrice = s.kLineDay[currentIndex + 1].endPrice;
+                double next5Line = s.GetAverageSettlePrice(currentIndex + 1, 5, 5);
+                double nextMa5 = s.GetAverageSettlePrice(currentIndex + 1, 5, 0);
+                double next3Line = s.GetAverageSettlePrice(currentIndex + 1, 3, 3);
+                double currentPrice = s.kLineDay[currentIndex].endPrice;
+                double currentStart = s.kLineDay[currentIndex].startPrice;
+                double nextStart = s.kLineDay[currentIndex + 1].startPrice;
 
-                if (current5Line <= last5Line || last3Line <= lastMa5 || current3Line >= currentMa5
-                    || current5Line >= Math.Max(current3Line, currentMa5)
-                    || last5Line >= Math.Max(last3Line, lastMa5))
+                if (last5Line >= current5Line || current5Line >= next5Line)
                 {
                     continue;
                 }
-
-                if (s.kLineDay[currentIndex].startPrice >= s.kLineDay[currentIndex].endPrice)
+                if (last5Line >= lastMa5 || current5Line >= currentMa5 || next5Line >= nextMa5)
+                {
+                    continue;
+                }
+                if (lastMa5 > last3Line || currentMa5 < current3Line || nextMa5 <= next3Line)
+                {
+                    continue;
+                }
+                if (lastPrice > Math.Min(currentPrice, nextPrice) || currentPrice > nextPrice
+                    || lastStart >= lastPrice || currentStart >= currentPrice || nextStart >= nextPrice)
+                {
+                    continue;
+                }
+                if (nextPrice <= nextMa5 || nextPrice <= next3Line || nextPrice <= next5Line)
                 {
                     continue;
                 }
@@ -149,7 +168,7 @@
                     bool giveUp = false;
                     for (int i = 1; i <= 10; i++)
                     {
-                       
+
                         maxPrice = Math.Max(maxPrice, s.kLineDay[buyIndex + i].endPrice);
                         dr[i.ToString() + "日"] = (s.kLineDay[buyIndex + i].endPrice - buyPrice) / buyPrice;
                         if ((s.kLineDay[buyIndex + i].highestPrice - buyPrice) / buyPrice >= 0.05 && !over5Percent)
@@ -159,7 +178,7 @@
                             over5Percent = true;
                             sucMax++;
                         }
-                         if (i == 1 && (s.kLineDay[buyIndex + i].endPrice - buyPrice) / buyPrice <= -0.01 && !over5Percent )
+                        if (i == 1 && (s.kLineDay[buyIndex + i].endPrice - buyPrice) / buyPrice <= -0.01 && !over5Percent )
                         {
                             giveUp = true;
                             break;
