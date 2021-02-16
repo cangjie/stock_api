@@ -71,7 +71,7 @@
             + " join alert_traffic_light on alert_traffic_light.gid = alert_ma5_line3_gold_cross.gid  "
             + "  and alert_traffic_light.alert_date >= dbo.func_GetLastTransactDate(alert_ma5_line3_gold_cross.alert_date, 10) and alert_traffic_light.alert_date < alert_ma5_line3_gold_cross.alert_date "
             + " where alert_ma5_line3_gold_cross.alert_date <= '2021-1-25' "
-            //+ " and alert_ma5_line3_gold_cross.alert_date = '2020-8-17' and alert_ma5_line3_gold_cross.gid = 'sh600893' "
+            //+ " and alert_ma5_line3_gold_cross.alert_date = '2020-8-17' and alert_ma5_line3_gold_cross.gid = 'sh600496' "
             + " order by alert_date desc ");
         foreach (DataRow drOri in dtOri.Rows)
         {
@@ -178,29 +178,31 @@
                             dr[i.ToString() + "日"] = (s.kLineDay[buyIndex + i].highestPrice - buyPrice) / buyPrice;
                             maxPrice = Math.Max(maxPrice, s.kLineDay[buyIndex + i].highestPrice);
                             over5Percent = true;
-                            sucMax++;
+                            //sucMax++;
                         }
                         if (i == 1 && (s.kLineDay[buyIndex + i].endPrice - buyPrice) / buyPrice <= -0.01 && !over5Percent )
                         {
                             giveUp = true;
-                            break;
+                            //break;
                         }
 
                     }
                     dr["总计"] = (maxPrice - buyPrice) / buyPrice;
-                    if ((double)dr["总计"] >= 0.01 && !giveUp)
+                    if ((double)dr["总计"] >= 0.01)
                     {
                         suc++;
+                        if ((double)dr["总计"] >= 0.05)
+                        {
+                            sucMax++;
+                        }
                     }
                     totalCount++;
-                    if (!giveUp)
-                    {
-                        dt.Rows.Add(dr);
-                    }
-                    else
+                    if (giveUp)
                     {
                         giveUpCount++;
                     }
+                    dt.Rows.Add(dr);
+
 
                 }
             }
@@ -220,9 +222,16 @@
             {
                 if (c.DataType.FullName.ToString().Equals("System.Double"))
                 {
-                    double value = double.Parse(dr[c].ToString());
-                    drNew[c.Caption] = "<font color='" + ((value < 0.01) ? "green" : "red") + "' >"
-                        + Math.Round(100 * value, 2).ToString() + "%</font>";
+                    try
+                    {
+                        double value = double.Parse(dr[c].ToString());
+                        drNew[c.Caption] = "<font color='" + ((value < 0.01) ? "green" : "red") + "' >"
+                            + Math.Round(100 * value, 2).ToString() + "%</font>";
+                    }
+                    catch
+                    {
+
+                    }
                 }
                 else
                 {

@@ -67,7 +67,12 @@
 
 
 
-        DataTable dtOri = DBHelper.GetDataTable(" select  alert_date, gid from alert_ma5_line3_gold_cross  where alert_date <= '2021-1-25' order by alert_date desc ");
+        DataTable dtOri = DBHelper.GetDataTable(" select distinct  alert_ma5_line3_gold_cross.alert_date, alert_ma5_line3_gold_cross.gid from alert_ma5_line3_gold_cross  "
+            + " join limit_up_volume_reduce on limit_up_volume_reduce.gid = alert_ma5_line3_gold_cross.gid  "
+            + "  and limit_up_volume_reduce.alert_date >= dbo.func_GetLastTransactDate(alert_ma5_line3_gold_cross.alert_date, 10) and limit_up_volume_reduce.alert_date < alert_ma5_line3_gold_cross.alert_date "
+            + " where alert_ma5_line3_gold_cross.alert_date <= '2021-1-25' "
+            //+ " and alert_ma5_line3_gold_cross.alert_date = '2020-8-17' and alert_ma5_line3_gold_cross.gid = 'sh600496' "
+            + " order by alert_date desc ");
         foreach (DataRow drOri in dtOri.Rows)
         {
 
@@ -89,15 +94,34 @@
                 double last5Line = s.GetAverageSettlePrice(currentIndex - 1, 5, 5);
                 double last3Line = s.GetAverageSettlePrice(currentIndex - 1, 3, 3);
                 double lastMa5 = s.GetAverageSettlePrice(currentIndex - 1, 5, 0);
+                double lastPrice = s.kLineDay[currentIndex - 1].endPrice;
+                double lastStart = s.kLineDay[currentIndex - 1].startPrice;
+                double nextPrice = s.kLineDay[currentIndex + 1].endPrice;
+                double next5Line = s.GetAverageSettlePrice(currentIndex + 1, 5, 5);
+                double nextMa5 = s.GetAverageSettlePrice(currentIndex + 1, 5, 0);
+                double next3Line = s.GetAverageSettlePrice(currentIndex + 1, 3, 3);
+                double currentPrice = s.kLineDay[currentIndex].endPrice;
+                double currentStart = s.kLineDay[currentIndex].startPrice;
+                double nextStart = s.kLineDay[currentIndex + 1].startPrice;
 
-                if (current5Line <= last5Line || last3Line <= lastMa5 || current3Line >= currentMa5
-                    || current5Line >= Math.Max(current3Line, currentMa5)
-                    || last5Line >= Math.Max(last3Line, lastMa5))
+                if (last5Line >= current5Line || current5Line >= next5Line)
                 {
                     continue;
                 }
-
-                if (s.kLineDay[currentIndex].startPrice >= s.kLineDay[currentIndex].endPrice)
+                if (last5Line >= lastMa5 || current5Line >= currentMa5 || next5Line >= nextMa5)
+                {
+                    continue;
+                }
+                if (lastMa5 > last3Line || currentMa5 < current3Line || nextMa5 <= next3Line)
+                {
+                    continue;
+                }
+                if (lastPrice > Math.Min(currentPrice, nextPrice) || currentPrice > nextPrice
+                    || lastStart >= lastPrice || currentStart >= currentPrice || nextStart >= nextPrice)
+                {
+                    continue;
+                }
+                if (nextPrice <= nextMa5 || nextPrice <= next3Line || nextPrice <= next5Line)
                 {
                     continue;
                 }
@@ -108,6 +132,7 @@
                     continue;
                 }
                 */
+                /*
                 if (s.kLineDay[currentIndex - 1].endPrice <= s.kLineDay[currentIndex - 1].startPrice
                     || s.kLineDay[currentIndex].endPrice <= s.kLineDay[currentIndex].startPrice
                     || s.kLineDay[currentIndex+1].endPrice <= s.kLineDay[currentIndex+1].startPrice
@@ -116,6 +141,9 @@
                 {
                     continue;
                 }
+                */
+
+
 
                 int buyIndex = currentIndex + 1;
 
@@ -142,7 +170,7 @@
                     bool giveUp = false;
                     for (int i = 1; i <= 10; i++)
                     {
-                       
+
                         maxPrice = Math.Max(maxPrice, s.kLineDay[buyIndex + i].endPrice);
                         dr[i.ToString() + "日"] = (s.kLineDay[buyIndex + i].endPrice - buyPrice) / buyPrice;
                         if ((s.kLineDay[buyIndex + i].highestPrice - buyPrice) / buyPrice >= 0.05 && !over5Percent)
@@ -150,29 +178,31 @@
                             dr[i.ToString() + "日"] = (s.kLineDay[buyIndex + i].highestPrice - buyPrice) / buyPrice;
                             maxPrice = Math.Max(maxPrice, s.kLineDay[buyIndex + i].highestPrice);
                             over5Percent = true;
-                            sucMax++;
+                            //sucMax++;
                         }
-                         if (i == 1 && (s.kLineDay[buyIndex + i].endPrice - buyPrice) / buyPrice <= -0.01 && !over5Percent )
+                        if (i == 1 && (s.kLineDay[buyIndex + i].endPrice - buyPrice) / buyPrice <= -0.01 && !over5Percent )
                         {
                             giveUp = true;
-                            break;
+                            //break;
                         }
 
                     }
                     dr["总计"] = (maxPrice - buyPrice) / buyPrice;
-                    if ((double)dr["总计"] >= 0.01 && !giveUp)
+                    if ((double)dr["总计"] >= 0.01)
                     {
                         suc++;
+                        if ((double)dr["总计"] >= 0.05)
+                        {
+                            sucMax++;
+                        }
                     }
                     totalCount++;
-                    if (!giveUp)
-                    {
-                        dt.Rows.Add(dr);
-                    }
-                    else
+                    if (giveUp)
                     {
                         giveUpCount++;
                     }
+                    dt.Rows.Add(dr);
+
 
                 }
             }
@@ -192,9 +222,16 @@
             {
                 if (c.DataType.FullName.ToString().Equals("System.Double"))
                 {
-                    double value = double.Parse(dr[c].ToString());
-                    drNew[c.Caption] = "<font color='" + ((value < 0.01) ? "green" : "red") + "' >"
-                        + Math.Round(100 * value, 2).ToString() + "%</font>";
+                    try
+                    {
+                        double value = double.Parse(dr[c].ToString());
+                        drNew[c.Caption] = "<font color='" + ((value < 0.01) ? "green" : "red") + "' >"
+                            + Math.Round(100 * value, 2).ToString() + "%</font>";
+                    }
+                    catch
+                    {
+
+                    }
                 }
                 else
                 {
