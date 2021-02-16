@@ -67,7 +67,7 @@
 
 
 
-        DataTable dtOri = DBHelper.GetDataTable(" select  alert_date, gid from alert_ma5_line3_gold_cross where alert_date <= '2021-1-25' order by alert_date desc ");
+        DataTable dtOri = DBHelper.GetDataTable(" select  alert_date, gid from alert_ma5_line3_gold_cross  where alert_date <= '2021-1-25' order by alert_date desc ");
         foreach (DataRow drOri in dtOri.Rows)
         {
 
