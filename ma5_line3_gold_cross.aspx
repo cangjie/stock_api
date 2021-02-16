@@ -283,7 +283,7 @@
 
             bool isTrafficLight = false;
             DataRow[] drTrafficLightArr = dtTrafficLight.Select(" gid = '" + stock.gid.Trim() + "' and alert_date < '" + stock.kLineDay[buyIndex - 1].endDateTime.ToShortDateString() + "' ");
-            if (drTrafficLightArr.Length > 0)
+            if (drTrafficLightArr.Length > 0 && width > 0.1)
             {
                 isTrafficLight = true;
             }

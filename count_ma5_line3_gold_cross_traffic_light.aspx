@@ -70,7 +70,9 @@
         DataTable dtOri = DBHelper.GetDataTable(" select distinct  alert_ma5_line3_gold_cross.alert_date, alert_ma5_line3_gold_cross.gid from alert_ma5_line3_gold_cross  "
             + " join alert_traffic_light on alert_traffic_light.gid = alert_ma5_line3_gold_cross.gid  "
             + "  and alert_traffic_light.alert_date >= dbo.func_GetLastTransactDate(alert_ma5_line3_gold_cross.alert_date, 10) and alert_traffic_light.alert_date < alert_ma5_line3_gold_cross.alert_date "
-            + " where alert_ma5_line3_gold_cross.alert_date <= '2021-1-25' order by alert_date desc ");
+            + " where alert_ma5_line3_gold_cross.alert_date <= '2021-1-25' "
+            //+ " and alert_ma5_line3_gold_cross.alert_date = '2020-8-17' and alert_ma5_line3_gold_cross.gid = 'sh600893' "
+            + " order by alert_date desc ");
         foreach (DataRow drOri in dtOri.Rows)
         {
 
