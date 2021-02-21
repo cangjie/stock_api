@@ -92,7 +92,7 @@
                     }
                     if (!suc)
                     {
-                        for (int i = 1; i <= 10; i++)
+                        for (int i = 1; i <= 20; i++)
                         {
                             if (currentIndex + i < s.kLineDay.Length && s.kLineDay[currentIndex + i - 1].endPrice < s.GetAverageSettlePrice(currentIndex + i - 1, 3, 3)
                                 && s.kLineDay[currentIndex + i].endPrice > s.GetAverageSettlePrice(currentIndex + i, 3, 3))
