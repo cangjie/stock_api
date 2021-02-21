@@ -183,7 +183,7 @@
     <form id="form1" runat="server">
 
     <div>5日内涨幅过5%概率：<%= Math.Round(100*(double)sucCount/(double)totalCount, 2).ToString() %>%</div>
-    <div>10日内补仓机会：<%= Math.Round(100*(double)supplementCount/(double)(totalCount-sucCount), 2).ToString() %>%</div>
+    <div>20日内补仓机会：<%= Math.Round(100*(double)supplementCount/(double)(totalCount-sucCount), 2).ToString() %>%</div>
     <div>补仓平进平出：<%= Math.Round(100*(double)supplementFair/(double)supplementCount, 2).ToString() %>%</div>
     <div>补仓盈利：<%= Math.Round(100*(double)supplementSuc/(double)supplementCount, 2).ToString() %>%</div>
     <div>
