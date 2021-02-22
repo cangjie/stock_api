@@ -369,7 +369,7 @@
         double ret = double.MaxValue;
         int find = 0;
         lowestIndex = 0;
-        for (int i = index - 1; i > 0 && find < 2; i--)
+        for (int i = index - 1; i > 5 && find < 2; i--)
         {
             double line3Pirce = KLine.GetAverageSettlePrice(kArr, i, 3, 3);
             ret = Math.Min(ret, kArr[i].lowestPrice);
@@ -377,11 +377,11 @@
             {
                 lowestIndex = i;
             }
-            if (kArr[i].endPrice < line3Pirce)
+            if (kArr[i].endPrice < line3Pirce && kArr[i-1].endPrice < KLine.GetAverageSettlePrice(kArr, i-1, 3, 3))
             {
                 find = 1;
             }
-            if (kArr[i].lowestPrice >= line3Pirce && find == 1)
+            if (kArr[i].endPrice >= line3Pirce && kArr[i - 1].endPrice >= KLine.GetAverageSettlePrice(kArr, i-1, 3, 3)  && find == 1)
             {
                 find = 2;
             }
