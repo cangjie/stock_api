@@ -321,7 +321,7 @@
             bool reachedPrevLow = false;
             for (int i = trafficLightIndex; i < currentIndex; i++)
             {
-                if (stock.kLineDay[i].lowestPrice - prevLowPrice / prevLowPrice < -0.01)
+                if ((stock.kLineDay[i].lowestPrice - prevLowPrice) / prevLowPrice < -0.01)
                 {
                     reachedPrevLow = true;
                     break;
