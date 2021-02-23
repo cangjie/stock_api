@@ -468,6 +468,19 @@ public class Util
 
     public static string[] GetAllGids()
     {
+        StackExchange.Redis.RedisValue[] rvArr = Util.rc.redisDb.SetMembers((StackExchange.Redis.RedisKey)"all_gids");
+        string[] gidArr = new string[rvArr.Length];
+        int i = 0;
+        foreach (object o in rvArr)
+        {
+            string str = o.ToString();
+            str = str.Substring(0, 8).Trim();
+            gidArr[i] = str;
+            i++;
+
+        }
+        return gidArr;
+        /*
         if (KLineCache.allGid.Length == 0)
         {
             DataTable dt = DBHelper.GetDataTable(" select [name]  from dbo.sysobjects where OBJECTPROPERTY(id, N'IsUserTable') = 1 and name like '%timeline'");
@@ -484,7 +497,7 @@ public class Util
         {
             return KLineCache.allGid;
         }
-
+        */
     }
 
     public static DateTime GetDay(DateTime dateTime)
