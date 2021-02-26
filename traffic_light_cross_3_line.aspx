@@ -294,7 +294,9 @@
 
         DataTable dtOri = DBHelper.GetDataTable("select * from alert_traffic_light where alert_date >= '" 
             + Util.GetLastTransactDate(currentDate, 21).ToShortDateString() + "' and alert_date <= '" 
-            + Util.GetLastTransactDate(currentDate, 1) + "' ");
+            + Util.GetLastTransactDate(currentDate, 1) + "' "
+            //+ "  and gid = 'sz000626' "
+            );
 
 
 
@@ -326,7 +328,7 @@
                 }
             }
 
-            if (existsBuyPointBefore || higherThanTrafficLight)
+            if (existsBuyPointBefore)
             {
                 continue;
             }
