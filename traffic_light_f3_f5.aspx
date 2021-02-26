@@ -279,6 +279,7 @@
         dt.Columns.Add("信号", Type.GetType("System.String"));
         dt.Columns.Add("前低", Type.GetType("System.Double"));
         dt.Columns.Add("3线", Type.GetType("System.Double"));
+        dt.Columns.Add("现高", Type.GetType("System.Double"));
         dt.Columns.Add("F3", Type.GetType("System.Double"));
         dt.Columns.Add("F5", Type.GetType("System.Double"));
         dt.Columns.Add("支撑", Type.GetType("System.String"));
@@ -383,8 +384,18 @@
             dr["买入"] = buyPrice;
             dr["前低"] = prevLowPrice;
             dr["支撑"] = reversePoint;
+            dr["现高"] = highestPrice;
             dr["F3"] = f3;
             dr["F5"] = f5;
+            dr["前低"] = prevLowPrice;
+            if (reversePoint.Trim().Equals("F3") && f3 > stock.GetAverageSettlePrice(currentIndex, 3, 3))
+            {
+                dr["信号"] = "3";
+            }
+            if (reversePoint.Trim().Equals("F5") && f5 > stock.GetAverageSettlePrice(currentIndex, 3, 3))
+            {
+                dr["信号"] = "3";
+            }
             double highPrice = 0;
             for (int i = 1; i <= 10 ; i++)
             {
@@ -410,7 +421,7 @@
         {
             double line3Pirce = KLine.GetAverageSettlePrice(kArr, i, 3, 3);
             ret = Math.Min(ret, kArr[i].lowestPrice);
-            if (ret == kArr[i].lowestPrice)
+            if (ret == kArr[i].lowestPrice && find == 1)
             {
                 lowestIndex = i;
             }
@@ -487,8 +498,10 @@
                     <asp:BoundColumn DataField="信号" HeaderText="信号" SortExpression="信号|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="前低" HeaderText="前低"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="现高" HeaderText="现高"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F5" HeaderText="F5"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="前低" HeaderText="前低"></asp:BoundColumn>
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日" SortExpression="1日|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="2日" HeaderText="2日"></asp:BoundColumn>
