@@ -295,7 +295,7 @@
         DataTable dtOri = DBHelper.GetDataTable("select * from alert_traffic_light where alert_date > '"
             + Util.GetLastTransactDate(currentDate, 5).ToShortDateString() + "' and alert_date <= '"
             + currentDate.ToShortDateString() + "' "
-            //+ "  and gid = 'sz000626' "
+            //+ "  and gid = 'sh603222' "
             );
 
 
@@ -316,29 +316,17 @@
             {
                 continue;
             }
-            double trafficLightHighPrice = stock.kLineDay[trafficLightIndex].endPrice;
-            bool higherThanTrafficLight = false;
-            bool existsBuyPointBefore = false;
-            for (int i = trafficLightIndex + 1; i < currentIndex; i++)
+            bool limitUpContinued = false;
+
+            for (int i = trafficLightIndex; i < currentIndex; i++)
             {
-                if (stock.kLineDay[i].highestPrice >= trafficLightHighPrice)
+                if (stock.IsLimitUp(i))
                 {
-                    higherThanTrafficLight = true;
-                }
-                if (stock.kLineDay[i - 1].endPrice < stock.GetAverageSettlePrice(i - 1, 3, 3)
-                    && stock.kLineDay[i].endPrice > stock.GetAverageSettlePrice(i, 3, 3))
-                {
-                    existsBuyPointBefore = true;
+                    limitUpContinued = true;
+                    break;
                 }
             }
-
-            if (existsBuyPointBefore)
-            {
-                continue;
-            }
-
-            if (stock.kLineDay[currentIndex].endPrice <= stock.GetAverageSettlePrice(currentIndex, 3, 3)
-                || stock.kLineDay[currentIndex - 1].endPrice >= stock.GetAverageSettlePrice(currentIndex - 1, 3, 3))
+            if (limitUpContinued)
             {
                 continue;
             }
