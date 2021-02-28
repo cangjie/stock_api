@@ -25,7 +25,7 @@
             {
                 continue;
             }
-            if (!s.IsLimitUp(limitUpIndex + 1) && !s.IsLimitUp(limitUpIndex + 2)
+            if (!s.IsLimitUp(limitUpIndex + 1) //&& !s.IsLimitUp(limitUpIndex + 2)
                 && (s.kLineDay[limitUpIndex + 1].endPrice - s.kLineDay[limitUpIndex].endPrice) / s.kLineDay[limitUpIndex].endPrice > -0.095
                 && (s.kLineDay[limitUpIndex + 2].endPrice - s.kLineDay[limitUpIndex].endPrice) / s.kLineDay[limitUpIndex + 1].endPrice > -0.095
                 && s.kLineDay[limitUpIndex + 1].startPrice > s.kLineDay[limitUpIndex + 1].endPrice
