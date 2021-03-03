@@ -357,6 +357,10 @@
                     dr[i.ToString() + "日"] = (stock.kLineDay[currentIndex + i].endPrice - buyPrice) / buyPrice;
                 }
             }
+            if (stock.IsLimitUp(trafficLightIndex))
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"红绿灯涨停\" >🏮</a>";
+            }
             dr["总计"] = (highPrice - buyPrice) / buyPrice;
             dt.Rows.Add(dr);
 
