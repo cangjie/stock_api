@@ -10,7 +10,8 @@
         DataTable dtOri = DBHelper.GetDataTable(" select gid, alert_date from limit_up a where  alert_date >= '" + Util.GetLastTransactDate(date, 2) + "' "
             + " and alert_date <=  '" + Util.GetLastTransactDate(DateTime.Now, 2) + "' "
             + " and not exists ( select 'a' from limit_up c where a.gid = c.gid and dbo.func_GetLastTransactDate(c.alert_date, 1) = a.alert_date ) "
-            + " and not exists ( select 'a' from limit_up d where a.gid = d.gid and dbo.func_GetLastTransactDate(d.alert_date, 2) = a.alert_date ) ");
+            //+ " and not exists ( select 'a' from limit_up d where a.gid = d.gid and dbo.func_GetLastTransactDate(d.alert_date, 2) = a.alert_date ) "
+            );
 
         foreach (DataRow drOri in dtOri.Rows)
         {
@@ -25,7 +26,7 @@
             {
                 continue;
             }
-            if (!s.IsLimitUp(limitUpIndex + 1) && !s.IsLimitUp(limitUpIndex + 2)
+            if (!s.IsLimitUp(limitUpIndex + 1) //&& !s.IsLimitUp(limitUpIndex + 2)
                 && (s.kLineDay[limitUpIndex + 1].endPrice - s.kLineDay[limitUpIndex].endPrice) / s.kLineDay[limitUpIndex].endPrice > -0.095
                 && (s.kLineDay[limitUpIndex + 2].endPrice - s.kLineDay[limitUpIndex].endPrice) / s.kLineDay[limitUpIndex + 1].endPrice > -0.095
                 && s.kLineDay[limitUpIndex + 1].startPrice > s.kLineDay[limitUpIndex + 1].endPrice

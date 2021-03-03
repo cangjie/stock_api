@@ -709,6 +709,11 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title='基本上在日均线以上' >📈</a>";
             }
 
+            if (stock.IsLimitUp(currentIndex))
+            {
+                dr["信号"] = "<a href=\"红绿灯涨停\" >🔥</a>";
+            }
+
 
             dr["0日"] = (currentPrice - supportPrice) / supportPrice;
             for (int i = 1; i <= 10; i++)
