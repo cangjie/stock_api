@@ -377,7 +377,7 @@
             {
                 continue;
             }
-            if (stock.IsLimitUp(limitUpIndex + 1) || stock.IsLimitUp(currentIndex + 2))
+            if (stock.IsLimitUp(limitUpIndex + 1) || stock.IsLimitUp(limitUpIndex + 2))
             {
                 continue;
             }
