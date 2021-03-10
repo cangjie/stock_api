@@ -336,8 +336,10 @@
             + currentDate.ToShortDateString() + "' and alert_date < '" + currentDate.AddDays(1).ToShortDateString() + "'  order by alert_date desc ");
 
         DataTable dtOri = DBHelper.GetDataTable(" select gid, alert_date from limit_up a where  alert_date = '" + lastTransactDate.ToShortDateString() + "' "
-            + " and not exists ( select 'a' from limit_up c where a.gid = c.gid and dbo.func_GetLastTransactDate(c.alert_date, 1) = a.alert_date ) "
-            + " and not exists ( select 'a' from limit_up d where a.gid = d.gid and dbo.func_GetLastTransactDate(d.alert_date, 2) = a.alert_date ) ");
+            //+ " and not exists ( select 'a' from limit_up c where a.gid = c.gid and dbo.func_GetLastTransactDate(c.alert_date, 1) = a.alert_date ) "
+            //+ " and not exists ( select 'a' from limit_up d where a.gid = d.gid and dbo.func_GetLastTransactDate(d.alert_date, 2) = a.alert_date ) "
+            + " and gid = 'sh600616' "
+            );
 
         DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor_new '" + currentDate.ToShortDateString() + "' ");
 
@@ -372,6 +374,10 @@
             int limitUpIndex = stock.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
 
             if (!stock.IsLimitUp(limitUpIndex))
+            {
+                continue;
+            }
+            if (stock.IsLimitUp(limitUpIndex + 1) || stock.IsLimitUp(currentIndex + 2))
             {
                 continue;
             }
