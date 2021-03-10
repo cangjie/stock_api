@@ -388,6 +388,10 @@
             dr["F3"] = f3;
             dr["F5"] = f5;
             dr["前低"] = prevLowPrice;
+            if (stock.IsLimitUp(trafficLightIndex))
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"红绿灯涨停\" >🏮</a>";
+            }
             if (reversePoint.Trim().Equals("F3") && f3 > stock.GetAverageSettlePrice(currentIndex, 3, 3))
             {
                 dr["信号"] = "3";

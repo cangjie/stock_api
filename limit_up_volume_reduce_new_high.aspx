@@ -366,7 +366,7 @@
 
             int limitUpIndex = stock.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
 
-            
+
 
 
             /*
@@ -440,17 +440,22 @@
                 }
             }
 
-            bool isTrafficeLight = false;
+            bool isTrafficLight = false;
+            bool isTrafficLightLimitUp = false;
 
             if (limitUpIndex + 2 < stock.kLineDay.Length)
             {
-                if (!stock.IsLimitUp(limitUpIndex + 1) && !stock.IsLimitUp(limitUpIndex + 2)
+                if (!stock.IsLimitUp(limitUpIndex + 1)// && !stock.IsLimitUp(limitUpIndex + 2)
                     && (stock.kLineDay[limitUpIndex + 1].endPrice - stock.kLineDay[limitUpIndex].endPrice) / stock.kLineDay[limitUpIndex].endPrice > -0.095
                     && (stock.kLineDay[limitUpIndex + 2].endPrice - stock.kLineDay[limitUpIndex].endPrice) / stock.kLineDay[limitUpIndex + 1].endPrice > -0.095
                     && stock.kLineDay[limitUpIndex + 1].startPrice > stock.kLineDay[limitUpIndex + 1].endPrice
                     && stock.kLineDay[limitUpIndex + 2].startPrice < stock.kLineDay[limitUpIndex + 2].endPrice)
                 {
-                    isTrafficeLight = true;
+                    isTrafficLight = true;
+                    if (stock.IsLimitUp(limitUpIndex + 2))
+                    {
+                        isTrafficLightLimitUp = true;
+                    }
                 }
             }
 
@@ -612,9 +617,16 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"调整不碰DMP\" >DMP</a>";
             }
-            if (isTrafficeLight)
+            if (isTrafficLight)
             {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"红绿灯\" >🚥</a>";
+                if (isTrafficLightLimitUp)
+                {
+                    dr["信号"] = dr["信号"].ToString() + "<a title=\"红绿灯涨停\" >🏮</a>";
+                }
+                else
+                {
+                    dr["信号"] = dr["信号"].ToString() + "<a title=\"红绿灯\" >🚥</a>";
+                }
                 try
                 {
                     DBHelper.InsertData("alert_traffic_light_base_signal", new string[,] {{"alert_date", "datetime", currentDate.ToShortDateString() },

@@ -292,8 +292,8 @@
 
 
 
-        DataTable dtOri = DBHelper.GetDataTable("select * from alert_traffic_light where alert_date >= '" 
-            + Util.GetLastTransactDate(currentDate, 21).ToShortDateString() + "' and alert_date <= '" 
+        DataTable dtOri = DBHelper.GetDataTable("select * from alert_traffic_light where alert_date >= '"
+            + Util.GetLastTransactDate(currentDate, 21).ToShortDateString() + "' and alert_date <= '"
             + Util.GetLastTransactDate(currentDate, 1) + "' "
             //+ "  and gid = 'sz000626' "
             );
@@ -349,6 +349,10 @@
             dr["名称"] = stock.Name.Trim();
             dr["3线"] = stock.GetAverageSettlePrice(currentIndex, 3, 3);
             dr["买入"] = buyPrice;
+            if (stock.IsLimitUp(trafficLightIndex))
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"红绿灯涨停\" >🏮</a>";
+            }
             double highPrice = 0;
             for (int i = 1; i <= 10 ; i++)
             {
