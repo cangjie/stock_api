@@ -373,11 +373,17 @@
 
             int limitUpIndex = stock.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
 
+            if (limitUpIndex + 2 >= stock.kLineDay.Length)
+            {
+                continue;
+            }
+
+
             if (!stock.IsLimitUp(limitUpIndex))
             {
                 continue;
             }
-            if (stock.IsLimitUp(limitUpIndex + 1) || stock.IsLimitUp(limitUpIndex + 2))
+            if (stock.IsLimitUp(limitUpIndex + 1))
             {
                 continue;
             }
