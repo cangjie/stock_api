@@ -16,7 +16,7 @@
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        sort = Util.GetSafeRequestValue(Request, "sort", "红绿灯日");
+        sort = Util.GetSafeRequestValue(Request, "sort", "1日 desc");
         if (!IsPostBack)
         {
             rate = int.Parse(Util.GetSafeRequestValue(Request, "rate", "100").Trim());
