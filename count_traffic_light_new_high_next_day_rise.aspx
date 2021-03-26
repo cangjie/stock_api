@@ -39,7 +39,7 @@
         }
 
         dt.Columns.Add("总计");
-        DataTable dtOri = DBHelper.GetDataTable(" select * from alert_traffic_light order by alert_date desc ");
+        DataTable dtOri = DBHelper.GetDataTable(" select * from alert_traffic_light  order by alert_date desc ");
         foreach (DataRow drOri in dtOri.Rows)
         {
 
@@ -87,7 +87,7 @@
 
             double riseNextDay = Math.Round(100 * (s.kLineDay[alertIndex + 1].endPrice - s.kLineDay[alertIndex].endPrice) / s.kLineDay[alertIndex].endPrice, 2);
 
-            if (riseNextDay < 5 && riseNextDay > 9)
+            if (riseNextDay < 5 || riseNextDay > 9)
             {
                 continue;
             }
