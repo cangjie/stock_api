@@ -85,14 +85,20 @@
 
             double buyPrice = s.kLineDay[buyIndex].endPrice;
 
+            double riseNextDay = Math.Round(100 * (s.kLineDay[alertIndex + 1].endPrice - s.kLineDay[alertIndex].endPrice) / s.kLineDay[alertIndex].endPrice, 2);
 
+            if (riseNextDay >= 0.05)
+            {
+                continue;
+            }
 
             DataRow dr = dt.NewRow();
             dr["日期"] = s.kLineDay[buyIndex].endDateTime.ToShortDateString();
             dr["代码"] = s.gid.Trim();
             dr["名称"] = s.Name.Trim();
             dr["买入"] = buyPrice.ToString();
-            dr["次日"] = Math.Round(100 * (s.kLineDay[alertIndex + 1].endPrice - s.kLineDay[alertIndex].endPrice) / s.kLineDay[alertIndex].endPrice, 2).ToString() + "%";
+
+            dr["次日"] = riseNextDay.ToString() + "%";
             if (newHigh)
             {
                 dr["涨停"] = "是";
