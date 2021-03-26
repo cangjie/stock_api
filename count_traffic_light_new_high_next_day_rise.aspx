@@ -89,7 +89,7 @@
 
             if (riseNextDay < 5 || riseNextDay > 9)
             {
-                continue;
+                //continue;
             }
 
             DataRow dr = dt.NewRow();
