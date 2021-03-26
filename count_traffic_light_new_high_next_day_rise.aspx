@@ -31,6 +31,7 @@
         dt.Columns.Add("代码");
         dt.Columns.Add("名称");
         dt.Columns.Add("涨停");
+        dt.Columns.Add("次日");
         dt.Columns.Add("买入");
         for(int i = 1; i <= days; i++)
         {
@@ -80,7 +81,7 @@
 
             int buyIndex = alertIndex + 1 ;
 
-            
+
 
             double buyPrice = s.kLineDay[buyIndex].endPrice;
 
@@ -91,6 +92,7 @@
             dr["代码"] = s.gid.Trim();
             dr["名称"] = s.Name.Trim();
             dr["买入"] = buyPrice.ToString();
+            dr["次日"] = Math.Round(100 * (s.kLineDay[alertIndex + 1].endPrice - s.kLineDay[alertIndex].endPrice) / s.kLineDay[alertIndex].endPrice, 2).ToString() + "%";
             if (newHigh)
             {
                 dr["涨停"] = "是";
