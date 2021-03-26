@@ -87,7 +87,7 @@
 
             double riseNextDay = Math.Round(100 * (s.kLineDay[alertIndex + 1].endPrice - s.kLineDay[alertIndex].endPrice) / s.kLineDay[alertIndex].endPrice, 2);
 
-            if (riseNextDay >= 0.05)
+            if (riseNextDay >= 5)
             {
                 continue;
             }
