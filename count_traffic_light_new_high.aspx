@@ -32,11 +32,12 @@
         dt.Columns.Add("名称");
         dt.Columns.Add("涨停");
         dt.Columns.Add("买入");
+        dt.Columns.Add("今涨");
         for(int i = 1; i <= days; i++)
         {
             dt.Columns.Add(i.ToString() + "日");
         }
-        
+
         dt.Columns.Add("总计");
         DataTable dtOri = DBHelper.GetDataTable(" select * from alert_traffic_light order by alert_date desc ");
         foreach (DataRow drOri in dtOri.Rows)
@@ -50,9 +51,9 @@
             {
                 continue;
             }
-           
+
             if (alertIndex + days >= s.kLineDay.Length)
-            { 
+            {
                 continue;
             }
 
@@ -61,11 +62,11 @@
                 continue;
             }
             if (!s.IsLimitUp(alertIndex-2))
-            { 
+            {
                 continue;
             }
 
-            
+
 
             double maxVolume = Math.Max(s.kLineDay[alertIndex].volume, s.kLineDay[alertIndex - 1].volume);
 
@@ -81,6 +82,13 @@
                 continue;
             }
 
+            double rise = (s.kLineDay[alertIndex].endPrice - s.kLineDay[alertIndex - 1].endPrice) / s.kLineDay[alertIndex - 1].endPrice;
+
+            if (rise < 0.09)// || rise > 0.09)
+            {
+                continue;
+            }
+
             double buyPrice = s.kLineDay[buyIndex].endPrice;
 
 
@@ -90,6 +98,7 @@
             dr["代码"] = s.gid.Trim();
             dr["名称"] = s.Name.Trim();
             dr["买入"] = buyPrice.ToString();
+            dr["今涨"] = Math.Round(100 * rise, 2).ToString() + "%";
             if (newHigh)
             {
                 dr["涨停"] = "是";
@@ -99,6 +108,9 @@
                 dr["涨停"] = "否";
             }
             double finalRate = double.MinValue;
+
+
+
             for (int j = 1; j <= days; j++)
             {
                 double rate = (s.kLineDay[buyIndex + j].highestPrice - buyPrice) / buyPrice;
