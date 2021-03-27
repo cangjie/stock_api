@@ -25,6 +25,8 @@
 
     public DataTable GetData(string countPage)
     {
+        double startRate = double.Parse(Util.GetSafeRequestValue(Request, "start", "-0.01"));
+        double endRate = double.Parse(Util.GetSafeRequestValue(Request, "end", "0.01"));
         int days = int.Parse(Util.GetSafeRequestValue(Request, "days", "5"));
         DataTable dt = new DataTable();
         dt.Columns.Add("日期");
@@ -84,7 +86,7 @@
 
             double rise = (s.kLineDay[alertIndex].endPrice - maxPrice) / maxPrice;
 
-            if (rise <= 0 || rise >= 0.04)
+            if (rise <= startRate || rise >= endRate)
             {
                 continue;
             }
