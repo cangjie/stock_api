@@ -56,8 +56,9 @@
             {
                 continue;
             }
+            double maxPrice = Math.Max(s.kLineDay[alertIndex - 1].endPrice, s.kLineDay[alertIndex - 2].endPrice);
 
-            if (s.kLineDay[alertIndex].endPrice <= Math.Max(s.kLineDay[alertIndex-1].endPrice, s.kLineDay[alertIndex-2].endPrice))
+            if (s.kLineDay[alertIndex].endPrice <= maxPrice)
             {
                 continue;
             }
@@ -82,7 +83,7 @@
                 continue;
             }
 
-            double rise = (s.kLineDay[alertIndex].endPrice - s.kLineDay[alertIndex - 1].endPrice) / s.kLineDay[alertIndex - 1].endPrice;
+            double rise = (s.kLineDay[alertIndex].endPrice - maxPrice) / maxPrice;
 
             if (rise <= -0.01 || rise >= 0.01)
             {
