@@ -390,7 +390,7 @@
             if (trafficeLightPrice >= stock.kLineDay[trafficLightIndex - 2].endPrice
                 || stock.kLineDay[trafficLightIndex - 1].endPrice >= stock.kLineDay[trafficLightIndex - 2].endPrice)
             {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"红绿灯不跌\" >🌞</a>";
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"红灯或者绿灯高于涨停\" >🌞</a>";
             }
             double highPrice = 0;
             for (int i = 1; i <= 10 ; i++)
