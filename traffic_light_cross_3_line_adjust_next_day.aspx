@@ -36,7 +36,7 @@
             currentDate = Util.GetDay(calendar.SelectedDate);
         double startLightRate = double.Parse(Util.GetSafeRequestValue(Request, "startrate", "-0.2"));
         double endLightRate = double.Parse(Util.GetSafeRequestValue(Request, "endrate", "0.2"));
-        double coverRate = double.Parse(Util.GetSafeRequestValue(Request, "cover", "0"));
+        double coverRate = double.Parse(Util.GetSafeRequestValue(Request, "cover", "0.01"));
         DataTable dtOri = GetData(currentDate, coverRate, startLightRate, endLightRate);
         return RenderHtml(dtOri.Select("", sort));
     }
@@ -395,7 +395,7 @@
             double highPrice = 0;
             for (int i = 1; i <= 10 ; i++)
             {
-                if (currentIndex + i < stock.kLineDay.Length)
+                if (currentIndex + i  < stock.kLineDay.Length)
                 {
                     highPrice = Math.Max(stock.kLineDay[currentIndex + i].endPrice, highPrice);
                     dr[i.ToString() + "日"] = (stock.kLineDay[currentIndex + i].endPrice - buyPrice) / buyPrice;

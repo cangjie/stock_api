@@ -36,7 +36,7 @@
             currentDate = Util.GetDay(calendar.SelectedDate);
         double startLightRate = double.Parse(Util.GetSafeRequestValue(Request, "startrate", "-0.2"));
         double endLightRate = double.Parse(Util.GetSafeRequestValue(Request, "endrate", "0.2"));
-        double coverRate = double.Parse(Util.GetSafeRequestValue(Request, "cover", "0"));
+        double coverRate = double.Parse(Util.GetSafeRequestValue(Request, "cover", "0.01"));
         DataTable dtOri = GetData(currentDate, coverRate, startLightRate, endLightRate);
         return RenderHtml(dtOri.Select("", sort));
     }
