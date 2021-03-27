@@ -124,7 +124,8 @@
                         case "红绿灯涨":
                         default:
                             if (System.Text.RegularExpressions.Regex.IsMatch(drArr[0].Table.Columns[i].Caption.Trim(), "\\d日")
-                                || drArr[0].Table.Columns[i].Caption.Trim().Equals("总计") || drArr[0].Table.Columns[i].Caption.Trim().Equals("今涨"))
+                                || drArr[0].Table.Columns[i].Caption.Trim().Equals("总计") || drArr[0].Table.Columns[i].Caption.Trim().Equals("今涨")
+                                || drArr[0].Table.Columns[i].Caption.Trim().Equals("红绿灯涨"))
                             {
                                 if (!drOri[i].ToString().Equals(""))
                                 {
