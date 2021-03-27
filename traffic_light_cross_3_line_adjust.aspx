@@ -369,7 +369,8 @@
             dr["名称"] = stock.Name.Trim();
             dr["3线"] = stock.GetAverageSettlePrice(currentIndex, 3, 3);
             dr["买入"] = buyPrice;
-            dr["红绿灯涨"] = (trafficeLightPrice - stock.kLineDay[trafficLightIndex - 1].endPrice) / stock.kLineDay[trafficLightIndex - 1].endPrice;
+            double maxPrice = Math.Max(stock.kLineDay[trafficLightIndex - 1].endPrice, stock.kLineDay[trafficLightIndex - 2].endPrice);
+            dr["红绿灯涨"] = (trafficeLightPrice - maxPrice) / maxPrice;
             dr["今涨"] = (buyPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
             if (stock.IsLimitUp(trafficLightIndex))
             {
