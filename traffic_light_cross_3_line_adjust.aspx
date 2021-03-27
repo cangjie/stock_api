@@ -16,7 +16,7 @@
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        sort = Util.GetSafeRequestValue(Request, "sort", "1日 desc");
+        sort = Util.GetSafeRequestValue(Request, "sort", "今涨");
         if (!IsPostBack)
         {
             rate = int.Parse(Util.GetSafeRequestValue(Request, "rate", "100").Trim());
@@ -285,6 +285,7 @@
         dt.Columns.Add("信号", Type.GetType("System.String"));
         dt.Columns.Add("3线", Type.GetType("System.Double"));
         dt.Columns.Add("买入", Type.GetType("System.Double"));
+        dt.Columns.Add("今涨", Type.GetType("System.Double"));
         dt.Columns.Add("红绿灯涨", Type.GetType("System.Double"));
         for (int i = 1; i <= 10; i++)
         {
@@ -369,6 +370,7 @@
             dr["3线"] = stock.GetAverageSettlePrice(currentIndex, 3, 3);
             dr["买入"] = buyPrice;
             dr["红绿灯涨"] = (trafficeLightPrice - stock.kLineDay[trafficLightIndex - 1].endPrice) / stock.kLineDay[trafficLightIndex - 1].endPrice;
+            dr["今涨"] = (buyPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
             if (stock.IsLimitUp(trafficLightIndex))
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"红绿灯涨停\" >🏮</a>";
@@ -383,7 +385,7 @@
             }
             if (trafficeLightPrice >= stock.kLineDay[trafficLightIndex - 2].endPrice
                 || stock.kLineDay[trafficLightIndex - 1].endPrice >= stock.kLineDay[trafficLightIndex - 2].endPrice)
-            { 
+            {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"红绿灯不跌\" >🌞</a>";
             }
             double highPrice = 0;
@@ -486,7 +488,7 @@
                     <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号" SortExpression="信号|desc" ></asp:BoundColumn>
-                    
+                    <asp:BoundColumn DataField="今涨" HeaderText="今涨"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
                     <asp:BoundColumn DataField="红绿灯涨" HeaderText="红绿灯涨"></asp:BoundColumn>
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
