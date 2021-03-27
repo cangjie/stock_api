@@ -60,10 +60,7 @@
             }
             double maxPrice = Math.Max(s.kLineDay[alertIndex - 1].endPrice, s.kLineDay[alertIndex - 2].endPrice);
 
-            if (s.kLineDay[alertIndex].endPrice <= maxPrice)
-            {
-                continue;
-            }
+            
             if (!s.IsLimitUp(alertIndex-2))
             {
                 continue;
