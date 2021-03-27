@@ -718,12 +718,17 @@
                     dr["信号"] = dr["信号"].ToString() + "<a title=\"回踩DMP\" >D</a>";
                 }
             }
-
+            /*
             if (dtTimeline.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title='基本上在日均线以上' >📈</a>";
             }
-
+            */
+            if (stock.kLineDay[currentIndex].endPrice > Math.Max(stock.GetAverageSettlePrice(currentIndex, 3, 3), stock.GetAverageSettlePrice(currentIndex, 5, 5))
+                && stock.kLineDay[currentIndex].endPrice > stock.GetAverageSettlePrice(currentIndex, 5, 0))
+            { 
+                dr["信号"] = dr["信号"].ToString() + "<a title='所有线之上' >📈</a>";
+            }
             if (stock.IsLimitUp(currentIndex))
             {
                 dr["信号"] = "<a href=\"红绿灯涨停\" >🔥</a>";

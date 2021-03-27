@@ -39,7 +39,9 @@
         }
 
         dt.Columns.Add("总计");
-        DataTable dtOri = DBHelper.GetDataTable(" select * from alert_traffic_light order by alert_date desc ");
+        DataTable dtOri = DBHelper.GetDataTable(" select * from alert_traffic_light "
+            //+ " where gid = 'sh600980' "
+            + " order by alert_date desc ");
         foreach (DataRow drOri in dtOri.Rows)
         {
 
