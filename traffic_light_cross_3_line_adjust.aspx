@@ -121,6 +121,7 @@
                             dr[i] = "<font color=\"gray\"  >"  + Math.Round(priceDiff, 2).ToString() + "</font>";
                             break;
                         case "今涨":
+                        case "红绿灯涨":
                         default:
                             if (System.Text.RegularExpressions.Regex.IsMatch(drArr[0].Table.Columns[i].Caption.Trim(), "\\d日")
                                 || drArr[0].Table.Columns[i].Caption.Trim().Equals("总计") || drArr[0].Table.Columns[i].Caption.Trim().Equals("今涨"))
