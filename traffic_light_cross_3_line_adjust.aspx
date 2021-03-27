@@ -378,6 +378,11 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"红绿灯后第一日涨5%\" >🔺</a>";
             }
+            if (trafficeLightPrice >= stock.kLineDay[trafficLightIndex - 2].endPrice
+                || stock.kLineDay[trafficLightIndex - 1].endPrice >= stock.kLineDay[trafficLightIndex - 2].endPrice)
+            { 
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"红绿灯不跌\" >🌞</a>";
+            }
             double highPrice = 0;
             for (int i = 1; i <= 10 ; i++)
             {
