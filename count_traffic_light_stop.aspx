@@ -84,7 +84,7 @@
 
             double rise = (s.kLineDay[alertIndex].endPrice - maxPrice) / maxPrice;
 
-            if (rise <= -0.01 || rise >= 0.01)
+            if (rise <= 0 || rise >= 0.04)
             {
                 continue;
             }
