@@ -300,6 +300,7 @@
             + Util.GetLastTransactDate(currentDate, 21).ToShortDateString() + "' and alert_date <= '"
             + Util.GetLastTransactDate(currentDate, 1) + "' "
             //+ "  and gid = 'sz000626' "
+            + " order by alert_date desc  "
             );
 
 
