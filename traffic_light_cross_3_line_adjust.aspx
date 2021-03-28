@@ -398,6 +398,21 @@
                     dr[i.ToString() + "日"] = (stock.kLineDay[currentIndex + i].highestPrice - buyPrice) / buyPrice;
                 }
             }
+
+            bool willCross3Line = false;
+            for (int i = 1; i + currentIndex < stock.kLineDay.Length && !willCross3Line; i++)
+            {
+                if (stock.kLineDay[currentIndex + i - 1].endPrice <= stock.GetAverageSettlePrice(currentIndex + i - 1, 3, 3)
+                    && stock.kLineDay[currentIndex + i].endPrice >= stock.GetAverageSettlePrice(currentIndex + i, 3, 3))
+                {
+                    willCross3Line = true;
+                    if (stock.IsLimitUp(currentIndex + i))
+                    { 
+                        dr["信号"] = dr["信号"].ToString() + "<a title=\"上三线日涨停\" >🌈</a>";
+                    }
+                }
+            }
+
             dr["总计"] = (highPrice - buyPrice) / buyPrice;
             dt.Rows.Add(dr);
 
