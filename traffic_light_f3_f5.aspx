@@ -414,7 +414,7 @@
                     dr[i.ToString() + "日"] = (stock.kLineDay[currentIndex + i].highestPrice - buyPrice) / buyPrice;
                 }
             }
-            if (!willCover)
+            if (!willCover && (currentIndex + 10) >= stock.kLineDay.Length)
             { 
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"10日内不能平仓\" >💩</a>";
             }
