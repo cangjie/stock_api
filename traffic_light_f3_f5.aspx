@@ -410,8 +410,8 @@
                     {
                         willCover = true;
                     }
-                    highPrice = Math.Max(stock.kLineDay[currentIndex + i].endPrice, highPrice);
-                    dr[i.ToString() + "日"] = (stock.kLineDay[currentIndex + i].endPrice - buyPrice) / buyPrice;
+                    highPrice = Math.Max(stock.kLineDay[currentIndex + i].highestPrice, highPrice);
+                    dr[i.ToString() + "日"] = (stock.kLineDay[currentIndex + i].highestPrice - buyPrice) / buyPrice;
                 }
             }
             if (!willCover)
