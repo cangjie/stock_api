@@ -25,6 +25,8 @@
 
     public DataTable GetData(string countPage)
     {
+        double startRate = double.Parse(Util.GetSafeRequestValue(Request, "start", "-0.01"));
+        double endRate = double.Parse(Util.GetSafeRequestValue(Request, "end", "0.01"));
         int days = int.Parse(Util.GetSafeRequestValue(Request, "days", "5"));
         DataTable dt = new DataTable();
         dt.Columns.Add("日期");
@@ -39,7 +41,9 @@
         }
 
         dt.Columns.Add("总计");
-        DataTable dtOri = DBHelper.GetDataTable(" select * from alert_traffic_light order by alert_date desc ");
+        DataTable dtOri = DBHelper.GetDataTable(" select * from alert_traffic_light "
+            //+ " where gid = 'sh600980' "
+            + " order by alert_date desc ");
         foreach (DataRow drOri in dtOri.Rows)
         {
 
@@ -56,11 +60,9 @@
             {
                 continue;
             }
+            double maxPrice = Math.Max(s.kLineDay[alertIndex - 1].endPrice, s.kLineDay[alertIndex - 2].endPrice);
 
-            if (s.kLineDay[alertIndex].endPrice <= Math.Max(s.kLineDay[alertIndex-1].endPrice, s.kLineDay[alertIndex-2].endPrice))
-            {
-                continue;
-            }
+            
             if (!s.IsLimitUp(alertIndex-2))
             {
                 continue;
@@ -82,9 +84,9 @@
                 continue;
             }
 
-            double rise = (s.kLineDay[alertIndex].endPrice - s.kLineDay[alertIndex - 1].endPrice) / s.kLineDay[alertIndex - 1].endPrice;
+            double rise = (s.kLineDay[alertIndex].endPrice - maxPrice) / maxPrice;
 
-            if (rise < 0.09)// || rise > 0.09)
+            if (rise <= startRate || rise >= endRate)
             {
                 continue;
             }
