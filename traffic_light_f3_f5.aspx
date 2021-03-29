@@ -406,7 +406,7 @@
             {
                 if (currentIndex + i < stock.kLineDay.Length)
                 {
-                    if (stock.kLineDay[currentIndex + i].highestPrice >= buyPrice)
+                    if (stock.kLineDay[currentIndex + i].highestPrice >= buyPrice && i <= 5)
                     {
                         willCover = true;
                     }
@@ -414,9 +414,9 @@
                     dr[i.ToString() + "日"] = (stock.kLineDay[currentIndex + i].highestPrice - buyPrice) / buyPrice;
                 }
             }
-            if (!willCover && (currentIndex + 10) < stock.kLineDay.Length)
+            if (!willCover && (currentIndex + 5) < stock.kLineDay.Length)
             { 
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"10日内不能平仓\" >💩</a>";
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"5日内不能平仓\" >💩</a>";
             }
             dr["总计"] = (highPrice - buyPrice) / buyPrice;
             dt.Rows.Add(dr);
