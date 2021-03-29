@@ -401,13 +401,22 @@
                 dr["信号"] = "3";
             }
             double highPrice = 0;
+            bool willCover = false;
             for (int i = 1; i <= 10 ; i++)
             {
                 if (currentIndex + i < stock.kLineDay.Length)
                 {
+                    if (stock.kLineDay[currentIndex + i].highestPrice >= buyPrice)
+                    {
+                        willCover = true;
+                    }
                     highPrice = Math.Max(stock.kLineDay[currentIndex + i].endPrice, highPrice);
                     dr[i.ToString() + "日"] = (stock.kLineDay[currentIndex + i].endPrice - buyPrice) / buyPrice;
                 }
+            }
+            if (!willCover)
+            { 
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"10日内不能平仓\" >💩</a>";
             }
             dr["总计"] = (highPrice - buyPrice) / buyPrice;
             dt.Rows.Add(dr);
