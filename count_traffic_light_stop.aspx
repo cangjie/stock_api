@@ -62,12 +62,16 @@
             }
             double maxPrice = Math.Max(s.kLineDay[alertIndex - 1].endPrice, s.kLineDay[alertIndex - 2].endPrice);
 
-            
+
             if (!s.IsLimitUp(alertIndex-2))
             {
                 continue;
             }
 
+            if (s.IsLimitUp(alertIndex))
+            {
+                continue;
+            }
 
 
             double maxVolume = Math.Max(s.kLineDay[alertIndex].volume, s.kLineDay[alertIndex - 1].volume);
