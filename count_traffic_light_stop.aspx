@@ -25,8 +25,8 @@
 
     public DataTable GetData(string countPage)
     {
-        double startRate = double.Parse(Util.GetSafeRequestValue(Request, "start", "-0.01"));
-        double endRate = double.Parse(Util.GetSafeRequestValue(Request, "end", "0.01"));
+        double startRate = double.Parse(Util.GetSafeRequestValue(Request, "start", "-0.2"));
+        double endRate = double.Parse(Util.GetSafeRequestValue(Request, "end", "0.2"));
         int days = int.Parse(Util.GetSafeRequestValue(Request, "days", "5"));
         DataTable dt = new DataTable();
         dt.Columns.Add("日期");
