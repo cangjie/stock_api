@@ -37,18 +37,12 @@
         dtSummary.Columns.Add("涨1%");
         dtSummary.Columns.Add("涨5%");
 
-
-        for (double i = -0.09; i <= 0.1; i = i + 0.01)
+        int n = -10;
+        for (double i = -0.1; i <= 0.1; i = i + 0.01)
         {
             DataRow drSummary = dtSummary.NewRow();
-            if (100 * i < 0)
-            {
-                drSummary["涨幅"] = ((int)(100 * i)).ToString() + "%";
-            }
-            else
-            { 
-                drSummary["涨幅"] = ((int)(100 * i) + 1).ToString() + "%";
-            }
+            drSummary["涨幅"] = n.ToString() + "%";
+            n++;
             drSummary["总计"] = "0";
             drSummary["涨1%"] = "0";
             drSummary["涨5%"] = "0";
@@ -123,16 +117,14 @@
             double buyPrice = s.kLineDay[buyIndex].endPrice;
             double finalRate = double.MinValue;
 
-            if (rise < -0.1)
-            {
-                rise = -0.1;
-            }
-            if (rise > 0.1)
-            {
-                rise = 0.1;
-            }
-
+            
             int currentSummaryIndex = (int)(100 * (rise + 0.1));
+            if (currentSummaryIndex < 0)
+                currentSummaryIndex = 0;
+            if (currentSummaryIndex > 20)
+                currentSummaryIndex = 20;
+            dtSummary.Rows[0]["涨幅"] = "-10%及以下";
+            dtSummary.Rows[20]["涨幅"] = "10%以上";
             int count = int.Parse(dtSummary.Rows[currentSummaryIndex]["总计"].ToString().Trim());
             dtSummary.Rows[currentSummaryIndex]["总计"] = (count + 1).ToString();
             for (int j = 1; j <= days; j++)
