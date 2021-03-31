@@ -41,7 +41,14 @@
         for (double i = -0.09; i <= 0.1; i = i + 0.01)
         {
             DataRow drSummary = dtSummary.NewRow();
-            drSummary["涨幅"] = ((int)(100 * i)).ToString() + "%";
+            if (100 * i < 0)
+            {
+                drSummary["涨幅"] = ((int)(100 * i)).ToString() + "%";
+            }
+            else
+            { 
+                drSummary["涨幅"] = ((int)(100 * i) + 1).ToString() + "%";
+            }
             drSummary["总计"] = "0";
             drSummary["涨1%"] = "0";
             drSummary["涨5%"] = "0";
