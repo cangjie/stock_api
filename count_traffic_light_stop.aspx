@@ -27,6 +27,8 @@
     {
         double startRate = double.Parse(Util.GetSafeRequestValue(Request, "start", "-0.2"));
         double endRate = double.Parse(Util.GetSafeRequestValue(Request, "end", "0.2"));
+        DateTime startDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "startdate", "2020-1-1").Trim());
+        DateTime endDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "enddate", DateTime.Now.ToShortDateString()));
         int days = int.Parse(Util.GetSafeRequestValue(Request, "days", "5"));
         DataTable dt = new DataTable();
         dt.Columns.Add("日期");
@@ -43,6 +45,7 @@
         dt.Columns.Add("总计");
         DataTable dtOri = DBHelper.GetDataTable(" select * from alert_traffic_light "
             //+ " where gid = 'sh600980' "
+            + " where alert_date >= '" + startDate.ToShortDateString() + "' and alert_date <= '" + endDate.ToShortDateString() + "'  "
             + " order by alert_date desc ");
         foreach (DataRow drOri in dtOri.Rows)
         {
