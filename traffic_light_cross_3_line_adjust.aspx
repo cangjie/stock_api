@@ -37,7 +37,7 @@
         double startLightRate = double.Parse(Util.GetSafeRequestValue(Request, "startrate", "-0.2"));
         double endLightRate = double.Parse(Util.GetSafeRequestValue(Request, "endrate", "0.2"));
         double coverRate = double.Parse(Util.GetSafeRequestValue(Request, "cover", "0.01"));
-        DataTable dtOri = GetData(currentDate, coverRate, startLightRate, endLightRate);
+        DataTable dtOri = GetData(currentDate, coverRate, startLightRate, endLightRate, Util.GetSafeRequestValue(Request, "showall", "1").Trim().Equals("1")? true: false );
         return RenderHtml(dtOri.Select("", sort));
     }
 
@@ -273,7 +273,7 @@
 
     }
 
-    public static DataTable GetData(DateTime currentDate, double coverRate, double startLightRate, double endLightRate)
+    public static DataTable GetData(DateTime currentDate, double coverRate, double startLightRate, double endLightRate, bool showAll)
     {
 
         currentDate = Util.GetDay(currentDate);
@@ -302,7 +302,7 @@
         DataTable dtOri = DBHelper.GetDataTable("select * from alert_traffic_light where alert_date >= '"
             + Util.GetLastTransactDate(currentDate, 21).ToShortDateString() + "' and alert_date <= '"
             + Util.GetLastTransactDate(currentDate, 1) + "' "
-           // + "  and gid = 'sh601677' "
+            // + "  and gid = 'sh601677' "
             + " order by alert_date desc  "
             );
 
@@ -399,7 +399,7 @@
                 }
             }
             if (stock.IsLimitUp(currentIndex))
-            { 
+            {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"上三线日涨停\" >🌈</a>";
             }
             /*
@@ -421,7 +421,11 @@
 
 
             dr["总计"] = (highPrice - buyPrice) / buyPrice;
-            dt.Rows.Add(dr);
+            if (showAll || (!showAll && !isHaveCoverChance))
+            { 
+                dt.Rows.Add(dr);
+            }
+            
 
         }
         return dt;
