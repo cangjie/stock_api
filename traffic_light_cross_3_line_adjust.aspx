@@ -302,7 +302,7 @@
         DataTable dtOri = DBHelper.GetDataTable("select * from alert_traffic_light where alert_date >= '"
             + Util.GetLastTransactDate(currentDate, 21).ToShortDateString() + "' and alert_date <= '"
             + Util.GetLastTransactDate(currentDate, 1) + "' "
-            //+ "  and gid = 'sz000626' "
+           // + "  and gid = 'sh601677' "
             + " order by alert_date desc  "
             );
 
@@ -329,8 +329,8 @@
                 isLightAbove3Line = false;
             }
             */
-            double trafficeLightPrice = stock.kLineDay[trafficLightIndex].endPrice;
-            double lightGrowRate = (trafficeLightPrice - stock.kLineDay[trafficLightIndex - 1].endPrice)
+            double trafficLightPrice = stock.kLineDay[trafficLightIndex].endPrice;
+            double lightGrowRate = (trafficLightPrice - stock.kLineDay[trafficLightIndex - 1].endPrice)
                 / stock.kLineDay[trafficLightIndex - 1].endPrice;
             if (lightGrowRate < startLightRate || lightGrowRate > endLightRate)
             {
@@ -345,7 +345,7 @@
             bool isTodayCross3Line = false;
             for (int i = trafficLightIndex + 1; i < stock.kLineDay.Length && !isTodayCross3Line; i++)
             {
-                if ((stock.kLineDay[i].endPrice - trafficeLightPrice) / trafficeLightPrice >= coverRate)
+                if ((stock.kLineDay[i].highestPrice - trafficLightPrice) / trafficLightPrice >= coverRate)
                 {
                     isHaveCoverChance = true;
                 }
@@ -370,7 +370,7 @@
             dr["3线"] = stock.GetAverageSettlePrice(currentIndex, 3, 3);
             dr["买入"] = buyPrice;
             double maxPrice = Math.Max(stock.kLineDay[trafficLightIndex - 1].endPrice, stock.kLineDay[trafficLightIndex - 2].endPrice);
-            dr["红绿灯涨"] = (trafficeLightPrice - maxPrice) / maxPrice;
+            dr["红绿灯涨"] = (trafficLightPrice - maxPrice) / maxPrice;
             dr["今涨"] = (buyPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
             if (stock.IsLimitUp(trafficLightIndex))
             {
@@ -380,11 +380,11 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"有平仓信号\" >🤝</a>";
             }
-            if ((stock.kLineDay[trafficLightIndex + 1].endPrice - trafficeLightPrice) / trafficeLightPrice >= 0.05)
+            if ((stock.kLineDay[trafficLightIndex + 1].endPrice - trafficLightPrice) / trafficLightPrice >= 0.05)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"红绿灯后第一日涨5%\" >🔺</a>";
             }
-            if (trafficeLightPrice >= stock.kLineDay[trafficLightIndex - 2].endPrice
+            if (trafficLightPrice >= stock.kLineDay[trafficLightIndex - 2].endPrice
                 || stock.kLineDay[trafficLightIndex - 1].endPrice >= stock.kLineDay[trafficLightIndex - 2].endPrice)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"红灯或者绿灯高于涨停\" >🌞</a>";
