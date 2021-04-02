@@ -283,6 +283,7 @@
         dt.Columns.Add("现高", Type.GetType("System.Double"));
         dt.Columns.Add("F3", Type.GetType("System.Double"));
         dt.Columns.Add("F5", Type.GetType("System.Double"));
+        dt.Columns.Add("幅度", Type.GetType("System.Double"));
         dt.Columns.Add("支撑", Type.GetType("System.String"));
         dt.Columns.Add("买入", Type.GetType("System.Double"));
 
@@ -337,6 +338,14 @@
 
             int prevLowIndex = 0;
             double prevLowPrice = GetFirstLowestPrice(stock.kLineDay, trafficLightIndex-2, out prevLowIndex);
+            int farPrevLowIndex = 0;
+            double farPrevLowPrice = GetFirstLowestPrice(stock.kLineDay, prevLowIndex - 2, out  farPrevLowIndex);
+            if (farPrevLowPrice > prevLowPrice)
+            { 
+                //continue;
+            }
+
+
 
             double f3 = highestPrice - (highestPrice - prevLowPrice) * 0.382;
             double f5 = highestPrice - (highestPrice - prevLowPrice) * 0.618;
@@ -346,8 +355,18 @@
             int f5Index = 0;
             bool isHaveCoverChance = false;
             double trafficLightPrice = stock.kLineDay[trafficLightIndex].endPrice; 
+            double reverseLowPrice = double.MaxValue;
+            bool nowReverse = false;
             for (int i = trafficLightIndex; i <= currentIndex; i++)
-            {
+            {   
+                if (reverseLowPrice > stock.kLineDay[i].lowestPrice)
+                { 
+                    reverseLowPrice = stock.kLineDay[i].lowestPrice;
+                    if (i == currentIndex)
+                    { 
+                        nowReverse = true;
+                    }
+                }
                 if ((stock.kLineDay[i].highestPrice - trafficLightPrice) / trafficLightPrice > coverRate && i > trafficLightIndex)
                 { 
                     isHaveCoverChance = true;
@@ -369,6 +388,11 @@
                     }
                 }
 
+            }
+
+            if (!nowReverse)
+            { 
+                continue;
             }
 
             if (f5Index == currentIndex)
@@ -395,6 +419,7 @@
             dr["F3"] = f3;
             dr["F5"] = f5;
             dr["前低"] = prevLowPrice;
+            dr["幅度"] = (highestPrice - prevLowPrice)/prevLowPrice;
             if (stock.IsLimitUp(trafficLightIndex))
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"红绿灯涨停\" >🏮</a>";
@@ -523,6 +548,7 @@
                     <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F5" HeaderText="F5"></asp:BoundColumn>
                     <asp:BoundColumn DataField="前低" HeaderText="前低"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="幅度" HeaderText="幅度" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日" SortExpression="1日|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="2日" HeaderText="2日"></asp:BoundColumn>
