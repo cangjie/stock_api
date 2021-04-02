@@ -322,6 +322,10 @@
                 continue;
             }
 
+            int preLowIndex = 0;
+            double preLowPrice = GetFirstLowestPrice(stock.kLineDay, trafficLightIndex - 1, out preLowIndex);
+
+
             /*
             bool isLightAbove3Line = true;
             if (stock.kLineDay[trafficLightIndex].endPrice < stock.GetAverageSettlePrice(trafficLightIndex, 3, 3))
@@ -342,9 +346,17 @@
             {
                 continue;
             }
+            bool isComingDown = false;
             bool isTodayCross3Line = false;
             for (int i = trafficLightIndex + 1; i < stock.kLineDay.Length && !isTodayCross3Line; i++)
             {
+                if (i <= currentIndex)
+                {
+                    if (stock.kLineDay[i].lowestPrice <= preLowPrice)
+                    {
+                        isComingDown = true;
+                    }
+                }
                 if ((stock.kLineDay[i].highestPrice - trafficLightPrice) / trafficLightPrice >= coverRate)
                 {
                     isHaveCoverChance = true;
@@ -358,10 +370,11 @@
                     break;
                 }
             }
-            if (!isTodayCross3Line)
+            if (!isTodayCross3Line || isComingDown)
             {
                 continue;
             }
+            
             double buyPrice = stock.kLineDay[currentIndex].endPrice;
             DataRow dr = dt.NewRow();
             dr["红绿灯日"] = stock.kLineDay[trafficLightIndex].endDateTime.ToShortDateString();
@@ -422,10 +435,10 @@
 
             dr["总计"] = (highPrice - buyPrice) / buyPrice;
             if (showAll || (!showAll && !isHaveCoverChance))
-            { 
+            {
                 dt.Rows.Add(dr);
             }
-            
+
 
         }
         return dt;
