@@ -337,7 +337,7 @@
         DateTime limitUpStartDate = Util.GetLastTransactDate(lastTransactDate, 10);
 
         DataTable dtOri = DBHelper.GetDataTable(" select * from alert_traffic_light  where  alert_date >= '"
-            + Util.GetLastTransactDate(currentDate, days+1).ToShortDateString() + "' and alert_date < '" + currentDate.ToShortDateString() + "' ");
+            + Util.GetLastTransactDate(currentDate, days).ToShortDateString() + "' and alert_date < '" + currentDate.ToShortDateString() + "' ");
 
         foreach (DataRow drOri in dtOri.Rows)
         {
