@@ -128,6 +128,7 @@
                         case "现高":
                         case "3线":
                         case "无影":
+                        case "红绿灯价":
                             double currentValuePrice = (double)drOri[i];
                             dr[i] = "<font color=\"" + (currentValuePrice > currentPrice ? "red" : (currentValuePrice == currentPrice ? "gray" : "green")) + "\"  >"
                                 + Math.Round(currentValuePrice, 2).ToString() + "</font>";
@@ -755,8 +756,7 @@
                     <asp:BoundColumn DataField="红绿灯日" HeaderText="红绿灯日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="信号" HeaderText="信号" SortExpression="信号|desc" ></asp:BoundColumn>
-
+                    
                     <asp:BoundColumn DataField="红绿灯涨" HeaderText="红绿灯涨"></asp:BoundColumn>
                     <asp:BoundColumn DataField="红绿灯价" HeaderText="红绿灯价"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
