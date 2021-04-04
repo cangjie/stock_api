@@ -296,7 +296,7 @@
     {
         currentDate = Util.GetDay(currentDate);
         DataTable dt = new DataTable();
-        dt.Columns.Add("红绿灯日", Type.GetType("System.String"));
+        dt.Columns.Add("红绿灯日", Type.GetType("System.Int32"));
         dt.Columns.Add("代码", Type.GetType("System.String"));
         dt.Columns.Add("名称", Type.GetType("System.String"));
         dt.Columns.Add("信号", Type.GetType("System.String"));
@@ -337,7 +337,7 @@
         DateTime limitUpStartDate = Util.GetLastTransactDate(lastTransactDate, 10);
 
         DataTable dtOri = DBHelper.GetDataTable(" select * from alert_traffic_light  where  alert_date >= '"
-            + Util.GetLastTransactDate(currentDate, days).ToShortDateString() + "' ");
+            + Util.GetLastTransactDate(currentDate, days+1).ToShortDateString() + "' and alert_date < '" + currentDate.ToShortDateString() + "' ");
 
         foreach (DataRow drOri in dtOri.Rows)
         {
@@ -445,7 +445,7 @@
             int limitUpNum = 0;
 
             DataRow dr = dt.NewRow();
-            dr["红绿灯日"] = stock.kLineDay[trafficLightIndex].endDateTime.ToShortDateString();
+            dr["红绿灯日"] = currentIndex - trafficLightIndex;
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
 
@@ -753,12 +753,10 @@
                 <td><asp:DataGrid ID="dg" runat="server" BackColor="White" BorderColor="#999999" BorderStyle="None" BorderWidth="1px" CellPadding="3" GridLines="Vertical" Width="100%" AutoGenerateColumns="False" OnSortCommand="dg_SortCommand" AllowSorting="True" >
                 <AlternatingItemStyle BackColor="#DCDCDC" />
                 <Columns>
-                    <asp:BoundColumn DataField="红绿灯日" HeaderText="红绿灯日"></asp:BoundColumn>
+                    
                     <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
-                    
-                    <asp:BoundColumn DataField="红绿灯涨" HeaderText="红绿灯涨"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="红绿灯价" HeaderText="红绿灯价"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="红绿灯日" HeaderText="红绿灯日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
                     <asp:BoundColumn DataField="现高" HeaderText="现高"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>
