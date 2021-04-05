@@ -504,6 +504,11 @@
             }
 
             dr["信号"] = dr["信号"].ToString() + " " + support.Trim();
+            if (dr["信号"].ToString().Trim().Equals(""))
+            {
+                continue;
+            }
+
 
             dr["板数"] = limitUpNum;
 
