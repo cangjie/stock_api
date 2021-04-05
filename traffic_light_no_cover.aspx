@@ -569,18 +569,7 @@
             dr["涨幅"] = (currentPrice - trafficLightPrice) / trafficLightPrice;
             dr["红绿灯价"] = trafficLightPrice;
 
-            if (stock.kLineDay[currentIndex].endPrice > line3Price)
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"3线上\" >🌟</a>";
-            }
-
-            if (currentIndex >= 2
-                && (Math.Abs(stock.kLineDay[currentIndex].lowestPrice - stock.kLineDay[currentIndex - 1].lowestPrice) / stock.kLineDay[currentIndex - 1].lowestPrice < 0.005
-                || (Math.Abs(stock.kLineDay[currentIndex].lowestPrice - stock.kLineDay[currentIndex - 2].lowestPrice) / stock.kLineDay[currentIndex - 1].lowestPrice < 0.005
-                && stock.kLineDay[currentIndex - 1].lowestPrice > stock.kLineDay[currentIndex].lowestPrice && stock.kLineDay[currentIndex - 1].lowestPrice > stock.kLineDay[currentIndex - 2].lowestPrice)))
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"两条腿\" >🚶‍</a>";
-            }
+           
 
 
 
@@ -593,47 +582,7 @@
                     break;
                 }
             }
-            //if (stock.kLineDay[currentIndex].VirtualVolume )
-            if (lastLimitUpInddex < currentIndex)
-            {
-                double currentVolume = stock.kLineDay[lastLimitUpInddex + 1].volume;
-                if (stock.kLineDay[currentIndex].endDateTime.Date == DateTime.Now.Date && DateTime.Now.Hour < 15)
-                {
-                    currentVolume = stock.kLineDay[currentIndex].VirtualVolume;
-                }
-
-                if (currentVolume < stock.kLineDay[lastLimitUpInddex].volume)
-                {
-                    dr["信号"] = dr["信号"].ToString() + "<a title=\"缩量\" >缩</a>";
-                }
-            }
-            if (Math.Abs(stock.kLineDay[currentIndex].lowestPrice - line3Price) / line3Price < 0.05)
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"回踩3线\" >3⃣️</a>";
-            }
-            else
-            {
-                double dmp = stock.dmp(currentIndex);
-                if (Math.Abs(stock.kLineDay[currentIndex].lowestPrice - dmp) / dmp < 0.05)
-                {
-                    dr["信号"] = dr["信号"].ToString() + "<a title=\"回踩DMP\" >D</a>";
-                }
-            }
-            /*
-            if (dtTimeline.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title='基本上在日均线以上' >📈</a>";
-            }
-            */
-            if (stock.kLineDay[currentIndex].endPrice > Math.Max(stock.GetAverageSettlePrice(currentIndex, 3, 3), stock.GetAverageSettlePrice(currentIndex, 5, 5))
-                && stock.kLineDay[currentIndex].endPrice > stock.GetAverageSettlePrice(currentIndex, 5, 0))
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title='所有线之上' >📈</a>";
-            }
-            if (stock.IsLimitUp(currentIndex))
-            {
-                dr["信号"] = "<a href=\"红绿灯涨停\" >🔥</a>";
-            }
+            
 
 
             dr["0日"] = (stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
