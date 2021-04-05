@@ -341,6 +341,7 @@
 
         foreach (DataRow drOri in dtOri.Rows)
         {
+            bool isOver3Line = false;
             DateTime alertDate = DateTime.Parse(drOri["alert_date"].ToString().Trim());
             DataRow[] drArrExists = dtOri.Select(" gid = '" + drOri["gid"].ToString() + "' and alert_date > '" + alertDate.ToShortDateString() + "'  ");
             if (drArrExists.Length > 0)
@@ -364,6 +365,11 @@
                 continue;
             }
 
+            if (stock.kLineDay[currentIndex - 1].endPrice < stock.GetAverageSettlePrice(currentIndex - 1, 3, 3)
+                && stock.kLineDay[currentIndex].endPrice > stock.GetAverageSettlePrice(currentIndex, 3, 3))
+            {
+                isOver3Line = true;
+            }
 
             bool isCover = false;
 
@@ -397,6 +403,37 @@
             double line3Price = KLine.GetAverageSettlePrice(stock.kLineDay, currentIndex, 3, 3);
             double currentPrice = stock.kLineDay[currentIndex].endPrice;
             double trafficLightPrice = stock.kLineDay[trafficLightIndex].endPrice;
+
+            string support = "";
+
+            int f5Index = 0;
+            int f3Index = 0;
+
+            for (int i = trafficLightIndex; i <= currentIndex; i++)
+            {
+                if (stock.kLineDay[i].lowestPrice < f5 * 1.01)
+                {
+                    if (f5Index == 0 && stock.kLineDay[currentIndex].endPrice > f5)
+                    {
+                        f5Index = i;
+                    }
+                }
+                else if (stock.kLineDay[i].lowestPrice < f3 * 1.01)
+                {
+                    if (f3Index == 0 && stock.kLineDay[currentIndex].endPrice > f3)
+                    {
+                        f3Index = i;
+                    }
+                }
+            }
+            if (f5Index == currentIndex)
+            {
+                support = "F5";
+            }
+            if (f3Index == currentIndex)
+            {
+                support = "F3";
+            }
 
             for (int i = trafficLightIndex + 1; i <= trafficLightIndex + 15 && i < stock.kLineDay.Length; i++)
             {
@@ -448,6 +485,13 @@
             dr["红绿灯日"] = currentIndex - trafficLightIndex;
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
+
+            if (isOver3Line)
+            {
+                dr["信号"] = "3线";
+            }
+
+            dr["信号"] = dr["信号"].ToString() + " " + support.Trim();
 
             dr["板数"] = limitUpNum;
 
@@ -757,6 +801,7 @@
                     <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                     <asp:BoundColumn DataField="红绿灯日" HeaderText="红绿灯日"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="信号" HeaderText="信号"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
                     <asp:BoundColumn DataField="现高" HeaderText="现高"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>
