@@ -11,19 +11,18 @@
     public int count = 0;
     public int newHighCount = 0;
 
-    public string countPage = "limit_up_box_settle";
 
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack)
         {
-            countPage = Util.GetSafeRequestValue(Request, "page", "limit_up_box_settle");
-            dg.DataSource = GetData(countPage);
+            
+            dg.DataSource = GetData();
             dg.DataBind();
         }
     }
 
-    public DataTable GetData(string countPage)
+    public DataTable GetData()
     {
 
         DateTime startDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "startdate", "2020-1-1").Trim());
@@ -45,6 +44,7 @@
         DataTable dtOri = DBHelper.GetDataTable(" select * from alert_traffic_light "
             //+ " where gid = 'sh600980' "
             + " where alert_date >= '" + startDate.ToShortDateString() + "' and alert_date <= '" + endDate.ToShortDateString() + "'  "
+            //+ " and gid = 'sh603032' "
             + " order by alert_date desc ");
         foreach (DataRow drOri in dtOri.Rows)
         {
@@ -71,7 +71,8 @@
             double current3Line = s.GetAverageSettlePrice(alertIndex, 3, 3);
 
             if (s.kLineDay[alertIndex - 1].lowestPrice > last3Line || s.kLineDay[alertIndex - 1].highestPrice < last3Line
-                || s.kLineDay[alertIndex].lowestPrice > current3Line || s.kLineDay[alertIndex].highestPrice < current3Line)
+                || s.kLineDay[alertIndex].lowestPrice > current3Line || s.kLineDay[alertIndex].highestPrice < current3Line
+                || s.kLineDay[alertIndex - 1].endPrice < last3Line || s.kLineDay[alertIndex].endPrice < current3Line)
             {
                 continue;
             }
