@@ -800,7 +800,7 @@
 
             if (isTrafficeLight)
             {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"红绿灯\" >🚥</a>";
+                //dr["信号"] = dr["信号"].ToString() + "<a title=\"红绿灯\" >🚥</a>";
                 try
                 {
                     DBHelper.InsertData("alert_traffic_light_base_signal", new string[,] {{"alert_date", "datetime", currentDate.ToShortDateString() },
