@@ -377,7 +377,7 @@
             int lowestIndex = 0;
             double lowest = GetFirstLowestPrice(stock.kLineDay, trafficLightIndex, out lowestIndex);
             double highest = 0;
-            for (int i = trafficLightIndex; i < currentIndex; i++)
+            for (int i = trafficLightIndex-2; i < currentIndex; i++)
             {
                 if (highest < stock.kLineDay[i].highestPrice)
                 {
