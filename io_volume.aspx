@@ -16,7 +16,7 @@
 
 
 
-    public static Core.RedisClient rc = new Core.RedisClient("52.81.252.140");
+    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -351,7 +351,7 @@
         DataTable dtOri = DBHelper.GetDataTable(" select gid, alert_date from limit_up where alert_date >= '" + limitUpStartDate.ToShortDateString()
             + "' and alert_date <= '" + lastTransactDate.ToShortDateString() + "' order by alert_date desc ");
         DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor_new '" + currentDate.ToShortDateString() + "', " + increaseRate.ToString());
-        //Core.RedisClient rc = new Core.RedisClient("52.81.252.140");
+        //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
         foreach (DataRow drOri in dtIOVolume.Rows)
         {
 

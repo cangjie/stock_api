@@ -11,7 +11,7 @@
     public string sort = "缩量";
 
     
-    public static Core.RedisClient rc = new Core.RedisClient("52.81.252.140");
+    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
 
     public static double times = 3;
 
@@ -355,7 +355,7 @@
         DataTable dtWeekGold = DBHelper.GetDataTable(" select * from  alert_week_k_line_gold  where alert_date = '" + Util.GetLastTransactDate(currentDate, 1).ToShortDateString() + "' ");
 
 
-        //Core.RedisClient rc = new Core.RedisClient("52.81.252.140");
+        //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
         foreach (DataRow drOri in dtIOVolume.Rows)
         {
 

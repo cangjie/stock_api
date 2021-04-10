@@ -7,7 +7,7 @@
 
     public  ArrayList gidArr = new ArrayList();
 
-    public static Core.RedisClient rc = new Core.RedisClient("52.81.252.140");
+    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
 
     public  int suc = 0;
     public  int sucMax = 0;
