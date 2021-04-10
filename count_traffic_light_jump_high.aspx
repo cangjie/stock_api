@@ -66,6 +66,15 @@
 
             double buyPrice = s.kLineDay[buyIndex].startPrice;
 
+            string buyPoint = Util.GetSafeRequestValue(Request, "buypoint", "start");
+
+            if (buyPoint.Trim().Equals("end"))
+            {
+                buyPrice = s.kLineDay[buyIndex].endPrice;
+            }
+
+            //if ()
+
             if (buyPrice <= s.kLineDay[alertIndex - 2].highestPrice || buyPrice <= s.kLineDay[alertIndex - 1].highestPrice
                 || buyPrice <= s.kLineDay[alertIndex].highestPrice)
             {
