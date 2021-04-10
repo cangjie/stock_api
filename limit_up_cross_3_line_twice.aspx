@@ -8,7 +8,7 @@
 
     public DateTime currentDate = Util.GetDay(DateTime.Now);
 
-    public static Core.RedisClient rc = new Core.RedisClient("52.81.252.140");
+    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
 
     public string sort = "幅度 desc";
 

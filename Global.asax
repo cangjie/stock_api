@@ -13,7 +13,7 @@
             KLineCache.allGid = Util.GetAllGids();
         }
 
-        Core.RedisClient rc = new Core.RedisClient("52.81.252.140");
+        Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
         StackExchange.Redis.RedisValue[] rvArr = rc.redisDb.SetMembers((StackExchange.Redis.RedisKey)"all_gids");
         foreach (StackExchange.Redis.RedisValue rv in rvArr)
         {
@@ -22,7 +22,7 @@
         }
 
 
-        //Core.RedisClient rc = new Core.RedisClient("52.81.252.140");
+        //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
         //StackExchange.Redis.RedisValue[] rv = rc.redisDb.SetMembers((StackExchange.Redis.RedisKey)"all_gids");
 
 

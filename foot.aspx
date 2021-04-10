@@ -15,7 +15,7 @@
     public static Thread tQ = new Thread(tsQ);
 
 
-    public static Core.RedisClient rc = new Core.RedisClient("52.81.252.140");
+    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
 
     //DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor '" + currentDate.ToShortDateString() + "' ");
 
@@ -344,7 +344,7 @@
         
         DataTable dtIOVolume = DBHelper.GetDataTable(sql);
 
-        //Core.RedisClient rc = new Core.RedisClient("52.81.252.140");
+        //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
         foreach (DataRow drOri in dtIOVolume.Rows)
         {
 
