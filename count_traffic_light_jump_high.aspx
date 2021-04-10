@@ -87,7 +87,7 @@
                 {
                     if (needLimitUp == 1)
                     {
-                        continue
+                        continue;
                     }
                 }
             }
