@@ -393,7 +393,7 @@
 
             if (limitUpIndex + 2 < stock.kLineDay.Length)
             {
-                if (!stock.IsLimitUp(limitUpIndex + 1) && !stock.IsLimitUp(limitUpIndex + 2)
+                if (!stock.IsLimitUp(limitUpIndex + 1)
                     && (stock.kLineDay[limitUpIndex + 1].endPrice - stock.kLineDay[limitUpIndex].endPrice) / stock.kLineDay[limitUpIndex].endPrice > -0.095
                     && (stock.kLineDay[limitUpIndex + 2].endPrice - stock.kLineDay[limitUpIndex].endPrice) / stock.kLineDay[limitUpIndex + 1].endPrice > -0.095
                     && stock.kLineDay[limitUpIndex + 1].startPrice > stock.kLineDay[limitUpIndex + 1].endPrice
@@ -665,23 +665,7 @@
             dr["涨幅"] = (currentPrice - buyPrice) / buyPrice;
 
 
-            if (stock.kLineDay[currentIndex].endPrice > line3Price)
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"3线上\" >🌟</a>";
-            }
 
-            if (currentIndex >= 2
-                && (Math.Abs(stock.kLineDay[currentIndex].lowestPrice - stock.kLineDay[currentIndex - 1].lowestPrice) / stock.kLineDay[currentIndex - 1].lowestPrice < 0.005
-                || (Math.Abs(stock.kLineDay[currentIndex].lowestPrice - stock.kLineDay[currentIndex - 2].lowestPrice) / stock.kLineDay[currentIndex - 1].lowestPrice < 0.005
-                && stock.kLineDay[currentIndex - 1].lowestPrice > stock.kLineDay[currentIndex].lowestPrice && stock.kLineDay[currentIndex - 1].lowestPrice > stock.kLineDay[currentIndex - 2].lowestPrice)))
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"两条腿\" >🚶‍</a>";
-            }
-
-            if (dtFoot.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"无影脚\" >🦶</a>";
-            }
 
             int lastLimitUpInddex = currentIndex;
             for (int i = currentIndex-1; i >= 0 && stock.kLineDay[i].startDateTime.Date >= DateTime.Parse(drOri["alert_date"].ToString().Trim()).Date  ; i--)
@@ -701,38 +685,9 @@
                     currentVolume = stock.kLineDay[currentIndex].VirtualVolume;
                 }
 
-                if (currentVolume < stock.kLineDay[lastLimitUpInddex].volume)
-                {
-                    dr["信号"] = dr["信号"].ToString() + "<a title=\"缩量\" >缩</a>";
-                }
+
             }
-            if (Math.Abs(stock.kLineDay[currentIndex].lowestPrice - line3Price) / line3Price < 0.05)
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"回踩3线\" >3⃣️</a>";
-            }
-            else
-            {
-                double dmp = stock.dmp(currentIndex);
-                if (Math.Abs(stock.kLineDay[currentIndex].lowestPrice - dmp) / dmp < 0.05)
-                {
-                    dr["信号"] = dr["信号"].ToString() + "<a title=\"回踩DMP\" >D</a>";
-                }
-            }
-            /*
-            if (dtTimeline.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title='基本上在日均线以上' >📈</a>";
-            }
-            */
-            if (stock.kLineDay[currentIndex].endPrice > Math.Max(stock.GetAverageSettlePrice(currentIndex, 3, 3), stock.GetAverageSettlePrice(currentIndex, 5, 5))
-                && stock.kLineDay[currentIndex].endPrice > stock.GetAverageSettlePrice(currentIndex, 5, 0))
-            { 
-                dr["信号"] = dr["信号"].ToString() + "<a title='所有线之上' >📈</a>";
-            }
-            if (stock.IsLimitUp(currentIndex))
-            {
-                dr["信号"] = "<a href=\"红绿灯涨停\" >🔥</a>";
-            }
+
 
 
             dr["0日"] = (stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
@@ -746,7 +701,10 @@
             }
             dr["总计"] = (maxPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice;
 
-
+            if (stock.IsLimitUp(limitUpIndex + 2))
+            {
+                dr["信号"] = "<a title=\"涨停\" >📈</a>";
+            }
 
             dt.Rows.Add(dr);
 
