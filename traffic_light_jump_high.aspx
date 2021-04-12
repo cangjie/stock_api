@@ -594,7 +594,7 @@
 
             if (stock.IsLimitUp(trafficLightIndex))
             {
-                dr["信号"] = "<a href=\"红绿灯涨停\" >📈</a>";
+                dr["信号"] = "<a title=\"红绿灯涨停\" >📈</a>";
             }
 
             dt.Rows.Add(dr);
