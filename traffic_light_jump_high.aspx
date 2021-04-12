@@ -366,14 +366,24 @@
                 continue;
             }
 
+
+            /*
             if (stock.kLineDay[currentIndex].startPrice <= stock.kLineDay[trafficLightIndex].highestPrice
                 || stock.kLineDay[currentIndex].startPrice <= stock.kLineDay[trafficLightIndex - 1].highestPrice
                 || stock.kLineDay[currentIndex].startPrice <= stock.kLineDay[trafficLightIndex - 2].highestPrice)
             {
                 continue;
             }
+            */
 
+            double trafficListHighPrice = stock.kLineDay[trafficLightIndex].highestPrice;
+            trafficListHighPrice = Math.Max(stock.kLineDay[trafficLightIndex - 1].highestPrice, trafficListHighPrice);
+            trafficListHighPrice = Math.Max(stock.kLineDay[trafficLightIndex - 2].highestPrice, trafficListHighPrice);
 
+            if (stock.kLineDay[currentIndex].startPrice < trafficListHighPrice * 0.99)
+            {
+                continue;
+            }
 
 
             int highIndex = 0;
@@ -569,16 +579,6 @@
 
 
 
-            int lastLimitUpInddex = currentIndex;
-            for (int i = currentIndex-1; i >= 0 && stock.kLineDay[i].startDateTime.Date >= DateTime.Parse(drOri["alert_date"].ToString().Trim()).Date  ; i--)
-            {
-                if (stock.IsLimitUp(i))
-                {
-                    lastLimitUpInddex = i;
-                    break;
-                }
-            }
-
 
 
             dr["0日"] = (stock.kLineDay[currentIndex].highestPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
@@ -592,7 +592,10 @@
             }
             dr["总计"] = (maxPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice;
 
-
+            if (stock.IsLimitUp(trafficLightIndex))
+            {
+                dr["信号"] = "<a href=\"红绿灯涨停\" >📈</a>";
+            }
 
             dt.Rows.Add(dr);
 
