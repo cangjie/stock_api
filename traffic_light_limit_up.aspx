@@ -316,20 +316,22 @@
             {
                 continue;
             }
-            bool limitUpContinued = false;
-
+            bool haveLimitUp = false;
             for (int i = trafficLightIndex; i < currentIndex; i++)
             {
                 if (stock.IsLimitUp(i))
                 {
-                    limitUpContinued = true;
+                    haveLimitUp = true;
                     break;
                 }
             }
-            if (limitUpContinued)
+            if (haveLimitUp)
             {
                 continue;
             }
+
+
+
 
             double buyPrice = stock.kLineDay[currentIndex].endPrice;
 

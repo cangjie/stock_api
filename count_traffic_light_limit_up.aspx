@@ -41,12 +41,7 @@
         }
 
         dt.Columns.Add("总计");
-        DataTable dtOri = DBHelper.GetDataTable(" select * from limit_up  "
-            + " where exists ( select 'a' from alert_traffic_light where limit_up.gid = alert_traffic_light.gid  "
-            + " and alert_traffic_light.alert_date <= limit_up.alert_date  "
-            + " and alert_traffic_light.alert_date > dbo.func_GetLastTransactDate(limit_up.alert_date, 5)) "
-           
-            + " order by alert_date desc ");
+        DataTable dtOri = DBHelper.GetDataTable(" select * from alert_traffic_light  order by alert_date desc ");
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock s = GetStock(drOri["gid"].ToString().Trim());
@@ -57,7 +52,22 @@
             }
 
 
-            int buyIndex = alertIndex;
+            int limitUpIndex = 0;
+            for (int i = 0; i < 5 && alertIndex + i < s.kLineDay.Length; i++)
+            {
+                if (s.IsLimitUp(alertIndex + i))
+                {
+                    limitUpIndex = alertIndex + i;
+                }
+            }
+
+            if (limitUpIndex == 0)
+            {
+                continue;
+            }
+
+
+            int buyIndex = limitUpIndex + 1;
 
             if (buyIndex + days >= s.kLineDay.Length)
             {
@@ -74,8 +84,8 @@
                 buyPrice = s.kLineDay[buyIndex].endPrice;
             }
 
-            
-            
+
+
             DataRow dr = dt.NewRow();
             dr["日期"] = s.kLineDay[buyIndex].endDateTime.ToShortDateString();
             dr["代码"] = s.gid.Trim();
