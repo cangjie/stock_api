@@ -292,8 +292,8 @@
 
 
 
-        DataTable dtOri = DBHelper.GetDataTable("select * from alert_traffic_light where alert_date > '"
-            + Util.GetLastTransactDate(currentDate, 5).ToShortDateString() + "' and alert_date <= '"
+        DataTable dtOri = DBHelper.GetDataTable("select * from alert_traffic_light where alert_date >= '"
+            + Util.GetLastTransactDate(currentDate, 5).ToShortDateString() + "' and alert_date < '"
             + currentDate.ToShortDateString() + "' "
             //+ "  and gid = 'sh603222' "
             );
@@ -312,12 +312,12 @@
             {
                 continue;
             }
-            if (!stock.IsLimitUp(currentIndex))
+            if (!stock.IsLimitUp(currentIndex-1))
             {
                 continue;
             }
             bool haveLimitUp = false;
-            for (int i = trafficLightIndex; i < currentIndex; i++)
+            for (int i = trafficLightIndex; i < currentIndex-1; i++)
             {
                 if (stock.IsLimitUp(i))
                 {
