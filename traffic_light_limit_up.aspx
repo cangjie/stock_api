@@ -279,7 +279,7 @@
         dt.Columns.Add("信号", Type.GetType("System.String"));
         dt.Columns.Add("3线", Type.GetType("System.Double"));
         dt.Columns.Add("买入", Type.GetType("System.Double"));
-
+        dt.Columns.Add("今涨", Type.GetType("System.Double"));
         for (int i = 1; i <= 10; i++)
         {
             dt.Columns.Add(i.ToString() + "日", Type.GetType("System.Double"));
@@ -343,6 +343,7 @@
             dr["名称"] = stock.Name.Trim();
             dr["3线"] = stock.GetAverageSettlePrice(currentIndex, 3, 3);
             dr["买入"] = buyPrice;
+            dr["今涨"] = (stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
             double highPrice = 0;
             for (int i = 1; i <= 10 ; i++)
             {
@@ -447,6 +448,7 @@
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
                    
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="今涨" HeaderText="今涨"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日" SortExpression="1日|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="2日" HeaderText="2日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3日" HeaderText="3日"></asp:BoundColumn>
