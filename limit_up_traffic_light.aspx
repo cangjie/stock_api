@@ -140,7 +140,7 @@
 
                         default:
                             if (System.Text.RegularExpressions.Regex.IsMatch(drArr[0].Table.Columns[i].Caption.Trim(), "\\d日")
-                                || drArr[0].Table.Columns[i].Caption.Trim().Equals("总计") || drArr[0].Table.Columns[i].Caption.Trim().Equals("红绿灯涨") 
+                                || drArr[0].Table.Columns[i].Caption.Trim().Equals("总计") || drArr[0].Table.Columns[i].Caption.Trim().Equals("红绿灯涨")
                                 || drArr[0].Table.Columns[i].Caption.Trim().Equals("涨幅"))
                             {
                                 if (!drOri[i].ToString().Equals(""))
@@ -631,6 +631,16 @@
             {
                 dr["信号"] = "<a title=\"涨停\" >📈</a>";
             }
+
+            if (stock.kLineDay[currentIndex].lowestPrice > stock.kLineDay[currentIndex - 1].highestPrice)
+            { 
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"缺口\" >🔥</a>";
+            }
+            else if (stock.kLineDay[currentIndex].startPrice > stock.kLineDay[currentIndex - 1].endPrice)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"跳空高开\" >🌟</a>";
+            }
+
 
             dt.Rows.Add(dr);
 
