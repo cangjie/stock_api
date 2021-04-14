@@ -14,7 +14,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "红绿灯涨");
+        sort = Util.GetSafeRequestValue(Request, "sort", "缩量 desc");
         if (!IsPostBack)
         {
 
@@ -140,7 +140,8 @@
 
                         default:
                             if (System.Text.RegularExpressions.Regex.IsMatch(drArr[0].Table.Columns[i].Caption.Trim(), "\\d日")
-                                || drArr[0].Table.Columns[i].Caption.Trim().Equals("总计") || drArr[0].Table.Columns[i].Caption.Trim().Equals("红绿灯涨"))
+                                || drArr[0].Table.Columns[i].Caption.Trim().Equals("总计") || drArr[0].Table.Columns[i].Caption.Trim().Equals("红绿灯涨") 
+                                || drArr[0].Table.Columns[i].Caption.Trim().Equals("涨幅"))
                             {
                                 if (!drOri[i].ToString().Equals(""))
                                 {
@@ -333,8 +334,6 @@
         DateTime lastTransactDate = Util.GetLastTransactDate(currentDate, 2);
         DateTime limitUpStartDate = Util.GetLastTransactDate(lastTransactDate, 10);
 
-        DataTable dtDtl = DBHelper.GetDataTable(" select gid, alert_date, price from alert_foot where alert_date > '"
-            + currentDate.ToShortDateString() + "' and alert_date < '" + currentDate.AddDays(1).ToShortDateString() + "'  order by alert_date desc ");
 
         DataTable dtOri = DBHelper.GetDataTable(" select gid, alert_date from limit_up a where  alert_date = '" + lastTransactDate.ToShortDateString() + "' "
             //+ " and not exists ( select 'a' from limit_up c where a.gid = c.gid and dbo.func_GetLastTransactDate(c.alert_date, 1) = a.alert_date ) "
@@ -342,11 +341,6 @@
             //+ " and gid = 'sh600616' "
             );
 
-        DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor_new '" + currentDate.ToShortDateString() + "' ");
-
-        DataTable dtFoot = DBHelper.GetDataTable(" select * from alert_foot_new where alert_date = '" + currentDate.Date.ToShortDateString() + "'  ");
-
-        DataTable dtTimeline = DBHelper.GetDataTable(" select * from alert_avarage_timeline where alert_date = '" + currentDate.ToShortDateString() + "' ");
 
         //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
         foreach (DataRow drOri in dtOri.Rows)
@@ -442,36 +436,6 @@
 
             double maxVolume = stock.kLineDay[limitUpIndex].volume;
 
-            /*
-            int tochSupportStatus = 0;
-            for (int i = currentIndex - 1; i >= highIndex; i--)
-            {
-                switch (tochSupportStatus)
-                {
-                    case 0:
-                        if (stock.kLineDay[i].lowestPrice > buyPrice)
-                        {
-                            tochSupportStatus++;
-                        }
-                        else
-                        {
-                            tochSupportStatus = 2;
-                        }
-                        break;
-                    case 1:
-                        if (stock.kLineDay[i].lowestPrice < buyPrice)
-                        {
-                            tochSupportStatus++;
-                        }
-                        break;
-                }
-                if (tochSupportStatus == 2)
-                {
-                    break;
-                }
-            }
-            */
-
 
 
             double todayLowestPrice = 0;
@@ -483,11 +447,12 @@
 
 
             //double f3Distance = 0.382 - (highest - stock.kLineDay[currentIndex].lowestPrice) / (highest - lowest);
+            /*
             double volumeToday = 0;
 
             if (limitUpIndex + 1 < stock.kLineDay.Length)
             {
-                volumeToday = stock.kLineDay[limitUpIndex+1].volume;
+                volumeToday = stock.kLineDay[limitUpIndex+1].VirtualVolume;
                 if(stock.kLineDay[limitUpIndex+1].endDateTime.Date == DateTime.Now.Date && DateTime.Now.Hour < 15)
                 {
                     volumeToday = stock.kLineDay[limitUpIndex+1].VirtualVolume;
@@ -495,59 +460,15 @@
             }
 
             double volumeYesterday = stock.kLineDay[limitUpIndex].volume;// Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(stock.kLineDay[limitUpIndex].startDateTime.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
-            /*
-            for (int j = lowestIndex; j < currentIndex; j++)
-            {
-                volumeYesterday = Math.Max(volumeYesterday, stock.kLineDay[j].VirtualVolume);
-            }
             */
 
-            double volumeReduce = volumeToday / maxVolume;
 
 
-            //buyPrice = Math.Max(f3, stock.kLineDay[currentIndex].lowestPrice);
+            double volumeReduce = stock.kLineDay[currentIndex - 1].volume / Stock.GetAvarageVolume(stock.kLineDay, currentIndex, 20);
+
+
+
             string memo = "";
-            /*
-            Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
-
-            if (timelineArray.Length == 0)
-            {
-                timelineArray = Core.Timeline.LoadTimelineArrayFromSqlServer(stock.gid, currentDate);
-            }
-            bool isFoot = foot(timelineArray, out todayLowestPrice, out todayDisplayedLowestPrice, out footTime);
-            DateTime todayLowestTime = Core.Timeline.GetLowestTime(timelineArray);
-            if (todayLowestTime.Hour == 9 && todayLowestTime.Minute < 30)
-            {
-                todayLowestTime = todayLowestTime.Date.AddHours(9).AddMinutes(30);
-            }
-            TimeSpan todayLowestTimeSpan;
-
-
-            if (DateTime.Now.Date == currentDate.Date && DateTime.Now.Hour < 15)
-            {
-                todayLowestTimeSpan = DateTime.Now - todayLowestTime;
-                if (todayLowestTime.Hour < 13)
-                {
-                    if (DateTime.Now.Hour < 13)
-                    {
-                        todayLowestTimeSpan = todayLowestTimeSpan - (DateTime.Now - DateTime.Now.Date.AddHours(11).AddMinutes(30));
-                    }
-                    else
-                    {
-                        todayLowestTimeSpan = todayLowestTimeSpan - (DateTime.Now.AddHours(13) - DateTime.Now.Date.AddHours(11).AddMinutes(30));
-                    }
-                }
-            }
-            else
-            {
-                todayLowestTimeSpan = todayLowestTime.Date.AddHours(15) - todayLowestTime;
-                if (todayLowestTime.Hour < 13)
-                {
-                    todayLowestTimeSpan = todayLowestTimeSpan - (currentDate.Date.AddHours(13) - currentDate.Date.AddHours(11).AddMinutes(30));
-                }
-            }
-            */
-            // memo = todayLowestTimeSpan.Hours.ToString() + "小时" + todayLowestTimeSpan.Minutes.ToString() + "分钟";
 
 
             if (f3 >= line3Price)
@@ -662,7 +583,7 @@
             //buyPrice = supportPrice;
             dr["买入"] = buyPrice;
 
-            dr["涨幅"] = (currentPrice - buyPrice) / buyPrice;
+            dr["涨幅"] = (buyPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
 
 
 
@@ -858,7 +779,7 @@
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号" SortExpression="信号|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="缩量" HeaderText="缩量"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="红绿灯涨" HeaderText="红绿灯涨"></asp:BoundColumn>
+                    
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD日|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
@@ -867,8 +788,9 @@
                     <asp:BoundColumn DataField="F5" HeaderText="F5"></asp:BoundColumn>
                     <asp:BoundColumn DataField="前低" HeaderText="前低"></asp:BoundColumn>
                     <asp:BoundColumn DataField="幅度" HeaderText="幅度"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="现价" HeaderText="现价"></asp:BoundColumn>
+                    
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="红绿灯涨" HeaderText="红绿灯涨"></asp:BoundColumn>
                     <asp:BoundColumn DataField="涨幅" HeaderText="涨幅"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="0日" HeaderText="0日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日" SortExpression="1日|desc" ></asp:BoundColumn>

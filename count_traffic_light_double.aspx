@@ -66,15 +66,18 @@
 
             double buyPrice = s.kLineDay[buyIndex].startPrice;
 
-            string buyPoint = Util.GetSafeRequestValue(Request, "buypoint", "start");
+            string buyPoint = Util.GetSafeRequestValue(Request, "buypoint", "end");
 
             if (buyPoint.Trim().Equals("end"))
             {
                 buyPrice = s.kLineDay[buyIndex].endPrice;
             }
 
-            
-            
+            if (s.kLineDay[buyIndex].highestPrice < s.kLineDay[buyIndex - 1].endPrice)
+            {
+                //continue;
+            }
+
             DataRow dr = dt.NewRow();
             dr["日期"] = s.kLineDay[buyIndex].endDateTime.ToShortDateString();
             dr["代码"] = s.gid.Trim();
