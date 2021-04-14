@@ -332,15 +332,20 @@
         }
 
         DateTime lastTransactDate = Util.GetLastTransactDate(currentDate, 2);
-        DateTime limitUpStartDate = Util.GetLastTransactDate(lastTransactDate, 10);
+        //DateTime limitUpStartDate = Util.GetLastTransactDate(lastTransactDate, 10);
 
 
         DataTable dtOri = DBHelper.GetDataTable(" select gid, alert_date from limit_up a where  alert_date = '" + lastTransactDate.ToShortDateString() + "' "
             //+ " and not exists ( select 'a' from limit_up c where a.gid = c.gid and dbo.func_GetLastTransactDate(c.alert_date, 1) = a.alert_date ) "
             //+ " and not exists ( select 'a' from limit_up d where a.gid = d.gid and dbo.func_GetLastTransactDate(d.alert_date, 2) = a.alert_date ) "
-            //+ " and gid = 'sh600616' "
+            //+ " and gid = 'sz000761' "
             );
 
+        DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor_new '" + currentDate.ToShortDateString() + "' ");
+
+        DataTable dtFoot = DBHelper.GetDataTable(" select * from alert_foot_new where alert_date = '" + currentDate.Date.ToShortDateString() + "'  ");
+
+        DataTable dtTimeline = DBHelper.GetDataTable(" select * from alert_avarage_timeline where alert_date = '" + currentDate.ToShortDateString() + "' ");
 
         //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
         foreach (DataRow drOri in dtOri.Rows)
@@ -389,9 +394,9 @@
             {
                 if (!stock.IsLimitUp(limitUpIndex + 1)
                     && (stock.kLineDay[limitUpIndex + 1].endPrice - stock.kLineDay[limitUpIndex].endPrice) / stock.kLineDay[limitUpIndex].endPrice > -0.095
-                    && (stock.kLineDay[limitUpIndex + 2].endPrice - stock.kLineDay[limitUpIndex].endPrice) / stock.kLineDay[limitUpIndex + 1].endPrice > -0.095
+                    && (stock.kLineDay[limitUpIndex + 2].endPrice - stock.kLineDay[limitUpIndex + 1].endPrice) / stock.kLineDay[limitUpIndex + 1].endPrice > -0.095
                     && stock.kLineDay[limitUpIndex + 1].startPrice > stock.kLineDay[limitUpIndex + 1].endPrice
-                    && stock.kLineDay[limitUpIndex + 2].startPrice < stock.kLineDay[limitUpIndex + 2].endPrice)
+                    && stock.kLineDay[limitUpIndex + 2].startPrice <= stock.kLineDay[limitUpIndex + 2].endPrice)
                 {
                     isTrafficLight = true;
                 }
