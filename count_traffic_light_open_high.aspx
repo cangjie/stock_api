@@ -32,7 +32,8 @@
         dt.Columns.Add("日期");
         dt.Columns.Add("代码");
         dt.Columns.Add("名称");
-
+        dt.Columns.Add("今涨");
+        dt.Columns.Add("红绿灯涨");
         dt.Columns.Add("买入");
 
         for(int i = 1; i <= days; i++)
@@ -87,7 +88,9 @@
             dr["代码"] = s.gid.Trim();
             dr["名称"] = s.Name.Trim();
             dr["买入"] = buyPrice.ToString();
-
+            dr["今涨"] = Math.Round(100 * (s.kLineDay[buyIndex].endPrice - s.kLineDay[buyIndex - 1].endPrice) / s.kLineDay[buyIndex - 1].endPrice, 2).ToString() + "%";
+            double trafficLightPrice = Math.Max(Math.Max(s.kLineDay[buyIndex].highestPrice, s.kLineDay[buyIndex - 1].highestPrice), s.kLineDay[buyIndex - 2].highestPrice);
+            dr["红绿灯涨"] = Math.Round(100 * (s.kLineDay[buyIndex].endPrice - trafficLightPrice) / trafficLightPrice, 2).ToString() + "%";
             double finalRate = double.MinValue;
 
 
