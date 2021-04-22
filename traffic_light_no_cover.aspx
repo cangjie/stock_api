@@ -506,13 +506,19 @@
             dr["信号"] = dr["信号"].ToString() + " " + support.Trim();
 
 
-            double dmpPrice = stock.dmp(currentIndex);
 
-            if ((stock.kLineDay[currentIndex].endPrice - dmpPrice) / dmpPrice > -0.01 
-                && stock.kLineDay[currentIndex].macd < 0)
+
+            if (stock.kLineDay[currentIndex].macd < 0 && stock.kLineDay[currentIndex - 1].macd < 0
+                && stock.kLineDay[currentIndex - 2].macd < 0 && stock.kLineDay[currentIndex - 3].macd < 0)
             {
-                dr["信号"] = dr["信号"].ToString() + " <a title=\"dmp\" >📈</a>";
+                double dmpPrice = stock.dmp(currentIndex);
+                if ((stock.kLineDay[currentIndex].endPrice - dmpPrice) / dmpPrice > -0.01)
+                { 
+                    dr["信号"] = dr["信号"].ToString() + " <a title=\"dmp\" >📈</a>";
+                }
             }
+
+      
 
 
             dr["板数"] = limitUpNum;
