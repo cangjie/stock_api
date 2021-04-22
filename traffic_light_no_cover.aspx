@@ -33,7 +33,7 @@
             currentDate = Util.GetDay(DateTime.Now);
         else
             currentDate = Util.GetDay(calendar.SelectedDate);
-        int days = int.Parse(Util.GetSafeRequestValue(Request, "days", "15"));
+        int days = int.Parse(Util.GetSafeRequestValue(Request, "days", "22"));
         DataTable dtOri = GetData(currentDate, days);
         string filter = "";
         if (Util.GetSafeRequestValue(Request, "goldcross", "0").Trim().Equals("0"))
@@ -333,11 +333,13 @@
             return dt;
         }
 
-        DateTime lastTransactDate = Util.GetLastTransactDate(currentDate, 2);
-        DateTime limitUpStartDate = Util.GetLastTransactDate(lastTransactDate, 10);
+        //DateTime lastTransactDate = Util.GetLastTransactDate(currentDate, 2);
+        //DateTime limitUpStartDate = Util.GetLastTransactDate(lastTransactDate, 30);
 
         DataTable dtOri = DBHelper.GetDataTable(" select * from alert_traffic_light  where  alert_date >= '"
-            + Util.GetLastTransactDate(currentDate, days).ToShortDateString() + "' and alert_date < '" + currentDate.ToShortDateString() + "' ");
+            + Util.GetLastTransactDate(currentDate, days).ToShortDateString() + "' and alert_date < '" + currentDate.ToShortDateString() + "' "
+            //+ " and gid = 'sh600381' "
+            );
 
         foreach (DataRow drOri in dtOri.Rows)
         {
@@ -508,8 +510,8 @@
 
 
 
-            if (stock.kLineDay[currentIndex].macd < 0 && stock.kLineDay[currentIndex - 1].macd < 0
-                && stock.kLineDay[currentIndex - 2].macd < 0 && stock.kLineDay[currentIndex - 3].macd < 0)
+            if (stock.kLineDay[currentIndex].macd <= 0 && stock.kLineDay[currentIndex - 1].macd <= 0
+                && stock.kLineDay[currentIndex - 2].macd <= 0 && stock.kLineDay[currentIndex - 3].macd <= 0)
             {
                 double dmpPrice = stock.dmp(currentIndex);
                 if ((stock.kLineDay[currentIndex].endPrice - dmpPrice) / dmpPrice > -0.01)
