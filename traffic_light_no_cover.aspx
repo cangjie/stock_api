@@ -505,6 +505,15 @@
 
             dr["信号"] = dr["信号"].ToString() + " " + support.Trim();
 
+
+            double dmpPrice = stock.dmp(currentIndex);
+
+            if ((stock.kLineDay[currentIndex].endPrice - dmpPrice) / dmpPrice > -0.01)
+            {
+                dr["信号"] = dr["信号"].ToString() + " <a title=\"dmp\" >📈</a>";
+            }
+
+
             dr["板数"] = limitUpNum;
 
             double maxPrice = Math.Max(stock.kLineDay[currentIndex - 1].endPrice, stock.kLineDay[currentIndex - 2].endPrice);
