@@ -508,7 +508,8 @@
 
             double dmpPrice = stock.dmp(currentIndex);
 
-            if ((stock.kLineDay[currentIndex].endPrice - dmpPrice) / dmpPrice > -0.01)
+            if ((stock.kLineDay[currentIndex].endPrice - dmpPrice) / dmpPrice > -0.01 
+                && stock.kLineDay[currentIndex].macd < 0)
             {
                 dr["信号"] = dr["信号"].ToString() + " <a title=\"dmp\" >📈</a>";
             }
