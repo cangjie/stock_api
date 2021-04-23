@@ -141,7 +141,8 @@
 
                         default:
                             if (System.Text.RegularExpressions.Regex.IsMatch(drArr[0].Table.Columns[i].Caption.Trim(), "\\d日")
-                                || drArr[0].Table.Columns[i].Caption.Trim().Equals("总计") || drArr[0].Table.Columns[i].Caption.Trim().Equals("红绿灯涨"))
+                                || drArr[0].Table.Columns[i].Caption.Trim().Equals("总计") || drArr[0].Table.Columns[i].Caption.Trim().Equals("红绿灯涨")
+                                || drArr[0].Table.Columns[i].Caption.Trim().Equals("今涨"))
                             {
                                 if (!drOri[i].ToString().Equals(""))
                                 {
@@ -311,6 +312,7 @@
         dt.Columns.Add("幅度", Type.GetType("System.String"));
         dt.Columns.Add("3线", Type.GetType("System.Double"));
         dt.Columns.Add("现价", Type.GetType("System.Double"));
+        dt.Columns.Add("今涨", Type.GetType("System.Double"));
         dt.Columns.Add("评级", Type.GetType("System.String"));
         dt.Columns.Add("买入", Type.GetType("System.Double"));
         dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
@@ -499,7 +501,9 @@
             dr["红绿灯日"] = currentIndex - trafficLightIndex;
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
-
+            dr["KDJ日"] = stock.kdjDays(currentIndex);
+            dr["MACD日"] = stock.macdDays(currentIndex);
+            dr["今涨"] = (stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
             if (isOver3Line)
             {
                 dr["信号"] = "3线";
@@ -510,17 +514,18 @@
 
 
 
+
             if (stock.kLineDay[currentIndex].macd <= 0 && stock.kLineDay[currentIndex - 1].macd <= 0
                 && stock.kLineDay[currentIndex - 2].macd <= 0 && stock.kLineDay[currentIndex - 3].macd <= 0)
             {
                 double dmpPrice = stock.dmp(currentIndex);
                 if ((stock.kLineDay[currentIndex].endPrice - dmpPrice) / dmpPrice > -0.01)
-                { 
+                {
                     dr["信号"] = dr["信号"].ToString() + " <a title=\"dmp\" >📈</a>";
                 }
             }
 
-      
+
 
 
             dr["板数"] = limitUpNum;
@@ -780,6 +785,8 @@
                     <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                     <asp:BoundColumn DataField="红绿灯日" HeaderText="红绿灯日"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="MACD日" HeaderText="MACD日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
                     <asp:BoundColumn DataField="现高" HeaderText="现高"></asp:BoundColumn>
@@ -790,6 +797,7 @@
                     <asp:BoundColumn DataField="现价" HeaderText="现价"></asp:BoundColumn>
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="涨幅" HeaderText="涨幅"  ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="今涨" HeaderText="今涨"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="0日" HeaderText="0日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日" SortExpression="1日|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="2日" HeaderText="2日"></asp:BoundColumn>
