@@ -451,24 +451,6 @@
 
 
 
-            //double f3Distance = 0.382 - (highest - stock.kLineDay[currentIndex].lowestPrice) / (highest - lowest);
-            /*
-            double volumeToday = 0;
-
-            if (limitUpIndex + 1 < stock.kLineDay.Length)
-            {
-                volumeToday = stock.kLineDay[limitUpIndex+1].VirtualVolume;
-                if(stock.kLineDay[limitUpIndex+1].endDateTime.Date == DateTime.Now.Date && DateTime.Now.Hour < 15)
-                {
-                    volumeToday = stock.kLineDay[limitUpIndex+1].VirtualVolume;
-                }
-            }
-
-            double volumeYesterday = stock.kLineDay[limitUpIndex].volume;// Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(stock.kLineDay[limitUpIndex].startDateTime.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
-            */
-
-
-
             double volumeReduce = stock.kLineDay[currentIndex - 1].volume / Stock.GetAvarageVolume(stock.kLineDay, currentIndex, 20);
 
 
@@ -490,25 +472,7 @@
             bool isSortCase = false;
             bool isHorseHead = false;
             int limitUpNum = 0;
-            /*
-            for (int i = limitUpIndex; stock.kLineDay[i].endPrice >= stock.GetAverageSettlePrice(i, 3, 3) && i >= 0; i--)
-            {
-                if (stock.IsLimitUp(i))
-                {
-                    limitUpNum++;
-                    if (limitUpNum == 1
-                        && Math.Min(stock.kLineDay[i+1].startPrice, stock.kLineDay[i+1].endPrice) > stock.kLineDay[i].endPrice)
-                    {
-                        isSortCase = true;
-                        if (stock.kLineDay[i + 1].endPrice > stock.kLineDay[i].endPrice)
-                        {
-                            isHorseHead = true;
-                        }
-                    }
-                }
 
-            }
-            */
 
 
             DataRow dr = dt.NewRow();
@@ -529,9 +493,6 @@
 
 
             KLine highKLine = stock.kLineDay[highIndex];
-
-
-
 
 
 
@@ -632,9 +593,16 @@
                 dr["信号"] = "<a title=\"涨停\" >📈</a>";
             }
 
+            if (stock.kLineDay[currentIndex].macd > stock.kLineDay[currentIndex - 1].macd
+                && stock.kLineDay[currentIndex - 1].macd > stock.kLineDay[currentIndex - 2].macd
+                && stock.kLineDay[currentIndex - 2].macd > stock.kLineDay[currentIndex - 3].macd)
+            { 
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"MACD三连涨\" >🔥</a>";
+            }
+            
             if (stock.kLineDay[currentIndex].lowestPrice > stock.kLineDay[currentIndex - 1].highestPrice)
             { 
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"缺口\" >🔥</a>";
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"缺口\" >🌟🌟</a>";
             }
             else if (stock.kLineDay[currentIndex].startPrice > stock.kLineDay[currentIndex - 1].endPrice)
             {
