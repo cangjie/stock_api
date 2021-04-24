@@ -43,7 +43,9 @@
 
         dt.Columns.Add("总计");
         DataTable dtOri = DBHelper.GetDataTable(" select * from alert_traffic_light where alert_date >= '" + startDate.ToShortDateString()
-            + "' and alert_date <= '" + endDate.ToShortDateString() + "' order by alert_date desc ");
+            + "' and alert_date <= '" + endDate.ToShortDateString() + "'  "
+            + "  and gid =  'sz002980'  "
+            + " order by alert_date desc ");
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock s = GetStock(drOri["gid"].ToString().Trim());
@@ -53,16 +55,13 @@
                 continue;
             }
 
-            if (s.kLineDay[alertIndex].startPrice <= s.kLineDay[alertIndex - 1].endPrice)
-            {
-                continue;
-            }
+           
 
             int buyIndex = 0;
             for (int i = 1; i <= 30 && alertIndex + i < s.kLineDay.Length
-                && s.kLineDay[alertIndex + i].highestPrice < s.kLineDay[alertIndex].highestPrice; i++)
+                && s.kLineDay[alertIndex + i].highestPrice < s.kLineDay[alertIndex].endPrice; i++)
             {
-                if (s.kLineDay[alertIndex + i].macd >= 0
+                if (s.macdDays(alertIndex + i) <= 1
                     && s.kLineDay[alertIndex + i].endPrice < s.kLineDay[alertIndex + i - 1].endPrice
                     && s.kLineDay[alertIndex + i].macd > s.kLineDay[alertIndex + i - 1].macd
                     //&& s.kLineDay[alertIndex + i - 1].endPrice < s.kLineDay[alertIndex + i - 2].endPrice
@@ -84,7 +83,7 @@
 
             }
 
-            if (s.macdDays(buyIndex) > 1)
+            if (s.macdDays(buyIndex) > 0)
             {
                 continue;
             }

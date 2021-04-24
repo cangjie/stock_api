@@ -14,7 +14,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "红绿灯日");
+        sort = Util.GetSafeRequestValue(Request, "sort", "MACD日");
         if (!IsPostBack)
         {
 
@@ -478,7 +478,7 @@
             }
             for (int i = trafficLightIndex + 1; i < currentIndex && i <= trafficLightIndex + 30 && i < stock.kLineDay.Length; i++)
             {
-                if (stock.kLineDay[i].highestPrice >= trafficLightPrice * 1.05)
+                if (stock.kLineDay[i].highestPrice >= trafficLightPrice)
                 {
                     isCover = true;
                     break;
