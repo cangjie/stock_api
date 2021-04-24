@@ -340,7 +340,7 @@
 
         DataTable dtOri = DBHelper.GetDataTable(" select * from alert_traffic_light  where  alert_date >= '"
             + Util.GetLastTransactDate(currentDate, days).ToShortDateString() + "' and alert_date < '" + currentDate.ToShortDateString() + "' "
-            //+ " and gid = 'sh600381' "
+            //+ " and gid = 'sz002209' "
             );
 
         foreach (DataRow drOri in dtOri.Rows)
@@ -391,10 +391,7 @@
                 continue;
             }
 
-            if (isDoubleDeviate)
-            {
-                continue;
-            }
+           
 
 
             if (stock.kLineDay[currentIndex - 1].endPrice < stock.GetAverageSettlePrice(currentIndex - 1, 3, 3)
@@ -479,9 +476,9 @@
             {
                 isOver3Line = false;
             }
-            for (int i = trafficLightIndex + 1; i <= trafficLightIndex + 15 && i < stock.kLineDay.Length; i++)
+            for (int i = trafficLightIndex + 1; i < currentIndex && i <= trafficLightIndex + 30 && i < stock.kLineDay.Length; i++)
             {
-                if (stock.kLineDay[i].highestPrice >= trafficLightPrice)
+                if (stock.kLineDay[i].highestPrice >= trafficLightPrice * 1.05)
                 {
                     isCover = true;
                     break;
