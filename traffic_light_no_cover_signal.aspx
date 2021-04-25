@@ -14,7 +14,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "红绿灯日");
+        sort = Util.GetSafeRequestValue(Request, "sort", "MACD日");
         if (!IsPostBack)
         {
 
@@ -510,6 +510,7 @@
                 continue;
             }
 
+            dr["MACD日"] = stock.macdDays(currentIndex);
 
             dr["板数"] = limitUpNum;
 
@@ -769,6 +770,7 @@
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                     <asp:BoundColumn DataField="红绿灯日" HeaderText="红绿灯日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="MACD日" HeaderText="MACD日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
                     <asp:BoundColumn DataField="现高" HeaderText="现高"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>

@@ -511,7 +511,14 @@
 
             dr["信号"] = dr["信号"].ToString() + " " + support.Trim();
 
+            double today3Line = stock.GetAverageSettlePrice(currentIndex, 3, 3);
+            double last3Line = stock.GetAverageSettlePrice(currentIndex - 1, 3, 3);
 
+            if (today3Line < stock.kLineDay[currentIndex].endPrice && (today3Line > stock.kLineDay[currentIndex].startPrice
+                || last3Line > stock.kLineDay[currentIndex - 1].endPrice) && (int)dr["MACD日"] == 0)
+            { 
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"过3线且MACD金叉\" >🔥</a>";
+            }
 
 
 
