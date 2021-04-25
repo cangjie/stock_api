@@ -340,7 +340,7 @@
 
         DataTable dtOri = DBHelper.GetDataTable(" select * from alert_traffic_light  where  alert_date >= '"
             + Util.GetLastTransactDate(currentDate, days).ToShortDateString() + "' and alert_date < '" + currentDate.ToShortDateString() + "' "
-            //+ " and gid = 'sh600381' "
+            //+ " and gid = 'sh601633' "
             );
 
         foreach (DataRow drOri in dtOri.Rows)
@@ -497,6 +497,18 @@
 
             int limitUpNum = 0;
 
+            bool isDeviate = false;
+
+            for (int i = 0; i < 5 && currentIndex - i > 1; i++)
+            {
+                if (stock.kLineDay[currentIndex - i].endPrice < stock.kLineDay[currentIndex - i - 1].endPrice
+                    && stock.kLineDay[currentIndex - i].macd > stock.kLineDay[currentIndex - i - 1].macd)
+                {
+                    isDeviate = true;
+                    break;
+                }
+            }
+
             DataRow dr = dt.NewRow();
             dr["红绿灯日"] = currentIndex - trafficLightIndex;
             dr["代码"] = stock.gid.Trim();
@@ -516,9 +528,11 @@
 
             if (today3Line < stock.kLineDay[currentIndex].endPrice && (today3Line > stock.kLineDay[currentIndex].startPrice
                 || last3Line > stock.kLineDay[currentIndex - 1].endPrice) && (int)dr["MACD日"] == 0)
-            { 
+            {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"过3线且MACD金叉\" >🔥</a>";
             }
+
+            
 
 
 
@@ -533,7 +547,10 @@
             }
 
 
-
+            if (isDeviate && ((int)dr["KDJ日"] == 0 || !dr["信号"].ToString().Trim().Equals("")))
+            { 
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"MACD背离\" >	🌟</a>";
+            }
 
             dr["板数"] = limitUpNum;
 
