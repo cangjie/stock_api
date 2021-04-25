@@ -511,7 +511,7 @@
             }
 
             dr["MACD日"] = stock.macdDays(currentIndex);
-
+            dr["KDJ日"] = stock.kdjDays(currentIndex);
             dr["板数"] = limitUpNum;
 
             double maxPrice = Math.Max(stock.kLineDay[currentIndex - 1].endPrice, stock.kLineDay[currentIndex - 2].endPrice);
@@ -574,10 +574,6 @@
             dr["评级"] = memo;
             //buyPrice = stock.kLineDay[currentIndex].endPrice;
 
-
-            dr["KDJ日"] = stock.kdjDays(currentIndex);
-
-            dr["MACD日"] = stock.macdDays(currentIndex);
 
             dr["无影时"] = footTime;
             dr["无影"] = todayLowestPrice;
@@ -771,6 +767,7 @@
                     <asp:BoundColumn DataField="红绿灯日" HeaderText="红绿灯日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号"></asp:BoundColumn>
                     <asp:BoundColumn DataField="MACD日" HeaderText="MACD日"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
                     <asp:BoundColumn DataField="现高" HeaderText="现高"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>
@@ -778,7 +775,7 @@
                     <asp:BoundColumn DataField="前低" HeaderText="前低"></asp:BoundColumn>
                     <asp:BoundColumn DataField="幅度" HeaderText="幅度"></asp:BoundColumn>
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
-                    <asp:BoundColumn DataField="涨幅" HeaderText="涨幅"  ></asp:BoundColumn>
+                    
                     <asp:BoundColumn DataField="今涨" HeaderText="今涨"></asp:BoundColumn>
                     <asp:BoundColumn DataField="0日" HeaderText="0日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日" SortExpression="1日|desc" ></asp:BoundColumn>
