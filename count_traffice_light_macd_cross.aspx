@@ -73,7 +73,7 @@
 
             }
 
-            if (s.macdDays(buyIndex) > 0)
+            if (s.macdDays(buyIndex) < 0)
             {
                 continue;
             }
