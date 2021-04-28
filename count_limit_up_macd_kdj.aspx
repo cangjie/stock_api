@@ -58,19 +58,28 @@
                 continue;
             }
 
-           
+
 
             int buyIndex = alertIndex + 1;
-            
 
 
-            if (buyIndex == 0)
+
+            if (buyIndex == 0 || buyIndex >= s.kLineDay.Length )
             {
                 continue;
 
             }
 
-           
+            if (s.kLineDay[buyIndex].startPrice <= s.kLineDay[buyIndex].endPrice)
+            {
+                continue;
+            }
+
+            if (s.kLineDay[buyIndex].macd < s.kLineDay[buyIndex - 1].macd)
+            {
+                continue;
+            }
+
 
             //int buyIndex = alertIndex ;
 
@@ -79,17 +88,17 @@
                 continue;
             }
 
-            
+
             double buyPrice = s.kLineDay[buyIndex].startPrice;
 
-            string buyPoint = Util.GetSafeRequestValue(Request, "buypoint", "start");
+            string buyPoint = Util.GetSafeRequestValue(Request, "buypoint", "end");
 
             if (buyPoint.Trim().Equals("end"))
             {
                 buyPrice = s.kLineDay[buyIndex].endPrice;
             }
 
-          
+
 
             DataRow dr = dt.NewRow();
             dr["日期"] = s.kLineDay[buyIndex].endDateTime.ToShortDateString();
