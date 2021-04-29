@@ -25,7 +25,7 @@
     public DataTable GetData()
     {
 
-        DateTime startDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "startdate", "2021-4-1").Trim());
+        DateTime startDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "startdate", "2020-1-1").Trim());
         DateTime endDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "enddate", DateTime.Now.ToShortDateString()));
         int days = int.Parse(Util.GetSafeRequestValue(Request, "days", "10"));
         DataTable dt = new DataTable();
