@@ -22,6 +22,7 @@
                 LimitUp.SaveLimitUp(s.gid.Trim(), DateTime.Parse(s.kLineDay[currentIndex].startDateTime.ToShortDateString()),
                              s.kLineDay[currentIndex].endPrice, s.kLineDay[currentIndex].startPrice,
                              s.kLineDay[currentIndex].highestPrice, s.kLineDay[currentIndex].volume);
+                StockWatcher.SearchFolks(s.gid, "day", s.kLineDay, s.kLineDay.Length - 1);
             }
         }
     }

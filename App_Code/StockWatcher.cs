@@ -234,7 +234,7 @@ public class StockWatcher
 
     public static void LogQuota()
     {
-        for (; true;)
+        for (; false;)
         {
             try
             {
