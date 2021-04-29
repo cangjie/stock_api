@@ -17,13 +17,16 @@
             s.LoadKLineDay(Util.rc);
             s.kArr = s.kLineDay;
             int currentIndex = s.kLineDay.Length - 1;
-            StockWatcher.SearchFolks(s.gid, "day", s.kLineDay, s.kLineDay.Length - 1);
+            if (s.kLineDay.Length >= 17)
+            {
+                StockWatcher.SearchFolks(s.gid, "day", s.kLineDay, s.kLineDay.Length - 1);
+            }
             if (s.IsLimitUp(s.kLineDay.Length - 1))
-            { 
+            {
                 LimitUp.SaveLimitUp(s.gid.Trim(), DateTime.Parse(s.kLineDay[currentIndex].startDateTime.ToShortDateString()),
                              s.kLineDay[currentIndex].endPrice, s.kLineDay[currentIndex].startPrice,
                              s.kLineDay[currentIndex].highestPrice, s.kLineDay[currentIndex].volume);
-                
+
             }
         }
     }
