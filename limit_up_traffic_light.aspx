@@ -596,12 +596,12 @@
             if (stock.kLineDay[currentIndex].macd > stock.kLineDay[currentIndex - 1].macd
                 && stock.kLineDay[currentIndex - 1].macd > stock.kLineDay[currentIndex - 2].macd
                 && stock.kLineDay[currentIndex - 2].macd > stock.kLineDay[currentIndex - 3].macd)
-            { 
+            {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"MACD三连涨\" >🔥</a>";
             }
-            
+
             if (stock.kLineDay[currentIndex].lowestPrice > stock.kLineDay[currentIndex - 1].highestPrice)
-            { 
+            {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"缺口\" >🌟🌟</a>";
             }
             else if (stock.kLineDay[currentIndex].startPrice > stock.kLineDay[currentIndex - 1].endPrice)
@@ -721,7 +721,10 @@
 
             }
             gid = gid.Replace("</a>", "").Replace(">", "").ToUpper();
-            content += gid + "\r\n";
+            if (gid.Trim().Length == 8)
+            {
+                content += gid.Substring(2, 6) + "\r\n";
+            }
         }
         Response.Clear();
         Response.ContentType = "text/plain";
