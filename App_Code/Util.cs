@@ -269,7 +269,7 @@ public class Util
             || (date.Date >= DateTime.Parse("2021-1-1") && date.Date <= DateTime.Parse("2021-1-3"))
             || (date.Date >= DateTime.Parse("2021-2-11") && date.Date <= DateTime.Parse("2021-2-17"))
             || (date.Date >= DateTime.Parse("2021-4-4") && date.Date <= DateTime.Parse("2021-4-5"))
-            )
+            || (date.Date >= DateTime.Parse("2021-5-1") && date.Date <= DateTime.Parse("2021-5-5")))
             ret = false;
         return ret;
     }
