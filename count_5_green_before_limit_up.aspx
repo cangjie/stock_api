@@ -79,14 +79,19 @@
 
             double buyPrice = s.kLineDay[buyIndex].startPrice;
 
+            int macdDays = s.macdDays(buyIndex);
 
+            if (macdDays < 0)
+            {
+                continue;
+            }
 
             DataRow dr = dt.NewRow();
             dr["日期"] = s.kLineDay[buyIndex].endDateTime.ToShortDateString();
             dr["代码"] = s.gid.Trim();
             dr["名称"] = s.Name.Trim();
             dr["买入"] = buyPrice.ToString();
-            dr["MACD日"] = s.macdDays(buyIndex).ToString();
+            dr["MACD日"] = macdDays.ToString();
             /*
             if (newHigh)
             {
