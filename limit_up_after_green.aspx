@@ -339,7 +339,7 @@
         //DateTime limitUpStartDate = Util.GetLastTransactDate(lastTransactDate, 30);
 
         DataTable dtOri = DBHelper.GetDataTable(" select * from limit_up  where  alert_date = '"
-            + currentDate.ToShortDateString() + "'  "
+            + Util.GetLastTransactDate(currentDate, 1).ToShortDateString() + "'  "
             //+ " and gid = 'sh600715' "
             );
 
@@ -361,12 +361,15 @@
 
             if (currentIndex < days)
                 continue;
-
+            if (!stock.IsLimitUp(currentIndex - 1))
+            {
+                continue;
+            }
 
             bool haveRed = false;
             for (int i = 1; i <= days; i++)
             {
-                if (stock.kLineDay[currentIndex - i].startPrice <= stock.kLineDay[currentIndex - i].endPrice)
+                if (stock.kLineDay[currentIndex - 1 - i].startPrice <= stock.kLineDay[currentIndex - 1 - i].endPrice)
                 {
                     haveRed = true;
                     break;
@@ -381,14 +384,13 @@
 
             int trafficLightIndex = stock.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
 
-           
+
             if (stock.kLineDay[currentIndex - 1].endPrice < stock.GetAverageSettlePrice(currentIndex - 1, 3, 3)
                 && stock.kLineDay[currentIndex].endPrice > stock.GetAverageSettlePrice(currentIndex, 3, 3))
             {
                 isOver3Line = true;
             }
 
-            bool isCover = false;
 
             int highIndex = 0;
             int lowestIndex = 0;
@@ -468,11 +470,10 @@
             {
                 if (stock.kLineDay[i].highestPrice >= trafficLightPrice)
                 {
-                    isCover = true;
                     break;
                 }
             }
-           
+
 
             double maxVolume = stock.kLineDay[trafficLightIndex].volume;
 
@@ -667,7 +668,7 @@
 
 
             dt.Rows.Add(dr);
-            
+
 
         }
         //rc.Dispose();
