@@ -51,7 +51,7 @@
             Stock s = GetStock(drOri["gid"].ToString().Trim());
             int alertIndex = s.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
             if (!s.IsLimitUp(alertIndex))
-            { 
+            {
                 continue;
             }
             if (alertIndex - 5 < 0)
@@ -70,12 +70,22 @@
             {
                 continue;
             }
-            
+
             int buyIndex = alertIndex;
 
             if (buyIndex + 10 > s.kLineDay.Length - 1)
             {
                 continue;
+            }
+
+            bool over3Line = Util.GetSafeRequestValue(Request, "over3line", "0").Trim().Equals("1") ? false : true;
+
+            if (over3Line)
+            {
+                if (s.kLineDay[alertIndex].endPrice < s.GetAverageSettlePrice(alertIndex, 3, 3))
+                {
+                    continue;
+                }
             }
 
             double buyPrice = s.kLineDay[buyIndex].endPrice;
