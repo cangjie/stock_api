@@ -11,36 +11,32 @@
     public int count = 0;
     public int newHighCount = 0;
 
-    public string countPage = "limit_up_box_settle";
+
 
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack)
         {
-            countPage = Util.GetSafeRequestValue(Request, "page", "limit_up_box_settle");
-            dg.DataSource = GetData(countPage);
+
+            dg.DataSource = GetData();
             dg.DataBind();
         }
     }
 
-    public DataTable GetData(string countPage)
+    public DataTable GetData()
     {
+        int days = int.Parse(Util.GetSafeRequestValue(Request, "days", "5"));
         DataTable dt = new DataTable();
         dt.Columns.Add("日期");
         dt.Columns.Add("代码");
         dt.Columns.Add("名称");
         dt.Columns.Add("涨停");
         dt.Columns.Add("买入");
-        dt.Columns.Add("1日");
-        dt.Columns.Add("2日");
-        dt.Columns.Add("3日");
-        dt.Columns.Add("4日");
-        dt.Columns.Add("5日");
-        dt.Columns.Add("6日");
-        dt.Columns.Add("7日");
-        dt.Columns.Add("8日");
-        dt.Columns.Add("9日");
-        dt.Columns.Add("10日");
+        for (int i = 1; i <= days; i++)
+        { 
+            dt.Columns.Add(i.ToString() + "日");
+        }
+        
         dt.Columns.Add("总计");
         DataTable dtOri = DBHelper.GetDataTable(" select * from alert_traffic_light  order by alert_date desc ");
         foreach (DataRow drOri in dtOri.Rows)
@@ -54,9 +50,9 @@
             {
                 continue;
             }
-           
 
-            
+
+
 
             double maxVolume = Math.Max(s.kLineDay[alertIndex].volume, s.kLineDay[alertIndex - 1].volume);
 
@@ -90,7 +86,7 @@
                 dr["涨停"] = "否";
             }
             double finalRate = double.MinValue;
-            for (int j = 1; j <= 10; j++)
+            for (int j = 1; j <= days; j++)
             {
                 double rate = (s.kLineDay[buyIndex + j].highestPrice - buyPrice) / buyPrice;
                 finalRate = Math.Max(finalRate, rate);
