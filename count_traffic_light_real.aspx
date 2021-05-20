@@ -68,7 +68,7 @@
 
 
 
-            int buyIndex = alertIndex ;
+            int buyIndex = alertIndex + 2 ;
 
             if (buyIndex + 10 >= s.kLineDay.Length)
             {
