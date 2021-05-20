@@ -11,19 +11,18 @@
     public int count = 0;
     public int newHighCount = 0;
 
-    public string countPage = "limit_up_box_settle";
+
 
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack)
         {
-            countPage = Util.GetSafeRequestValue(Request, "page", "limit_up_box_settle");
-            dg.DataSource = GetData(countPage);
+            dg.DataSource = GetData();
             dg.DataBind();
         }
     }
 
-    public DataTable GetData(string countPage)
+    public DataTable GetData()
     {
         DataTable dt = new DataTable();
         dt.Columns.Add("日期");
@@ -50,13 +49,17 @@
             Stock s = GetStock(drOri["gid"].ToString().Trim());
 
             int alertIndex = s.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
-            if (alertIndex < 0)
+            if (alertIndex < 2)
             {
                 continue;
             }
-           
 
-            
+            if (s.kLineDay[alertIndex - 1].endPrice >= s.kLineDay[alertIndex - 2].endPrice
+                || s.kLineDay[alertIndex].endPrice <= s.kLineDay[alertIndex - 1].endPrice)
+            {
+                continue;
+            }
+
 
             double maxVolume = Math.Max(s.kLineDay[alertIndex].volume, s.kLineDay[alertIndex - 1].volume);
 
