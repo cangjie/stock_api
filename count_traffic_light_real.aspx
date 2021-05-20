@@ -32,11 +32,11 @@
         dt.Columns.Add("涨停");
         dt.Columns.Add("买入");
         for (int i = 1; i <= days; i++)
-        { 
+        {
             dt.Columns.Add(i.ToString() + "日");
         }
         dt.Columns.Add("总计");
-        DataTable dtOri = DBHelper.GetDataTable(" select * from alert_traffic_light  order by alert_date desc ");
+        DataTable dtOri = DBHelper.GetDataTable(" select * from limit_up where alert_date >= '2020-1-1'  order by alert_date desc ");
         foreach (DataRow drOri in dtOri.Rows)
         {
 
@@ -49,8 +49,13 @@
                 continue;
             }
 
-            if (s.kLineDay[alertIndex - 1].endPrice >= s.kLineDay[alertIndex - 2].endPrice
-                || s.kLineDay[alertIndex].endPrice <= s.kLineDay[alertIndex - 1].endPrice)
+            if (alertIndex + 2 >= s.kLineDay.Length)
+            {
+                continue;
+            }
+
+            if (s.kLineDay[alertIndex + 1].endPrice >= s.kLineDay[alertIndex].endPrice
+                || s.kLineDay[alertIndex + 2].endPrice <= s.kLineDay[alertIndex + 1].endPrice)
             {
                 continue;
             }
