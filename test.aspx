@@ -9,22 +9,9 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        StackExchange.Redis.RedisValue[] rvArr = Util.rc.redisDb.SetMembers((StackExchange.Redis.RedisKey)"all_gids");
-        string[] gidArr = new string[rvArr.Length];
-        int i = 0;
-        foreach (object o in rvArr)
-        {
-            string str = o.ToString();
-            str = str.Substring(0, 8).Trim();
-            gidArr[i] = str;
-            i++;
-
-        }
-
-        i--;
-        //StockWatcher.SendAlertMessage("oqrMvtySBUCd-r6-ZIivSwsmzr44", "600031", "三一重工", 10.01, "above_3_line_for_days");
-
-        //KeyValuePair<Stock, DateTime>[] gidArr = Util.GetDoubleLimitUpFrom3Line();
+        Stock s = new Stock("sz000572");
+        s.LoadKLineWeek(Util.rc);
+        Response.Write(s.kLineWeek.Length.ToString());
 
     }
 

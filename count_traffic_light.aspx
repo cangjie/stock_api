@@ -25,7 +25,7 @@
 
     public DataTable GetData()
     {
-        int days = int.Parse(Util.GetSafeRequestValue(Request, "days", "5"));
+        int days = int.Parse(Util.GetSafeRequestValue(Request, "days", "10"));
         DataTable dt = new DataTable();
         dt.Columns.Add("日期");
         dt.Columns.Add("代码");
@@ -33,10 +33,10 @@
         dt.Columns.Add("涨停");
         dt.Columns.Add("买入");
         for (int i = 1; i <= days; i++)
-        { 
+        {
             dt.Columns.Add(i.ToString() + "日");
         }
-        
+
         dt.Columns.Add("总计");
         DataTable dtOri = DBHelper.GetDataTable(" select * from alert_traffic_light  order by alert_date desc ");
         foreach (DataRow drOri in dtOri.Rows)
@@ -45,6 +45,8 @@
             bool newHigh = false;
             Stock s = GetStock(drOri["gid"].ToString().Trim());
 
+
+
             int alertIndex = s.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
             if (alertIndex < 0)
             {
@@ -52,7 +54,20 @@
             }
 
 
+            
 
+            int kdjIndex = s.GetItemIndex(s.kLineDay[alertIndex].startDateTime.Date, "week");
+            if (kdjIndex < 0 && kdjIndex > s.kLineWeek.Length)
+            {
+                continue;
+            }
+            int kdjWeeks = s.kdjWeeks(kdjIndex);
+
+            if (kdjWeeks > 2 || kdjWeeks < 0)
+            {
+                continue;
+            }
+            
 
             double maxVolume = Math.Max(s.kLineDay[alertIndex].volume, s.kLineDay[alertIndex - 1].volume);
 
@@ -136,6 +151,9 @@
         {
             s = new Stock(gid);
             s.LoadKLineDay(Util.rc);
+            s.LoadKLineWeek(Util.rc);
+            KLine.ComputeMACD(s.kLineWeek);
+            KLine.ComputeKDJ(s.kLineWeek);
             gidArr.Add(s);
         }
         return s;

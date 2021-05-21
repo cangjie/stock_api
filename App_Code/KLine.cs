@@ -81,6 +81,19 @@ public class KLine
                 case "month":
                     endTime = startDateTime.AddMonths(1).AddDays(-1);
                     break;
+                case "week":
+                    for (int i = 1; i <= 4; i++)
+                    {
+                        endTime = startDateTime.AddDays(i);
+                        if (!Util.IsTransacDay(endTime))
+                        {
+                            endTime = endTime.AddDays(-1);
+                            break;
+                        }
+
+                    }
+                    endTime = endTime.Date.AddHours(15);
+                    break;
                 default:
                     endTime = startDateTime;
                     break;

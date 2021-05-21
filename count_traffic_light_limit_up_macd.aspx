@@ -63,6 +63,20 @@
 
 
 
+            int kdjIndex = s.GetItemIndex(s.kLineDay[alertIndex].startDateTime.Date, "week");
+            if (kdjIndex < 0 && kdjIndex > s.kLineWeek.Length)
+            {
+                continue;
+            }
+            int kdjWeeks = s.kdjWeeks(kdjIndex);
+
+            if (kdjWeeks > 2 || kdjWeeks < 0)
+            {
+                continue;
+            }
+            
+
+
 
             int buyIndex = alertIndex + 1;
 
@@ -166,6 +180,9 @@
             s = new Stock(gid);
             s.LoadKLineDay(Util.rc);
             KLine.ComputeMACD(s.kLineDay);
+            s.LoadKLineWeek(Util.rc);
+            KLine.ComputeMACD(s.kLineWeek);
+            KLine.ComputeKDJ(s.kLineWeek);
             gidArr.Add(s);
         }
         return s;

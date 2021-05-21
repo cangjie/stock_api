@@ -29,6 +29,8 @@ public class Stock
 
     public double shakeRate = 0.02;
 
+    public KLine[] kLineWeek;
+
     public KLine[] kLineDay;
 
     public KLine[] kLineHour;
@@ -100,6 +102,14 @@ public class Stock
         kArr = kLineDay;
     }
 
+    public void LoadKLineWeek(Core.RedisClient rc)
+    {
+        kLineWeek = LoadRedisKLine(gid, "week", rc);
+        //kArr = kLineWeek;
+    }
+
+
+
     public string Name
     {
         get
@@ -152,6 +162,30 @@ public class Stock
                 startDateTime = DateTime.Parse(startDateTime.ToShortDateString() + " 9:30");
             if (startDateTime == currentDate
                 || (kArr[i].type.Trim().Equals("day") && startDateTime.ToShortDateString().Equals(currentDate.ToShortDateString())))
+            {
+                k = i;
+                break;
+            }
+        }
+        return k;
+    }
+
+    public int GetItemIndex(DateTime currentDate, string type)
+    {
+        KLine[] kLineToBeDeal = kLineDay;
+        if (type.Trim().Equals("week"))
+        {
+            kLineToBeDeal = kLineWeek;
+            currentDate = currentDate.Date.AddHours(12);
+        }
+        else
+        {
+            return -1;
+        }
+        int k = -1;
+        for (int i = kLineToBeDeal.Length - 1; i >= 0; i--)
+        {
+            if (kLineToBeDeal[i].startDateTime <= currentDate && kLineToBeDeal[i].endDateTime >= currentDate)
             {
                 k = i;
                 break;
@@ -480,6 +514,31 @@ public class Stock
         }
         return days;
     }
+
+    public int kdjWeeks(int index)
+    {
+        int days = -1;
+        KLine.ComputeRSV(kLineWeek);
+        KLine.ComputeKDJ(kLineWeek);
+        for (int i = index; i > 0; i--)
+        {
+            if (StockWatcher.IsKdjFolk(kLineWeek, i))
+            {
+                days++;
+                break;
+            }
+            else if (kLineWeek[i].j > kLineWeek[i].k && kLineWeek[i].k > kLineWeek[i].d)
+            {
+                days++;
+            }
+            else
+            {
+                break;
+            }
+        }
+        return days;
+    }
+
 
     public static CachedKLine GetKLineInCache(string gid, string type)
     {
@@ -870,7 +929,26 @@ public class Stock
                 kArr[i] = new KLine();
                 kArr[i].gid = gid.Trim();
                 kArr[i].type = type.Trim();
-                DateTime startDate = DateTime.Parse(rvItems[1].Trim());
+                DateTime endDate = DateTime.Parse(rvItems[1].Trim());
+                DateTime startDate = endDate;
+                switch (type)
+                {
+                    case "week":
+                        for (int j = 1; j <= 4; j++)
+                        {
+                            startDate = endDate.AddDays(-1 * j);
+                            if (!Util.IsTransacDay(startDate))
+                            {
+                                startDate = startDate.AddDays(1);
+                                break;
+                            }
+                        }
+                        startDate = startDate.Date.AddHours(9).AddMinutes(30);
+                        break;
+                    default:
+                        break;
+                }
+                
                 kArr[i].startDateTime = startDate;
                 kArr[i].startPrice = double.Parse(rvItems[2].Trim());
                 kArr[i].endPrice = double.Parse(rvItems[3].Trim());
