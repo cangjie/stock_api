@@ -359,6 +359,14 @@
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
+
+            stock.LoadKLineWeek(rc);
+            KLine.ComputeRSV(stock.kLineWeek);
+            KLine.ComputeKDJ(stock.kLineWeek);
+            int klineWeekIndex = stock.GetItemIndex(currentDate.Date, "week");
+            int kdjWeeks = stock.kdjWeeks(klineWeekIndex);
+
+
             int currentIndex = stock.GetItemIndex(currentDate);
             if (currentIndex < 1 || currentIndex >= stock.kLineDay.Length)
                 continue;
@@ -589,7 +597,10 @@
                 }
             }
 
-
+            if (kdjWeeks >= 0 && kdjWeeks <= 2)
+            { 
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"周线KDJ金叉\" >📈</a>";
+            }
 
             dr["0日"] = (stock.kLineDay[currentIndex].highestPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
             for (int i = 1; i <= 10; i++)

@@ -14,7 +14,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "红绿灯日");
+        sort = Util.GetSafeRequestValue(Request, "sort", "今涨 desc");
         if (!IsPostBack)
         {
 
@@ -33,7 +33,7 @@
             currentDate = Util.GetDay(DateTime.Now);
         else
             currentDate = Util.GetDay(calendar.SelectedDate);
-        int days = int.Parse(Util.GetSafeRequestValue(Request, "days", "60"));
+        int days = int.Parse(Util.GetSafeRequestValue(Request, "days", "40"));
         DataTable dtOri = GetData(currentDate, days);
         string filter = "";
         if (Util.GetSafeRequestValue(Request, "goldcross", "0").Trim().Equals("0"))
@@ -359,6 +359,14 @@
             KLine.ComputeKDJ(stock.kLineDay);
             int currentIndex = stock.GetItemIndex(currentDate);
 
+
+
+            stock.LoadKLineWeek(rc);
+            KLine.ComputeRSV(stock.kLineWeek);
+            KLine.ComputeKDJ(stock.kLineWeek);
+            int klineWeekIndex = stock.GetItemIndex(currentDate.Date, "week");
+            int kdjWeeks = stock.kdjWeeks(klineWeekIndex);
+
             if (currentIndex < 0)
                 continue;
             int trafficLightIndex = stock.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
@@ -535,16 +543,24 @@
 
 
 
-
+            /*
             if (stock.kLineDay[currentIndex].macd <= 0 && stock.kLineDay[currentIndex - 1].macd <= 0
                 && stock.kLineDay[currentIndex - 2].macd <= 0 && stock.kLineDay[currentIndex - 3].macd <= 0)
             {
                 double dmpPrice = stock.dmp(currentIndex);
                 if ((stock.kLineDay[currentIndex].endPrice - dmpPrice) / dmpPrice > -0.01)
                 {
-                    dr["信号"] = dr["信号"].ToString() + " <a title=\"dmp\" >📈</a>";
+                    dr["信号"] = dr["信号"].ToString() + " <a title=\"dmp\" >🔥</a>";
                 }
             }
+            */
+
+
+            if (kdjWeeks >= 0 && kdjWeeks <= 1)
+            { 
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"周线KDJ金叉\" >📈</a>";
+            }
+
 
 
             if (isDeviate && ((int)dr["KDJ日"] == 0 || !dr["信号"].ToString().Trim().Equals("")))
