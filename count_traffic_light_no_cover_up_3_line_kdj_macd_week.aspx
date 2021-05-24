@@ -92,7 +92,7 @@
             int weekKdjWeeks = s.kdjWeeks(weekIndex);
             int weekMacdWeeks = s.macdWeeks(weekIndex);
 
-            if (weekMacdWeeks < 0)
+            if (weekKdjWeeks < 0)
             {
                 continue;
             }
