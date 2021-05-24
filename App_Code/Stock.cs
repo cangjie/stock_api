@@ -421,6 +421,25 @@ public class Stock
         return days;
     }
 
+
+    public int macdWeeks(int index)
+    {
+        int weeks = -1;
+        KLine.ComputeMACD(kLineWeek);
+        for (int i = index; i > 0; i--)
+        {
+            if (kLineWeek[i].macd >= 0)
+            {
+                weeks++;
+            }
+            else
+            {
+                break;
+            }
+        }
+        return weeks;
+    }
+
     public double dmp(int index)
     {
         DataTable dt = DBHelper.GetDataTable(" select * from dmp where alert_date = '" + kLineDay[index].startDateTime.ToShortDateString()
