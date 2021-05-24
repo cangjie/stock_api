@@ -74,7 +74,7 @@
 
 
 
-            if (buyIndex == 0)
+            if (buyIndex == 0 || buyIndex + days >= s.kLineDay.Length)
             {
                 continue;
 
