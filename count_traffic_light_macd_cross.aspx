@@ -28,6 +28,9 @@
         DateTime startDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "startdate", "2020-1-1").Trim());
         DateTime endDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "enddate", DateTime.Now.ToShortDateString()));
         int days = int.Parse(Util.GetSafeRequestValue(Request, "days", "10"));
+
+        bool countSettle = Util.GetSafeRequestValue(Request, "settle", "1").Trim().Equals("0")? false : true;
+
         DataTable dt = new DataTable();
         dt.Columns.Add("日期");
         dt.Columns.Add("代码");
@@ -59,7 +62,7 @@
 
             int buyIndex = alertIndex;
 
-           
+
 
             if (s.macdDays(buyIndex) > 2)
             {
@@ -77,7 +80,7 @@
             {
                 continue;
             }
-            
+
 
 
             if (buyIndex == 0)
@@ -131,7 +134,8 @@
 
             for (int j = 1; j <= days; j++)
             {
-                double rate = (s.kLineDay[buyIndex + j].highestPrice - buyPrice) / buyPrice;
+                double countPrice = countSettle ? s.kLineDay[buyIndex + j].endPrice : s.kLineDay[buyIndex + j].highestPrice;
+                double rate = (countPrice - buyPrice) / buyPrice;
                 finalRate = Math.Max(finalRate, rate);
                 if (rate >= 0.01)
                 {
