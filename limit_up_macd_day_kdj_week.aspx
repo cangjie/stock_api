@@ -463,9 +463,6 @@
             }
 
 
-            double maxVolume = stock.kLineDay[trafficLightIndex].volume;
-
-
             double todayLowestPrice = 0;
             DateTime footTime = DateTime.Now;
 
@@ -475,10 +472,9 @@
 
 
             //double f3Distance = 0.382 - (highest - stock.kLineDay[currentIndex].lowestPrice) / (highest - lowest);
-            double volumeToday = 0;
+            
 
-
-            double volumeReduce = volumeToday / maxVolume;
+            double volumeReduce = (stock.kLineDay[currentIndex].volume -  stock.kLineDay[currentIndex - 1].volume) / stock.kLineDay[currentIndex - 1].volume;
 
             string memo = "";
 
