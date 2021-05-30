@@ -582,7 +582,10 @@
             }
             dr["总计"] = (maxPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice;
 
-
+            if (kdjWeeks >= 0 && kdjWeeks <= 2)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"周线KDJ金叉\" >📈</a>";
+            }
 
             dt.Rows.Add(dr);
 
