@@ -472,7 +472,7 @@
 
 
             //double f3Distance = 0.382 - (highest - stock.kLineDay[currentIndex].lowestPrice) / (highest - lowest);
-            
+
 
             double volumeReduce = (stock.kLineDay[currentIndex].volume -  stock.kLineDay[currentIndex - 1].volume) / stock.kLineDay[currentIndex - 1].volume;
 
@@ -609,6 +609,12 @@
                 if (i == 1 && stock.kLineDay[currentIndex + i].startPrice < stock.kLineDay[currentIndex + i].endPrice)
                 {
                     dr["信号"] = dr["信号"].ToString() + "<a title=\"红绿灯\" >🚥</a>";
+                    if (stock.kLineDay[currentIndex + i].highestPrice >= stock.kLineDay[currentIndex + i - 1].highestPrice
+                        && stock.kLineDay[currentIndex + i].volume >= stock.kLineDay[currentIndex + i - 1].volume)
+                    { 
+                        dr["信号"] = dr["信号"].ToString() + "<a title=\"反包\" >📈</a>";
+                    }
+
                 }
                 double highPrice = stock.kLineDay[currentIndex + i].highestPrice;
                 maxPrice = Math.Max(maxPrice, highPrice);

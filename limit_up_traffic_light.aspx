@@ -451,7 +451,7 @@
 
 
 
-            double volumeReduce = stock.kLineDay[currentIndex - 1].volume / Stock.GetAvarageVolume(stock.kLineDay, currentIndex, 20);
+            double volumeReduce = (stock.kLineDay[currentIndex].volume - stock.kLineDay[currentIndex - 1].volume) / stock.kLineDay[currentIndex - 1].volume;
 
 
 
