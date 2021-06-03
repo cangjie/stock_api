@@ -620,6 +620,11 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"跳空高开\" >🌟</a>";
             }
 
+            if (stock.kLineDay[currentIndex + 1].endPrice < stock.kLineDay[currentIndex + 1].startPrice)
+            { 
+                dr["信号"] = dr["信号"].ToString() + "💩";
+            }
+
 
             dt.Rows.Add(dr);
 
