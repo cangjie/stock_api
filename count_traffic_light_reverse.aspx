@@ -54,7 +54,7 @@
             }
 
             if (s.kLineDay[alertIndex].endPrice < Math.Max(s.kLineDay[alertIndex - 1].startPrice, s.kLineDay[alertIndex - 1].endPrice)
-                || s.kLineDay[alertIndex].volume <= s.kLineDay[alertIndex - 1].volume)
+                || s.kLineDay[alertIndex].volume <= s.kLineDay[alertIndex - 1].volume || s.kLineDay[alertIndex - 1].volume > s.kLineDay[alertIndex - 2].volume)
             {
                 continue;
             }
