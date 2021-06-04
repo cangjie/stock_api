@@ -59,7 +59,7 @@
                 continue;
             }
 
-            /*
+            
             int kdjIndex = s.GetItemIndex(s.kLineDay[alertIndex].startDateTime.Date, "week");
             if (kdjIndex < 0 && kdjIndex > s.kLineWeek.Length)
             {
@@ -71,7 +71,7 @@
             {
                 continue;
             }
-            */
+            
 
             double maxVolume = Math.Max(s.kLineDay[alertIndex].volume, s.kLineDay[alertIndex - 1].volume);
 
