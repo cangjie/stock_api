@@ -63,7 +63,7 @@
             int kdjIndex = s.GetItemIndex(s.kLineDay[alertIndex].startDateTime.Date, "week");
             if (kdjIndex < 0 && kdjIndex > s.kLineWeek.Length)
             {
-                continue;
+                //continue;
             }
             int kdjWeeks = s.kdjWeeks(kdjIndex);
 
