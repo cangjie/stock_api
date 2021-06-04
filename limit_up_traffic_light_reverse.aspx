@@ -14,9 +14,10 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "KDJ日");
+        sort = Util.GetSafeRequestValue(Request, "sort", "缩量 desc");
         if (!IsPostBack)
         {
+
 
 
             DataTable dt = GetData();
@@ -33,8 +34,7 @@
             currentDate = Util.GetDay(DateTime.Now);
         else
             currentDate = Util.GetDay(calendar.SelectedDate);
-        int days = int.Parse(Util.GetSafeRequestValue(Request, "days", "22"));
-        DataTable dtOri = GetData(currentDate, days);
+        DataTable dtOri = GetData(currentDate);
         string filter = "";
         if (Util.GetSafeRequestValue(Request, "goldcross", "0").Trim().Equals("0"))
         {
@@ -128,7 +128,6 @@
                         case "现高":
                         case "3线":
                         case "无影":
-                        case "红绿灯价":
                             double currentValuePrice = (double)drOri[i];
                             dr[i] = "<font color=\"" + (currentValuePrice > currentPrice ? "red" : (currentValuePrice == currentPrice ? "gray" : "green")) + "\"  >"
                                 + Math.Round(currentValuePrice, 2).ToString() + "</font>";
@@ -142,7 +141,7 @@
                         default:
                             if (System.Text.RegularExpressions.Regex.IsMatch(drArr[0].Table.Columns[i].Caption.Trim(), "\\d日")
                                 || drArr[0].Table.Columns[i].Caption.Trim().Equals("总计") || drArr[0].Table.Columns[i].Caption.Trim().Equals("红绿灯涨")
-                                || drArr[0].Table.Columns[i].Caption.Trim().Equals("今涨"))
+                                || drArr[0].Table.Columns[i].Caption.Trim().Equals("涨幅"))
                             {
                                 if (!drOri[i].ToString().Equals(""))
                                 {
@@ -293,11 +292,10 @@
 
     }
 
-    public static DataTable GetData(DateTime currentDate, int days)
+    public static DataTable GetData(DateTime currentDate)
     {
         currentDate = Util.GetDay(currentDate);
         DataTable dt = new DataTable();
-        dt.Columns.Add("红绿灯日", Type.GetType("System.Int32"));
         dt.Columns.Add("代码", Type.GetType("System.String"));
         dt.Columns.Add("名称", Type.GetType("System.String"));
         dt.Columns.Add("信号", Type.GetType("System.String"));
@@ -305,14 +303,12 @@
         dt.Columns.Add("板数", Type.GetType("System.Int32"));
         dt.Columns.Add("调整", Type.GetType("System.Int32"));
         dt.Columns.Add("现高", Type.GetType("System.Double"));
-        dt.Columns.Add("红绿灯价", Type.GetType("System.Double"));
         dt.Columns.Add("F3", Type.GetType("System.Double"));
         dt.Columns.Add("F5", Type.GetType("System.Double"));
         dt.Columns.Add("前低", Type.GetType("System.Double"));
         dt.Columns.Add("幅度", Type.GetType("System.String"));
         dt.Columns.Add("3线", Type.GetType("System.Double"));
         dt.Columns.Add("现价", Type.GetType("System.Double"));
-        dt.Columns.Add("今涨", Type.GetType("System.Double"));
         dt.Columns.Add("评级", Type.GetType("System.String"));
         dt.Columns.Add("买入", Type.GetType("System.Double"));
         dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
@@ -335,19 +331,28 @@
             return dt;
         }
 
-        //DateTime lastTransactDate = Util.GetLastTransactDate(currentDate, 2);
-        //DateTime limitUpStartDate = Util.GetLastTransactDate(lastTransactDate, 30);
+        DateTime lastTransactDate = Util.GetLastTransactDate(currentDate, 2);
+        //DateTime limitUpStartDate = Util.GetLastTransactDate(lastTransactDate, 10);
 
-        DataTable dtOri = DBHelper.GetDataTable(" select  * from limit_up where "
-            + " exists ( select 'a' from alert_macd macd where limit_up.gid = macd.gid and convert(varchar(10), alert_date, 23) = convert(varchar(10), macd.alert_time, 23)  and macd.alert_type = 'day' )  "
-            //+ " and exists (select 'a' from alert_kdj kdj where limit_up.gid = kdj.gid and convert(varchar(10), alert_date, 23) = convert(varchar(10), kdj.alert_time, 23) and kdj.alert_type = 'day' ) "
-            + " and alert_date = '" + Util.GetLastTransactDate(currentDate, 1).ToShortDateString() + "' "
-            //+ " and gid = 'sz002466' "
+
+        DataTable dtOri = DBHelper.GetDataTable(" select gid, alert_date from limit_up a where  alert_date = '" + lastTransactDate.ToShortDateString() + "' "
+            //+ " and not exists ( select 'a' from limit_up c where a.gid = c.gid and dbo.func_GetLastTransactDate(c.alert_date, 1) = a.alert_date ) "
+            //+ " and not exists ( select 'a' from limit_up d where a.gid = d.gid and dbo.func_GetLastTransactDate(d.alert_date, 2) = a.alert_date ) "
+            //+ " and gid = 'sz000761' "
             );
 
+        DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor_new '" + currentDate.ToShortDateString() + "' ");
+
+        DataTable dtFoot = DBHelper.GetDataTable(" select * from alert_foot_new where alert_date = '" + currentDate.Date.ToShortDateString() + "'  ");
+
+        DataTable dtTimeline = DBHelper.GetDataTable(" select * from alert_avarage_timeline where alert_date = '" + currentDate.ToShortDateString() + "' ");
+
+        //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
         foreach (DataRow drOri in dtOri.Rows)
         {
-            bool isOver3Line = false;
+
+
+
             DateTime alertDate = DateTime.Parse(drOri["alert_date"].ToString().Trim());
             DataRow[] drArrExists = dtOri.Select(" gid = '" + drOri["gid"].ToString() + "' and alert_date > '" + alertDate.ToShortDateString() + "'  ");
             if (drArrExists.Length > 0)
@@ -359,39 +364,54 @@
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
-
-            stock.LoadKLineWeek(rc);
-            KLine.ComputeRSV(stock.kLineWeek);
-            KLine.ComputeKDJ(stock.kLineWeek);
-            int klineWeekIndex = stock.GetItemIndex(currentDate.Date, "week");
-            int kdjWeeks = stock.kdjWeeks(klineWeekIndex);
-
-            if (kdjWeeks < 0 || kdjWeeks > 2)
-            {
-                continue;
-            }
-
-
             int currentIndex = stock.GetItemIndex(currentDate);
-            if (currentIndex < 1 || currentIndex >= stock.kLineDay.Length)
-                continue;
-            int trafficLightIndex = currentIndex;
 
-            if (stock.kLineDay[currentIndex].startPrice <= stock.kLineDay[currentIndex].endPrice
-                || stock.kLineDay[currentIndex].macd < stock.kLineDay[currentIndex-1].macd)
+            if (currentIndex < 0)
+                continue;
+
+
+
+            int limitUpIndex = stock.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
+
+            if (limitUpIndex + 2 >= stock.kLineDay.Length)
             {
                 continue;
             }
 
 
+            if (!stock.IsLimitUp(limitUpIndex))
+            {
+                continue;
+            }
+            if (stock.IsLimitUp(limitUpIndex + 1))
+            {
+                continue;
+            }
 
+            bool isTrafficLight = false;
 
+            if (limitUpIndex + 2 < stock.kLineDay.Length)
+            {
+                if (!stock.IsLimitUp(limitUpIndex + 1)
+                    && (stock.kLineDay[limitUpIndex + 1].endPrice - stock.kLineDay[limitUpIndex].endPrice) / stock.kLineDay[limitUpIndex].endPrice > -0.095
+                    && (stock.kLineDay[limitUpIndex + 2].endPrice - stock.kLineDay[limitUpIndex + 1].endPrice) / stock.kLineDay[limitUpIndex + 1].endPrice > -0.095
+                    && stock.kLineDay[limitUpIndex + 1].startPrice > stock.kLineDay[limitUpIndex + 1].endPrice
+                    && stock.kLineDay[limitUpIndex + 2].startPrice <= stock.kLineDay[limitUpIndex + 2].endPrice)
+                {
+                    isTrafficLight = true;
+                }
+            }
+
+            if (!isTrafficLight)
+            {
+                continue;
+            }
 
             int highIndex = 0;
             int lowestIndex = 0;
-            double lowest = GetFirstLowestPrice(stock.kLineDay, trafficLightIndex, out lowestIndex);
+            double lowest = GetFirstLowestPrice(stock.kLineDay, limitUpIndex, out lowestIndex);
             double highest = 0;
-            for (int i = trafficLightIndex; i < currentIndex; i++)
+            for (int i = limitUpIndex; i < currentIndex; i++)
             {
                 if (highest < stock.kLineDay[i].highestPrice)
                 {
@@ -416,51 +436,11 @@
             double f5 = highest - (highest - lowest) * 0.618;
             double line3Price = KLine.GetAverageSettlePrice(stock.kLineDay, currentIndex, 3, 3);
             double currentPrice = stock.kLineDay[currentIndex].endPrice;
-            double trafficLightPrice = stock.kLineDay[trafficLightIndex].endPrice;
+            double buyPrice = stock.kLineDay[limitUpIndex + 2].endPrice;
 
-            string support = "";
 
-            int f5Index = 0;
-            int f3Index = 0;
-            int over3LineIndex = 0;
-            for (int i = trafficLightIndex; i <= currentIndex; i++)
-            {
-                if (over3LineIndex == 0 && stock.kLineDay[i - 1].endPrice < stock.GetAverageSettlePrice(i - 1, 3, 3)
-                    && stock.kLineDay[i].endPrice > stock.GetAverageSettlePrice(i, 3, 3))
-                {
-                    over3LineIndex = i;
-                }
-                if (stock.kLineDay[i].lowestPrice < f5 * 1.01)
-                {
-                    if (f5Index == 0 && stock.kLineDay[i].endPrice > f5)
-                    {
-                        f5Index = i;
-                    }
-                }
-                else if (stock.kLineDay[i].lowestPrice < f3 * 1.01)
-                {
-                    if (f3Index == 0 && stock.kLineDay[i].endPrice > f3)
-                    {
-                        f3Index = i;
-                    }
-                }
-            }
-            if (f5Index == currentIndex)
-            {
-                support = "F5";
-            }
-            if (f3Index == currentIndex)
-            {
-                support = "F3";
-            }
-            if (over3LineIndex == currentIndex)
-            {
-                isOver3Line = true;
-            }
-            else
-            {
-                isOver3Line = false;
-            }
+            double maxVolume = stock.kLineDay[limitUpIndex].volume;
+
 
 
             double todayLowestPrice = 0;
@@ -471,12 +451,16 @@
 
 
 
-            //double f3Distance = 0.382 - (highest - stock.kLineDay[currentIndex].lowestPrice) / (highest - lowest);
+            double volumeReduce = (stock.kLineDay[currentIndex].volume - stock.kLineDay[currentIndex - 1].volume) / stock.kLineDay[currentIndex - 1].volume;
 
+            if (stock.kLineDay[currentIndex].highestPrice <= stock.kLineDay[currentIndex - 1].highestPrice)
+            {
+                continue;
+            }
 
-            double volumeReduce = (stock.kLineDay[currentIndex].volume -  stock.kLineDay[currentIndex - 1].volume) / stock.kLineDay[currentIndex - 1].volume;
 
             string memo = "";
+
 
             if (f3 >= line3Price)
             {
@@ -489,24 +473,15 @@
             }
 
 
-
+            bool isSortCase = false;
+            bool isHorseHead = false;
             int limitUpNum = 0;
 
+
+
             DataRow dr = dt.NewRow();
-            dr["红绿灯日"] = currentIndex - trafficLightIndex;
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
-            dr["KDJ日"] = stock.kdjDays(currentIndex);
-            dr["MACD日"] = stock.macdDays(currentIndex);
-            dr["今涨"] = (stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
-            if (isOver3Line)
-            {
-                dr["信号"] = "3线";
-            }
-
-            dr["信号"] = dr["信号"].ToString() + " " + support.Trim();
-
-
 
             dr["板数"] = limitUpNum;
 
@@ -525,10 +500,7 @@
 
 
 
-
-
-
-            dr["调整"] = 0;
+            dr["调整"] = currentIndex - limitUpIndex - 1;
             dr["缩量"] = volumeReduce;
             dr["现高"] = highest;
             dr["F3"] = f3;
@@ -579,11 +551,9 @@
             dr["无影"] = todayLowestPrice;
             maxPrice = 0;
             //buyPrice = supportPrice;
-            dr["买入"] = currentPrice;
+            dr["买入"] = buyPrice;
 
-            dr["涨幅"] = (currentPrice - trafficLightPrice) / trafficLightPrice;
-            dr["红绿灯价"] = trafficLightPrice;
-
+            dr["涨幅"] = (buyPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
 
 
 
@@ -597,31 +567,51 @@
                     break;
                 }
             }
+            //if (stock.kLineDay[currentIndex].VirtualVolume )
+            if (lastLimitUpInddex < currentIndex)
+            {
+                double currentVolume = stock.kLineDay[lastLimitUpInddex + 1].volume;
+                if (stock.kLineDay[currentIndex].endDateTime.Date == DateTime.Now.Date && DateTime.Now.Hour < 15)
+                {
+                    currentVolume = stock.kLineDay[currentIndex].VirtualVolume;
+                }
+
+
+            }
 
 
 
-            dr["0日"] = (stock.kLineDay[currentIndex].highestPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
+            dr["0日"] = (stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
             for (int i = 1; i <= 10; i++)
             {
-
                 if (currentIndex + i >= stock.kLineDay.Length)
                     break;
-                if (i == 1 && stock.kLineDay[currentIndex + i].startPrice < stock.kLineDay[currentIndex + i].endPrice)
-                {
-                    dr["信号"] = dr["信号"].ToString() + "<a title=\"红绿灯\" >🚥</a>";
-                    if (stock.kLineDay[currentIndex + i].highestPrice >= stock.kLineDay[currentIndex + i - 1].highestPrice
-                        && stock.kLineDay[currentIndex + i].volume >= stock.kLineDay[currentIndex + i - 1].volume)
-                    { 
-                        dr["信号"] = dr["信号"].ToString() + "<a title=\"反包\" >📈</a>";
-                    }
-
-                }
                 double highPrice = stock.kLineDay[currentIndex + i].highestPrice;
                 maxPrice = Math.Max(maxPrice, highPrice);
                 dr[i.ToString() + "日"] = (highPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice;
             }
             dr["总计"] = (maxPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice;
 
+            if (stock.IsLimitUp(limitUpIndex + 2))
+            {
+                dr["信号"] = "<a title=\"涨停\" >📈</a>";
+            }
+
+            if (stock.kLineDay[currentIndex].macd > stock.kLineDay[currentIndex - 1].macd
+                && stock.kLineDay[currentIndex - 1].macd > stock.kLineDay[currentIndex - 2].macd
+                && stock.kLineDay[currentIndex - 2].macd > stock.kLineDay[currentIndex - 3].macd)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"MACD三连涨\" >🔥</a>";
+            }
+
+            if (stock.kLineDay[currentIndex].lowestPrice > stock.kLineDay[currentIndex - 1].highestPrice)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"缺口\" >🌟🌟</a>";
+            }
+            else if (stock.kLineDay[currentIndex].startPrice > stock.kLineDay[currentIndex - 1].endPrice)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"跳空高开\" >🌟</a>";
+            }
 
 
             dt.Rows.Add(dr);
@@ -735,7 +725,10 @@
 
             }
             gid = gid.Replace("</a>", "").Replace(">", "").ToUpper();
-            content += gid + "\r\n";
+            if (gid.Trim().Length == 8)
+            {
+                content += gid.Substring(2, 6) + "\r\n";
+            }
         }
         Response.Clear();
         Response.ContentType = "text/plain";
@@ -772,23 +765,23 @@
                 <td><asp:DataGrid ID="dg" runat="server" BackColor="White" BorderColor="#999999" BorderStyle="None" BorderWidth="1px" CellPadding="3" GridLines="Vertical" Width="100%" AutoGenerateColumns="False" OnSortCommand="dg_SortCommand" AllowSorting="True" >
                 <AlternatingItemStyle BackColor="#DCDCDC" />
                 <Columns>
-                    
                     <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="信号" HeaderText="信号" SortExpression="信号|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="缩量" HeaderText="缩量"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日"></asp:BoundColumn>
-                   
-                    <asp:BoundColumn DataField="信号" HeaderText="信号"></asp:BoundColumn>
+                    
+					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD日|asc"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
                     <asp:BoundColumn DataField="现高" HeaderText="现高"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F5" HeaderText="F5"></asp:BoundColumn>
                     <asp:BoundColumn DataField="前低" HeaderText="前低"></asp:BoundColumn>
                     <asp:BoundColumn DataField="幅度" HeaderText="幅度"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="现价" HeaderText="现价"></asp:BoundColumn>
+                    
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="红绿灯涨" HeaderText="红绿灯涨"></asp:BoundColumn>
                     <asp:BoundColumn DataField="涨幅" HeaderText="涨幅"  ></asp:BoundColumn>
-                    <asp:BoundColumn DataField="今涨" HeaderText="今涨"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="0日" HeaderText="0日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日" SortExpression="1日|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="2日" HeaderText="2日"></asp:BoundColumn>
