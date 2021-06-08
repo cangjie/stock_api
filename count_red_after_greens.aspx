@@ -31,8 +31,8 @@
         int days = int.Parse(Util.GetSafeRequestValue(Request, "days", "15"));
         int greenDays = int.Parse(Util.GetSafeRequestValue(Request, "greendays", "5"));
         string buyPoint = Util.GetSafeRequestValue(Request, "buypoint", "settle");
-        DateTime startDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "start", "2021-4-1").Trim());
-        DateTime endDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "end", "2021-5-1"));
+        DateTime startDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "start", "2021-4-15").Trim());
+        DateTime endDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "end", "2021-5-15"));
 
 
 
@@ -48,7 +48,9 @@
         }
         dt.Columns.Add("总计");
         DataTable dtOri = DBHelper.GetDataTable(" select * from alert_continuous_green  where alert_date >= '" + startDate.ToShortDateString()
-            + "' and alert_date <= '" + endDate.ToShortDateString() + "' and green_num = " + greenDays.ToString() + " order by alert_date desc  ");
+            + "' and alert_date <= '" + endDate.ToShortDateString() + "' and green_num = " + greenDays.ToString() 
+            //+ " and gid = 'sh600395' "
+            + " order by alert_date desc  ");
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock s = GetStock(drOri["gid"].ToString());
@@ -63,7 +65,8 @@
 
             for (int i = alertIndex + 1; i < s.kLineDay.Length; i++)
             {
-                if (s.kLineDay[i].endPrice > s.GetAverageSettlePrice(i, 3, 3) && s.macdDays(i) >= 0)
+                if (  (s.kLineDay[i-1].endPrice < s.GetAverageSettlePrice(i-1, 3, 3) || s.kLineDay[i].startPrice < s.GetAverageSettlePrice(i, 3, 3)) && s.kLineDay[i].endPrice > s.GetAverageSettlePrice(i, 3, 3) 
+                    && s.kLineDay[i-2].macd <= s.kLineDay[i-1].macd && s.kLineDay[i-1].macd <= s.kLineDay[i].macd)
                 {
                     buyIndex = i;
                     break;
