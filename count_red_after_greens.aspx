@@ -27,12 +27,12 @@
     public DataTable GetData()
     {
 
-        bool needWeek = Util.GetSafeRequestValue(Request, "week", "0").Equals("1") ? true : false;
+        bool needWeek = Util.GetSafeRequestValue(Request, "week", "1").Equals("1") ? true : false;
         int days = int.Parse(Util.GetSafeRequestValue(Request, "days", "15"));
-        int greenDays = int.Parse(Util.GetSafeRequestValue(Request, "days", "5"));
+        int greenDays = int.Parse(Util.GetSafeRequestValue(Request, "greendays", "5"));
         string buyPoint = Util.GetSafeRequestValue(Request, "buypoint", "settle");
-        DateTime startDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "start", "2020-1-1").Trim());
-        DateTime endDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "end", "2021-6-1"));
+        DateTime startDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "start", "2021-4-1").Trim());
+        DateTime endDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "end", "2021-5-1"));
 
 
 
