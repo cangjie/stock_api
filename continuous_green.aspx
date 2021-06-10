@@ -333,7 +333,10 @@
             {
                 continue;
             }
-
+            if (stock.kLineDay[currentIndex].startPrice >= stock.kLineDay[currentIndex].endPrice)
+            { 
+                continue;
+            }
             bool isCross3Line = false;
             if (stock.kLineDay[currentIndex].endPrice > stock.GetAverageSettlePrice(currentIndex, 3, 3)
                 && (stock.kLineDay[currentIndex - 1].endPrice < stock.GetAverageSettlePrice(currentIndex - 1, 3, 3)
@@ -419,7 +422,7 @@
             }
             dr["总计"] = (maxPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice;
 
-            
+
 
 
             dt.Rows.Add(dr);
