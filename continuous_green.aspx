@@ -317,6 +317,7 @@
         DateTime lastTransactDate = Util.GetLastTransactDate(currentDate, 40);
 
         DataTable dtOri = DBHelper.GetDataTable(" select * from bottom_break_cross_3_line line3  where suggest_date = '" + currentDate.ToShortDateString() + "'  "
+            //+ " and gid = 'sz002035' "
             + " and exists ( select 'a' from alert_continuous_green a where green_num = 5 and a.gid = line3.gid and a.alert_date >= '" + lastTransactDate.ToShortDateString() + "' ) "
         );
 
@@ -379,7 +380,7 @@
             }
             int buyIndex = -1;
 
-            for (int i = greenIndex + 1; i < stock.kLineDay.Length; i++)
+            for (int i = greenIndex; i < stock.kLineDay.Length; i++)
             {
                 if ((stock.kLineDay[i-1].endPrice < stock.GetAverageSettlePrice(i-1, 3, 3) || stock.kLineDay[i].startPrice < stock.GetAverageSettlePrice(i, 3, 3)) && stock.kLineDay[i].endPrice > stock.GetAverageSettlePrice(i, 3, 3)
                     && stock.kLineDay[i-2].macd <= stock.kLineDay[i-1].macd && stock.kLineDay[i-1].macd <= stock.kLineDay[i].macd)
