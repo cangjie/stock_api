@@ -11,8 +11,6 @@
     public int count = 0;
     public int newHighCount = 0;
 
-
-
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack)
