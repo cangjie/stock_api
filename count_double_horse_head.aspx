@@ -114,7 +114,7 @@
             dr["涨停"] = "--";
             
             double finalRate = double.MinValue;
-            for (int j = 1; j <= days; j++)
+            for (int j = 1; j <= days && buyIndex + j < s.kLineDay.Length ; j++)
             {
                 double rate = (s.kLineDay[buyIndex + j].highestPrice - buyPrice) / buyPrice;
                 finalRate = Math.Max(finalRate, rate);
