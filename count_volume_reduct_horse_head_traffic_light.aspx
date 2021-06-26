@@ -25,7 +25,7 @@
     {
         int days = int.Parse(Util.GetSafeRequestValue(Request, "days", "15"));
 
-        DateTime startDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "start", "2021-4-1"));
+        DateTime startDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "start", "2020-1-1"));
         DateTime endDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "end", DateTime.Now.ToShortDateString()));
 
         DataTable dt = new DataTable();
@@ -40,10 +40,8 @@
         }
 
         dt.Columns.Add("总计");
-        DataTable dtOri = DBHelper.GetDataTable(" select alert_date, gid  from limit_up a where  "
-            + " not exists ( select 'a' from limit_up b where dbo.func_GetLastTransactDate(b.alert_date, 1) = a.alert_date and a.gid = b.gid)  "
-            + " and not exists (select 'b' from limit_up c where dbo.func_GetLastTransactDate(c.alert_date, 1) = a.alert_date and a.gid = c.gid) "
-            + "  and alert_date >= '" + startDate.ToShortDateString() + "' and alert_date <= '" + endDate.ToShortDateString() + "'     order by alert_date desc ");
+        DataTable dtOri = DBHelper.GetDataTable(" select alert_date, gid  from alert_traffic_light  where  "
+            + "   alert_date >= '" + startDate.ToShortDateString() + "' and alert_date <= '" + endDate.ToShortDateString() + "'     order by alert_date desc ");
 
         foreach (DataRow drOri in dtOri.Rows)
         {
@@ -54,23 +52,24 @@
 
 
             int alertIndex = s.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
-            if (alertIndex < 0 || alertIndex >= s.kLineDay.Length - 2)
+            if (alertIndex < 2 || alertIndex >= s.kLineDay.Length)
             {
                 continue;
             }
 
-            if (!s.IsLimitUp(alertIndex) || s.IsLimitUp(alertIndex + 1) || s.IsLimitUp(alertIndex + 2))
+            if (s.kLineDay[alertIndex - 1].volume >= s.kLineDay[alertIndex - 2].volume)
             {
                 continue;
             }
 
-            if (Math.Min(s.kLineDay[alertIndex + 1].startPrice, s.kLineDay[alertIndex + 1].endPrice) <= s.kLineDay[alertIndex].endPrice
-                || Math.Min(s.kLineDay[alertIndex + 2].startPrice, s.kLineDay[alertIndex + 2].endPrice) <= s.kLineDay[alertIndex].endPrice)
+            if (s.kLineDay[alertIndex].volume <= s.kLineDay[alertIndex - 1].volume)
             {
-                continue;
+                //continue;
             }
 
-            if ((s.kLineDay[alertIndex + 1].volume + s.kLineDay[alertIndex + 2].volume) / (2 * s.kLineDay[alertIndex].volume) >= 0.9)
+            if (Math.Min(s.kLineDay[alertIndex - 1].startPrice, s.kLineDay[alertIndex - 1].endPrice) <= s.kLineDay[alertIndex - 2].highestPrice 
+                || Math.Min(s.kLineDay[alertIndex].startPrice, s.kLineDay[alertIndex].endPrice) <= s.kLineDay[alertIndex - 2].highestPrice 
+                )
             {
                 continue;
             }
@@ -96,7 +95,7 @@
 
 
 
-            int buyIndex = alertIndex + 2 ;
+            int buyIndex = alertIndex ;
 
             if (buyIndex + days >= s.kLineDay.Length)
             {

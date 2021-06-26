@@ -399,6 +399,12 @@
                 continue;
             }
 
+            double volumeReduce = (stock.kLineDay[limitUpIndex + 1].volume + stock.kLineDay[limitUpIndex + 2].volume)/(2 * stock.kLineDay[limitUpIndex].volume);
+            if (volumeReduce >= 1)
+            {
+                continue;
+            }
+
             int highIndex = 0;
             int lowestIndex = 0;
             double lowest = GetFirstLowestPrice(stock.kLineDay, limitUpIndex, out lowestIndex);
@@ -480,7 +486,7 @@
 
 
             dr["调整"] = currentIndex - limitUpIndex - 1;
-            dr["缩量"] = (stock.kLineDay[limitUpIndex + 1].volume + stock.kLineDay[limitUpIndex + 2].volume)/(2 * stock.kLineDay[limitUpIndex].volume);
+            dr["缩量"] = volumeReduce;
             dr["现高"] = highest;
             dr["F3"] = f3;
             dr["F5"] = f5;
