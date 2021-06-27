@@ -362,7 +362,7 @@
             int kdjWeeks = stock.kdjWeeks(currentWeekIndex);
             if (kdjWeeks < 0 || kdjWeeks > 2)
             {
-                continue;
+                //continue;
             }
 
 
