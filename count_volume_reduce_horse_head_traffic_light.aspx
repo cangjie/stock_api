@@ -59,7 +59,7 @@
 
             if (s.kLineDay[alertIndex - 1].volume >= s.kLineDay[alertIndex - 2].volume)
             {
-                continue;
+                //continue;
             }
 
             if (s.kLineDay[alertIndex].volume <= s.kLineDay[alertIndex - 1].volume)
