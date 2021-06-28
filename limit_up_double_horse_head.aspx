@@ -583,7 +583,7 @@
 
             if (stock.IsLimitUp(limitUpIndex + 2))
             {
-                dr["信号"] = "<a title=\"涨停\" >📈</a>";
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"涨停\" >📈</a>";
             }
 
             if (stock.kLineDay[currentIndex].macd > stock.kLineDay[currentIndex - 1].macd
