@@ -588,6 +588,25 @@
             }
             dr["总计"] = (maxPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice;
 
+            if (Math.Abs(stock.kLineDay[currentIndex - 1].volume - stock.kLineDay[currentIndex - 2].volume) / stock.kLineDay[currentIndex - 2].volume < 0.1)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"绿灯量等于涨停量\" >🟢</a>";
+            }
+
+            if (stock.kLineDay[currentIndex].volume > stock.kLineDay[currentIndex - 1].volume)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"红灯量反包绿灯\" >🔴</a>";
+            }
+            if (Math.Min(stock.kLineDay[currentIndex].startPrice, stock.kLineDay[currentIndex].endPrice) > stock.kLineDay[currentIndex - 2].highestPrice
+                && Math.Min(stock.kLineDay[currentIndex - 1].startPrice, stock.kLineDay[currentIndex - 1].endPrice) > stock.kLineDay[currentIndex - 2].highestPrice)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"双马头\" >🐴</a>";
+            }
+            if (stock.IsLimitUp(currentIndex))
+            { 
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"红灯涨停\" >🚩</a>";
+            }
+            /*
             if (stock.IsLimitUp(limitUpIndex + 2))
             {
                 dr["信号"] = "<a title=\"涨停\" >📈</a>";
@@ -608,7 +627,7 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"跳空高开\" >🌟</a>";
             }
-
+            */
 
             dt.Rows.Add(dr);
 
