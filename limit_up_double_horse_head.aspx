@@ -540,7 +540,11 @@
 
             dr["涨幅"] = (buyPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
 
-
+            if (stock.kLineDay[currentIndex].startPrice < stock.kLineDay[currentIndex].endPrice
+                && stock.kLineDay[currentIndex - 1].endPrice < stock.kLineDay[currentIndex - 1].startPrice)
+            {
+                dr["信号"] = "🚥";
+            }
 
 
             int lastLimitUpInddex = currentIndex;
