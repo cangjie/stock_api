@@ -591,11 +591,29 @@
             if (Math.Abs(stock.kLineDay[currentIndex - 1].volume - stock.kLineDay[currentIndex - 2].volume) / stock.kLineDay[currentIndex - 2].volume < 0.1)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"绿灯量等于涨停量\" >🟢</a>";
+                try
+                {
+                    DBHelper.InsertData("alert_traffic_light_bread", new string[,] {{"alert_date", "datetime", currentDate.ToShortDateString() },
+                        {"gid", "varchar", stock.gid }, {"color", "varchar", "green" } });
+                }
+                catch
+                {
+
+                }
             }
 
             if (stock.kLineDay[currentIndex].volume > stock.kLineDay[currentIndex - 1].volume)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"红灯量反包绿灯\" >🔴</a>";
+                try
+                {
+                    DBHelper.InsertData("alert_traffic_light_bread", new string[,] {{"alert_date", "datetime", currentDate.ToShortDateString() },
+                        {"gid", "varchar", stock.gid }, {"color", "varchar", "red" } });
+                }
+                catch
+                {
+
+                }
             }
             if (Math.Min(stock.kLineDay[currentIndex].startPrice, stock.kLineDay[currentIndex].endPrice) > stock.kLineDay[currentIndex - 2].highestPrice
                 && Math.Min(stock.kLineDay[currentIndex - 1].startPrice, stock.kLineDay[currentIndex - 1].endPrice) > stock.kLineDay[currentIndex - 2].highestPrice)
@@ -603,7 +621,7 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"双马头\" >🐴</a>";
             }
             if (stock.IsLimitUp(currentIndex))
-            { 
+            {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"红灯涨停\" >🚩</a>";
             }
             /*

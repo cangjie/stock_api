@@ -57,9 +57,9 @@
                 continue;
             }
 
-            if (s.kLineDay[alertIndex - 1].volume >= s.kLineDay[alertIndex - 2].volume)
+            if (s.kLineDay[alertIndex - 1].volume - s.kLineDay[alertIndex - 2].volume / s.kLineDay[alertIndex - 2].volume > -0.05)
             {
-                //continue;
+                continue;
             }
 
             if (s.kLineDay[alertIndex].volume <= s.kLineDay[alertIndex - 1].volume)
