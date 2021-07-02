@@ -336,7 +336,8 @@
 
 
         DataTable dtOri = DBHelper.GetDataTable(" select * from alert_traffic_light_bread where alert_date >= '" + lastTransactDate.ToShortDateString() + "' "
-            + " and alert_date <= '" + currentDate.ToShortDateString() + "'  " );
+            + " and alert_date <= '" + currentDate.ToShortDateString() + "'  " 
+            + " and gid = 'sz300746' ");
 
         foreach (DataRow drOri in dtOri.Rows)
         {
@@ -391,7 +392,7 @@
                     if (f3Index == 0 && f5Index == 0)
                     {
                         f3Index = alertIndex + i;
-                        break;
+                        //break;
                     }
 
                 }
