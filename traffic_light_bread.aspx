@@ -337,7 +337,8 @@
 
         DataTable dtOri = DBHelper.GetDataTable(" select * from alert_traffic_light_bread where alert_date >= '" + lastTransactDate.ToShortDateString() + "' "
             + " and alert_date <= '" + currentDate.ToShortDateString() + "'  " 
-            //+ " and gid = 'sz300746' ");
+            //+ " and gid = 'sz300746' "
+            );
 
         foreach (DataRow drOri in dtOri.Rows)
         {
