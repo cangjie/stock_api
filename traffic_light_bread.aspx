@@ -376,10 +376,16 @@
             double lowestPrice = GetFirstLowestPrice(stock.kLineDay, limitUpIndex, out lowestIndex);
             double f3 = hightestPrice - (hightestPrice - lowestPrice) * 0.382;
             double f5 = hightestPrice - (hightestPrice - lowestPrice) * 0.618;
+            double newF3 = f3;
+            double newF5 = f5;
+            double newHighestPrice = hightestPrice;
             int f3Index = 0;
             int f5Index = 0;
             for (int i = 1; i <= 20 && alertIndex + i < stock.kLineDay.Length; i++)
             {
+                f3 = newF3;
+                f5 = newF5;
+                hightestPrice = newHighestPrice;
                 if (stock.kLineDay[alertIndex + i].lowestPrice <= f5 * 1.01)
                 {
                     if (f5Index == 0)
@@ -399,9 +405,9 @@
                 }
                 if (stock.kLineDay[alertIndex + i].highestPrice > hightestPrice)
                 {
-                    hightestPrice = stock.kLineDay[alertIndex + i].highestPrice;
-                    f3 = hightestPrice - (hightestPrice - lowestPrice) * 0.382;
-                    f5 = hightestPrice - (hightestPrice - lowestPrice) * 0.618;
+                    newHighestPrice = stock.kLineDay[alertIndex + i].highestPrice;
+                    newF3 = hightestPrice - (newHighestPrice - lowestPrice) * 0.382;
+                    newF5 = hightestPrice - (newHighestPrice - lowestPrice) * 0.618;
                 }
             }
 
