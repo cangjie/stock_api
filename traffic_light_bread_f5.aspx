@@ -537,26 +537,15 @@
             }
             dr["总计"] = (maxPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice;
 
-            if (stock.IsLimitUp(limitUpIndex + 2))
+            if (drOri["color"].ToString().Equals("red"))
             {
-                dr["信号"] = "<a title=\"涨停\" >📈</a>";
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"红灯量反包绿灯\" >🔴</a>";
+            }
+            else if (drOri["color"].ToString().Equals("green"))
+            { 
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"绿灯量等于涨停量\" >🟢</a>";
             }
 
-            if (stock.kLineDay[currentIndex].macd > stock.kLineDay[currentIndex - 1].macd
-                && stock.kLineDay[currentIndex - 1].macd > stock.kLineDay[currentIndex - 2].macd
-                && stock.kLineDay[currentIndex - 2].macd > stock.kLineDay[currentIndex - 3].macd)
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"MACD三连涨\" >🔥</a>";
-            }
-
-            if (stock.kLineDay[currentIndex].lowestPrice > stock.kLineDay[currentIndex - 1].highestPrice)
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"缺口\" >🌟🌟</a>";
-            }
-            else if (stock.kLineDay[currentIndex].startPrice > stock.kLineDay[currentIndex - 1].endPrice)
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"跳空高开\" >🌟</a>";
-            }
 
 
             dt.Rows.Add(dr);
@@ -712,6 +701,7 @@
                 <Columns>
                     <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="信号" HeaderText="信号"></asp:BoundColumn>
                     <asp:BoundColumn DataField="类型" HeaderText="类型"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
                     <asp:BoundColumn DataField="现高" HeaderText="现高"></asp:BoundColumn>

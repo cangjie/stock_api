@@ -314,7 +314,7 @@
         dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
         dt.Columns.Add("F3折返", Type.GetType("System.Double"));
-        
+
         dt.Columns.Add("无影", Type.GetType("System.Double"));
         dt.Columns.Add("价差", Type.GetType("System.Double"));
         dt.Columns.Add("红绿灯涨", Type.GetType("System.Double"));
@@ -336,7 +336,7 @@
 
 
         DataTable dtOri = DBHelper.GetDataTable(" select * from alert_traffic_light_bread where alert_date >= '" + lastTransactDate.ToShortDateString() + "' "
-            + " and alert_date <= '" + currentDate.ToShortDateString() + "'  " 
+            + " and alert_date <= '" + currentDate.ToShortDateString() + "'  "
             //+ " and gid = 'sz300746' "
             );
 
@@ -482,7 +482,7 @@
             dr["F3折返"] = (stock.kLineDay[currentIndex].lowestPrice - f3) / f3;
 
             dr["3线"] = stock.GetAverageSettlePrice(currentIndex, 3, 3);
-            dr["现价"] = stock.kLineDay[currentIndex].endPrice; 
+            dr["现价"] = stock.kLineDay[currentIndex].endPrice;
 
             dr["评级"] = "";
             //buyPrice = stock.kLineDay[currentIndex].endPrice;
@@ -492,7 +492,7 @@
 
             dr["MACD日"] = stock.macdDays(currentIndex);
 
-            
+
             dr["无影"] = 0;
             maxPrice = 0;
             //buyPrice = supportPrice;
@@ -537,25 +537,13 @@
             }
             dr["总计"] = (maxPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice;
 
-            if (stock.IsLimitUp(limitUpIndex + 2))
+            if (drOri["color"].ToString().Equals("red"))
             {
-                dr["信号"] = "<a title=\"涨停\" >📈</a>";
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"红灯量反包绿灯\" >🔴</a>";
             }
-
-            if (stock.kLineDay[currentIndex].macd > stock.kLineDay[currentIndex - 1].macd
-                && stock.kLineDay[currentIndex - 1].macd > stock.kLineDay[currentIndex - 2].macd
-                && stock.kLineDay[currentIndex - 2].macd > stock.kLineDay[currentIndex - 3].macd)
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"MACD三连涨\" >🔥</a>";
-            }
-
-            if (stock.kLineDay[currentIndex].lowestPrice > stock.kLineDay[currentIndex - 1].highestPrice)
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"缺口\" >🌟🌟</a>";
-            }
-            else if (stock.kLineDay[currentIndex].startPrice > stock.kLineDay[currentIndex - 1].endPrice)
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"跳空高开\" >🌟</a>";
+            else if (drOri["color"].ToString().Equals("green"))
+            { 
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"绿灯量等于涨停量\" >🟢</a>";
             }
 
 
@@ -712,6 +700,7 @@
                 <Columns>
                     <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="信号" HeaderText="信号"></asp:BoundColumn>
                     <asp:BoundColumn DataField="类型" HeaderText="类型"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
                     <asp:BoundColumn DataField="现高" HeaderText="现高"></asp:BoundColumn>
