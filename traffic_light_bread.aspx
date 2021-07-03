@@ -17,9 +17,6 @@
         sort = Util.GetSafeRequestValue(Request, "sort", "幅度 desc");
         if (!IsPostBack)
         {
-
-
-
             DataTable dt = GetData();
             dg.DataSource = dt;
             dg.DataBind();
@@ -542,10 +539,23 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"红灯量反包绿灯\" >🔴</a>";
             }
             else if (drOri["color"].ToString().Equals("green"))
-            { 
+            {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"绿灯量等于涨停量\" >🟢</a>";
             }
-
+            if (dr["类型"].ToString().Trim().Equals("F3"))
+            {
+                if (f3 > stock.GetAverageSettlePrice(currentIndex, 3, 3))
+                { 
+                    dr["信号"] = dr["信号"].ToString() + "🌟";
+                }
+            }
+            if (dr["类型"].ToString().Trim().Equals("F5"))
+            {
+                if (f5 > stock.GetAverageSettlePrice(currentIndex, 3, 3))
+                { 
+                    dr["信号"] = dr["信号"].ToString() + "🌟";
+                }
+            }
 
             dt.Rows.Add(dr);
 
