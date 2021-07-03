@@ -546,7 +546,20 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"绿灯量等于涨停量\" >🟢</a>";
             }
 
-
+            if (dr["类型"].ToString().Trim().Equals("F3"))
+            {
+                if (f3 > stock.GetAverageSettlePrice(currentIndex, 3, 3))
+                { 
+                    dr["信号"] = dr["信号"].ToString() + "<a title=\"支撑在3线上\" >🌟</a>";
+                }
+            }
+            if (dr["类型"].ToString().Trim().Equals("F5"))
+            {
+                if (f5 > stock.GetAverageSettlePrice(currentIndex, 3, 3))
+                { 
+                    dr["信号"] = dr["信号"].ToString() + "<a title=\"支撑在3线上\" >🌟</a>";
+                }
+            }
 
             dt.Rows.Add(dr);
 
