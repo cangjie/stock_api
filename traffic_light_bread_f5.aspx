@@ -454,24 +454,7 @@
             dr["幅度"] = Math.Round(100 * (hightestPrice - lowestPrice) / lowestPrice, 2).ToString() + "%";
 
 
-            double f3ReverseRate = (stock.kLineDay[currentIndex].lowestPrice - f3) / f3;
-            double f5ReverseRate = (stock.kLineDay[currentIndex].lowestPrice - f5) / f5;
-            double supportPrice = 0;
-            if (Math.Abs(f3ReverseRate) > Math.Abs(f5ReverseRate))
-            {
-                dr["价差"] = (stock.kLineDay[currentIndex].lowestPrice - f5);
-                supportPrice = f5;
-                dr["类型"] = "F5";
-
-            }
-            else
-            {
-                dr["价差"] = (stock.kLineDay[currentIndex].lowestPrice - f3);
-                supportPrice = f3;
-                dr["类型"] = "F3";
-
-
-            }
+            dr["类型"] = type;
 
 
 
