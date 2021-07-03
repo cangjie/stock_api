@@ -309,9 +309,9 @@
         dt.Columns.Add("F3折返", Type.GetType("System.Double"));
 
         dt.Columns.Add("无影", Type.GetType("System.Double"));
-        dt.Columns.Add("价差", Type.GetType("System.Double"));
+        
         dt.Columns.Add("红绿灯涨", Type.GetType("System.Double"));
-        dt.Columns.Add("价差abs", Type.GetType("System.Double"));
+        
         dt.Columns.Add("类型", Type.GetType("System.String"));
         dt.Columns.Add("涨幅", Type.GetType("System.Double"));
         for (int i = 0; i <= 10; i++)
@@ -449,9 +449,6 @@
 
             dr["类型"] = type;
 
-
-
-            dr["价差abs"] = 0;
 
 
 
