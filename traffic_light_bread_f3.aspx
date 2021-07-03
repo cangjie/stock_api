@@ -133,10 +133,7 @@
                                 + Math.Round(currentValuePrice, 2).ToString() + "</font>";
                             break;
 
-                        case "价差":
-                            double currentValuePrice1 = (double)drOri[i];
-                            dr[i] = Math.Round(currentValuePrice1, 2).ToString();
-                            break;
+                        
 
                         default:
                             if (System.Text.RegularExpressions.Regex.IsMatch(drArr[0].Table.Columns[i].Caption.Trim(), "\\d日")
