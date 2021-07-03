@@ -458,7 +458,7 @@
 
 
 
-            dr["价差abs"] = Math.Abs((double)dr["价差"]);
+            dr["价差abs"] = 0;
 
 
 
