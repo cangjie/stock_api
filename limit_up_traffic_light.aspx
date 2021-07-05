@@ -588,8 +588,20 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"绿灯量等于涨停量\" >🟢</a>";
                 try
                 {
-                    DBHelper.InsertData("alert_traffic_light_bread", new string[,] {{"alert_date", "datetime", currentDate.ToShortDateString() },
-                        {"gid", "varchar", stock.gid }, {"color", "varchar", "green" } });
+                    if (currentDate.Date == DateTime.Now.Date)
+                    {
+                        if (DateTime.Now.Hour >= 15)
+                        { 
+                            DBHelper.InsertData("alert_traffic_light_bread", new string[,] {{"alert_date", "datetime", currentDate.ToShortDateString() },
+                            {"gid", "varchar", stock.gid }, {"color", "varchar", "green" } });
+                        }
+                    }
+                    else
+                    {
+                        DBHelper.InsertData("alert_traffic_light_bread", new string[,] {{"alert_date", "datetime", currentDate.ToShortDateString() },
+                            {"gid", "varchar", stock.gid }, {"color", "varchar", "green" } });
+                    }
+
                 }
                 catch
                 {
@@ -602,8 +614,20 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"红灯量反包绿灯\" >🔴</a>";
                 try
                 {
-                    DBHelper.InsertData("alert_traffic_light_bread", new string[,] {{"alert_date", "datetime", currentDate.ToShortDateString() },
-                        {"gid", "varchar", stock.gid }, {"color", "varchar", "red" } });
+                    if (currentDate.Date == DateTime.Now.Date)
+                    {
+                        if (DateTime.Now.Hour >= 15)
+                        {
+                            DBHelper.InsertData("alert_traffic_light_bread", new string[,] {{"alert_date", "datetime", currentDate.ToShortDateString() },
+                                {"gid", "varchar", stock.gid }, {"color", "varchar", "red" } });
+                        }
+                    }
+                    else
+                    {
+                        DBHelper.InsertData("alert_traffic_light_bread", new string[,] {{"alert_date", "datetime", currentDate.ToShortDateString() },
+                            {"gid", "varchar", stock.gid }, {"color", "varchar", "red" } });
+                    }
+
                 }
                 catch
                 {
