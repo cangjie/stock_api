@@ -406,7 +406,8 @@
 
             string type = "";
 
-            bool find = false;
+            //bool find = false;
+            int redIndex = 0;
             if (f5Index > 0)
             {
                 type = "F5";
@@ -415,7 +416,8 @@
                 {
                     if (stock.kLineDay[j].startPrice < stock.kLineDay[j].endPrice && j == currentIndex)
                     {
-                        find = true;
+                        //find = true;
+                        redIndex = j;
                         break;
                     }
                 }
@@ -428,14 +430,15 @@
                 {
                     if (stock.kLineDay[j].startPrice < stock.kLineDay[j].endPrice && j == currentIndex)
                     {
-                        find = true;
+                        //find = true;
+                        redIndex = j
                         break;
                     }
                 }
 
             }
 
-            if (!find)
+            if (redIndex != currentIndex)
             {
                 continue;
             }

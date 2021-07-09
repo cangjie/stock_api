@@ -330,7 +330,7 @@
 
         DataTable dtOri = DBHelper.GetDataTable(" select * from alert_traffic_light_bread where alert_date >= '" + lastTransactDate.ToShortDateString() + "' "
             + " and alert_date <= '" + currentDate.ToShortDateString() + "'  "
-            //+ " and gid = 'sz300746' "
+            //+ " and gid = 'kc688081' "
             );
 
         foreach (DataRow drOri in dtOri.Rows)
@@ -406,16 +406,20 @@
 
             string type = "";
 
-            bool find = false;
+            //bool find = false;
+
+            int redIndex = 0;
+
             if (f5Index > 0)
             {
                 type = "F5";
 
                 for (int j = f5Index; j < stock.kLineDay.Length && j <= f5Index + 3; j++)
                 {
-                    if (stock.kLineDay[j].startPrice < stock.kLineDay[j].endPrice && j == currentIndex)
+                    if (stock.kLineDay[j].startPrice < stock.kLineDay[j].endPrice)
                     {
-                        find = true;
+                        //find = true;
+                        redIndex = j;
                         break;
                     }
                 }
@@ -428,14 +432,15 @@
                 {
                     if (stock.kLineDay[j].startPrice < stock.kLineDay[j].endPrice && j == currentIndex)
                     {
-                        find = true;
+                        //find = true;
+                        redIndex = j;
                         break;
                     }
                 }
 
             }
 
-            if (!find)
+            if (redIndex != currentIndex)
             {
                 continue;
             }
