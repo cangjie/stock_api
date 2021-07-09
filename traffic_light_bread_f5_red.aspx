@@ -569,7 +569,12 @@
                     dr["信号"] = dr["信号"].ToString() + "<a title=\"支撑在3线上\" >🌟</a>";
                 }
             }
-
+            if ((stock.kLineDay[currentIndex - 1].endPrice < stock.GetAverageSettlePrice(currentIndex - 1, 3, 3)
+                || stock.kLineDay[currentIndex].startPrice < stock.GetAverageSettlePrice(currentIndex, 3, 3))
+                && stock.kLineDay[currentIndex].endPrice > stock.GetAverageSettlePrice(currentIndex, 3, 3))
+            { 
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"突破3线\" >📈</a>";
+            }
             dt.Rows.Add(dr);
 
         }
