@@ -431,7 +431,7 @@
                     if (stock.kLineDay[j].startPrice < stock.kLineDay[j].endPrice && j == currentIndex)
                     {
                         //find = true;
-                        redIndex = j
+                        redIndex = j;
                         break;
                     }
                 }
