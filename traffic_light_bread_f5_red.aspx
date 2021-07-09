@@ -414,7 +414,7 @@
 
                 for (int j = f5Index; j < stock.kLineDay.Length && j <= f5Index + 3; j++)
                 {
-                    if (stock.kLineDay[j].startPrice < stock.kLineDay[j].endPrice && j == currentIndex)
+                    if (stock.kLineDay[j].startPrice < stock.kLineDay[j].endPrice)
                     {
                         //find = true;
                         redIndex = j;
@@ -428,7 +428,7 @@
 
                 for (int j = f3Index; j < stock.kLineDay.Length && j <= f3Index + 3; j++)
                 {
-                    if (stock.kLineDay[j].startPrice < stock.kLineDay[j].endPrice && j == currentIndex)
+                    if (stock.kLineDay[j].startPrice < stock.kLineDay[j].endPrice )
                     {
                         //find = true;
                         redIndex = j;

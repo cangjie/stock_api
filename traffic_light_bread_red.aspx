@@ -328,7 +328,7 @@
 
         DataTable dtOri = DBHelper.GetDataTable(" select * from alert_traffic_light_bread where alert_date >= '" + lastTransactDate.ToShortDateString() + "' "
             + " and alert_date <= '" + currentDate.ToShortDateString() + "'  "
-            //+ " and gid = 'sz300079' "
+            //+ " and gid = 'sh600438' "
             );
 
         foreach (DataRow drOri in dtOri.Rows)
@@ -428,7 +428,7 @@
 
                 for (int j = f3Index; j < stock.kLineDay.Length && j <= f3Index + 3; j++)
                 {
-                    if (stock.kLineDay[j].startPrice < stock.kLineDay[j].endPrice && j == currentIndex)
+                    if (stock.kLineDay[j].startPrice < stock.kLineDay[j].endPrice )
                     {
                         //find = true;
                         redIndex = j;
