@@ -374,7 +374,7 @@
             double newHighestPrice = hightestPrice;
             int f3Index = 0;
             int f5Index = 0;
-            for (int i = 1; i <= 20 && alertIndex + i < stock.kLineDay.Length; i++)
+            for (int i = 1; i <= 20 && alertIndex + i < currentIndex; i++)
             {
                 f3 = newF3;
                 f5 = newF5;
@@ -399,8 +399,8 @@
                 if (stock.kLineDay[alertIndex + i].highestPrice > hightestPrice)
                 {
                     newHighestPrice = stock.kLineDay[alertIndex + i].highestPrice;
-                    newF3 = hightestPrice - (newHighestPrice - lowestPrice) * 0.382;
-                    newF5 = hightestPrice - (newHighestPrice - lowestPrice) * 0.618;
+                    newF3 = newHighestPrice - (newHighestPrice - lowestPrice) * 0.382;
+                    newF5 = newHighestPrice - (newHighestPrice - lowestPrice) * 0.618;
                 }
             }
 
