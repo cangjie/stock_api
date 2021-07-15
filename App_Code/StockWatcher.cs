@@ -117,7 +117,8 @@ public class StockWatcher
 
     public static void WatchEachStock()
     {
-        Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+        //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+
         for (; true;)
         {
             try
@@ -132,7 +133,7 @@ public class StockWatcher
                         //KLine.RefreshKLine(gidArr[i], DateTime.Parse(DateTime.Now.ToShortDateString()));
                         Stock stock = new Stock(gidArr[i].Trim());
                         
-                        stock.LoadKLineDay(rc);
+                        stock.LoadKLineDay(Util.rc);
                         int currentIndex = stock.GetItemIndex(DateTime.Parse(DateTime.Now.ToShortDateString()));
                         try
                         {
@@ -229,7 +230,7 @@ public class StockWatcher
             }
             Thread.Sleep(10000);
         }
-        rc.Dispose();
+        Util.rc.Dispose();
     }
 
     public static void LogQuota()
