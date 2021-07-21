@@ -25,6 +25,8 @@
     {
         int days = int.Parse(Util.GetSafeRequestValue(Request, "days", "15"));
 
+        double diff = double.Parse(Util.GetSafeRequestValue(Request, "diff", "0.1"));
+
         DateTime startDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "start", "2021-1-1"));
         DateTime endDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "end", DateTime.Now.ToShortDateString()));
 
@@ -59,7 +61,13 @@
                 continue;
             }
             KLine k = s.kLineDay[alertIndex];
-            if (Math.Abs((k.endPrice - k.startPrice) - (k.startPrice - k.lowestPrice)) / (k.startPrice - k.lowestPrice) > 0.01)
+
+            if ((k.endPrice - k.startPrice) / k.startPrice < 0.01)
+            {
+                continue;
+            }
+
+            if (Math.Abs((k.endPrice - k.startPrice) - (k.startPrice - k.lowestPrice)) / (k.startPrice - k.lowestPrice) > diff)
             {
                 continue;
             }
