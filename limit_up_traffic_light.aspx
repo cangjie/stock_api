@@ -583,7 +583,7 @@
             }
             dr["总计"] = (maxPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice;
 
-            if (Math.Abs(stock.kLineDay[currentIndex - 1].volume - stock.kLineDay[currentIndex - 2].volume) / stock.kLineDay[currentIndex - 2].volume < 0.05)
+            if (Math.Abs(stock.kLineDay[currentIndex - 1].volume - stock.kLineDay[currentIndex - 2].volume) / stock.kLineDay[currentIndex - 2].volume < 0.02)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"绿灯量等于涨停量\" >🟢</a>";
                 try
