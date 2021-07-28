@@ -507,6 +507,115 @@ public class KLine
         return ret;
     }
 
+    public static double ComputeLc(KLine[] kArr, int index)
+    {
+        if (index <= 0)
+        {
+            return -1;
+        }
+        return kArr[index - 1].endPrice;
+    }
+
+    public static double GetLowestPrice(KLine[] kArr, int index, int days)
+    {
+        double lowestPrice = double.MaxValue;
+        for (int i = 0; i < days; i++)
+        {
+            lowestPrice = Math.Min(kArr[index - i].lowestPrice, lowestPrice);
+        }
+        return lowestPrice;
+    }
+    /*
+    public static double GetHighestPrice(KLine[] kArr, int index, int days)
+    {
+        double highestPrice = double.MinValue;
+        for (int i = 0; i < days; i++)
+        {
+            highestPrice = Math.Max(kArr[index - i].lowestPrice, highestPrice);
+        }
+        return highestPrice;
+    }
+    */
+    public static double ComputeRisk(KLine[] kArr, int index)
+    {
+        if (index < 0)
+            return -100;
+        if (kArr.Length <= index)
+            return -100;
+
+        double risk = 0;
+        double rsi1U = (Math.Max(kArr[index].endPrice - kArr[index - 1].endPrice, 0)
+            + Math.Max(kArr[index - 1].endPrice - kArr[index - 2].endPrice, 0)
+            + Math.Max(kArr[index - 2].endPrice - kArr[index - 3].endPrice, 0))/3;
+        double rsi1L = (Math.Abs(kArr[index].endPrice - kArr[index - 1].endPrice)
+            + Math.Abs(kArr[index - 1].endPrice - kArr[index - 2].endPrice)
+            + Math.Abs(kArr[index - 2].endPrice - kArr[index - 3].endPrice)) / 3;
+        double rsi1 = rsi1U / rsi1L * 100;
+
+        double rsi2U = (Math.Max(kArr[index].endPrice - kArr[index - 1].endPrice, 0)
+            + Math.Max(kArr[index - 1].endPrice - kArr[index - 2].endPrice, 0)
+            + Math.Max(kArr[index - 2].endPrice - kArr[index - 3].endPrice, 0)
+            + Math.Max(kArr[index - 3].endPrice - kArr[index - 4].endPrice, 0)
+            + Math.Max(kArr[index - 4].endPrice - kArr[index - 5].endPrice, 0)) / 5;
+        double rsi2L = (Math.Abs(kArr[index].endPrice - kArr[index - 1].endPrice)
+            + Math.Abs(kArr[index - 1].endPrice - kArr[index - 2].endPrice)
+            + Math.Abs(kArr[index - 2].endPrice - kArr[index - 3].endPrice)
+            + Math.Abs(kArr[index - 3].endPrice - kArr[index - 4].endPrice)
+            + Math.Abs(kArr[index - 4].endPrice - kArr[index - 5].endPrice)) / 5;
+        double rsi2 = rsi2U / rsi2L * 100;
+
+        double rsi3U = (Math.Max(kArr[index].endPrice - kArr[index - 1].endPrice, 0)
+            + Math.Max(kArr[index - 1].endPrice - kArr[index - 2].endPrice, 0)
+            + Math.Max(kArr[index - 2].endPrice - kArr[index - 3].endPrice, 0)
+            + Math.Max(kArr[index - 3].endPrice - kArr[index - 4].endPrice, 0)
+            + Math.Max(kArr[index - 4].endPrice - kArr[index - 5].endPrice, 0)
+            + Math.Max(kArr[index - 5].endPrice - kArr[index - 6].endPrice, 0)
+            + Math.Max(kArr[index - 6].endPrice - kArr[index - 7].endPrice, 0)
+            + Math.Max(kArr[index - 7].endPrice - kArr[index - 8].endPrice, 0)) / 8;
+        double rsi3L = (Math.Abs(kArr[index].endPrice - kArr[index - 1].endPrice)
+            + Math.Abs(kArr[index - 1].endPrice - kArr[index - 2].endPrice)
+            + Math.Abs(kArr[index - 2].endPrice - kArr[index - 3].endPrice)
+            + Math.Abs(kArr[index - 3].endPrice - kArr[index - 4].endPrice)
+            + Math.Abs(kArr[index - 4].endPrice - kArr[index - 5].endPrice)
+            + Math.Abs(kArr[index - 5].endPrice - kArr[index - 6].endPrice)
+            + Math.Abs(kArr[index - 6].endPrice - kArr[index - 7].endPrice)
+            + Math.Abs(kArr[index - 7].endPrice - kArr[index - 8].endPrice)) / 8;
+        double rsi3 = rsi3U / rsi3L * 100;
+        double rsi = 0.5 * rsi1 + 0.31 * rsi2 + 0.19 * rsi3;
+        /*
+        double wave1 = (100 * (kArr[index].endPrice - GetLowestPrice(kArr, index, 8)) / (GetHighestPrice(kArr, index, 8) - GetLowestPrice(kArr, index, 8))
+            + 100 * (kArr[index-1].endPrice - GetLowestPrice(kArr, index-1, 8)) / (GetHighestPrice(kArr, index-1, 8) - GetLowestPrice(kArr, index-1, 8)) 
+            + 100 * (kArr[index - 2].endPrice - GetLowestPrice(kArr, index - 2, 8)) / (GetHighestPrice(kArr, index - 2, 8) - GetLowestPrice(kArr, index - 2, 8))) / 3;
+        double wave1L = 
+        */
+
+        double wave1 = (100 * (kArr[index].endPrice - GetLowestPrice(kArr, index, 8)) / (GetHighestPrice(kArr, index, 8) - GetLowestPrice(kArr, index, 8))
+            + 100 * (kArr[index - 1].endPrice - GetLowestPrice(kArr, index - 1, 8)) / (GetHighestPrice(kArr, index - 1, 8) - GetLowestPrice(kArr, index - 1, 8))
+            + 100 * (kArr[index - 2].endPrice - GetLowestPrice(kArr, index - 2, 8)) / (GetHighestPrice(kArr, index - 2, 8) - GetLowestPrice(kArr, index - 2, 8))) / 3;
+        double wave2 = (100 * (kArr[index].endPrice - GetLowestPrice(kArr, index, 8)) / (GetHighestPrice(kArr, index, 8) - GetLowestPrice(kArr, index, 8))
+            + 100 * (kArr[index - 1].endPrice - GetLowestPrice(kArr, index - 1, 8)) / (GetHighestPrice(kArr, index - 1, 8) - GetLowestPrice(kArr, index - 1, 8))
+            + 100 * (kArr[index - 2].endPrice - GetLowestPrice(kArr, index - 2, 8)) / (GetHighestPrice(kArr, index - 2, 8) - GetLowestPrice(kArr, index - 2, 8))
+            + 100 * (kArr[index - 3].endPrice - GetLowestPrice(kArr, index - 3, 8)) / (GetHighestPrice(kArr, index - 3, 8) - GetLowestPrice(kArr, index - 3, 8))
+            + 100 * (kArr[index - 4].endPrice - GetLowestPrice(kArr, index - 4, 8)) / (GetHighestPrice(kArr, index - 4, 8) - GetLowestPrice(kArr, index - 4, 8))) / 5;
+        double wave3 = (100 * (kArr[index].endPrice - GetLowestPrice(kArr, index, 8)) / (GetHighestPrice(kArr, index, 8) - GetLowestPrice(kArr, index, 8))
+            + 100 * (kArr[index - 1].endPrice - GetLowestPrice(kArr, index - 1, 8)) / (GetHighestPrice(kArr, index - 1, 8) - GetLowestPrice(kArr, index - 1, 8))
+            + 100 * (kArr[index - 2].endPrice - GetLowestPrice(kArr, index - 2, 8)) / (GetHighestPrice(kArr, index - 2, 8) - GetLowestPrice(kArr, index - 2, 8))
+            + 100 * (kArr[index - 3].endPrice - GetLowestPrice(kArr, index - 3, 8)) / (GetHighestPrice(kArr, index - 3, 8) - GetLowestPrice(kArr, index - 3, 8))
+            + 100 * (kArr[index - 4].endPrice - GetLowestPrice(kArr, index - 4, 8)) / (GetHighestPrice(kArr, index - 4, 8) - GetLowestPrice(kArr, index - 4, 8))
+            + 100 * (kArr[index - 5].endPrice - GetLowestPrice(kArr, index - 5, 8)) / (GetHighestPrice(kArr, index - 5, 8) - GetLowestPrice(kArr, index - 5, 8))
+            + 100 * (kArr[index - 6].endPrice - GetLowestPrice(kArr, index - 6, 8)) / (GetHighestPrice(kArr, index - 6, 8) - GetLowestPrice(kArr, index - 6, 8))
+            + 100 * (kArr[index - 7].endPrice - GetLowestPrice(kArr, index - 7, 8)) / (GetHighestPrice(kArr, index - 7, 8) - GetLowestPrice(kArr, index - 7, 8))
+            ) / 8;
+
+
+        double wave = 0.5 * wave1 + 0.31 * wave2 + 0.19 * wave3;
+
+        risk = 0.5 * wave + 0.5 * rsi;
+
+        //double rsi1 = 
+        return risk;
+    }
+
     public static double ComputeMacdDegree(KLine[] kArr, int index)
     {
         if (index < 0)

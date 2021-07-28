@@ -9,9 +9,11 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        Stock s = new Stock("sz000572");
-        s.LoadKLineWeek(Util.rc);
-        Response.Write(s.kLineWeek.Length.ToString());
+        Stock s = new Stock("sz002843");
+        s.LoadKLineDay(Util.rc);
+        int index = s.kLineDay.Length - 1;
+        Response.Write(s.kLineDay[index].startDateTime.ToShortDateString() + " " + KLine.ComputeRisk(s.kLineDay, index).ToString());
+
 
     }
 
