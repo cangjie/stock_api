@@ -100,6 +100,7 @@
                         case "昨收":
                         case "MACD率":
                         case "KDJ率":
+                        case "风险":
                             dr[i] = Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2).ToString();
                             break;
                         case "买入":
@@ -305,6 +306,7 @@
         dt.Columns.Add("现高", Type.GetType("System.Double"));
         dt.Columns.Add("F3", Type.GetType("System.Double"));
         dt.Columns.Add("F5", Type.GetType("System.Double"));
+        dt.Columns.Add("风险", Type.GetType("System.Double"));
         dt.Columns.Add("前低", Type.GetType("System.Double"));
         dt.Columns.Add("幅度", Type.GetType("System.String"));
         dt.Columns.Add("3线", Type.GetType("System.Double"));
@@ -507,7 +509,7 @@
             dr["F5"] = f5;
             dr["前低"] = lowest;
             dr["幅度"] = width.ToString() + "%";
-
+            dr["风险"] = KLine.ComputeRisk(stock.kLineDay, currentIndex);
 
             double f3ReverseRate = (stock.kLineDay[currentIndex].lowestPrice - f3) / f3;
             double f5ReverseRate = (stock.kLineDay[currentIndex].lowestPrice - f5) / f5;
@@ -769,7 +771,7 @@
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号" SortExpression="信号|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="缩量" HeaderText="缩量"></asp:BoundColumn>
-                    
+                    <asp:BoundColumn DataField="风险" HeaderText="风险"></asp:BoundColumn>
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD日|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>

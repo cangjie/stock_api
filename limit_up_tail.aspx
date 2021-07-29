@@ -95,6 +95,7 @@
                         case "昨收":
                         case "MACD率":
                         case "KDJ率":
+                        case "风险":
                             dr[i] = Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2).ToString();
                             break;
                         case "买入":
@@ -305,7 +306,7 @@
         dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
         dt.Columns.Add("F3折返", Type.GetType("System.Double"));
-
+        dt.Columns.Add("风险", Type.GetType("System.Double"));
         dt.Columns.Add("无影", Type.GetType("System.Double"));
 
         dt.Columns.Add("红绿灯涨", Type.GetType("System.Double"));
@@ -471,7 +472,7 @@
             double maxPrice = Math.Max(stock.kLineDay[currentIndex - 1].endPrice, stock.kLineDay[currentIndex - 2].endPrice);
 
             dr["红绿灯涨"] = (stock.kLineDay[currentIndex].endPrice - maxPrice) / maxPrice;
-
+            dr["风险"] = KLine.ComputeRisk(stock.kLineDay, currentIndex);
 
 
 
@@ -707,6 +708,7 @@
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号"></asp:BoundColumn>
                     <asp:BoundColumn DataField="缩量" HeaderText="缩量"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="风险" HeaderText="风险"></asp:BoundColumn>
                     <asp:BoundColumn DataField="类型" HeaderText="类型"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
                     <asp:BoundColumn DataField="现高" HeaderText="现高"></asp:BoundColumn>
