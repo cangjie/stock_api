@@ -9,15 +9,21 @@
         string[] gidArr = Util.GetAllGids();
         foreach (string gid in gidArr)
         {
+          
             Stock s = new Stock(gid);
             s.LoadKLineDay(Util.rc);
             int startIndex = s.GetItemIndex(startDate);
-            if (startIndex < 16)
+            if (startIndex < 0)
             {
-                continue;
+                startIndex = 0;
             }
             for (int i = startIndex; i < s.kLineDay.Length && s.kLineDay[i].endDateTime.Date <= endDate; i++)
             {
+
+                if (i < 16)
+                {
+                    continue;
+                }
                 double risk = KLine.ComputeRisk(s.kLineDay, i);
                 try
                 {
