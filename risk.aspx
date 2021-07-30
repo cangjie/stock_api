@@ -25,6 +25,7 @@
 
     public DataTable GetData()
     {
+        int r = int.Parse(Util.GetSafeRequestValue(Request, "r", "30").Trim());
         if (calendar.SelectedDate.Year < 2000)
             currentDate = Util.GetDay(DateTime.Now);
         else
@@ -285,7 +286,7 @@
 
     }
 
-    public static DataTable GetData(DateTime currentDate)
+    public static DataTable GetData(DateTime currentDate, int r)
     {
         currentDate = Util.GetDay(currentDate);
         DataTable dt = new DataTable();
@@ -314,7 +315,7 @@
         //DateTime limitUpStartDate = Util.GetLastTransactDate(lastTransactDate, 10);
 
 
-        DataTable dtOri = DBHelper.GetDataTable(" select * from risk  where risk < 20  and  alert_date = '" + lastTransactDate.ToShortDateString() + "'  "
+        DataTable dtOri = DBHelper.GetDataTable(" select * from risk  where risk < " + r.ToString() + "  and  alert_date = '" + lastTransactDate.ToShortDateString() + "'  "
             //+ " and alert_date <= '" + currentDate.ToShortDateString() + "'  "
             //+ " and gid = 'sh600438' "
             );
