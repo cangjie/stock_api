@@ -367,16 +367,6 @@
             KLine.ComputeKDJ(stock.kLineDay);
             KLine.ComputeMACD(stock.kLineDay);
 
-
-
-
-
-
-
-
-
-
-
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
@@ -392,7 +382,7 @@
 
 
             dr["3线"] = stock.GetAverageSettlePrice(currentIndex, 3, 3);
-           
+
 
             dr["KDJ日"] = stock.kdjDays(currentIndex);
 
@@ -411,17 +401,33 @@
 
             double maxPrice = 0;
 
+            int shitIndex = 0;
+
+            double lowestPrice = stock.kLineDay[currentIndex - 1].lowestPrice;
+
             for (int i = 1; i <= 10; i++)
             {
                 if (currentIndex + i >= stock.kLineDay.Length)
                     break;
                 double highPrice = stock.kLineDay[currentIndex + i].highestPrice;
+
                 maxPrice = Math.Max(maxPrice, highPrice);
                 dr[i.ToString() + "日"] = (highPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice;
+                if (shitIndex == 0 && (double)dr[i.ToString() + "日"] >= 0.01)
+                {
+                    shitIndex = -1;
+                }
+                if (stock.kLineDay[currentIndex + i].lowestPrice < lowestPrice && shitIndex == 0)
+                {
+                    shitIndex = i;
+                }
             }
             dr["总计"] = (maxPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice;
 
-
+            if (shitIndex > 0)
+            {
+                dr["信号"] = "💩";
+            }
 
             dt.Rows.Add(dr);
 
