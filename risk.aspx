@@ -30,7 +30,7 @@
             currentDate = Util.GetDay(DateTime.Now);
         else
             currentDate = Util.GetDay(calendar.SelectedDate);
-        DataTable dtOri = GetData(currentDate);
+        DataTable dtOri = GetData(currentDate, r);
         string filter = "";
         if (Util.GetSafeRequestValue(Request, "goldcross", "0").Trim().Equals("0"))
         {
@@ -315,7 +315,7 @@
         //DateTime limitUpStartDate = Util.GetLastTransactDate(lastTransactDate, 10);
 
 
-        DataTable dtOri = DBHelper.GetDataTable(" select * from risk  where risk < " + r.ToString() + "  and  alert_date = '" + lastTransactDate.ToShortDateString() + "'  "
+        DataTable dtOri = DBHelper.GetDataTable(" select * from risk  where risk < 20  and  alert_date = '" + lastTransactDate.ToShortDateString() + "'  "
             //+ " and alert_date <= '" + currentDate.ToShortDateString() + "'  "
             //+ " and gid = 'sh600438' "
             );
@@ -350,7 +350,7 @@
 
             double currentRisk = KLine.ComputeRisk(stock.kLineDay, currentIndex);
 
-            if (currentRisk - lastRisk < 30)
+            if (currentRisk - lastRisk < r)
             {
                 continue;
             }
