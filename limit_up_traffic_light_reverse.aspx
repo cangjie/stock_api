@@ -509,7 +509,14 @@
             dr["F5"] = f5;
             dr["前低"] = lowest;
             dr["幅度"] = width.ToString() + "%";
-            dr["风险"] = KLine.ComputeRisk(stock.kLineDay, currentIndex);
+            try
+            {
+                dr["风险"] = KLine.ComputeRisk(stock.kLineDay, currentIndex);
+            }
+            catch
+            {
+                dr["风险"] = 120;
+            }
 
             double f3ReverseRate = (stock.kLineDay[currentIndex].lowestPrice - f3) / f3;
             double f5ReverseRate = (stock.kLineDay[currentIndex].lowestPrice - f5) / f5;
