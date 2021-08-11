@@ -14,7 +14,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "缩量");
+        sort = Util.GetSafeRequestValue(Request, "sort", "风险差 desc");
         if (!IsPostBack)
         {
             DataTable dt = GetData();
@@ -315,9 +315,9 @@
         //DateTime limitUpStartDate = Util.GetLastTransactDate(lastTransactDate, 10);
 
 
-        DataTable dtOri = DBHelper.GetDataTable(" select * from risk  where risk < 20  and  alert_date = '" + lastTransactDate.ToShortDateString() + "'  "
-            //+ " and alert_date <= '" + currentDate.ToShortDateString() + "'  "
-            //+ " and gid = 'sh600438' "
+        DataTable dtOri = DBHelper.GetDataTable(" select * from risk a join risk b on a.gid = b.gid and  a.alert_date = '" + lastTransactDate.ToShortDateString() 
+            + "' and b.alert_date = '" + currentDate.ToShortDateString() + "' where a.risk < 20 and b.risk - a.risk >= " + r.ToString()
+            
             );
 
         foreach (DataRow drOri in dtOri.Rows)
@@ -362,7 +362,7 @@
             int kdjWeeks = stock.kdjWeeks(weekIndex);
             if (kdjWeeks < 0)
             {
-                continue;
+                //continue;
             }
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
@@ -428,6 +428,11 @@
             if (shitIndex > 0)
             {
                 dr["信号"] = "💩";
+            }
+
+            if (kdjWeeks >= 0)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"KDJ周线金叉\" >🌟</a>";
             }
 
             dt.Rows.Add(dr);
