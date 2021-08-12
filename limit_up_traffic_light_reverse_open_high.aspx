@@ -442,7 +442,7 @@
             double f5 = highest - (highest - lowest) * 0.618;
             double line3Price = KLine.GetAverageSettlePrice(stock.kLineDay, currentIndex, 3, 3);
             double currentPrice = stock.kLineDay[currentIndex].endPrice;
-            double buyPrice = stock.kLineDay[limitUpIndex + 3].startPrice;
+            double buyPrice = stock.kLineDay[limitUpIndex + 3].endPrice;
 
 
             double maxVolume = stock.kLineDay[limitUpIndex].volume;
