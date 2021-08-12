@@ -100,6 +100,7 @@
                         case "昨收":
                         case "MACD率":
                         case "KDJ率":
+                        case "风险":
                             dr[i] = Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2).ToString();
                             break;
                         case "买入":
@@ -304,6 +305,7 @@
         dt.Columns.Add("调整", Type.GetType("System.Int32"));
         dt.Columns.Add("现高", Type.GetType("System.Double"));
         dt.Columns.Add("F3", Type.GetType("System.Double"));
+        dt.Columns.Add("风险", Type.GetType("System.Double"));
         dt.Columns.Add("F5", Type.GetType("System.Double"));
         dt.Columns.Add("前低", Type.GetType("System.Double"));
         dt.Columns.Add("幅度", Type.GetType("System.String"));
@@ -505,7 +507,14 @@
 
             KLine highKLine = stock.kLineDay[highIndex];
 
-
+            try
+            {
+                dr["风险"] = KLine.ComputeRisk(stock.kLineDay, currentIndex);
+            }
+            catch
+            {
+                dr["风险"] = 120;
+            }
 
             dr["调整"] = currentIndex - limitUpIndex - 1;
             dr["缩量"] = volumeReduce;
@@ -597,7 +606,7 @@
                 maxPrice = Math.Max(maxPrice, highPrice);
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
             }
-            dr["总计"] = (maxPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice;
+            dr["总计"] = (maxPrice - buyPrice) / buyPrice;
 
             if (stock.IsLimitUp(limitUpIndex + 2))
             {
@@ -781,7 +790,7 @@
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号" SortExpression="信号|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="缩量" HeaderText="缩量"></asp:BoundColumn>
-                    
+                    <asp:BoundColumn DataField="风险" HeaderText="风险"></asp:BoundColumn>
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD日|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
