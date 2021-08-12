@@ -338,7 +338,7 @@
         DataTable dtOri = DBHelper.GetDataTable(" select gid, alert_date from limit_up a where  alert_date = '" + lastTransactDate.ToShortDateString() + "' "
             //+ " and not exists ( select 'a' from limit_up c where a.gid = c.gid and dbo.func_GetLastTransactDate(c.alert_date, 1) = a.alert_date ) "
             //+ " and not exists ( select 'a' from limit_up d where a.gid = d.gid and dbo.func_GetLastTransactDate(d.alert_date, 2) = a.alert_date ) "
-            //+ " and gid = 'sz000761' "
+            //+ " and gid = 'sh603013' "
             );
 
         DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor_new '" + currentDate.ToShortDateString() + "' ");
@@ -455,10 +455,10 @@
 
 
 
-            double volumeReduce = (stock.kLineDay[currentIndex].volume - stock.kLineDay[currentIndex - 1].volume) / stock.kLineDay[currentIndex - 1].volume;
+            double volumeReduce = (stock.kLineDay[currentIndex + 1].volume - stock.kLineDay[currentIndex].volume) / stock.kLineDay[currentIndex].volume;
             if (volumeReduce < 0)
             {
-                continue;
+                //continue;
             }
             if (stock.kLineDay[currentIndex].highestPrice <= stock.kLineDay[currentIndex - 1].highestPrice)
             {
@@ -560,7 +560,7 @@
             //buyPrice = supportPrice;
             dr["买入"] = buyPrice;
 
-            dr["涨幅"] = (buyPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
+            dr["涨幅"] = (buyPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice;
 
 
 
@@ -588,7 +588,7 @@
 
 
 
-            dr["0日"] = (stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
+            dr["0日"] = (stock.kLineDay[currentIndex +1].endPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
             for (int i = 1; i <= 10; i++)
             {
                 if (currentIndex + i + 1>= stock.kLineDay.Length)
