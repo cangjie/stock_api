@@ -75,12 +75,12 @@
             {
                 continue;
             }
-            else if (option.Trim().Equals("noshaddow") && s.kLineDay[alertIndex].endPrice <= s.kLineDay[alertIndex - 1].highestPrice
+            else if (option.Trim().Equals("noshaddow") && s.kLineDay[alertIndex].highestPrice <= s.kLineDay[alertIndex - 1].highestPrice
                 || Math.Abs(s.kLineDay[alertIndex].highestPrice - s.kLineDay[alertIndex].endPrice) * 1.618 >= s.kLineDay[alertIndex].endPrice - s.kLineDay[alertIndex].startPrice)
             {
                 continue;
             }
-            else if (s.kLineDay[alertIndex].highestPrice <= s.kLineDay[alertIndex - 1].highestPrice && option.Trim().Equals(""))
+            else if (s.kLineDay[alertIndex].highestPrice <= s.kLineDay[alertIndex - 1].highestPrice )
             {
                 continue;
             }
