@@ -390,17 +390,7 @@
                 continue;
             }
 
-            bool volumeRight = false;
-
-            if (Math.Abs(stock.kLineDay[limitUpIndex].volume - stock.kLineDay[limitUpIndex + 1].volume) / stock.kLineDay[limitUpIndex].volume <= 0.02
-                || stock.kLineDay[limitUpIndex + 2].volume > stock.kLineDay[limitUpIndex + 1].volume)
-            {
-                volumeRight = true;
-            }
-            if (!volumeRight)
-            {
-                continue;
-            }
+            
 
             bool isTrafficLight = false;
 
