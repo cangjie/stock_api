@@ -607,14 +607,19 @@
             {
                 dr["信号"] = "<a title=\"涨停\" >📈</a>";
             }
-
+            /*
             if (stock.kLineDay[currentIndex].macd > stock.kLineDay[currentIndex - 1].macd
                 && stock.kLineDay[currentIndex - 1].macd > stock.kLineDay[currentIndex - 2].macd
                 && stock.kLineDay[currentIndex - 2].macd > stock.kLineDay[currentIndex - 3].macd)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"MACD三连涨\" >🔥</a>";
             }
-
+            */
+            if (stock.kLineDay[currentIndex].volume > stock.kLineDay[currentIndex - 1].volume
+                && stock.kLineDay[currentIndex - 1].volume > stock.kLineDay[currentIndex - 2].volume)
+            { 
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"持续放量\" >🔥</a>";
+            }
             if (stock.kLineDay[currentIndex].lowestPrice > stock.kLineDay[currentIndex - 1].highestPrice)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"缺口\" >🌟🌟</a>";
