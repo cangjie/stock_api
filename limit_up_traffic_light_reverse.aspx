@@ -340,7 +340,7 @@
         DataTable dtOri = DBHelper.GetDataTable(" select gid, alert_date from limit_up a where  alert_date = '" + lastTransactDate.ToShortDateString() + "' "
             //+ " and not exists ( select 'a' from limit_up c where a.gid = c.gid and dbo.func_GetLastTransactDate(c.alert_date, 1) = a.alert_date ) "
             //+ " and not exists ( select 'a' from limit_up d where a.gid = d.gid and dbo.func_GetLastTransactDate(d.alert_date, 2) = a.alert_date ) "
-            //+ " and gid = 'sz000761' "
+            //+ " and gid = 'sz000723' "
             );
 
         DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor_new '" + currentDate.ToShortDateString() + "' ");
@@ -386,6 +386,18 @@
                 continue;
             }
             if (stock.IsLimitUp(limitUpIndex + 1))
+            {
+                continue;
+            }
+
+            bool volumeRight = false;
+
+            if (Math.Abs(stock.kLineDay[limitUpIndex].volume - stock.kLineDay[limitUpIndex + 1].volume) / stock.kLineDay[limitUpIndex].volume <= 0.02
+                || stock.kLineDay[limitUpIndex + 2].volume > stock.kLineDay[limitUpIndex + 1].volume)
+            {
+                volumeRight = true;
+            }
+            if (!volumeRight)
             {
                 continue;
             }

@@ -394,6 +394,18 @@
                 continue;
             }
 
+            bool volumeRight = false;
+
+            if (Math.Abs(stock.kLineDay[limitUpIndex].volume - stock.kLineDay[limitUpIndex + 1].volume) / stock.kLineDay[limitUpIndex].volume <= 0.02
+                || stock.kLineDay[limitUpIndex + 2].volume > stock.kLineDay[limitUpIndex + 1].volume)
+            {
+                volumeRight = true;
+            }
+            if (!volumeRight)
+            {
+                continue;
+            }
+
             bool isTrafficLight = false;
 
             if (limitUpIndex + 2 < stock.kLineDay.Length)
@@ -630,7 +642,7 @@
             }
 
             if (stock.kLineDay[currentIndex + 1].endPrice < stock.kLineDay[currentIndex + 1].startPrice)
-            { 
+            {
                 dr["信号"] = dr["信号"].ToString() + "💩";
             }
 
