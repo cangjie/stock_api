@@ -734,6 +734,7 @@
                     <asp:BoundColumn DataField="信号" HeaderText="信号"></asp:BoundColumn>
                     <asp:BoundColumn DataField="风险" HeaderText="风险"></asp:BoundColumn>
                     <asp:BoundColumn DataField="类型" HeaderText="类型"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="MACD日" HeaderText="MACD日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
                     <asp:BoundColumn DataField="现高" HeaderText="现高"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>
