@@ -74,7 +74,8 @@
 
             for (int i = 1; i <= 5; i++)
             {
-                if (s.kLineDay[alertIndex + i].lowestPrice <= s.GetAverageSettlePrice(alertIndex + 1, 3, 3))
+                if (s.kLineDay[alertIndex + i].lowestPrice <= s.GetAverageSettlePrice(alertIndex + 1, 3, 3)
+                    && s.kLineDay[alertIndex + i].endPrice > s.GetAverageSettlePrice(alertIndex + 1, 3, 3))
                 {
                     touch3LineIndex = alertIndex + i;
                     break;
