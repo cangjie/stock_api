@@ -1,29 +1,31 @@
-﻿<%@ Page Language="C#" %>
+﻿a<%@ Page Language="C#" %>
 <%@ Import Namespace="System.Data" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
 <%@ Import Namespace="System.Threading" %>
-<!DOCTYPE html>
-
 <script runat="server">
 
     public DateTime currentDate = Util.GetDay(DateTime.Now);
 
-    public string sort = "缩量";
+    public string sort = "MACD日,KDJ日,综指 desc";
+
+    public static int rate = 10;
 
     public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
 
     protected void Page_Load(object sender, EventArgs e)
     {
+
         sort = Util.GetSafeRequestValue(Request, "sort", "今涨");
         if (!IsPostBack)
         {
-            //rate = int.Parse(Util.GetSafeRequestValue(Request, "rate", "100").Trim());
+            rate = int.Parse(Util.GetSafeRequestValue(Request, "rate", "100").Trim());
             DataTable dt = GetData();
             dg.DataSource = dt;
             
             dg.DataBind();
             //Response.End();
         }
+
 
     }
 
@@ -272,8 +274,6 @@
 
     }
 
-
-    
     public static DataTable GetData(DateTime currentDate, double coverRate, double startLightRate, double endLightRate, bool showAll)
     {
 
@@ -405,27 +405,6 @@
         return dt;
     }
 
-
-    public static double GetFirstLowestPrice1(KLine[] kArr, int index, out int lowestIndex)
-    {
-        double ret = double.MaxValue;
-        lowestIndex = 0;
-        for (int i = index; i > 0 ; i--)
-        {
-            if (i < kArr.Length - 1)
-            {
-                if (kArr[i].lowestPrice <= kArr[i + 1].lowestPrice && kArr[i].lowestPrice <= kArr[i - 1].lowestPrice)
-                {
-                    ret = kArr[i].lowestPrice;
-                    lowestIndex = i;
-                    break;
-                }
-            }
-        }
-        return ret;
-    }
-
-
     public static double GetFirstLowestPrice(KLine[] kArr, int index, out int lowestIndex)
     {
         double ret = double.MaxValue;
@@ -450,90 +429,15 @@
         }
         return ret;
     }
-
-
-
-    public static bool foot(Core.Timeline[] tArr, out double lowestPrice, out double displayLowPrice, out DateTime footTime)
-    {
-        lowestPrice = double.MaxValue;
-        displayLowPrice = double.MaxValue;
-        footTime = DateTime.MinValue;
-        bool noShadow = false;
-        bool isRefeshLowestPrice = false;
-        int i = 0;
-        for (; i < tArr.Length ; i++)
-        {
-            if (lowestPrice > tArr[i].todayLowestPrice)
-            {
-                lowestPrice = tArr[i].todayLowestPrice;
-                isRefeshLowestPrice = true;
-                //lowestTime = tArr[i].tickTime;
-            }
-            if (lowestPrice < tArr[i].todayStartPrice &&   tArr[i].todayEndPrice - lowestPrice >= 0.05)
-            {
-                if (isRefeshLowestPrice)
-                {
-                    footTime = tArr[i].tickTime;
-                    noShadow = true;
-                    isRefeshLowestPrice = false;
-
-                }
-
-            }
-            else
-            {
-                noShadow = false;
-            }
-            if (displayLowPrice > Math.Min(tArr[i].todayEndPrice, tArr[i].todayStartPrice))
-            {
-                displayLowPrice = Math.Min(tArr[i].todayEndPrice, tArr[i].todayStartPrice);
-            }
-        }
-        return noShadow;
-    }
-
-
-    protected void btnDownload_Click(object sender, EventArgs e)
-    {
-        DataTable dtDownload = GetData();
-        string content = "";
-        foreach (DataRow dr in dtDownload.Rows)
-        {
-            string gid = dr["代码"].ToString().Trim();
-            try
-            {
-                gid = gid.Substring(gid.IndexOf(">"), gid.Length - gid.IndexOf(">"));
-            }
-            catch
-            {
-
-            }
-            gid = gid.Replace("</a>", "").Replace(">", "").ToUpper();
-            if (gid.Trim().Length == 8)
-            {
-                content += gid.Substring(2, 6) + "\r\n";
-            }
-        }
-        Response.Clear();
-        Response.ContentType = "text/plain";
-        Response.Headers.Add("Content-Disposition", "attachment; filename=traffic_light_"
-            + currentDate.ToShortDateString() + ".txt");
-        Response.Write(content.Trim());
-        Response.End();
-    }
 </script>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head runat="server">
-    <title></title>
-</head>
+<head/>
+   
 <body>
     <form id="form2" runat="server">
     <div>
         <table width="100%" >
-            <tr>
-                <td><asp:Button runat="server" ID="btnDownload" Text=" 下 载 " OnClick="btnDownload_Click" /></td>
-            </tr>
             <tr>
                 <td><asp:Calendar runat="server" id="calendar" Width="100%" OnSelectionChanged="calendar_SelectionChanged" BackColor="White" BorderColor="Black" BorderStyle="Solid" CellSpacing="1" Font-Names="Verdana" Font-Size="9pt" ForeColor="Black" Height="250px" NextPrevFormat="ShortMonth" >
                     <DayHeaderStyle Font-Bold="True" Font-Size="8pt" ForeColor="#333333" Height="8pt" />

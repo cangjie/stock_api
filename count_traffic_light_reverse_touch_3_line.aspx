@@ -61,6 +61,7 @@
             }
 
 
+
             if (Math.Abs(s.kLineDay[alertIndex - 2].volume - s.kLineDay[alertIndex - 1].volume) / s.kLineDay[alertIndex - 2].volume >= 0.02
                 && s.kLineDay[alertIndex].volume < s.kLineDay[alertIndex - 1].volume)
             {
@@ -82,6 +83,11 @@
                 }
             }
             if (touch3LineIndex == 0)
+            {
+                continue;
+            }
+
+            if (s.kLineDay[touch3LineIndex].startPrice <= s.kLineDay[touch3LineIndex].endPrice)
             {
                 continue;
             }
