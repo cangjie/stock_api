@@ -10,6 +10,7 @@
     public int newHighSuc = 0;
     public int count = 0;
     public int newHighCount = 0;
+    public int maxDays = 35;
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -23,44 +24,34 @@
 
     public DataTable GetData()
     {
-        int days = int.Parse(Util.GetSafeRequestValue(Request, "days", "15"));
 
-        string option = Util.GetSafeRequestValue(Request, "option", "high");
-
-        DateTime startDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "start", "2021-1-1"));
-        DateTime endDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "end", DateTime.Now.ToShortDateString()));
-
+        DateTime startDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "startdate", "2020-1-1").Trim());
+        DateTime endDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "enddate", DateTime.Now.ToShortDateString()));
+        int days = int.Parse(Util.GetSafeRequestValue(Request, "days", "10"));
         DataTable dt = new DataTable();
         dt.Columns.Add("日期");
         dt.Columns.Add("代码");
         dt.Columns.Add("名称");
-        dt.Columns.Add("涨停");
+        dt.Columns.Add("今涨");
+        dt.Columns.Add("红绿灯涨");
         dt.Columns.Add("买入");
-        for (int i = 1; i <= days; i++)
+
+        for(int i = 1; i <= days; i++)
         {
             dt.Columns.Add(i.ToString() + "日");
         }
 
         dt.Columns.Add("总计");
-        DataTable dtOri = DBHelper.GetDataTable(" select alert_date, gid  from alert_traffic_light  where  "
-            + "   alert_date >= '" + startDate.ToShortDateString() + "' and alert_date <= '" + endDate.ToShortDateString() + "'     order by alert_date desc ");
-
+        DataTable dtOri = DBHelper.GetDataTable(" select * from alert_traffic_light where alert_date >= '" + startDate.ToShortDateString()
+            + "' and alert_date <= '" + endDate.ToShortDateString() + "' order by alert_date desc ");
         foreach (DataRow drOri in dtOri.Rows)
         {
-
-
-
             Stock s = GetStock(drOri["gid"].ToString().Trim());
-
-
-
             int alertIndex = s.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
-            if (alertIndex < 2 || alertIndex >= s.kLineDay.Length - 3 - days)
+            if (alertIndex < 2)
             {
                 continue;
             }
-
-
 
             if (Math.Abs(s.kLineDay[alertIndex - 2].volume - s.kLineDay[alertIndex - 1].volume) / s.kLineDay[alertIndex - 2].volume >= 0.02
                 && s.kLineDay[alertIndex].volume < s.kLineDay[alertIndex - 1].volume)
@@ -72,44 +63,44 @@
                 continue;
             }
 
+            KLine.ComputeMACD(s.kLineDay);
 
-
-            int touch3LineIndex = 0;
-
-            for (int i = 1; i <= 5; i++)
+            if (s.macdDays(alertIndex - 1) >= 0)
             {
-                if (s.kLineDay[alertIndex + i].lowestPrice <= s.GetAverageSettlePrice(alertIndex + 1, 3, 3)
-                    && s.kLineDay[alertIndex + i].endPrice > s.GetAverageSettlePrice(alertIndex + 1, 3, 3))
+                continue;
+            }
+            int dmpIndex = -1;
+            for (int i = 0; i < 3; i++)
+            {
+                if (s.macdDays(alertIndex + i) >= 0)
                 {
-                    touch3LineIndex = alertIndex + i;
+                    dmpIndex = alertIndex + i;
                     break;
                 }
             }
-            if (touch3LineIndex == 0)
+
+            if (dmpIndex == -1)
             {
                 continue;
             }
 
-            if (s.kLineDay[touch3LineIndex].startPrice <= s.kLineDay[touch3LineIndex].endPrice)
+
+            int buyIndex = dmpIndex;
+
+
+            double buyPrice = s.kLineDay[buyIndex].startPrice;
+
+            string buyPoint = Util.GetSafeRequestValue(Request, "buypoint", "end");
+
+            if (buyPoint.Trim().Equals("end"))
             {
-                continue;
+                buyPrice = s.kLineDay[buyIndex].endPrice;
             }
-
-            double maxVolume = Math.Max(s.kLineDay[alertIndex].volume, s.kLineDay[alertIndex - 1].volume);
-
-
-
-
-
-
-            int buyIndex = touch3LineIndex;
 
             if (buyIndex + days >= s.kLineDay.Length)
             {
                 continue;
             }
-
-            double buyPrice = s.kLineDay[buyIndex].endPrice;
 
 
 
@@ -118,10 +109,14 @@
             dr["代码"] = s.gid.Trim();
             dr["名称"] = s.Name.Trim();
             dr["买入"] = buyPrice.ToString();
-            dr["涨停"] = "--";
-
+            dr["今涨"] = Math.Round(100 * (s.kLineDay[buyIndex].endPrice - s.kLineDay[buyIndex - 1].endPrice) / s.kLineDay[buyIndex - 1].endPrice, 2).ToString() + "%";
+            double trafficLightPrice = Math.Max(Math.Max(s.kLineDay[buyIndex].highestPrice, s.kLineDay[buyIndex - 1].highestPrice), s.kLineDay[buyIndex - 2].highestPrice);
+            dr["红绿灯涨"] = Math.Round(100 * (s.kLineDay[buyIndex].endPrice - trafficLightPrice) / trafficLightPrice, 2).ToString() + "%";
             double finalRate = double.MinValue;
-            for (int j = 1; j <= days && buyIndex + j < s.kLineDay.Length ; j++)
+
+
+
+            for (int j = 1; j <= days; j++)
             {
                 double rate = (s.kLineDay[buyIndex + j].highestPrice - buyPrice) / buyPrice;
                 finalRate = Math.Max(finalRate, rate);
@@ -136,18 +131,24 @@
             }
             if (finalRate >= 0.01)
             {
-                suc++;
-                if (finalRate >= 0.05)
-                {
-                    newHighCount++;
-                }
+
                 dr["总计"] = "<font color=red >" + Math.Round(finalRate * 100, 2).ToString() + "%</font>";
             }
             else
             {
                 dr["总计"] = "<font color=green >" + Math.Round(finalRate * 100, 2).ToString() + "%</font>";
             }
+
             count++;
+
+            if (finalRate >= 0.01)
+            {
+                suc++;
+                if (finalRate >= 0.05)
+                {
+                    newHighCount++;
+                }
+            }
 
             dt.Rows.Add(dr);
         }
@@ -171,9 +172,7 @@
         {
             s = new Stock(gid);
             s.LoadKLineDay(Util.rc);
-            s.LoadKLineWeek(Util.rc);
-            KLine.ComputeMACD(s.kLineWeek);
-            KLine.ComputeKDJ(s.kLineWeek);
+            KLine.ComputeMACD(s.kLineDay);
             gidArr.Add(s);
         }
         return s;
