@@ -25,6 +25,8 @@
     {
         int days = int.Parse(Util.GetSafeRequestValue(Request, "days", "15"));
 
+        int line = int.Parse(Util.GetSafeRequestValue(Request, "line", "3"));
+
         string option = Util.GetSafeRequestValue(Request, "option", "high");
 
         DateTime startDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "start", "2021-1-1"));
@@ -78,8 +80,8 @@
 
             for (int i = 1; i <= 5; i++)
             {
-                if (s.kLineDay[alertIndex + i].lowestPrice <= s.GetAverageSettlePrice(alertIndex + 1, 3, 3)
-                    && s.kLineDay[alertIndex + i].endPrice > s.GetAverageSettlePrice(alertIndex + 1, 3, 3))
+                if (s.kLineDay[alertIndex + i].lowestPrice <= s.GetAverageSettlePrice(alertIndex + 1, line, line)
+                    && s.kLineDay[alertIndex + i].endPrice > s.GetAverageSettlePrice(alertIndex + 1, line, line))
                 {
                     touch3LineIndex = alertIndex + i;
                     break;
