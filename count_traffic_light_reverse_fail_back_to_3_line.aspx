@@ -24,7 +24,7 @@
 
     public DataTable GetData()
     {
-        int days = int.Parse(Util.GetSafeRequestValue(Request, "days", "5"));
+        int days = int.Parse(Util.GetSafeRequestValue(Request, "days", "10"));
 
         string option = Util.GetSafeRequestValue(Request, "option", "high");
 
@@ -164,6 +164,25 @@
 
             double buyPrice = s.kLineDay[buyIndex].endPrice;
 
+            if (buyPrice >= f5)
+            {
+                continue;
+            }
+
+            double newMinPrice = double.MaxValue;
+
+            for (int i = alertIndex; i <= buyIndex; i++)
+            {
+                newMinPrice = Math.Min(s.kLineDay[i].lowestPrice, newMinPrice);
+            }
+
+            double newF3 = newMinPrice + (maxPrice - newMinPrice) * 0.382;
+
+            if (buyPrice >= newF3)
+            {
+                continue;
+            }
+
 
 
             DataRow dr = dt.NewRow();
@@ -181,7 +200,7 @@
             for (int j = 1; j <= days && buyIndex + j < s.kLineDay.Length ; j++)
             {
                 double rate = (s.kLineDay[buyIndex + j].highestPrice - buyPrice) / buyPrice;
-                if (s.kLineDay[buyIndex + j].highestPrice > f5)
+                if (s.kLineDay[buyIndex + j].highestPrice > newF3)
                 {
                     backToF5 = true;
                 }
@@ -281,7 +300,7 @@
         <div>
             总计：<%=count.ToString() %> / <%=Math.Round((double)100*suc/(double)count, 2).ToString() %>%<br />
             涨5%：<%=newHighCount.ToString() %> / <%=Math.Round((double)100*newHighCount/(double)count, 2).ToString() %>%<br />
-            回F5：<%=backToF5Count.ToString() %> / <%=Math.Round((double)100*backToF5Count/(double)count, 2).ToString() %>%
+            折返到F3：<%=backToF5Count.ToString() %> / <%=Math.Round((double)100*backToF5Count/(double)count, 2).ToString() %>%
         </div>
         <div>
             <asp:DataGrid runat="server" id="dg" Width="100%" BackColor="White" BorderColor="#999999" BorderStyle="None" BorderWidth="1px" CellPadding="3" GridLines="Vertical" >
