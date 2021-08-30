@@ -23,7 +23,7 @@
 
     public DataTable GetData()
     {
-        int days = int.Parse(Util.GetSafeRequestValue(Request, "days", "5"));
+        int days = int.Parse(Util.GetSafeRequestValue(Request, "days", "10"));
 
         int line = int.Parse(Util.GetSafeRequestValue(Request, "line", "3"));
 
@@ -97,8 +97,9 @@
 
             for (int i = alertIndex + 2; i < alertIndex + 20 && i < s.kLineDay.Length; i++)
             {
-                if (s.kLineDay[i - 1].endPrice < f4 && (s.kLineDay[i - 2].endPrice - s.kLineDay[i - 1].endPrice) / s.kLineDay[i - 2].endPrice >= 0.02
-                    && (s.kLineDay[i].startPrice < s.kLineDay[i].endPrice ) && s.kLineDay[i].volume < s.kLineDay[i-1].volume)
+                if (s.kLineDay[i - 1].endPrice < f4 && (s.kLineDay[i - 1].endPrice - s.kLineDay[i - 2].endPrice) / s.kLineDay[i - 2].endPrice <= -0.02
+                    && (s.kLineDay[i].startPrice < s.kLineDay[i].endPrice ) && s.kLineDay[i].volume < s.kLineDay[i-1].volume
+                    && s.kLineDay[i].endPrice >= s.kLineDay[i-1].lowestPrice + (s.kLineDay[i - 1].highestPrice - s.kLineDay[i - 1].lowestPrice) / 2)
                 {
                     buyIndex = i;
                     break;
