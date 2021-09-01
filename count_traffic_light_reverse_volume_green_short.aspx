@@ -12,6 +12,8 @@
     public int newHighCount = 0;
     public int failCount = 0;
     public double totalFinalRate = 0;
+    public int indexTotal = 0;
+    public int sucCount = 0;
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -114,7 +116,7 @@
             int buyIndex = alertIndex;
 
 
-            
+            int topIndex = -1;
 
 
 
@@ -152,7 +154,12 @@
                 {
                     fail = false;
                 }
-                finalRate = Math.Max(finalRate, rate);
+                //finalRate = Math.Max(finalRate, rate);
+                if (rate > finalRate)
+                {
+                    topIndex = buyIndex + j;
+                    finalRate = rate;
+                }
                 if (rate >= 0.01)
                 {
                     dr[j.ToString() + "日"] = "<font color=red >" + Math.Round(rate * 100, 2).ToString() + "%</font>";
@@ -166,6 +173,11 @@
             if (fail)
             {
                 failCount++;
+            }
+            else
+            {
+                indexTotal = indexTotal + topIndex;
+                sucCount++;
             }
             if (finalRate >= 0.01)
             {
@@ -249,8 +261,10 @@
         <div>
             总计：<%=count.ToString() %> / <%=Math.Round((double)100*suc/(double)count, 2).ToString() %>%<br />
             涨5%：<%=newHighCount.ToString() %> / <%=Math.Round((double)100*newHighCount/(double)count, 2).ToString() %>%<br />
-            平均涨幅：<% = Math.Round(100 * totalFinalRate / count , 2).ToString()%><br />
-            失败：<%=failCount.ToString() %> / <%=Math.Round(100 * failCount / (double)count, 2).ToString() %>
+            平均涨幅：<% = Math.Round(100 * totalFinalRate / count , 2).ToString()%>%<br />
+            失败：<%=failCount.ToString() %> / <%=Math.Round(100 * failCount / (double)count, 2).ToString() %>%
+            周期：<%=Math.Round(indexTotal / (double)sucCount, 2) %>
+
         </div>
         <div>
             <asp:DataGrid runat="server" id="dg" Width="100%" BackColor="White" BorderColor="#999999" BorderStyle="None" BorderWidth="1px" CellPadding="3" GridLines="Vertical" >
