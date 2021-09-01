@@ -31,6 +31,8 @@
 
         string option = Util.GetSafeRequestValue(Request, "option", "high");
 
+        int type = int.Parse(Util.GetSafeRequestValue(Request, "option", "1"));
+
         DateTime startDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "start", "2021-1-1"));
         DateTime endDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "end", DateTime.Now.ToShortDateString()));
 
@@ -65,11 +67,27 @@
             }
 
 
-
-            if (s.kLineDay[alertIndex].volume <= s.kLineDay[alertIndex - 2].volume || s.kLineDay[alertIndex - 2].volume <= s.kLineDay[alertIndex - 1].volume)
+            if (type == 0)
+            {
+                if (s.kLineDay[alertIndex].volume <= s.kLineDay[alertIndex - 2].volume || s.kLineDay[alertIndex - 2].volume <= s.kLineDay[alertIndex - 1].volume)
+                {
+                    continue;
+                }
+            }
+            else if (type == 1)
+            {
+                if (s.kLineDay[alertIndex - 2].volume >= s.kLineDay[alertIndex - 1].volume || s.kLineDay[alertIndex - 1].volume >= s.kLineDay[alertIndex].volume)
+                {
+                    continue;
+                }
+            }
+            else
             {
                 continue;
             }
+
+
+
             if (s.kLineDay[alertIndex].highestPrice <= s.kLineDay[alertIndex - 1].highestPrice)
             {
                 continue;
@@ -93,24 +111,10 @@
 
             double f4 = minPrice + (maxPrice - minPrice) / 2;
 
-            int buyIndex = -1;
+            int buyIndex = alertIndex;
 
 
-            for (int i = alertIndex + 2; i < alertIndex + 20 && i < s.kLineDay.Length; i++)
-            {
-                if (s.kLineDay[i - 1].endPrice < f4 && (s.kLineDay[i - 1].endPrice - s.kLineDay[i - 2].endPrice) / s.kLineDay[i - 2].endPrice <= -0.02
-                    && (s.kLineDay[i].startPrice < s.kLineDay[i].endPrice ) && s.kLineDay[i].volume < s.kLineDay[i-1].volume
-                    && s.kLineDay[i].endPrice >= s.kLineDay[i-1].lowestPrice + (s.kLineDay[i - 1].highestPrice - s.kLineDay[i - 1].lowestPrice) / 2)
-                {
-                    buyIndex = i;
-                    break;
-                }
-            }
-
-            if (buyIndex == -1)
-            {
-                continue;
-            }
+            
 
 
 
