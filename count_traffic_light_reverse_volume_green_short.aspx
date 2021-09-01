@@ -157,7 +157,7 @@
                 //finalRate = Math.Max(finalRate, rate);
                 if (rate > finalRate)
                 {
-                    topIndex = buyIndex + j;
+                    topIndex = j;
                     finalRate = rate;
                 }
                 if (rate >= 0.01)
@@ -262,7 +262,7 @@
             总计：<%=count.ToString() %> / <%=Math.Round((double)100*suc/(double)count, 2).ToString() %>%<br />
             涨5%：<%=newHighCount.ToString() %> / <%=Math.Round((double)100*newHighCount/(double)count, 2).ToString() %>%<br />
             平均涨幅：<% = Math.Round(100 * totalFinalRate / count , 2).ToString()%>%<br />
-            失败：<%=failCount.ToString() %> / <%=Math.Round(100 * failCount / (double)count, 2).ToString() %>%
+            失败：<%=failCount.ToString() %> / <%=Math.Round(100 * failCount / (double)count, 2).ToString() %>%<br />
             周期：<%=Math.Round(indexTotal / (double)sucCount, 2) %>
 
         </div>
