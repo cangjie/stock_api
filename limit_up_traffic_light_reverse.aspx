@@ -34,7 +34,10 @@
             currentDate = Util.GetDay(DateTime.Now);
         else
             currentDate = Util.GetDay(calendar.SelectedDate);
-        DataTable dtOri = GetData(currentDate);
+        bool showAll = false;
+        if (Util.GetSafeRequestValue(Request, "showall", "0").Trim().Equals("1"))
+            showAll = true;
+        DataTable dtOri = GetData(currentDate, showAll);
         string filter = "";
         if (Util.GetSafeRequestValue(Request, "goldcross", "0").Trim().Equals("0"))
         {
@@ -293,7 +296,7 @@
 
     }
 
-    public static DataTable GetData(DateTime currentDate)
+    public static DataTable GetData(DateTime currentDate, bool showAll)
     {
         currentDate = Util.GetDay(currentDate);
         DataTable dt = new DataTable();
@@ -390,7 +393,7 @@
                 continue;
             }
 
-            
+
 
             bool isTrafficLight = false;
 
@@ -456,6 +459,13 @@
 
 
             double volumeReduce = (stock.kLineDay[currentIndex].volume - stock.kLineDay[currentIndex - 1].volume) / stock.kLineDay[currentIndex - 1].volume;
+
+
+            if (!showAll && volumeReduce < 0)
+            {
+                continue;
+            }
+
 
             if (stock.kLineDay[currentIndex].highestPrice <= stock.kLineDay[currentIndex - 1].highestPrice)
             {
@@ -617,7 +627,7 @@
             */
             if (stock.kLineDay[currentIndex].volume > stock.kLineDay[currentIndex - 1].volume
                 && stock.kLineDay[currentIndex - 1].volume > stock.kLineDay[currentIndex - 2].volume)
-            { 
+            {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"持续放量\" >🔥</a>";
             }
             if (stock.kLineDay[currentIndex].lowestPrice > stock.kLineDay[currentIndex - 1].highestPrice)
