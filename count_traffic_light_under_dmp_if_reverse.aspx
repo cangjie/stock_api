@@ -93,7 +93,7 @@
 
             KLine.ComputeMACD(s.kLineDay);
 
-            if (s.macdDays(alertIndex) >= 0)
+            if (s.macdDays(alertIndex-2) >= 0)
             {
                 continue;
             }
