@@ -98,7 +98,7 @@
                 continue;
             }
 
-            
+
 
             int buyIndex = alertIndex;
 
@@ -154,6 +154,10 @@
             }
             else
             {
+                if (finalRate < 0)
+                {
+                    failCount++;
+                }
                 dr["总计"] = "<font color=green >" + Math.Round(finalRate * 100, 2).ToString() + "%</font>";
             }
             count++;
@@ -224,7 +228,8 @@
     <form id="form1" runat="server">
         <div>
             总计：<%=count.ToString() %> / <%=Math.Round((double)100*suc/(double)count, 2).ToString() %>%<br />
-            涨5%：<%=newHighCount.ToString() %> / <%=Math.Round((double)100*newHighCount/(double)count, 2).ToString() %>%
+            涨5%：<%=newHighCount.ToString() %> / <%=Math.Round((double)100*newHighCount/(double)count, 2).ToString() %>%<br />
+            失败：<%= Math.Round(100*failCount/(double)count, 2)%>
         </div>
         <div>
             <asp:DataGrid runat="server" id="dg" Width="100%" BackColor="White" BorderColor="#999999" BorderStyle="None" BorderWidth="1px" CellPadding="3" GridLines="Vertical" >
