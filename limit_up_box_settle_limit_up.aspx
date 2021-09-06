@@ -385,8 +385,12 @@
             Stock stock = new Stock(drOri["gid"].ToString().Trim(), Util.rc);
             stock.LoadKLineDay(Util.rc);
 
+            int currentIndex = stock.GetItemIndex(currentDate);
 
-
+            if (!stock.IsLimitUp(currentIndex))
+            {
+                continue;
+            }
 
 
             KLine.ComputeMACD(stock.kLineDay);
@@ -398,7 +402,7 @@
             KLine.ComputeMACD(kArrHalfHour);
 
 
-            int currentIndex = stock.GetItemIndex(currentDate);
+
 
             if (currentIndex < 0)
                 continue;
