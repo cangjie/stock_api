@@ -10,7 +10,7 @@
 
     public string sort = "缩量";
 
-    
+
 
     //public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
 
@@ -22,7 +22,7 @@
         filter = Util.GetSafeRequestValue(Request, "filter", "");
         if (!IsPostBack)
         {
-           
+
 
 
             DataTable dt = GetData();
@@ -358,6 +358,12 @@
             KLine[] kArrHalfHour = Stock.LoadRedisKLine(stock.gid, "30min", Util.rc);
 
             int currentIndex = stock.GetItemIndex(currentDate);
+
+            if (!stock.IsLimitUp(currentIndex) && !stock.IsLimitUp(currentIndex - 1))
+            {
+                continue;
+            }
+
             currentIndex--;
             DateTime currentHalfHourTime = Stock.GetCurrentKLineEndDateTime(currentDate, 30);
             DateTime currentHourTime = Stock.GetCurrentKLineEndDateTime(currentDate, 60);
@@ -404,7 +410,7 @@
             double line3Price = KLine.GetAverageSettlePrice(stock.kLineDay, currentIndex, 3, 3);
             double currentPrice = stock.kLineDay[currentIndex+1].endPrice;
             double buyPrice = stock.kLineDay[currentIndex+1].endPrice;
-            
+
 
             double maxVolume = 0;
             for (int i = lowestIndex; i < currentIndex; i++)
@@ -467,12 +473,12 @@
             double volumeToday = stock.kLineDay[currentIndex].VirtualVolume;  //Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(currentDate.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
 
             double volumeYesterday = stock.kLineDay[limitUpIndex].volume;// Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(stock.kLineDay[limitUpIndex].startDateTime.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
-                                                                         /*
-                                                                         for (int j = lowestIndex; j < currentIndex; j++)
-                                                                         {
-                                                                             volumeYesterday = Math.Max(volumeYesterday, stock.kLineDay[j].VirtualVolume);
-                                                                         }
-                                                                         */
+            /*
+            for (int j = lowestIndex; j < currentIndex; j++)
+            {
+                volumeYesterday = Math.Max(volumeYesterday, stock.kLineDay[j].VirtualVolume);
+            }
+            */
 
             double volumeReduce = volumeToday / maxVolume;
 
@@ -750,7 +756,7 @@
     }
 
 
-    
+
 
 
     public static bool foot(Core.Timeline[] tArr, out double lowestPrice, out double displayLowPrice, out DateTime footTime)
