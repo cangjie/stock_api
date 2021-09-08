@@ -110,13 +110,15 @@
                         case "F3":
                         case "F5":
                             double currentValuePrice2 = (double)drOri[i];
-
+                            dr[i] = "<font color=\"" + (currentValuePrice2 > currentPrice ? "red" : (currentValuePrice2 == currentPrice ? "gray" : "green")) + "\"  >"
+                                + Math.Round(currentValuePrice2, 2).ToString() + "</font>";
 
                             break;
                         case "今开":
                         case "现价":
                         case "前低":
                         case "F1":
+              
                         case "现高":
                         case "3线":
                         case "无影":
