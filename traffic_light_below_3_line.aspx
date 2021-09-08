@@ -316,15 +316,11 @@
             return dt;
         }
 
-        //DateTime lastTransactDate = Util.GetLastTransactDate(currentDate, 1);
-        //DateTime limitUpStartDate = Util.GetLastTransactDate(lastTransactDate, 10);
-
-
-        DataTable dtOri = DBHelper.GetDataTable(" select gid, alert_date from alert_traffic_light a where  alert_date <=  '" + Util.GetLastTransactDate(currentDate, 10).ToShortDateString() + "'  "
+        int days = 8;
+        
+        DataTable dtOri = DBHelper.GetDataTable(" select gid, alert_date from alert_traffic_light a where  alert_date <=  '" + Util.GetLastTransactDate(currentDate, days).ToShortDateString() + "'  "
             + " and alert_date >= '" + Util.GetLastTransactDate(currentDate, 30).ToShortDateString() + "'  ");
 
-
-        //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
         foreach (DataRow drOri in dtOri.Rows)
         {
             DateTime alertDate = DateTime.Parse(drOri["alert_date"].ToString().Trim());
@@ -389,7 +385,7 @@
                 }
             }
 
-            if (below3LineDays < 10 || lastBelow3LineIndex != currentIndex - 1)
+            if (below3LineDays < days || lastBelow3LineIndex != currentIndex - 1)
             {
                 continue;
             }
