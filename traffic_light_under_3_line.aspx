@@ -318,7 +318,7 @@
         //DateTime limitUpStartDate = Util.GetLastTransactDate(lastTransactDate, 10);
 
 
-        DataTable dtOri = DBHelper.GetDataTable(" select gid, alert_date from limit_up a where  alert_date = '" + currentDate.ToShortDateString() + "' "
+        DataTable dtOri = DBHelper.GetDataTable(" select gid, alert_date from alert_traffic_light a where  alert_date = '" + currentDate.ToShortDateString() + "' "
             );
 
 

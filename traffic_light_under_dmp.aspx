@@ -110,7 +110,7 @@
                         case "F3":
                         case "F5":
                             double currentValuePrice2 = (double)drOri[i];
-                            
+
 
                             break;
                         case "今开":
@@ -318,7 +318,7 @@
         //DateTime limitUpStartDate = Util.GetLastTransactDate(lastTransactDate, 10);
 
 
-        DataTable dtOri = DBHelper.GetDataTable(" select gid, alert_date from limit_up a where  alert_date = '" + currentDate.ToShortDateString() + "' "
+        DataTable dtOri = DBHelper.GetDataTable(" select gid, alert_date from alert_traffic_light a where  alert_date = '" + currentDate.ToShortDateString() + "' "
             );
 
 
@@ -339,26 +339,29 @@
             if (currentIndex < 1)
                 continue;
 
-            if (!stock.IsLimitUp(currentIndex) || stock.kLineDay[currentIndex].endPrice > stock.GetAverageSettlePrice(currentIndex, 3, 3))
+            KLine.ComputeMACD(stock.kLineDay);
+
+            if (stock.macdDays(currentIndex) >= 0)
             {
                 continue;
             }
 
+
             int highestIndex = -1;
             double highestPrice = 0;
 
-            bool up3Line = false;
+            bool upDmp = false;
 
-            for (int i = currentIndex; !(up3Line && stock.kLineDay[i].endPrice < stock.GetAverageSettlePrice(i, 3, 3)) && i >= 0; i--)
+            for (int i = currentIndex; !(upDmp && stock.macdDays(i) < 0) && i >= 0; i--)
             {
                 if (stock.kLineDay[i].highestPrice >= highestPrice)
                 {
                     highestPrice = stock.kLineDay[i].highestPrice;
                     highestIndex = i;
                 }
-                if (stock.kLineDay[i].endPrice >= stock.GetAverageSettlePrice(i, 3, 3))
+                if (stock.macdDays(i) < 0)
                 {
-                    up3Line = true;
+                    upDmp = true;
                 }
             }
 
@@ -379,7 +382,7 @@
                 //continue;
             }
 
-            KLine.ComputeMACD(stock.kLineDay);
+
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
 
@@ -414,7 +417,7 @@
                 dr["风险"] = 120;
             }
 
-            
+
 
             dr["3线"] = stock.GetAverageSettlePrice(currentIndex, 3, 3);
             dr["KDJ日"] = stock.kdjDays(currentIndex);
@@ -422,7 +425,7 @@
             dr["MACD日"] = stock.macdDays(currentIndex);
 
             dr["现价"] = stock.kLineDay[currentIndex].endPrice;
-           
+
             dr["买入"] = buyPrice;
 
             dr["涨幅"] = (buyPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
@@ -442,7 +445,7 @@
             }
             dr["总计"] = (maxPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice;
 
-          
+
 
 
             dt.Rows.Add(dr);
