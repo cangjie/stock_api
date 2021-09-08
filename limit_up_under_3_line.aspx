@@ -404,7 +404,7 @@
             dr["F3"] = f3;
             dr["F5"] = f5;
             dr["前低"] = lowestPrice;
-            dr["幅度"] = width.ToString() + "%";
+            dr["幅度"] = Math.Round(100 * width, 2).ToString() + "%";
             try
             {
                 dr["风险"] = KLine.ComputeRisk(stock.kLineDay, currentIndex);
