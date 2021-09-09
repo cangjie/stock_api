@@ -572,10 +572,16 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title></title>
+    <title>三线下涨停</title>
 </head>
 <body>
     <form id="form2" runat="server">
+    <div>
+        <a href="limit_up_under_3_line.aspx" >三线下涨停</a> 
+        <a href="limit_up_under_dmp.aspx" >DMP下涨停</a> 
+        <a href="traffic_light_under_3_line.aspx" >三线下红绿灯</a> 
+        <a href="traffic_light_under_dmp.aspx" >DMP下红绿灯</a> 
+    </div>
     <div>
         <table width="100%" >
             <tr>

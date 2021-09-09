@@ -577,6 +577,12 @@
 <body>
     <form id="form2" runat="server">
     <div>
+        <a href="limit_up_under_3_line.aspx" >三线下涨停</a> 
+        <a href="limit_up_under_dmp.aspx" >DMP下涨停</a> 
+        <a href="traffic_light_under_3_line.aspx" >三线下红绿灯</a> 
+        <a href="traffic_light_under_dmp.aspx" >DMP下红绿灯</a> 
+    </div>
+    <div>
         <table width="100%" >
             <tr>
                 <td><asp:Button runat="server" ID="btnDownload" Text=" 下 载 " OnClick="btnDownload_Click" /></td>
