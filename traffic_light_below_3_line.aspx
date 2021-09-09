@@ -316,7 +316,7 @@
             return dt;
         }
 
-        int days = 8;
+        int days = 6;
         
         DataTable dtOri = DBHelper.GetDataTable(" select gid, alert_date from alert_traffic_light a where  alert_date <=  '" + Util.GetLastTransactDate(currentDate, days).ToShortDateString() + "'  "
             + " and alert_date >= '" + Util.GetLastTransactDate(currentDate, 30).ToShortDateString() + "'  ");
