@@ -305,6 +305,7 @@
         dt.Columns.Add("风险", Type.GetType("System.Double"));
         dt.Columns.Add("买入", Type.GetType("System.Double"));
         dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
+        dt.Columns.Add("天数", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
         dt.Columns.Add("涨幅", Type.GetType("System.Double"));
         for (int i = 0; i <= 10; i++)
@@ -456,6 +457,7 @@
             dr["F5"] = f5;
             dr["前低"] = lowestPrice;
             dr["幅度"] = Math.Round(100 * width, 2).ToString() + "%";
+            dr["天数"] = below3LineDays
             try
             {
                 dr["风险"] = KLine.ComputeRisk(stock.kLineDay, currentIndex);
@@ -655,6 +657,7 @@
                     <asp:BoundColumn DataField="信号" HeaderText="信号" SortExpression="信号|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="缩量" HeaderText="缩量"></asp:BoundColumn>
                     <asp:BoundColumn DataField="风险" HeaderText="风险"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="天数" HeaderText="天数" SortExpression="MACD日|asc"></asp:BoundColumn>
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD日|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
