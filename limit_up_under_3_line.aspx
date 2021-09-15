@@ -349,7 +349,7 @@
 
             bool up3Line = false;
 
-            for (int i = currentIndex; !(up3Line && stock.kLineDay[i].endPrice < stock.GetAverageSettlePrice(i, 3, 3)) && i >= 0; i--)
+            for (int i = currentIndex; i >= 0 &&  !(up3Line && stock.kLineDay[i].endPrice < stock.GetAverageSettlePrice(i, 3, 3)) ; i--)
             {
                 if (stock.kLineDay[i].highestPrice >= highestPrice)
                 {
