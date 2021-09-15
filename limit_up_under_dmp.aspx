@@ -18,7 +18,13 @@
         if (!IsPostBack)
         {
 
+            string dateStr = Util.GetSafeRequestValue(Request, "date", "").Trim();
 
+            if (!dateStr.Equals(""))
+            {
+                currentDate = DateTime.Parse(dateStr);
+                calendar.SelectedDate = currentDate;
+            }
 
             DataTable dt = GetData();
             dg.DataSource = dt;
@@ -35,13 +41,7 @@
         else
             currentDate = Util.GetDay(calendar.SelectedDate);
 
-        string dateStr = Util.GetSafeRequestValue(Request, "date", "").Trim();
-
-        if (!dateStr.Equals(""))
-        {
-            currentDate = DateTime.Parse(dateStr);
-            calendar.SelectedDate = currentDate;
-        }
+        
 
 
         DataTable dtOri = GetData(currentDate);

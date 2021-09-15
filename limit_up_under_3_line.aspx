@@ -17,7 +17,13 @@
         sort = Util.GetSafeRequestValue(Request, "sort", "缩量 desc");
         if (!IsPostBack)
         {
+            string dateStr = Util.GetSafeRequestValue(Request, "date", "").Trim();
 
+            if (!dateStr.Equals(""))
+            {
+                currentDate = DateTime.Parse(dateStr);
+                calendar.SelectedDate = currentDate;
+            }
 
 
             DataTable dt = GetData();
@@ -35,13 +41,7 @@
         else
             currentDate = Util.GetDay(calendar.SelectedDate);
 
-        string dateStr = Util.GetSafeRequestValue(Request, "date", "").Trim();
-
-        if (!dateStr.Equals(""))
-        {
-            currentDate = DateTime.Parse(dateStr);
-            calendar.SelectedDate = currentDate;
-        }
+        
 
         DataTable dtOri = GetData(currentDate);
         string filter = "";
