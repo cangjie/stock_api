@@ -34,6 +34,15 @@
             currentDate = Util.GetDay(DateTime.Now);
         else
             currentDate = Util.GetDay(calendar.SelectedDate);
+
+        string dateStr = Util.GetSafeRequestValue(Request, "date", "").Trim();
+
+        if (!dateStr.Equals(""))
+        {
+            currentDate = DateTime.Parse(dateStr);
+            calendar.SelectedDate = currentDate;
+        }
+
         DataTable dtOri = GetData(currentDate);
         string filter = "";
         if (Util.GetSafeRequestValue(Request, "goldcross", "0").Trim().Equals("0"))
@@ -577,10 +586,10 @@
 <body>
     <form id="form2" runat="server">
     <div>
-        <a href="limit_up_under_3_line.aspx" >三线下涨停</a> 
-        <a href="limit_up_under_dmp.aspx" >DMP下涨停</a> 
-        <a href="traffic_light_under_3_line.aspx" >三线下红绿灯</a> 
-        <a href="traffic_light_under_dmp.aspx" >DMP下红绿灯</a> 
+        <a href="limit_up_under_3_line.aspx?date=<%=currentDate.ToShortDateString() %>" >三线下涨停</a> 
+        <a href="limit_up_under_dmp.aspx?date=<%=currentDate.ToShortDateString() %>" >DMP下涨停</a> 
+        <a href="traffic_light_under_3_line.aspx?date=<%=currentDate.ToShortDateString() %>" >三线下红绿灯</a> 
+        <a href="traffic_light_under_dmp.aspx?date=<%=currentDate.ToShortDateString() %>" >DMP下红绿灯</a> 
     </div>
     <div>
         <table width="100%" >
