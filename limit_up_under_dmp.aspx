@@ -456,6 +456,14 @@
             dr["总计"] = (maxPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice;
 
 
+            int alertIndex = stock.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString().Trim()));
+            if (alertIndex > 0 && alertIndex < stock.kLineDay.Length)
+            {
+                if (stock.IsLimitUp(alertIndex - 1))
+                {
+                    dr["信号"] = "<a title=\"二连板\" >📈</a>";
+                }
+            }
 
 
             dt.Rows.Add(dr);

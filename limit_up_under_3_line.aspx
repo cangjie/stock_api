@@ -41,7 +41,7 @@
         else
             currentDate = Util.GetDay(calendar.SelectedDate);
 
-        
+
 
         DataTable dtOri = GetData(currentDate);
         string filter = "";
@@ -119,7 +119,7 @@
                         case "F3":
                         case "F5":
                             double currentValuePrice2 = (double)drOri[i];
-                            
+
 
                             break;
                         case "今开":
@@ -423,7 +423,7 @@
                 dr["风险"] = 120;
             }
 
-            
+
 
             dr["3线"] = stock.GetAverageSettlePrice(currentIndex, 3, 3);
             dr["KDJ日"] = stock.kdjDays(currentIndex);
@@ -431,7 +431,7 @@
             dr["MACD日"] = stock.macdDays(currentIndex);
 
             dr["现价"] = stock.kLineDay[currentIndex].endPrice;
-           
+
             dr["买入"] = buyPrice;
 
             dr["涨幅"] = (buyPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
@@ -451,7 +451,14 @@
             }
             dr["总计"] = (maxPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice;
 
-          
+            int alertIndex = stock.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString().Trim()));
+            if (alertIndex > 0 && alertIndex < stock.kLineDay.Length)
+            {
+                if (stock.IsLimitUp(alertIndex - 1))
+                {
+                    dr["信号"] = "<a title=\"二连板\" >📈</a>";
+                }
+            }
 
 
             dt.Rows.Add(dr);
