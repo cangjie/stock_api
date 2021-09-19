@@ -34,7 +34,8 @@
             currentDate = Util.GetDay(DateTime.Now);
         else
             currentDate = Util.GetDay(calendar.SelectedDate);
-        DataTable dtOri = GetData(currentDate);
+        int days = int.Parse(Util.GetSafeRequestValue(Request, "days", "6"));
+        DataTable dtOri = GetData(currentDate, days);
         string filter = "";
         if (Util.GetSafeRequestValue(Request, "goldcross", "0").Trim().Equals("0"))
         {
@@ -118,7 +119,7 @@
                         case "现价":
                         case "前低":
                         case "F1":
-              
+
                         case "现高":
                         case "3线":
                         case "无影":
@@ -286,7 +287,7 @@
 
     }
 
-    public static DataTable GetData(DateTime currentDate)
+    public static DataTable GetData(DateTime currentDate, int days)
     {
         currentDate = Util.GetDay(currentDate);
         DataTable dt = new DataTable();
@@ -304,6 +305,7 @@
         dt.Columns.Add("风险", Type.GetType("System.Double"));
         dt.Columns.Add("买入", Type.GetType("System.Double"));
         dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
+        dt.Columns.Add("天数", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
         dt.Columns.Add("涨幅", Type.GetType("System.Double"));
         for (int i = 0; i <= 10; i++)
@@ -316,8 +318,8 @@
             return dt;
         }
 
-        int days = 8;
-        
+        //int days = 6;
+
         DataTable dtOri = DBHelper.GetDataTable(" select gid, alert_date from alert_traffic_light a where  alert_date <=  '" + Util.GetLastTransactDate(currentDate, days).ToShortDateString() + "'  "
             + " and alert_date >= '" + Util.GetLastTransactDate(currentDate, 30).ToShortDateString() + "'  ");
 
@@ -356,7 +358,19 @@
                 continue;
             }
 
-            
+
+            bool isReverse = true;
+
+            if (Math.Abs(stock.kLineDay[alertIndex - 2].volume - stock.kLineDay[alertIndex - 1].volume) / stock.kLineDay[alertIndex - 2].volume >= 0.02
+                && stock.kLineDay[alertIndex].volume < stock.kLineDay[alertIndex - 1].volume)
+            {
+                isReverse = false;
+            }
+            if (stock.kLineDay[alertIndex].highestPrice <= stock.kLineDay[alertIndex - 1].highestPrice)
+            {
+                isReverse = false;
+            }
+
 
             int highestIndex = -1;
             double highestPrice = 0;
@@ -443,6 +457,7 @@
             dr["F5"] = f5;
             dr["前低"] = lowestPrice;
             dr["幅度"] = Math.Round(100 * width, 2).ToString() + "%";
+            dr["天数"] = below3LineDays;
             try
             {
                 dr["风险"] = KLine.ComputeRisk(stock.kLineDay, currentIndex);
@@ -480,7 +495,10 @@
             }
             dr["总计"] = (maxPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice;
 
-
+            if (isReverse)
+            {
+                dr["信号"] = "<a title=\"反包\" >📈</a>";
+            }
 
 
             dt.Rows.Add(dr);
@@ -639,6 +657,7 @@
                     <asp:BoundColumn DataField="信号" HeaderText="信号" SortExpression="信号|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="缩量" HeaderText="缩量"></asp:BoundColumn>
                     <asp:BoundColumn DataField="风险" HeaderText="风险"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="天数" HeaderText="天数" ></asp:BoundColumn>
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD日|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>

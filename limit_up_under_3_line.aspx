@@ -17,7 +17,13 @@
         sort = Util.GetSafeRequestValue(Request, "sort", "缩量 desc");
         if (!IsPostBack)
         {
+            string dateStr = Util.GetSafeRequestValue(Request, "date", "").Trim();
 
+            if (!dateStr.Equals(""))
+            {
+                currentDate = DateTime.Parse(dateStr);
+                calendar.SelectedDate = currentDate;
+            }
 
 
             DataTable dt = GetData();
@@ -34,6 +40,9 @@
             currentDate = Util.GetDay(DateTime.Now);
         else
             currentDate = Util.GetDay(calendar.SelectedDate);
+
+
+
         DataTable dtOri = GetData(currentDate);
         string filter = "";
         if (Util.GetSafeRequestValue(Request, "goldcross", "0").Trim().Equals("0"))
@@ -110,7 +119,7 @@
                         case "F3":
                         case "F5":
                             double currentValuePrice2 = (double)drOri[i];
-                            
+
 
                             break;
                         case "今开":
@@ -349,7 +358,7 @@
 
             bool up3Line = false;
 
-            for (int i = currentIndex; !(up3Line && stock.kLineDay[i].endPrice < stock.GetAverageSettlePrice(i, 3, 3)) && i >= 0; i--)
+            for (int i = currentIndex; i >= 0 &&  !(up3Line && stock.kLineDay[i].endPrice < stock.GetAverageSettlePrice(i, 3, 3)) ; i--)
             {
                 if (stock.kLineDay[i].highestPrice >= highestPrice)
                 {
@@ -414,7 +423,7 @@
                 dr["风险"] = 120;
             }
 
-            
+
 
             dr["3线"] = stock.GetAverageSettlePrice(currentIndex, 3, 3);
             dr["KDJ日"] = stock.kdjDays(currentIndex);
@@ -422,7 +431,7 @@
             dr["MACD日"] = stock.macdDays(currentIndex);
 
             dr["现价"] = stock.kLineDay[currentIndex].endPrice;
-           
+
             dr["买入"] = buyPrice;
 
             dr["涨幅"] = (buyPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
@@ -442,7 +451,14 @@
             }
             dr["总计"] = (maxPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice;
 
-          
+            int alertIndex = stock.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString().Trim()));
+            if (alertIndex > 0 && alertIndex < stock.kLineDay.Length)
+            {
+                if (stock.IsLimitUp(alertIndex - 1))
+                {
+                    dr["信号"] = "<a title=\"二连板\" >📈</a>";
+                }
+            }
 
 
             dt.Rows.Add(dr);
@@ -572,10 +588,16 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title></title>
+    <title>三线下涨停</title>
 </head>
 <body>
     <form id="form2" runat="server">
+    <div>
+        <a href="limit_up_under_3_line.aspx?date=<%=currentDate.ToShortDateString() %>" >三线下涨停</a> 
+        <a href="limit_up_under_dmp.aspx?date=<%=currentDate.ToShortDateString() %>" >DMP下涨停</a> 
+        <a href="traffic_light_under_3_line.aspx?date=<%=currentDate.ToShortDateString() %>" >三线下红绿灯</a> 
+        <a href="traffic_light_under_dmp.aspx?date=<%=currentDate.ToShortDateString() %>" >DMP下红绿灯</a> 
+    </div>
     <div>
         <table width="100%" >
             <tr>
