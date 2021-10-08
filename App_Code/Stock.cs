@@ -965,6 +965,10 @@ public class Stock
                         startDate = startDate.Date.AddHours(9).AddMinutes(30);
                         break;
                     default:
+                        if (!Util.IsTransacDay(startDate.Date))
+                        {
+                            continue;
+                        }
                         break;
                 }
                 
