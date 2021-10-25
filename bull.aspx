@@ -18,7 +18,7 @@
 
     public static Thread t = new Thread(ts);
 
-    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+    
 
     public static int alertQueryTimes = 0;
 
@@ -366,7 +366,7 @@
 
 
 
-            stock.LoadKLineDay(rc);
+            stock.LoadKLineDay(Util.rc);
             int currentIndex = stock.GetItemIndex(currentDate);
             if (currentIndex < 1)
                 continue;
@@ -478,7 +478,8 @@
             }
             */
             DateTime ma5Time = DateTime.Now;
-            Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
+            //Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, Util.rc);
+            /*
             if (timelineArray.Length == 0)
             {
                 timelineArray = Core.Timeline.LoadTimelineArrayFromSqlServer(stock.gid, currentDate);
@@ -491,6 +492,7 @@
                     break;
                 }
             }
+            */
 
             double lowestPrice = stock.LowestPrice(currentDate, 20);
             double highestPrice = stock.HighestPrice(currentDate, 40);
@@ -580,14 +582,8 @@
             dr["今收"] = currentPrice;
             dr["今涨"] = (stock.kLineDay[currentIndex].startPrice - settlePrice) / settlePrice;
             dr["放量"] = currentVolume / lastDayVolume;
-            if (timelineArray != null)
-            {
-                dr["量比"] = Stock.ComputeQuantityRelativeRatio(stock.kLineDay, timelineArray, ma5Time);
-            }
-            else
-            {
-                dr["量比"] = 0;
-            }
+            dr["量比"] = 0;
+           
             dr["3线"] = line3Price;
             dr["低点"] = lowestPrice;
             dr["调整日"] = adjustDays.ToString();// currentIndex - previous3LineIndex;

@@ -24,7 +24,7 @@
 
     public static Thread tMacd = new Thread(tsMacd);
 
-    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+    
 
     public static int alertQueryTimes = 0;
 
@@ -43,7 +43,7 @@
                         if (dtAlert.Select(" gid = '" + gidArr[i].Trim() + "' ").Length == 0)
                         {
                             Stock stock = new Stock(gidArr[i].Trim());
-                            stock.LoadKLineDay(rc);
+                            stock.LoadKLineDay(Util.rc);
                             int currentIndex = stock.GetItemIndex(DateTime.Now.Date);
                             KLine.ComputeMACD(stock.kLineDay);
                             KLine.SearchMACDAlert(stock.kLineDay, currentIndex);
@@ -415,7 +415,7 @@
             {
                 //continue;
             }
-            stock.LoadKLineDay(rc);
+            stock.LoadKLineDay(Util.rc);
 
 
             //stock.LoadKLineDay();
@@ -539,7 +539,7 @@
             {
                 totalPressure = Math.Max(pressure, highPointPressure);
             }
-
+            /*
 
             Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
             if (timelineArray.Length == 0)
@@ -555,7 +555,7 @@
                 }
                 dr["量比"] = ratio;
             }
-
+            */
             if (dtAlert.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
             {
                 dr["信号"] = dr["信号"].ToString().Trim() + "<a title=\"已经预警过\" >❗️</a>";

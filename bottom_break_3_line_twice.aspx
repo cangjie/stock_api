@@ -18,7 +18,7 @@
 
     public static Thread t = new Thread(ts);
 
-    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+    
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -350,7 +350,7 @@
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
 
-            stock.LoadKLineDay(rc);
+            stock.LoadKLineDay(Util.rc);
 
             //stock.LoadKLineDay();
 

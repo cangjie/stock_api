@@ -6,7 +6,7 @@
 
 <script runat="server">
 
-    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+    
 
     public static ArrayList gidArr = new ArrayList();
 
@@ -198,7 +198,7 @@
         if (!found)
         {
             s = new Stock(gid);
-            s.LoadKLineDay(rc);
+            s.LoadKLineDay(Util.rc);
             gidArr.Add(s);
         }
         return s;

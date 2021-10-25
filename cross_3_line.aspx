@@ -16,7 +16,7 @@
 
     public static Thread tQ = new Thread(tsQ);
 
-    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+    
 
 
 
@@ -279,7 +279,7 @@
                 continue;
             }
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
-            stock.LoadKLineDay(rc);
+            stock.LoadKLineDay(Util.rc);
             int currentIndex = stock.GetItemIndex(currentDate);
             if (currentIndex < 12)
             {

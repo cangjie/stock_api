@@ -3,7 +3,7 @@
 
 <script runat="server">
 
-    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+    
 
 
     protected void Page_Load(object sender, EventArgs e)
@@ -12,7 +12,7 @@
         foreach (string gid in Util.GetAllGids())
         {
             Stock s = new Stock(gid);
-            s.LoadKLineDay(rc);
+            s.LoadKLineDay(Util.rc);
             KLine.ComputeRSV(s.kLineDay);
             KLine.ComputeKDJ(s.kLineDay);
             KLine.ComputeMACD(s.kLineDay);

@@ -18,7 +18,7 @@
 
     public static Thread t = new Thread(ts);
 
-    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+    
 
     public static int alertQueryTimes = 0;
 
@@ -364,14 +364,15 @@
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
 
 
-            Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
+            //Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
             /*
             if (timelineArray.Length > 0 && timelineArray[timelineArray.Length - 1].todayHighestPrice < double.Parse(drOri["predict_macd_price"].ToString()))
             {
                 continue;
             }
             */
-            stock.LoadKLineDay(rc);
+            stock.LoadKLineDay(Util.rc);
+            /*
             if (timelineArray.Length > 0)
             {
                 KLine currentKLine = new KLine();
@@ -397,6 +398,7 @@
                     stock.kLineDay = newKArr;
                 }
             }
+            */
             int currentIndex = stock.GetItemIndex(currentDate);
             if (currentIndex < 1)
                 continue;

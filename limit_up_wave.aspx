@@ -11,7 +11,7 @@
     public string sort = "缩量";
 
     
-    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+    
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -340,8 +340,8 @@
             {
                 continue;
             }
-            Stock stock = new Stock(drOri["gid"].ToString().Trim(), rc);
-            stock.LoadKLineDay(rc);
+            Stock stock = new Stock(drOri["gid"].ToString().Trim(), Util.rc);
+            stock.LoadKLineDay(Util.rc);
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
@@ -455,14 +455,14 @@
             }
 
             string memo = "";
-
+            /*
             Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
 
             if (timelineArray.Length == 0)
             {
                 timelineArray = Core.Timeline.LoadTimelineArrayFromSqlServer(stock.gid, currentDate);
             }
-
+            */
 
             if (f3 >= line3Price)
             {

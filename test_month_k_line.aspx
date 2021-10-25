@@ -4,12 +4,12 @@
 
 <script runat="server">
 
-    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+    
 
     protected void Page_Load(object sender, EventArgs e)
     {
         
-        KLine[] klineMonth = Stock.LoadWeekKLine(Util.GetSafeRequestValue(Request, "gid", "sh600031"), rc);
+        KLine[] klineMonth = Stock.LoadWeekKLine(Util.GetSafeRequestValue(Request, "gid", "sh600031"), Util.rc);
 
         DataTable dt = new DataTable();
         dt.Columns.Add("month");

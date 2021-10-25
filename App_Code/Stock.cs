@@ -68,7 +68,7 @@ public class Stock
             */
     }
 
-    public Stock(string gid, Core.RedisClient rc)
+    public Stock(string gid, RedisClient rc)
     {
         this.gid = gid;
         try
@@ -96,13 +96,13 @@ public class Stock
         
     }
 
-    public void LoadKLineDay(Core.RedisClient rc)
+    public void LoadKLineDay(RedisClient rc)
     {
         kLineDay = LoadRedisKLine(gid, "day", rc);
         kArr = kLineDay;
     }
 
-    public void LoadKLineWeek(Core.RedisClient rc)
+    public void LoadKLineWeek(RedisClient rc)
     {
         kLineWeek = LoadRedisKLine(gid, "week", rc);
         //kArr = kLineWeek;
@@ -828,7 +828,7 @@ public class Stock
         }
     }
 
-    public static KLine[] LoadWeekKLine(string gid, Core.RedisClient rc)
+    public static KLine[] LoadWeekKLine(string gid, RedisClient rc)
     {
         Stock stock = new Stock(gid);
         stock.LoadKLineDay(rc);
@@ -879,10 +879,10 @@ public class Stock
         return weekKLineArr;
     }
 
-    public static KLine[] LoadMonthKLine(string gid, Core.RedisClient rc)
+    public static KLine[] LoadMonthKLine(string gid, RedisClient rc)
     {
         Stock stock = new Stock(gid);
-        stock.LoadKLineDay(rc);
+        stock.LoadKLineDay(Util.rc);
         DateTime currentMonth = DateTime.Parse(stock.kLineDay[0].startDateTime.Year.ToString() 
             + "-" + stock.kLineDay[0].startDateTime.Month.ToString() + "-1");
         bool startANewMonth = true;
@@ -933,7 +933,7 @@ public class Stock
         return monthKLineArr;
     }
 
-    public static KLine[] LoadRedisKLine(string gid, string type, Core.RedisClient rc)
+    public static KLine[] LoadRedisKLine(string gid, string type, RedisClient rc)
     {
         //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
         string key = gid + "_kline_" + type;

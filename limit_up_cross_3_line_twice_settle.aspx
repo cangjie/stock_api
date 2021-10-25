@@ -8,7 +8,7 @@
 
     public DateTime currentDate = Util.GetDay(DateTime.Now);
 
-    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+    
 
     public string sort = "幅度 desc";
 
@@ -75,7 +75,7 @@
                 continue;
             }
 
-            stock.LoadKLineDay(rc);
+            stock.LoadKLineDay(Util.rc);
             int currentIndex = stock.GetItemIndex(currentDate);
             if (currentIndex < 0)
             {

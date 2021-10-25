@@ -18,7 +18,7 @@
 
     public static Thread t = new Thread(ts);
 
-    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+    
 
     public static int queryTimes = 0;
 
@@ -364,7 +364,7 @@
             }
 
 
-            stock.LoadKLineDay(rc);
+            stock.LoadKLineDay(Util.rc);
             //stock.LoadKLineDay();
             int currentIndex = stock.GetItemIndex(currentDate);
             if (currentIndex < 1)
@@ -565,7 +565,7 @@
                 }
             }
             */
-
+            /*
 
             Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
             if (timelineArray.Length == 0)
@@ -580,7 +580,7 @@
             {
                 dr["量比"] = 0;
             }
-
+            */
             double totalPressure = 0;
             if (pressure > 0 && highPointPressure > 0)
             {

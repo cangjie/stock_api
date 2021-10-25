@@ -11,7 +11,7 @@
     public string sort = "放量";
 
    
-    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+    
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -344,8 +344,8 @@
         {
             //DateTime alertDate = DateTime.Parse(drOri["alert_time"].ToString().Trim());
 
-            Stock stock = new Stock(drOri["gid"].ToString().Trim(), rc);
-            stock.LoadKLineDay(rc);
+            Stock stock = new Stock(drOri["gid"].ToString().Trim(), Util.rc);
+            stock.LoadKLineDay(Util.rc);
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
@@ -468,13 +468,14 @@
             */
             //buyPrice = Math.Max(f3, stock.kLineDay[currentIndex].lowestPrice);
             string memo = "";
-
+            /*
             Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
 
             if (timelineArray.Length == 0)
             {
                 timelineArray = Core.Timeline.LoadTimelineArrayFromSqlServer(stock.gid, currentDate);
             }
+            */
             /*bool isFoot = foot(timelineArray, out todayLowestPrice, out todayDisplayedLowestPrice, out footTime);
             DateTime todayLowestTime = Core.Timeline.GetLowestTime(timelineArray);
             if (todayLowestTime.Hour == 9 && todayLowestTime.Minute < 30)
@@ -753,9 +754,9 @@
         {
             string gid = dr["gid"].ToString().Trim();
             DateTime promoteDate = DateTime.Parse(dr["promote_date"].ToString().Trim());
-            Stock stock = new Stock(gid, rc);
-            stock.kLineQuaterHour = Stock.LoadRedisKLine(gid, "15min", rc);
-            stock.LoadKLineDay(rc);
+            Stock stock = new Stock(gid, Util.rc);
+            stock.kLineQuaterHour = Stock.LoadRedisKLine(gid, "15min", Util.rc);
+            stock.LoadKLineDay(Util.rc);
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeMACD(stock.kLineQuaterHour);

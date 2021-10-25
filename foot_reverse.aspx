@@ -16,7 +16,7 @@
 
     public static double rate = 0.01;
 
-    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+    
 
     //DataTable dtIOVolume = DBHelper.GetDataTable("exec proc_io_volume_monitor '" + currentDate.ToShortDateString() + "' ");
 
@@ -410,8 +410,8 @@
         foreach (DataRow drOri in dtIOVolume.Rows)
         {
 
-            Stock stock = new Stock(drOri["gid"].ToString().Trim(), rc);
-            stock.LoadKLineDay(rc);
+            Stock stock = new Stock(drOri["gid"].ToString().Trim(), Util.rc);
+            stock.LoadKLineDay(Util.rc);
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
@@ -589,13 +589,14 @@
             }
             //buyPrice = Math.Max(f3, stock.kLineDay[currentIndex].lowestPrice);
             string memo = "";
-
+            /*
             Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
 
             if (timelineArray.Length == 0)
             {
                 timelineArray = Core.Timeline.LoadTimelineArrayFromSqlServer(stock.gid, currentDate);
             }
+            */
             /*bool isFoot = foot(timelineArray, out todayLowestPrice, out todayDisplayedLowestPrice, out footTime);
             DateTime todayLowestTime = Core.Timeline.GetLowestTime(timelineArray);
             if (todayLowestTime.Hour == 9 && todayLowestTime.Minute < 30)

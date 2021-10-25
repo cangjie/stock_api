@@ -5,7 +5,7 @@
 
 <script runat="server">
 
-    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+    
 
     public static Stock[] stockArr;
 
@@ -17,8 +17,8 @@
         {
             for (int i = 0; i < stockArr.Length; i++)
             {
-                Stock s = new Stock(dtGid.Rows[i][0].ToString().Trim(), rc);
-                s.LoadKLineDay(rc);
+                Stock s = new Stock(dtGid.Rows[i][0].ToString().Trim(), Util.rc);
+                s.LoadKLineDay(Util.rc);
                 KLine.ComputeMACD(s.kLineDay);
                 KLine.ComputeRSV(s.kLineDay);
                 KLine.ComputeKDJ(s.kLineDay);

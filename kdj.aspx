@@ -12,7 +12,7 @@
 
     public static Thread t = new Thread(ts);
 
-    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+    
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -242,7 +242,7 @@
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
-            stock.LoadKLineDay(rc);
+            stock.LoadKLineDay(Util.rc);
             //stock.LoadKLineDay();
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);

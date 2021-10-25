@@ -7,7 +7,7 @@
 
     //public static Stock[] gidArr;
 
-    //public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+    
 
     public static int count = 0;
 

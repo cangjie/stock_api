@@ -7,7 +7,7 @@
 
     public static Stock[] gidArr;
 
-    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+    
 
     public string type = "success";
 
@@ -238,7 +238,7 @@
         for (int i = 0; i < dt.Rows.Count; i++)
         {
             gidArr[i] = new Stock(dt.Rows[i][0].ToString().Trim());
-            gidArr[i].LoadKLineDay(rc);
+            gidArr[i].LoadKLineDay(Util.rc);
         }
     }
 

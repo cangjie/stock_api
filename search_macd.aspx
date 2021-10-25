@@ -2,7 +2,7 @@
 <%@ Import Namespace="System.Data" %>
 <script runat="server">
 
-    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+    
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -15,7 +15,7 @@
 
 
             Stock s = new Stock(dr["gid"].ToString().Trim());
-            s.LoadKLineDay(rc);
+            s.LoadKLineDay(Util.rc);
             int currentIndex = s.GetItemIndex(currentDate);
             currentIndex++;
             if (currentIndex > s.kLineDay.Length - 1)

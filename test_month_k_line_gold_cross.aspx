@@ -6,14 +6,14 @@
 
     public ArrayList gidGoldArr = new ArrayList();
 
-    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+    
 
     protected void Page_Load(object sender, EventArgs e)
     {
         string[] gidArr = Util.GetAllGids();
         foreach (string gid in gidArr)
         {
-            KLine[] klineMonth = Stock.LoadMonthKLine(gid, rc);
+            KLine[] klineMonth = Stock.LoadMonthKLine(gid, Util.rc);
             KLine.ComputeMACD(klineMonth);
             KLine.ComputeRSV(klineMonth);
             KLine.ComputeKDJ(klineMonth);

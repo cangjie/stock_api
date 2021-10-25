@@ -4,7 +4,7 @@
 
 <script runat="server">
 
-    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+    
 
     public DateTime currentDate = Util.GetDay(DateTime.Now);
 
@@ -257,8 +257,8 @@
         DataTable dtOri = DBHelper.GetDataTable(" select * from limit_up where alert_date = '" + startDate.ToShortDateString() + "' ");
         foreach (DataRow drOri in dtOri.Rows)
         {
-            Stock stock = new Stock(drOri["gid"].ToString().Trim(), rc);
-            stock.LoadKLineDay(rc);
+            Stock stock = new Stock(drOri["gid"].ToString().Trim(), Util.rc);
+            stock.LoadKLineDay(Util.rc);
             int currentIndex = stock.GetItemIndex(currentDate);
             if (currentIndex < 0)
             {
@@ -294,15 +294,17 @@
             */
 
             //if (stock.kLineDay[currentIndex].lowestPrice < stock.kLineDay[limitUpIndex].endPrice )
-
+            /*
             Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
             if (timelineArray.Length == 0)
             {
                 timelineArray = Core.Timeline.LoadTimelineArrayFromSqlServer(stock.gid, currentDate);
             }
+            */
             bool goBack = false;
             bool goUp = false;
             bool isRaise = false;
+            /*
             foreach (Core.Timeline timeline in timelineArray)
             {
                 if (timeline.todayEndPrice <= stock.kLineDay[limitUpIndex].endPrice)
@@ -322,7 +324,7 @@
                     break;
                 }
             }
-
+            */
             if (!goBack || !goUp || !isRaise)
             {
                 continue;

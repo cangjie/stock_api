@@ -2,7 +2,7 @@
 
 <script runat="server">
 
-    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+    
 
     
 
@@ -28,7 +28,7 @@
         foreach (string gid in Util.GetAllGids())
         {
             Stock s = new Stock(gid);
-            s.LoadKLineDay(rc);
+            s.LoadKLineDay(Util.rc);
             int currentIndex = s.GetItemIndex(currentDate);
             if (currentIndex < 2)
             {

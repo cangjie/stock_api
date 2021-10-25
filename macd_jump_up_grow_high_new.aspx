@@ -12,7 +12,7 @@
 
    
 
-    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+    
 
     public static string filter = "";
 
@@ -378,14 +378,14 @@
                 continue;
             }
 
-            Core.Timeline[] timelineArr = Core.Timeline.LoadTimelineArrayFromRedis(drOri["gid"].ToString(), currentDate, rc);
+            //Core.Timeline[] timelineArr = Core.Timeline.LoadTimelineArrayFromRedis(drOri["gid"].ToString(), currentDate, rc);
             /*
             if (timelineArr.Length > 0 && timelineArr[timelineArr.Length - 1].todayHighestPrice < double.Parse(drOri["predict_macd_price"].ToString()))
             {
                 continue;
             }
             */
-            Stock stock = new Stock(drOri["gid"].ToString().Trim(), rc);
+            Stock stock = new Stock(drOri["gid"].ToString().Trim(), Util.rc);
 
             if (!stock.gid.Trim().Equals("sz002144"))
             {
@@ -393,7 +393,7 @@
             }
 
 
-            stock.LoadKLineDay(rc);
+            stock.LoadKLineDay(Util.rc);
             /*
             if (timelineArr.Length > 0)
             {
@@ -426,8 +426,8 @@
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
-            KLine[] kArrHour = Stock.LoadRedisKLine(stock.gid, "60min", rc);
-            KLine[] kArrHalfHour = Stock.LoadRedisKLine(stock.gid, "30min", rc);
+            KLine[] kArrHour = Stock.LoadRedisKLine(stock.gid, "60min", Util.rc);
+            KLine[] kArrHalfHour = Stock.LoadRedisKLine(stock.gid, "30min", Util.rc);
 
             int currentIndex = stock.GetItemIndex(currentDate);
 

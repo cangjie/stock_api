@@ -4,7 +4,7 @@
 
 <script runat="server">
 
-    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+    
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -89,7 +89,7 @@
                 if (type.Trim().Equals("新高"))
                 {
                     Stock s = new Stock(drOri["代码"].ToString());
-                    s.LoadKLineDay(rc);
+                    s.LoadKLineDay(Util.rc);
                     int currentIndex = s.GetItemIndex((DateTime)drOri["日期"]);
                     if (currentIndex < 1)
                     {

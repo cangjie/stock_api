@@ -11,7 +11,7 @@
     public string sort = "缩量";
 
     
-    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+    
 
     public static double times = 3;
 
@@ -359,14 +359,14 @@
         foreach (DataRow drOri in dtIOVolume.Rows)
         {
 
-            Stock stock = new Stock(drOri["gid"].ToString().Trim(), rc);
-            stock.LoadKLineDay(rc);
+            Stock stock = new Stock(drOri["gid"].ToString().Trim(), Util.rc);
+            stock.LoadKLineDay(Util.rc);
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
 
-            KLine[] kArrHour = Stock.LoadRedisKLine(stock.gid, "60min", rc);
-            KLine[] kArrHalfHour = Stock.LoadRedisKLine(stock.gid, "30min", rc);
+            KLine[] kArrHour = Stock.LoadRedisKLine(stock.gid, "60min", Util.rc);
+            KLine[] kArrHalfHour = Stock.LoadRedisKLine(stock.gid, "30min", Util.rc);
             DateTime currentHalfHourTime = Stock.GetCurrentKLineEndDateTime(currentDate, 30);
             DateTime currentHourTime = Stock.GetCurrentKLineEndDateTime(currentDate, 60);
             int currentIndexHour = Stock.GetItemIndex(kArrHour, currentHourTime);
@@ -379,7 +379,7 @@
 
             bool haveHourKdjCross = false;
             int kdjCrossHourIndex = 0;
-            stock.kLineHour = Stock.LoadRedisKLine(stock.gid.Trim(), "60min", rc);
+            stock.kLineHour = Stock.LoadRedisKLine(stock.gid.Trim(), "60min", Util.rc);
             if (stock.kLineHour == null || stock.kLineHour.Length == 0)
             {
                 stock.kLineHour = Stock.LoadLocalKLineFromDB(stock.gid.Trim(), "60min");
@@ -417,7 +417,7 @@
 
             bool haveHalfHourKdjCross = false;
             int kdjCrossHalfHourIndex = 0;
-            stock.kLineHalfHour = Stock.LoadRedisKLine(stock.gid.Trim(), "30min", rc);
+            stock.kLineHalfHour = Stock.LoadRedisKLine(stock.gid.Trim(), "30min", Util.rc);
             if (stock.kLineHalfHour == null || stock.kLineHalfHour.Length == 0)
             {
                 stock.kLineHalfHour = Stock.LoadLocalKLineFromDB(stock.gid.Trim(), "30min");
@@ -570,14 +570,14 @@
             double volumeReduce = volumeToday / maxVolume;
 
             string memo = "";
-
+            /*
             Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
 
             if (timelineArray.Length == 0)
             {
                 timelineArray = Core.Timeline.LoadTimelineArrayFromSqlServer(stock.gid, currentDate);
             }
-
+            */
 
 
             if (f3 >= line3Price)

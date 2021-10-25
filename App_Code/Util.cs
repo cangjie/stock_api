@@ -16,7 +16,7 @@ public class Util
 {
     public static string conStr = System.Configuration.ConfigurationSettings.AppSettings["constr"].Trim();
 
-    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+    public static RedisClient rc = new RedisClient("127.0.0.1");
 
     public static string physicalPath = "";
 
@@ -621,7 +621,7 @@ public class Util
             if (!existInArr)
             {
                 s = new Stock(gid);
-                s.LoadKLineDay(rc);
+                s.LoadKLineDay(Util.rc);
                 gidArr.Add(s);
             }
             int currentIndex = s.GetItemIndex(currentDate);

@@ -4,7 +4,7 @@
 
 <script runat="server">
 
-    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+    
     public static Stock[] sArr;
 
     protected void Page_Load(object sender, EventArgs e)
@@ -14,7 +14,7 @@
         for (int i = 0; i < dt.Rows.Count; i++)
         {
             sArr[i] = new Stock(dt.Rows[i][0].ToString().Trim());
-            sArr[i].LoadKLineDay(rc);
+            sArr[i].LoadKLineDay(Util.rc);
         }
         dt.Dispose();
         dt = DBHelper.GetDataTable("  select * from bottom_break_cross_3_line where settle_confirm = 0  ");

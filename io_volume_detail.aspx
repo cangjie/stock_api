@@ -8,7 +8,7 @@
 
     public Stock s;
 
-    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+    
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -44,6 +44,7 @@
         dt.Columns.Add("价格");
         if (Util.IsTransacDay(currentDate))
         {
+            /*
             Core.Timeline[] timelineArray;// = Core.Timeline.LoadTimelineArrayFromRedis(gid, currentDate, rc);
             if (currentDate == DateTime.Now.Date)
             {
@@ -53,6 +54,7 @@
             {
                 timelineArray = Core.Timeline.LoadTimelineArrayFromSqlServer(gid, currentDate);
             }
+            */
             DataTable dtOri = DBHelper.GetDataTable(" select * from io_volume where gid = '" + gid.Trim() + "' and trans_date_time > '" + currentDate.Date.ToShortDateString()
                 + "' and trans_date_time < '" + currentDate.Date.ToShortDateString() + " 23:00' order by trans_date_time ");
             int i = 0;
@@ -62,6 +64,7 @@
                 dr["时间"] = DateTime.Parse(drOri["trans_date_time"].ToString()).ToShortTimeString();
                 dr["盘比"] = Math.Round(100*(double.Parse(drOri["out_volume"].ToString()) - double.Parse(drOri["in_volume"].ToString())) / double.Parse(drOri["in_volume"].ToString()), 2);
                 double currentPrice = 0;
+                /*
                 for (; i < timelineArray.Length; i++)
                 {
                     if (timelineArray[i].tickTime > DateTime.Parse(drOri["trans_date_time"].ToString()))
@@ -71,6 +74,7 @@
                         break;
                     }
                 }
+                */
                 dr["价格"] = currentPrice;
                 dt.Rows.Add(dr);
             }

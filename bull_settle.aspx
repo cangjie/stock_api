@@ -18,7 +18,7 @@
 
     public static Thread t = new Thread(ts);
 
-    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+    
 
     public static int alertQueryTimes = 0;
 
@@ -369,7 +369,7 @@
             {
                 t.Abort();
             }
-
+            /*
             Core.Timeline[] timelineArray = new Core.Timeline[0];
             try
             {
@@ -379,10 +379,10 @@
             {
 
             }
-
-            stock.LoadKLineDay(rc);
-            KLine[] kArrHour = Stock.LoadRedisKLine(stock.gid, "60min", rc);
-            KLine[] kArrHalfHour = Stock.LoadRedisKLine(stock.gid, "30min", rc);
+            */
+            stock.LoadKLineDay(Util.rc);
+            KLine[] kArrHour = Stock.LoadRedisKLine(stock.gid, "60min", Util.rc);
+            KLine[] kArrHalfHour = Stock.LoadRedisKLine(stock.gid, "30min", Util.rc);
 
             KLine.ComputeMACD(kArrHour);
             KLine.ComputeRSV(kArrHour);
@@ -592,7 +592,7 @@
             }
             */
             DateTime ma5Time = DateTime.Now;
-
+            /*
             if (timelineArray.Length == 0)
             {
                 timelineArray = Core.Timeline.LoadTimelineArrayFromSqlServer(stock.gid, currentDate);
@@ -605,7 +605,7 @@
                     break;
                 }
             }
-
+            */
             double lowestPrice = stock.LowestPrice(currentDate, 20);
             double highestPrice = stock.HighestPrice(currentDate, 40);
             double f1 = lowestPrice + (highestPrice - lowestPrice) * 0.236;
@@ -694,14 +694,8 @@
             dr["今收"] = currentPrice;
             dr["今涨"] = (stock.kLineDay[currentIndex].startPrice - settlePrice) / settlePrice;
             dr["放量"] = currentVolume / lastDayVolume;
-            if (timelineArray != null)
-            {
-                dr["量比"] = Stock.ComputeQuantityRelativeRatio(stock.kLineDay, timelineArray, ma5Time);
-            }
-            else
-            {
-                dr["量比"] = 0;
-            }
+            dr["量比"] = 0;
+            
 
 
             int kdjHours = Stock.KDJIndex(kArrHour, kArrHourTodayLastIndex);

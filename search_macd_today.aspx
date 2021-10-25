@@ -2,7 +2,7 @@
 <%@ Import Namespace="System.Data" %>
 <script runat="server">
 
-    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+    
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -15,16 +15,18 @@
             double highPrice = 0;
             if (currentDate.Date == DateTime.Now.Date)
             {
+                /*
                 Core.Timeline[] timelineArr = Core.Timeline.LoadTimelineArrayFromRedis(s.gid, currentDate, rc);
                 if (timelineArr.Length > 0)
                 {
                     highPrice = timelineArr[timelineArr.Length - 1].todayHighestPrice;
                 }
+                */
             }
 
             if (highPrice == 0)
             {
-                s.LoadKLineDay(rc);
+                s.LoadKLineDay(Util.rc);
                 int currentIndex = s.GetItemIndex(currentDate);
                 if (currentIndex < 0)
                 {

@@ -10,15 +10,15 @@
 
     public string sort = "MACD日,KDJ日,综指 desc";
 
-    
-    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+
+
 
     protected void Page_Load(object sender, EventArgs e)
     {
         sort = Util.GetSafeRequestValue(Request, "sort", "KDJ日, 调整, 幅度 desc");
         if (!IsPostBack)
         {
-            
+
 
 
             DataTable dt = GetData();
@@ -309,8 +309,8 @@
             {
                 continue;
             }
-            Stock stock = new Stock(drOri["gid"].ToString().Trim(), rc);
-            stock.LoadKLineDay(rc);
+            Stock stock = new Stock(drOri["gid"].ToString().Trim(), Util.rc);
+            stock.LoadKLineDay(Util.rc);
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
@@ -373,14 +373,16 @@
             }
             buyPrice = Math.Max(f3, stock.kLineDay[currentIndex].lowestPrice);
             string memo = "";
-
+            /*
             Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
 
             if (timelineArray.Length == 0)
             {
                 timelineArray = Core.Timeline.LoadTimelineArrayFromSqlServer(stock.gid, currentDate);
             }
-            bool isFoot = foot(timelineArray, out todayLowestPrice, out todayDisplayedLowestPrice, out footTime);
+            */
+            bool isFoot = false; //foot(timelineArray, out todayLowestPrice, out todayDisplayedLowestPrice, out footTime);
+            /*
             DateTime todayLowestTime = Core.Timeline.GetLowestTime(timelineArray);
             if (todayLowestTime.Hour == 9 && todayLowestTime.Minute < 30)
             {
@@ -412,8 +414,8 @@
                     todayLowestTimeSpan = todayLowestTimeSpan - (currentDate.Date.AddHours(13) - currentDate.Date.AddHours(11).AddMinutes(30));
                 }
             }
-
-            memo = todayLowestTimeSpan.Hours.ToString() + "小时" + todayLowestTimeSpan.Minutes.ToString() + "分钟";
+            */
+            //memo = todayLowestTimeSpan.Hours.ToString() + "小时" + todayLowestTimeSpan.Minutes.ToString() + "分钟";
 
 
             if (f3 >= line3Price)
@@ -456,6 +458,7 @@
                             dr["信号"] = dr["信号"] + "<a title=\"F3在3线之上\" >🌟</a>";
                         }
                         */
+            /*
             if (stock.kLineDay[currentIndex].lowestPrice >= f3 - 0.05 && todayLowestTime > DateTime.MinValue)
             {
                 dr["信号"] = dr["信号"] + "<a title=\"折返在F3之上\" >🌟</a>";
@@ -464,7 +467,7 @@
                     dr["信号"] = dr["信号"] + "<a title=\"折返" + (starCount+1).ToString() + "小时\"  >🌟</a>";
                 }
             }
-
+            */
             if (f3 >= line3Price)
             {
                 dr["信号"] = dr["信号"] + "<a title=\"3线上\"  >👑</a>";
@@ -526,7 +529,7 @@
                     if (Math.Abs(buyPrice - quota[i].Value) / buyPrice < 0.01)
                     {
                         isFire = true;
-                        
+
                     }
                     break;
                 }

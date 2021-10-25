@@ -16,7 +16,7 @@
 
     public int allCount = 0;
 
-    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+    
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -372,8 +372,8 @@
 
 
 
-            Stock stock = new Stock(drOri["gid"].ToString().Trim(), rc);
-            stock.LoadKLineDay(rc);
+            Stock stock = new Stock(drOri["gid"].ToString().Trim(), Util.rc);
+            stock.LoadKLineDay(Util.rc);
 
             /*
             Core.Timeline[] timelineArr = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
@@ -496,14 +496,15 @@
             }
             //buyPrice = Math.Max(stock.kLineDay[limitUpIndex].highestPrice, stock.kLineDay[currentIndex].lowestPrice);
             string memo = "";
-
+            /*
             Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
             if (timelineArray.Length == 0)
             {
                 timelineArray = Core.Timeline.LoadTimelineArrayFromSqlServer(stock.gid, currentDate);
             }
-
+            */
             double openLowPrice = 0;
+            /*
             foreach (Core.Timeline t in timelineArray)
             {
                 if (t.tickTime >= t.tickTime.Date.AddHours(9).AddMinutes(30).AddMinutes(30))
@@ -512,18 +513,19 @@
                     break;
                 }
             }
-
+            */
 
             DateTime footTime = DateTime.MinValue;
+            /*
             if (!foot(timelineArray, out todayLowestPrice, out todayDisplayLowPrice, out footTime))
             {
                 //continue;
             }
-
+            */
             DateTime upFootTime = DateTime.MaxValue;
             double todayHighestPrice = 0;
             double todayDisplayHighPrice = 0;
-            bool isUpFoot = UpFoot(timelineArray, out todayHighestPrice, out todayDisplayHighPrice, out upFootTime);
+            //bool isUpFoot = UpFoot(timelineArray, out todayHighestPrice, out todayDisplayHighPrice, out upFootTime);
 
 
             bool atPoint = false;
@@ -544,7 +546,7 @@
             {
                 //continue;
             }
-
+            /*
             DateTime todayLowestTime = Core.Timeline.GetLowestTime(timelineArray);
             if (todayLowestTime.Hour == 9 && todayLowestTime.Minute < 30)
             {
@@ -576,8 +578,8 @@
                     todayLowestTimeSpan = todayLowestTimeSpan - (currentDate.Date.AddHours(13) - currentDate.Date.AddHours(11).AddMinutes(30));
                 }
             }
-
-            memo = todayLowestTimeSpan.Hours.ToString() + "小时" + todayLowestTimeSpan.Minutes.ToString() + "分钟";
+            */
+//            memo = todayLowestTimeSpan.Hours.ToString() + "小时" + todayLowestTimeSpan.Minutes.ToString() + "分钟";
 
 
             if (f3 >= line3Price)
@@ -666,6 +668,7 @@
 
 
             bool isFirstFoot = false;
+            /*
             for (int i = 0; i < timelineArray.Length && timelineArray[i].tickTime.Hour == 9 && timelineArray[i].tickTime.Minute <= 30; i++)
             {
                 if (timelineArray[i].tickTime.Hour == 9 && timelineArray[i].tickTime.Minute >= 30)
@@ -677,7 +680,7 @@
                     }
                 }
             }
-
+            */
             if (isFirstFoot)
             {
                 dr["信号"] = dr["信号"].ToString() + "❗️";
@@ -710,8 +713,8 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "🔺";
             }
-
-            if (isUpFoot)
+            /*
+            if (false)
             {
 
                 if (stock.kLineDay[currentIndex].highestPrice > todayHighestPrice)
@@ -724,7 +727,7 @@
                     dr["信号"] = dr["信号"].ToString() + "<a title=\"向上的无影脚\" >☄️</a>";
                 }
             }
-
+            */
             if (openLowPrice > stock.kLineDay[currentIndex].lowestPrice * 1.005)
             {
                 //dr["信号"] = dr["信号"].ToString() + "<a title=\"跌破开盘时低价\" >💩</a>";
@@ -760,10 +763,10 @@
             dr["前低"] = lowest;
             dr["幅度"] = width.ToString() + "%";
             dr["无影时间"] = footTime.ToShortTimeString();
-            dr["最低时间"] = todayLowestTime.ToShortTimeString();
+            //dr["最低时间"] = todayLowestTime.ToShortTimeString();
 
-            dr["低时量比"] = Stock.ComputeQuantityRelativeRatio(stock.kLineDay, timelineArray, todayLowestTime);
-            dr["无影量比"] = Stock.ComputeQuantityRelativeRatio(stock.kLineDay, timelineArray, footTime);
+            //dr["低时量比"] = Stock.ComputeQuantityRelativeRatio(stock.kLineDay, timelineArray, todayLowestTime);
+            //dr["无影量比"] = Stock.ComputeQuantityRelativeRatio(stock.kLineDay, timelineArray, footTime);
             //dr["F3折返"] = (stock.kLineDay[currentIndex].lowestPrice - f3) / f3;
             dr["F2"] = f2;
             dr["F4"] = f4;

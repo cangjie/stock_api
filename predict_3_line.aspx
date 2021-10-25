@@ -10,7 +10,7 @@
     public string allGids = "";
 
    
-    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+    
 
     public string sort = "3线下 desc";
 
@@ -99,7 +99,7 @@
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim());
             //allGids = allGids + "," + stock.gid.Trim();
-            stock.LoadKLineDay(rc);
+            stock.LoadKLineDay(Util.rc);
             int currentIndex = stock.GetItemIndex(date);
             if (currentIndex < 6)
                 continue;

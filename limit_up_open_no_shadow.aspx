@@ -306,13 +306,15 @@
                 {
                     continue;
                 }
-                Stock stock = new Stock(drOri["gid"].ToString().Trim(), rc);
-                stock.LoadKLineDay(rc);
+                Stock stock = new Stock(drOri["gid"].ToString().Trim(), Util.rc);
+                stock.LoadKLineDay(Util.rc);
+                /*
                 Core.Timeline[] timelineArr = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
                 if (timelineArr.Length == 0)
                 {
                     timelineArr = Core.Timeline.LoadTimelineArrayFromSqlServer(stock.gid, currentDate);
                 }
+                */
                 KLine.ComputeMACD(stock.kLineDay);
                 KLine.ComputeRSV(stock.kLineDay);
                 KLine.ComputeKDJ(stock.kLineDay);
@@ -466,7 +468,7 @@
                 {
                     dr["信号"] = dr["信号"].ToString() + "🛍️";
                 }
-
+                /*
                 if (timelineArr[0].todayStartPrice > timelineArr[0].todayLowestPrice
                   //&& timelineArr[0].todayLowestPrice > stock.kLineDay[limitUpIndex].highestPrice
                   )//  && timelineArr[0].todayLowestPrice <= stock.kLineDay[currentIndex].lowestPrice)
@@ -478,7 +480,7 @@
                 {
                     dr["信号"] = dr["信号"].ToString() + "👑";
                 }
-
+                */
                 if (stock.kLineDay[currentIndex].startPrice > f3 && stock.kLineDay[currentIndex].startPrice < f5 && openRaise < 0.093)
                 {
                     dr["信号"] = dr["信号"].ToString() + "📈";
@@ -507,14 +509,14 @@
                 dr["前低"] = lowest;
                 dr["幅度"] = width.ToString() + "%";
 
-                dr["最低时间"] = GetTodayLowestTime(timelineArr);
+                //dr["最低时间"] = GetTodayLowestTime(timelineArr);
 
                 //dr["F3折返"] = (stock.kLineDay[currentIndex].lowestPrice - f3) / f3;
 
                 dr["3线"] = line3Price;
                 dr["现价"] = currentPrice;
                 dr["今开"] = stock.kLineDay[currentIndex].startPrice;
-                dr["无影"] = timelineArr[0].todayLowestPrice;
+                //dr["无影"] = timelineArr[0].todayLowestPrice;
                 dr["评级"] = memo;
                 dr["买入"] = buyPrice;
                 dr["KDJ日"] = stock.kdjDays(currentIndex);

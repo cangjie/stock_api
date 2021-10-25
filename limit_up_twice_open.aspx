@@ -310,13 +310,15 @@
             {
                 continue;
             }
-            Stock stock = new Stock(drOri["gid"].ToString().Trim(), rc);
-            stock.LoadKLineDay(rc);
-            Core.Timeline[] timelineArr = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
+            Stock stock = new Stock(drOri["gid"].ToString().Trim(), Util.rc);
+            stock.LoadKLineDay(Util.rc);
+            /*
+            Core.Timeline[] timelineArr = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, Util.rc);
             if (timelineArr.Length == 0)
             {
                 timelineArr = Core.Timeline.LoadTimelineArrayFromSqlServer(stock.gid, currentDate);
             }
+            */
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
@@ -468,13 +470,13 @@
                     dr["信号"] = "📈🛍️";
                 }
             }
-
+            /*
             if ((timelineArr[0].todayStartPrice - timelineArr[0].todayLowestPrice) / timelineArr[0].todayLowestPrice > 0.01
                 && timelineArr[0].todayLowestPrice <= stock.kLineDay[currentIndex].lowestPrice)
             {
                 dr["信号"] = dr["信号"].ToString() + "❗️";
             }
-
+            */
 
             //DataRow[] lowPriceDrArr = dtDtl.Select(" gid = '" + drOri["gid"].ToString().Trim() + "' ", " alert_date desc ");
             if (foot)
@@ -496,7 +498,7 @@
             dr["3线"] = line3Price;
             dr["现价"] = currentPrice;
             dr["今开"] = stock.kLineDay[currentIndex].startPrice;
-            dr["无影"] = timelineArr[0].todayLowestPrice;
+//            dr["无影"] = timelineArr[0].todayLowestPrice;
             dr["评级"] = memo;
             dr["买入"] = buyPrice;
             dr["KDJ日"] = stock.kdjDays(currentIndex);

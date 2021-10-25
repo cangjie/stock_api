@@ -5,7 +5,7 @@
 <script runat="server">
 
     public DataTable footTable = new DataTable();
-    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+    
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -14,12 +14,13 @@
         string[] gidArr = Util.GetAllGids();
         foreach (string gid in gidArr)
         {
-            Stock stock = new Stock(gid.Trim(), rc);
-            stock.LoadKLineDay(rc);
+            Stock stock = new Stock(gid.Trim(), Util.rc);
+            stock.LoadKLineDay(Util.rc);
             int currentIndex = stock.GetItemIndex(DateTime.Now.Date);
-            Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, DateTime.Now.Date.AddDays(-3), rc);
+            //Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, DateTime.Now.Date.AddDays(-3), rc);
             double lowestPrice = 0;
             int i = 0;
+            /*
             foreach (Core.Timeline t in timelineArray)
             {
                 if (lowestPrice == 0)
@@ -44,6 +45,7 @@
                 }
                 i++;
             }
+            */
         }
         dg.DataSource = footTable;
         dg.DataBind();

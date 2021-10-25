@@ -3,7 +3,7 @@
 <%@ Import Namespace="System.Data" %>
 <script runat="server">
 
-    public static Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+    
 
     public static ArrayList gidArr = new ArrayList();
 
@@ -28,7 +28,7 @@
             if (stock == null && currentDate != DateTime.Now.Date)
             {
                 stock = new Stock(gid);
-                stock.LoadKLineDay(rc);
+                stock.LoadKLineDay(Util.rc);
                 gidArr.Add(stock);
             }
             int currentIndex = stock.GetItemIndex(currentDate);
