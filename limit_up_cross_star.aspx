@@ -475,10 +475,17 @@
             gid = gid.Replace("</a>", "").Replace(">", "").ToLower().Replace("sz", "").Replace("sh", "");
             content += gid + "\r\n";
         }
+        DateTime selectedDate = DateTime.Now;
+        //string dateStr = DateTime.Now.Year.ToString() + DateTime.Now.Month.ToString().PadLeft(2, '0') + 
+        if (calendar.SelectedDate != DateTime.MinValue)
+        {
+            selectedDate = calendar.SelectedDate;
+        }
+
         Response.Clear();
         Response.ContentType = "text/plain";
-        Response.Headers.Add("Content-Disposition", "attachment; filename=volume_reduce_"
-            + calendar.SelectedDate.ToShortDateString() + ".txt");
+        Response.Headers.Add("Content-Disposition", "attachment; filename=cross_star_"
+            + selectedDate.Year.ToString() + selectedDate.Month.ToString().PadLeft(2, '0') + selectedDate.Day.ToString().PadLeft(2, '0') + ".txt");
         Response.Write(content.Trim());
         Response.End();
     }
