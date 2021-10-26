@@ -7,7 +7,7 @@
 <script runat="server">
 
     public DateTime currentDate = Util.GetDay(DateTime.Now);
-    
+
     public string sort = "MACD日,KDJ日,综指 desc";
 
 
@@ -457,6 +457,31 @@
     }
 
 
+    protected void Button1_Click(object sender, EventArgs e)
+    {
+        DataTable dtDownload = GetData();
+        string content = "";
+        foreach (DataRow dr in dtDownload.Rows)
+        {
+            string gid = dr["代码"].ToString().Trim();
+            try
+            {
+                gid = gid.Substring(gid.IndexOf(">"), gid.Length - gid.IndexOf(">"));
+            }
+            catch
+            {
+
+            }
+            gid = gid.Replace("</a>", "").Replace(">", "").ToLower().Replace("sz", "").Replace("sh", "");
+            content += gid + "\r\n";
+        }
+        Response.Clear();
+        Response.ContentType = "text/plain";
+        Response.Headers.Add("Content-Disposition", "attachment; filename=volume_reduce_"
+            + calendar.SelectedDate.ToShortDateString() + ".txt");
+        Response.Write(content.Trim());
+        Response.End();
+    }
 </script>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -465,6 +490,11 @@
 </head>
 <body>
     <form id="form2" runat="server">
+    <div>
+
+        <asp:Button ID="Button1" runat="server" OnClick="Button1_Click" Text=" 下 载 " />
+
+    </div>
     <div>
         <table width="100%" >
             <tr>

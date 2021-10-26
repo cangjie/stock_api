@@ -45,7 +45,7 @@ public class Stock
 
     public static ArrayList kLineCacheTemp = new ArrayList();
 
-    public static string[] allGid = Util.GetAllGids();
+    //public static string[] allGid = Util.GetAllGids();
 
     public static DataTable stockInfo = DBHelper.GetDataTable(" select * from stock_info ");
 

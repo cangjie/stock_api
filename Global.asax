@@ -8,6 +8,7 @@
 
         Core.Util.conStr = Util.conStr;
 
+        /*
         for (int i = 0; KLineCache.allGid.Length == 0 && i < 100; i++)
         {
             KLineCache.allGid = Util.GetAllGids();
@@ -20,13 +21,13 @@
             string strRv = rv.ToString();
             Util.allGids.Add(strRv);
         }
-
+        */
 
         //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
         //StackExchange.Redis.RedisValue[] rv = rc.redisDb.SetMembers((StackExchange.Redis.RedisKey)"all_gids");
 
 
-        KLineCache.kLineDayCache = new CachedKLine[Util.GetAllGids().Length];
+        //KLineCache.kLineDayCache = new CachedKLine[Util.GetAllGids().Length];
         //StockWatcher.tKLineRefresher.Start();
         StockWatcher.tWatchEachStock.Start();
         //StockWatcher.tLogQuota.Start();
