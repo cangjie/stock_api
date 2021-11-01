@@ -42,7 +42,7 @@
         }
 
         dt.Columns.Add("总计");
-        DataTable dtOri = DBHelper.GetDataTable(" select * from alert_traffic_light where alert_date >= '" + startDate.ToShortDateString()
+        DataTable dtOri = DBHelper.GetDataTable(" select * from limit_up where alert_date >= '" + startDate.ToShortDateString()
             + "' and alert_date <= '" + endDate.ToShortDateString() + "'  "
             //+ "  and gid =  'sz002980'  "
             + " order by alert_date desc ");
@@ -50,25 +50,31 @@
         {
             Stock s = GetStock(drOri["gid"].ToString().Trim());
             int alertIndex = s.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
-            if (alertIndex < 2)
+            if (alertIndex < 2 || alertIndex >= s.kLineDay.Length - 1)
             {
                 continue;
             }
 
-           
 
-            int buyIndex = 0;
-            for (int i = 1; i <= 30 && alertIndex + i < s.kLineDay.Length
-                && s.kLineDay[alertIndex + i].highestPrice < s.kLineDay[alertIndex].endPrice; i++)
+
+            if (s.kLineDay[alertIndex].endPrice >= s.GetAverageSettlePrice(alertIndex, 3, 3))
             {
-                if (s.IsLimitUp(i - 1) && s.kLineDay[i].lowestPrice > s.kLineDay[i-1].highestPrice 
-                    && s.kLineDay[i].highestPrice == s.kLineDay[i].endPrice )
-                {
-                    buyIndex = alertIndex + i;
-                    break;
-                }
+                continue;
             }
 
+            if (s.kLineDay[alertIndex + 1].lowestPrice <= s.GetAverageSettlePrice(alertIndex + 1, 3, 3)
+                || s.kLineDay[alertIndex + 1].lowestPrice <= s.kLineDay[alertIndex].highestPrice)
+            {
+                continue;
+            }
+
+            if (s.kLineDay[alertIndex + 1].startPrice <= s.kLineDay[alertIndex + 1].endPrice || s.kLineDay[alertIndex + 1].highestPrice > s.kLineDay[alertIndex + 1].startPrice)
+            {
+                continue;
+            }
+
+            int buyIndex = alertIndex + 1;
+            
 
 
             if (buyIndex == 0)
@@ -77,7 +83,7 @@
 
             }
 
-          
+
 
             //int buyIndex = alertIndex ;
 
@@ -86,10 +92,7 @@
                 continue;
             }
 
-            if (s.IsLimitUp(alertIndex))
-            {
-                continue;
-            }
+            
 
             double buyPrice = s.kLineDay[buyIndex].startPrice;
 
@@ -100,10 +103,6 @@
                 buyPrice = s.kLineDay[buyIndex].endPrice;
             }
 
-            if (s.macdDays(buyIndex) > 2)
-            {
-                //continue;
-            }
 
             DataRow dr = dt.NewRow();
             dr["日期"] = s.kLineDay[buyIndex].endDateTime.ToShortDateString();
