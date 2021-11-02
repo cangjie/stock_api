@@ -419,6 +419,30 @@
                 }
             }
 
+            if (stock.kLineDay[currentIndex - 1].startPrice == stock.kLineDay[currentIndex - 1].endPrice)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"一字板\" >一</a>";
+            }
+
+            double entityLowPrice = Math.Min(stock.kLineDay[currentIndex].startPrice, stock.kLineDay[currentIndex].endPrice);
+            int horseHead = 0;
+            if (entityLowPrice > stock.kLineDay[currentIndex-1].highestPrice)
+            {
+                horseHead = 1;
+                if (stock.kLineDay[currentIndex].lowestPrice > stock.kLineDay[currentIndex - 1].highestPrice)
+                {
+                    horseHead = 2;
+                }
+            }
+            if (horseHead == 1)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"剑鞘\" >🗡</a>";
+            }
+            if (horseHead == 2)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"马头\" >🐎</a>";
+            }
+
             if (dtRunAboveAvarage.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"日均线上\" >📈</a>";
