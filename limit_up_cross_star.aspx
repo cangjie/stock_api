@@ -424,6 +424,7 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"一字板\" >一</a>";
             }
 
+            /*
             double entityLowPrice = Math.Min(stock.kLineDay[currentIndex].startPrice, stock.kLineDay[currentIndex].endPrice);
             int horseHead = 0;
             if (entityLowPrice > stock.kLineDay[currentIndex-1].highestPrice)
@@ -441,6 +442,13 @@
             if (horseHead == 2)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"马头\" >🐎</a>";
+            }
+            */
+
+            if (stock.kLineDay[currentIndex].startPrice == stock.kLineDay[currentIndex].highestPrice
+                || stock.kLineDay[currentIndex].endPrice == stock.kLineDay[currentIndex].highestPrice)
+            { 
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"光头\" >👤</a>";
             }
 
             if (dtRunAboveAvarage.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
