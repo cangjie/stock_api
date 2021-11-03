@@ -81,6 +81,10 @@
                 continue;
             }
 
+            if (s.IsLimitUp(alertIndex + 1))
+            {
+                continue;
+            }
 
             int buyIndex = alertIndex + 1;
 
