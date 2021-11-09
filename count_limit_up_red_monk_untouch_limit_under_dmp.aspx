@@ -82,11 +82,10 @@
             }
 
             KLine.ComputeMACD(s.kLineDay);
-            if (s.macdDays(alertIndex) > 0)
+            if (s.macdDays(alertIndex) >= 0 || s.macdDays(alertIndex + 1) < 0)
             {
                 continue;
             }
-
 
             /*
             if (s.kLineDay[alertIndex + 1].lowestPrice <= s.kLineDay[alertIndex].highestPrice)
