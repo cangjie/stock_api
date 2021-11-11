@@ -10,7 +10,7 @@
 
     public string sort = "缩量";
 
-    
+
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -465,6 +465,9 @@
             dr["KDJ日"] = stock.kdjDays(currentIndex);
             dr["MACD日"] = stock.macdDays(currentIndex);
             dr["今涨"] = (stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
+
+
+            /*
             if (isOver3Line)
             {
                 dr["信号"] = "3线";
@@ -472,7 +475,7 @@
 
             dr["信号"] = dr["信号"].ToString() + " " + support.Trim();
 
-
+            */
 
             dr["板数"] = limitUpNum;
 
@@ -582,10 +585,22 @@
             }
             dr["总计"] = (maxPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice;
 
+            if (stock.kLineDay[currentIndex].highestPrice == Math.Max(stock.kLineDay[currentIndex].startPrice, stock.kLineDay[currentIndex].endPrice))
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"光头\" >👨‍🦲</a>";
+            }
+
+            if (stock.kLineDay[currentIndex - 1].highestPrice < Math.Min(stock.kLineDay[currentIndex].startPrice, stock.kLineDay[currentIndex].endPrice))
+            { 
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"剑鞘\" >🔪</a>";
+            }
+
+            /*
             if (kdjWeeks >= 0 && kdjWeeks <= 2)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"周线KDJ金叉\" >📈</a>";
             }
+            */
 
             dt.Rows.Add(dr);
 
