@@ -52,19 +52,31 @@
                 continue;
             }
 
-            if (alertIndex + days >= s.kLineDay.Length)
+            if (alertIndex + 2 >= s.kLineDay.Length)
             {
                 continue;
             }
 
-            if (s.kLineDay[alertIndex].endPrice <= Math.Max(s.kLineDay[alertIndex-1].endPrice, s.kLineDay[alertIndex-2].endPrice))
+            double maxPrice = Math.Max(s.kLineDay[alertIndex - 2].highestPrice, s.kLineDay[alertIndex - 1].highestPrice);
+            maxPrice = Math.Max(maxPrice, s.kLineDay[alertIndex].highestPrice);
+            maxPrice = Math.Max(maxPrice, s.kLineDay[alertIndex + 1].highestPrice);
+
+            int buyIndex = 0;
+
+            for (int i = alertIndex + 2; i < s.kLineDay.Length && i < alertIndex + 7; i++)
+            {
+                if (s.kLineDay[i].highestPrice > maxPrice)
+                {
+                    buyIndex = i;
+                    break;
+                }
+            }
+
+            if (buyIndex == 0 || buyIndex + days >= s.kLineDay.Length)
             {
                 continue;
             }
-            if (!s.IsLimitUp(alertIndex-2))
-            {
-                continue;
-            }
+
 
 
 
@@ -73,14 +85,6 @@
 
 
 
-
-
-            int buyIndex = alertIndex ;
-
-            if (buyIndex + days >= s.kLineDay.Length)
-            {
-                continue;
-            }
 
             double rise = (s.kLineDay[alertIndex].endPrice - s.kLineDay[alertIndex - 1].endPrice) / s.kLineDay[alertIndex - 1].endPrice;
 
