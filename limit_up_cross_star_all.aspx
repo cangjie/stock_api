@@ -12,7 +12,7 @@
 
 
 
-    
+
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -422,12 +422,12 @@
 
                 dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
 
-
+                /*
                 if (stock.kLineDay[currentIndex + i].startPrice > maxPrice && !stock.IsLimitUp(currentIndex) && !haveLimitUp)
                 {
                     dr["信号"] = dr["信号"].ToString() + "<a title=\"次5日高开过前高\" >🔺</a>";
                 }
-
+                */
                 if (stock.IsLimitUp(currentIndex + i))
                 {
                     haveLimitUp = true;
@@ -435,6 +435,8 @@
                 maxPrice = Math.Max(maxPrice, highPrice);
                 f3 = maxPrice - (maxPrice - lowest) * 0.382;
                 f5 = maxPrice - (maxPrice - lowest) * 0.618;
+
+                /*
                 if (stock.kLineDay[currentIndex + i].lowestPrice < f3 && !lowThanF3)
                 {
                     dr["信号"] = dr["信号"].ToString() + "🟢";
@@ -445,8 +447,9 @@
                     dr["信号"] = dr["信号"].ToString() + "🟢";
                     lowThanF5 = true;
                 }
-
+                */
             }
+            /*
             if ((stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice <= 0.0975
                 && stock.kLineDay[currentIndex].lowestPrice > stock.kLineDay[currentIndex - 1].highestPrice)
             {
@@ -478,6 +481,24 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"连板\" >🚩</a>";
             }
+            */
+
+            if (stock.kLineDay[currentIndex - 1].startPrice == stock.kLineDay[currentIndex - 1].endPrice)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"一字板\" >一</a>";
+            }
+
+            if (stock.kLineDay[currentIndex].startPrice == stock.kLineDay[currentIndex].highestPrice
+                || stock.kLineDay[currentIndex].endPrice == stock.kLineDay[currentIndex].highestPrice)
+            {
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"光头\" >👤</a>";
+            }
+
+            if (stock.kLineDay[currentIndex].lowestPrice >= stock.kLineDay[currentIndex - 1].highestPrice)
+            { 
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"马头\" >🐎</a>";
+            }
+
             dr["总计"] = (computeMaxPrice - buyPrice) / buyPrice;
             dt.Rows.Add(dr);
 
