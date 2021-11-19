@@ -76,23 +76,13 @@
             maxPrice = Math.Max(maxPrice, s.kLineDay[alertIndex].highestPrice);
             maxPrice = Math.Max(maxPrice, s.kLineDay[alertIndex + 1].highestPrice);
 
-            int buyIndex = 0;
+            int buyIndex = alertIndex;
 
-            for (int i = alertIndex + 2; i < s.kLineDay.Length && i < alertIndex + 7; i++)
-            {
-                if (s.kLineDay[i].endPrice > maxPrice)
-                {
-                    buyIndex = i;
-                    break;
-                }
-            }
 
-            if (buyIndex == 0 || buyIndex + days >= s.kLineDay.Length)
+            if (buyIndex + days >= s.kLineDay.Length)
             {
                 continue;
             }
-
-
 
 
             double maxVolume = Math.Max(s.kLineDay[alertIndex].volume, s.kLineDay[alertIndex - 1].volume);
@@ -103,7 +93,7 @@
 
             double rise = (s.kLineDay[alertIndex].endPrice - s.kLineDay[alertIndex - 1].endPrice) / s.kLineDay[alertIndex - 1].endPrice;
 
-           
+
 
             double buyPrice = s.kLineDay[buyIndex].endPrice;
 
