@@ -77,7 +77,7 @@
 
             if (Math.Min(s.kLineDay[buyIndex].startPrice, s.kLineDay[buyIndex].endPrice) <= s.kLineDay[alertIndex].highestPrice)
             {
-                continue;
+                //no continue;
             }
 
 
