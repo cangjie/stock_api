@@ -62,7 +62,7 @@
                 continue;
             }
 
-            if (Math.Abs(s.kLineDay[buyIndex].volume - s.kLineDay[buyIndex].volume) / s.kLineDay[buyIndex].volume > 0.1)
+            if (Math.Abs(s.kLineDay[buyIndex].volume - s.kLineDay[alertIndex].volume) / s.kLineDay[alertIndex].volume > 0.1)
             {
                 continue;
             }
