@@ -575,7 +575,9 @@
 
                 if (currentIndex + i >= stock.kLineDay.Length)
                     break;
-                if (i == 1 && stock.kLineDay[currentIndex + i].startPrice < stock.kLineDay[currentIndex + i].endPrice)
+                if (i == 1 
+                    && stock.kLineDay[currentIndex].startPrice > stock.kLineDay[currentIndex].endPrice
+                    && stock.kLineDay[currentIndex + i].startPrice < stock.kLineDay[currentIndex + i].endPrice)
                 {
                     dr["信号"] = dr["信号"].ToString() + "<a title=\"红绿灯\" >🚥</a>";
                 }
