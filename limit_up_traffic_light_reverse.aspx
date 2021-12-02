@@ -10,7 +10,7 @@
 
     public string sort = "缩量";
 
-    
+
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -617,26 +617,10 @@
             {
                 dr["信号"] = "<a title=\"涨停\" >📈</a>";
             }
-            /*
-            if (stock.kLineDay[currentIndex].macd > stock.kLineDay[currentIndex - 1].macd
-                && stock.kLineDay[currentIndex - 1].macd > stock.kLineDay[currentIndex - 2].macd
-                && stock.kLineDay[currentIndex - 2].macd > stock.kLineDay[currentIndex - 3].macd)
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"MACD三连涨\" >🔥</a>";
-            }
-            */
-            if (stock.kLineDay[currentIndex].volume > stock.kLineDay[currentIndex - 1].volume
-                && stock.kLineDay[currentIndex - 1].volume > stock.kLineDay[currentIndex - 2].volume)
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"持续放量\" >🔥</a>";
-            }
-            if (stock.kLineDay[currentIndex].lowestPrice > stock.kLineDay[currentIndex - 1].highestPrice)
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"缺口\" >🌟🌟</a>";
-            }
-            else if (stock.kLineDay[currentIndex].startPrice > stock.kLineDay[currentIndex - 1].endPrice)
-            {
-                dr["信号"] = dr["信号"].ToString() + "<a title=\"跳空高开\" >🌟</a>";
+
+            if (Math.Abs(stock.kLineDay[currentIndex - 1].volume - stock.kLineDay[currentIndex - 2).volume) / stock.kLineDay[currentIndex - 2].volume <= 0.1)
+            { 
+                dr["信号"] = "<a title=\"平量\" >——</a>";
             }
 
 
