@@ -577,9 +577,10 @@
                     break;
                 if (i == 1 
                     && stock.kLineDay[currentIndex].startPrice > stock.kLineDay[currentIndex].endPrice
-                    && stock.kLineDay[currentIndex + i].startPrice < stock.kLineDay[currentIndex + i].endPrice)
+                    && stock.kLineDay[currentIndex + i].startPrice < stock.kLineDay[currentIndex + i].endPrice
+                    && stock.kLineDay[currentIndex + i].volume > Math.Max(stock.kLineDay[currentIndex].volume, stock.kLineDay[currentIndex - 1].volume))
                 {
-                    dr["信号"] = dr["信号"].ToString() + "<a title=\"红绿灯\" >🚥</a>";
+                    dr["信号"] = dr["信号"].ToString() + "<a title=\"红绿灯量反包\" >🚥</a>";
                 }
                 double highPrice = stock.kLineDay[currentIndex + i].highestPrice;
                 maxPrice = Math.Max(maxPrice, highPrice);
