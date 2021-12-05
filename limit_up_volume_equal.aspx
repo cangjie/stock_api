@@ -340,7 +340,7 @@
 
         DataTable dtOri = DBHelper.GetDataTable(" select  * from limit_up where "
             + "  alert_date = '" + Util.GetLastTransactDate(currentDate, 1).ToShortDateString() + "' "
-            //+ " and gid = 'sz002466' "
+            //+ " and gid = 'sz002617' "
             );
 
         foreach (DataRow drOri in dtOri.Rows)
@@ -575,9 +575,12 @@
 
                 if (currentIndex + i >= stock.kLineDay.Length)
                     break;
-                if (i == 1 && stock.kLineDay[currentIndex + i].startPrice < stock.kLineDay[currentIndex + i].endPrice)
+                if (i == 1 
+                    && stock.kLineDay[currentIndex].startPrice > stock.kLineDay[currentIndex].endPrice
+                    && stock.kLineDay[currentIndex + i].startPrice < stock.kLineDay[currentIndex + i].endPrice
+                    && stock.kLineDay[currentIndex + i].volume > Math.Max(stock.kLineDay[currentIndex].volume, stock.kLineDay[currentIndex - 1].volume))
                 {
-                    dr["信号"] = dr["信号"].ToString() + "<a title=\"红绿灯\" >🚥</a>";
+                    dr["信号"] = dr["信号"].ToString() + "<a title=\"红绿灯量反包\" >🚥</a>";
                 }
                 double highPrice = stock.kLineDay[currentIndex + i].highestPrice;
                 maxPrice = Math.Max(maxPrice, highPrice);
