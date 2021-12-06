@@ -64,7 +64,7 @@
 
             for (int i = 2; alertIndex + i < s.kLineDay.Length && i <= 6; i++)
             {
-                if (s.kLineDay[alertIndex + i].highestPrice >= maxPrice)
+                if (s.kLineDay[alertIndex + i].endPrice >= maxPrice)
                 {
                     buyIndex = alertIndex + i;
                     break;
