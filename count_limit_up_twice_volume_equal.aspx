@@ -59,12 +59,12 @@
                 continue;
             }
 
-            if (Math.Abs(s.kLineDay[alertIndex].volume - s.kLineDay[buyIndex].volume) / s.kLineDay[alertIndex].volume >= 0.1)
+            if (Math.Abs(s.kLineDay[alertIndex].volume - s.kLineDay[alertIndex - 1].volume) / s.kLineDay[alertIndex - 1].volume >= 0.1)
             {
                 continue;
             }
 
-            double buyPrice = s.kLineDay[buyIndex].endPrice;
+            double buyPrice = s.kLineDay[buyIndex].startPrice;
             DataRow dr = dt.NewRow();
             dr["日期"] = s.kLineDay[buyIndex].endDateTime.ToShortDateString();
             dr["代码"] = s.gid.Trim();
