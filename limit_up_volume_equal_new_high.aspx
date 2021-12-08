@@ -341,7 +341,7 @@
         DataTable dtOri = DBHelper.GetDataTable(" select  * from limit_up where "
             + "  alert_date >= '" + Util.GetLastTransactDate(currentDate, 6).ToShortDateString() + "' and alert_date <=  '"
             + Util.GetLastTransactDate(currentDate, 2).ToShortDateString() + "'  "
-            //+ " and gid = 'sz002617' "
+            //+ " and gid = 'sz002571' "
             );
 
         foreach (DataRow drOri in dtOri.Rows)
