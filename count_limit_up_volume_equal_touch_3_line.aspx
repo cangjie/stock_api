@@ -40,7 +40,7 @@
 
         dt.Columns.Add("总计");
         DataTable dtOri = DBHelper.GetDataTable(" select * from limit_up where alert_date >= '"
-            + Util.GetSafeRequestValue(Request, "start", "2021-6-1") + "'  and alert_date <= '"
+            + Util.GetSafeRequestValue(Request, "start", "2021-1-1") + "'  and alert_date <= '"
             + Util.GetSafeRequestValue(Request, "end", DateTime.Now.ToShortDateString()) + "' order by alert_date desc ");
         foreach (DataRow drOri in dtOri.Rows)
         {
@@ -65,7 +65,7 @@
 
             if (Math.Abs(s.kLineDay[alertIndex + 1].volume - s.kLineDay[alertIndex].volume) / s.kLineDay[alertIndex].volume > 0.1)
             {
-                continue;
+                //continue;
             }
 
 
@@ -102,10 +102,13 @@
                 continue;
             }
 
-            double maxVolume = Math.Max(s.kLineDay[alertIndex].volume, s.kLineDay[alertIndex - 1].volume);
+            double maxVolume = Math.Max(s.kLineDay[alertIndex].volume, s.kLineDay[alertIndex + 1].volume);
 
 
-
+            if (s.kLineDay[buyIndex].volume <= maxVolume)
+            {
+                continue;
+            }
 
 
             double rise = (s.kLineDay[alertIndex].endPrice - s.kLineDay[alertIndex - 1].endPrice) / s.kLineDay[alertIndex - 1].endPrice;
