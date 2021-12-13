@@ -115,6 +115,10 @@
                     break;
             }
 
+            if (!styleMatch)
+            {
+                continue;
+            }
 
 
 
