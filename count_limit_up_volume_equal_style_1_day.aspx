@@ -11,6 +11,9 @@
     public int count = 0;
     public int newHighCount = 0;
 
+
+    public int failCount = 0;
+
     public string countPage = "limit_up_box_settle";
 
     protected void Page_Load(object sender, EventArgs e)
@@ -25,7 +28,8 @@
 
     public DataTable GetData(string countPage)
     {
-        int days = int.Parse(Util.GetSafeRequestValue(Request, "days", "10"));
+        int days = int.Parse(Util.GetSafeRequestValue(Request, "days", "1"));
+        int style = int.Parse(Util.GetSafeRequestValue(Request, "style", "1"));
         DataTable dt = new DataTable();
         dt.Columns.Add("日期");
         dt.Columns.Add("代码");
@@ -54,48 +58,67 @@
                 continue;
             }
 
-            //int buyIndex = alertIndex + 1;
 
-            /*
-            if (buyIndex + days >= s.kLineDay.Length - 1)
-            {
-                continue;
-            }
-            */
 
             if (Math.Abs(s.kLineDay[alertIndex + 1].volume - s.kLineDay[alertIndex].volume) / s.kLineDay[alertIndex].volume > 0.1)
             {
-                //continue;
-            }
-
-
-            /*
-            double maxPrice = Math.Max(s.kLineDay[alertIndex].highestPrice, s.kLineDay[alertIndex + 1].highestPrice);
-            maxPrice = Math.Max(maxPrice, s.kLineDay[alertIndex].highestPrice);
-            maxPrice = Math.Max(maxPrice, s.kLineDay[alertIndex + 1].highestPrice);
-            */
-            int buyIndex = 0;
-
-            for (int i = 0; i < 5 && (i + alertIndex + 1) < s.kLineDay.Length; i++)
-            {
-                if (s.kLineDay[i + alertIndex + 1].endPrice <= s.GetAverageSettlePrice(i + alertIndex + 1, 3, 3))
-                {
-                    break;
-                }
-                else
-                {
-                    if (s.kLineDay[i + alertIndex + 1].startPrice < s.GetAverageSettlePrice(i + alertIndex + 1, 3, 3))
-                    {
-                        buyIndex = i + alertIndex + 1;
-                        break;
-                    }
-                }
-            }
-
-            if (buyIndex == 0)
-            {
                 continue;
             }
+
+            int buyIndex = alertIndex + 1;
+
+            bool styleMatch = false;
+
+            switch (style)
+            {
+                case 1:
+                    if (s.kLineDay[buyIndex].startPrice > s.kLineDay[buyIndex].endPrice && s.kLineDay[buyIndex].endPrice > s.kLineDay[buyIndex - 1].highestPrice)
+                    {
+                        styleMatch = true;
+                    }
+                    break;
+                case 2:
+                    if (s.kLineDay[buyIndex].startPrice < s.kLineDay[buyIndex].endPrice && s.kLineDay[buyIndex].startPrice > s.kLineDay[buyIndex - 1].highestPrice)
+                    {
+                        styleMatch = true;
+                    }
+                    break;
+                case 3:
+                    if (s.kLineDay[buyIndex].startPrice > s.kLineDay[buyIndex].endPrice && s.kLineDay[buyIndex].endPrice < s.kLineDay[buyIndex - 1].highestPrice
+                        && s.kLineDay[buyIndex].endPrice > s.kLineDay[buyIndex - 1].startPrice  && s.kLineDay[buyIndex].startPrice > s.kLineDay[buyIndex - 1].highestPrice)
+                    {
+                        styleMatch = true;
+                    }
+                    break;
+                case 4:
+                    if (s.kLineDay[buyIndex].startPrice > s.kLineDay[buyIndex].endPrice && s.kLineDay[buyIndex].startPrice < s.kLineDay[buyIndex - 1].highestPrice
+                        && s.kLineDay[buyIndex].endPrice > s.kLineDay[buyIndex - 1].startPrice)
+                    {
+                        styleMatch = true;
+                    }
+                    break;
+                case 5:
+                    if (s.kLineDay[buyIndex].startPrice < s.kLineDay[buyIndex].endPrice && s.kLineDay[buyIndex].startPrice < s.kLineDay[buyIndex - 1].highestPrice
+                        && s.kLineDay[buyIndex].endPrice > s.kLineDay[buyIndex - 1].highestPrice)
+                    {
+                        styleMatch = true;
+                    }
+                    break;
+                case 6:
+                    if (s.kLineDay[buyIndex].startPrice < s.kLineDay[buyIndex].endPrice && s.kLineDay[buyIndex].endPrice < s.kLineDay[buyIndex - 1].highestPrice
+                        && s.kLineDay[buyIndex].startPrice > s.kLineDay[buyIndex - 1].startPrice)
+                    {
+                        styleMatch = true;
+                    }
+                    break;
+                default:
+                    break;
+            }
+
+
+
+
+
 
             if (buyIndex + days >= s.kLineDay.Length)
             {
@@ -152,7 +175,7 @@
                     dr[j.ToString() + "日"] = "<font color=green >" + Math.Round(rate * 100, 2).ToString() + "%</font>";
                 }
             }
-            if (finalRate >= 0.01)
+            if (finalRate >= 0)
             {
                 suc++;
                 if (finalRate >= 0.05)
@@ -163,6 +186,7 @@
             }
             else
             {
+                failCount++;
                 dr["总计"] = "<font color=green >" + Math.Round(finalRate * 100, 2).ToString() + "%</font>";
             }
             count++;
@@ -204,8 +228,9 @@
 <body>
     <form id="form1" runat="server">
         <div>
-            总计：<%=count.ToString() %> / <%=Math.Round((double)100*suc/(double)count, 2).ToString() %>%<br />
-            涨5%：<%=newHighCount.ToString() %> / <%=Math.Round((double)100*newHighCount/(double)count, 2).ToString() %>%
+            涨1%：<%=count.ToString() %> / <%=Math.Round((double)100*suc/(double)count, 2).ToString() %>%<br />
+            涨5%：<%=newHighCount.ToString() %> / <%=Math.Round((double)100*newHighCount/(double)count, 2).ToString() %>%<br />
+            下跌：<%=failCount.ToString() %> / <%=Math.Round((double)100*failCount/(double)count, 2).ToString() %>%
         </div>
         <div>
             <asp:DataGrid runat="server" id="dg" Width="100%" BackColor="White" BorderColor="#999999" BorderStyle="None" BorderWidth="1px" CellPadding="3" GridLines="Vertical" >
