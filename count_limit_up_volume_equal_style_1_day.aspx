@@ -29,7 +29,7 @@
     public DataTable GetData(string countPage)
     {
         int days = int.Parse(Util.GetSafeRequestValue(Request, "days", "1"));
-        int style = int.Parse(Util.GetSafeRequestValue(Request, "style", "1"));
+        int style = int.Parse(Util.GetSafeRequestValue(Request, "style", "7"));
         DataTable dt = new DataTable();
         dt.Columns.Add("日期");
         dt.Columns.Add("代码");
@@ -107,6 +107,14 @@
                 case 6:
                     if (s.kLineDay[buyIndex].startPrice < s.kLineDay[buyIndex].endPrice && s.kLineDay[buyIndex].endPrice < s.kLineDay[buyIndex - 1].highestPrice
                         && s.kLineDay[buyIndex].startPrice > s.kLineDay[buyIndex - 1].startPrice)
+                    {
+                        styleMatch = true;
+                    }
+                    break;
+                case 7:
+                    if (s.kLineDay[buyIndex].startPrice > s.kLineDay[buyIndex].endPrice
+                        && s.kLineDay[buyIndex - 1].highestPrice < s.kLineDay[buyIndex].startPrice
+                        && s.kLineDay[buyIndex - 1].startPrice > s.kLineDay[buyIndex].endPrice)
                     {
                         styleMatch = true;
                     }
