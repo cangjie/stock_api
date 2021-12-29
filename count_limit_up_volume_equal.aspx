@@ -62,7 +62,14 @@
                 continue;
             }
 
-            if (Math.Abs(s.kLineDay[buyIndex].volume - s.kLineDay[alertIndex].volume) / s.kLineDay[alertIndex].volume > 0.1)
+            double deltaVolumeRate = (s.kLineDay[buyIndex].volume - s.kLineDay[alertIndex].volume) / s.kLineDay[alertIndex].volume;
+
+            if (Math.Abs(deltaVolumeRate) > 0.1)
+            {
+                continue;
+            }
+
+            if (deltaVolumeRate < 0.004 || deltaVolumeRate > 0.006)
             {
                 continue;
             }
@@ -76,7 +83,7 @@
             maxPrice = Math.Max(maxPrice, s.kLineDay[alertIndex].highestPrice);
             maxPrice = Math.Max(maxPrice, s.kLineDay[alertIndex + 1].highestPrice);
 
-           
+
 
 
             double maxVolume = Math.Max(s.kLineDay[alertIndex].volume, s.kLineDay[alertIndex - 1].volume);
