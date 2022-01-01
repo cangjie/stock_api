@@ -14,7 +14,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "缩量 desc");
+        sort = Util.GetSafeRequestValue(Request, "sort", "布林宽");
         if (!IsPostBack)
         {
 
@@ -326,6 +326,7 @@
         dt.Columns.Add("价差abs", Type.GetType("System.Double"));
         dt.Columns.Add("类型", Type.GetType("System.String"));
         dt.Columns.Add("涨幅", Type.GetType("System.Double"));
+        dt.Columns.Add("布林宽", Type.GetType("System.Double"));
         for (int i = 0; i <= 10; i++)
         {
             dt.Columns.Add(i.ToString() + "日", Type.GetType("System.Double"));
@@ -576,7 +577,7 @@
 
             dr["涨幅"] = (buyPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
 
-
+            dr["布林宽"] = Math.Round(KLine.ComputeBBWidth(stock.kLineDay, currentIndex - 2, 20), 2);
 
 
             int lastLimitUpInddex = currentIndex;
@@ -779,7 +780,7 @@
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号" SortExpression="信号|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="缩量" HeaderText="缩量"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="风险" HeaderText="风险"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="布林宽" HeaderText="布林宽"></asp:BoundColumn>
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD日|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
