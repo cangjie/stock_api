@@ -13,7 +13,8 @@
         s.LoadKLineDay(Util.rc);
         int index = s.kLineDay.Length - 1;
         double[] boll = KLine.ComputeBoll(s.kLineDay, index, 20);
-        Response.Write(boll[0].ToString()+ "," + boll[1].ToString()+ "," +  boll[2].ToString());
+        Response.Write(boll[0].ToString()+ "," + boll[1].ToString()+ "," +  boll[2].ToString()+"," 
+            + KLine.ComputeBB(s.kLineDay, index, 20).ToString() + "," + KLine.ComputeBBWidth(s.kLineDay, index, 20).ToString());
 
         //Response.Write(s.kLineDay[index].startDateTime.ToShortDateString() + " " + KLine.ComputeRisk(s.kLineDay, index).ToString());
 

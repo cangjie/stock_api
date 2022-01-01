@@ -1315,4 +1315,22 @@ public class KLine
         return new double[] { 0, 0, 0 };
     }
 
+    public static double ComputeBB(KLine[] kArr, int index, int n)
+    {
+        double[] boll = ComputeBoll(kArr, index, n);
+        if (boll[0] - boll[2] == 0)
+        {
+            return 0;
+        }
+        else
+        {
+            return (kArr[index].endPrice - boll[2]) / (boll[0] - boll[2]);
+        }
+    }
+
+    public static double ComputeBBWidth(KLine[] kArr, int index, int n)
+    {
+        double[] boll = ComputeBoll(kArr, index, n);
+        return (boll[0] - boll[2]) / GetAverageSettlePrice(kArr, index, n, 0);
+    }
 }
