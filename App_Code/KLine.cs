@@ -40,6 +40,14 @@ public class KLine
     //public double typ = 0;
     public double cci = 0;
 
+    
+
+    public double[] boll = new double[] { 0, 0, 0 };
+
+    public double dd = 0;
+
+    public double width = 0;
+
     public static DataTable currentKLineTable = new DataTable();
 
 
@@ -1284,6 +1292,27 @@ public class KLine
             highestPrice = Math.Max(kArr[index - i].highestPrice, highestPrice);
         }
         return highestPrice;
+    }
+
+    public static double[] ComputeBoll(KLine[] kArr, int index, int n)
+    {
+        if (kArr.Length > n && index > n)
+        {
+            double squareS = 0;
+            for (int i = 0; i < n; i++)
+            {
+                double z = (kArr[index - i].endPrice - GetAverageSettlePrice(kArr, index - 1, n, 0));
+                squareS = squareS + z * z;
+            }
+            squareS = squareS / n;
+
+            double s = Math.Sqrt(squareS);
+
+            double ma = GetAverageSettlePrice(kArr, index, n, 0);
+
+            return new double[] { ma + s * 2, ma, ma - s * 2 };
+        }
+        return new double[] { 0, 0, 0 };
     }
 
 }

@@ -9,10 +9,13 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        Stock s = new Stock("sz002843");
+        Stock s = new Stock("sh600503");
         s.LoadKLineDay(Util.rc);
         int index = s.kLineDay.Length - 1;
-        Response.Write(s.kLineDay[index].startDateTime.ToShortDateString() + " " + KLine.ComputeRisk(s.kLineDay, index).ToString());
+        double[] boll = KLine.ComputeBoll(s.kLineDay, index, 20);
+        Response.Write(boll[0].ToString()+ "," + boll[1].ToString()+ "," +  boll[2].ToString());
+
+        //Response.Write(s.kLineDay[index].startDateTime.ToShortDateString() + " " + KLine.ComputeRisk(s.kLineDay, index).ToString());
 
 
     }
