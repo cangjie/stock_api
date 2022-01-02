@@ -78,7 +78,7 @@
 
             if (deltaVolumeRate < 0)
             {
-                continue;
+                //continue;
             }
 
             if (deltaVolumeRate < 0.004 || deltaVolumeRate > 0.006)
