@@ -62,6 +62,11 @@
                 continue;
             }
 
+            if (KLine.ComputeBBWidth(s.kLineDay, alertIndex, 20) > 0.3)
+            {
+                continue;
+            }
+
             double deltaVolumeRate = (s.kLineDay[buyIndex].volume - s.kLineDay[alertIndex].volume) / s.kLineDay[alertIndex].volume;
 
             if (Math.Abs(deltaVolumeRate) > 0.1)
@@ -71,7 +76,7 @@
 
             if (deltaVolumeRate < 0.004 || deltaVolumeRate > 0.006)
             {
-                continue;
+                //continue;
             }
 
             if (Math.Min(s.kLineDay[buyIndex].startPrice, s.kLineDay[buyIndex].endPrice) <= s.kLineDay[alertIndex].highestPrice)
