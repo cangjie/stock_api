@@ -59,6 +59,10 @@
                 continue;
             }
 
+            if (KLine.ComputeBBWidth(s.kLineDay, alertIndex - 2, 20) > 0.3)
+            {
+                continue;
+            }
             
             int kdjIndex = s.GetItemIndex(s.kLineDay[alertIndex].startDateTime.Date, "week");
             if (kdjIndex < 0 && kdjIndex > s.kLineWeek.Length)
