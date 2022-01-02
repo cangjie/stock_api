@@ -81,7 +81,7 @@
 
             if (Math.Min(s.kLineDay[buyIndex].startPrice, s.kLineDay[buyIndex].endPrice) <= s.kLineDay[alertIndex].highestPrice)
             {
-                //continue;
+                continue;
             }
 
             double maxPrice = Math.Max(s.kLineDay[alertIndex - 2].highestPrice, s.kLineDay[alertIndex - 1].highestPrice);
