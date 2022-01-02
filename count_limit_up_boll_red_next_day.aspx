@@ -106,6 +106,10 @@
 
             double rise = (s.kLineDay[buyIndex].endPrice - s.kLineDay[buyIndex - 1].endPrice) / s.kLineDay[buyIndex - 1].endPrice;
 
+            if (rise >= 0.09)
+            {
+                continue;
+            }
 
 
             double buyPrice = s.kLineDay[buyIndex].endPrice;
