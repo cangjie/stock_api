@@ -95,6 +95,12 @@
                 //continue;
             }
 
+            if (s.kLineDay[buyIndex].endPrice >= s.kLineDay[buyIndex - 1].endPrice * 1.04 
+                || s.kLineDay[buyIndex].endPrice <= s.kLineDay[buyIndex - 1].endPrice * -1.04 )
+            {
+                continue;
+            }
+
             double maxPrice = Math.Max(s.kLineDay[alertIndex - 2].highestPrice, s.kLineDay[alertIndex - 1].highestPrice);
             maxPrice = Math.Max(maxPrice, s.kLineDay[alertIndex].highestPrice);
             maxPrice = Math.Max(maxPrice, s.kLineDay[alertIndex + 1].highestPrice);
