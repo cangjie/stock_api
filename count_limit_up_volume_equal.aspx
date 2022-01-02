@@ -97,7 +97,7 @@
 
 
 
-            double rise = (s.kLineDay[alertIndex].endPrice - s.kLineDay[alertIndex - 1].endPrice) / s.kLineDay[alertIndex - 1].endPrice;
+            double rise = (s.kLineDay[buyIndex].endPrice - s.kLineDay[buyIndex - 1].endPrice) / s.kLineDay[buyIndex - 1].endPrice;
 
 
 
