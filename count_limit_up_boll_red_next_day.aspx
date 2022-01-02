@@ -76,9 +76,9 @@
 
             double deltaVolumeRate = (s.kLineDay[buyIndex].volume - s.kLineDay[alertIndex].volume) / s.kLineDay[alertIndex].volume;
 
-            if (Math.Abs(deltaVolumeRate) > 0.1)
+            if (deltaVolumeRate < 0)
             {
-                //continue;
+                continue;
             }
 
             if (deltaVolumeRate < 0.004 || deltaVolumeRate > 0.006)
