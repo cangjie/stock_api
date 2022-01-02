@@ -72,6 +72,10 @@
                 continue;
             }
 
+            if (3 * (s.kLineDay[buyIndex].highestPrice - s.kLineDay[buyIndex].endPrice) > (s.kLineDay[buyIndex].highestPrice - s.kLineDay[buyIndex].lowestPrice))
+            {
+                continue;
+            }
 
 
             double deltaVolumeRate = (s.kLineDay[buyIndex].volume - s.kLineDay[alertIndex].volume) / s.kLineDay[alertIndex].volume;
