@@ -231,6 +231,14 @@
             {
                 continue;
             }
+
+
+            if (KLine.ComputeBBWidth(stock.kLineDay, currentIndex, 20) >= 30)
+            {
+                continue;
+            }
+
+
             int buyIndex = currentIndex + 1;
             double lastPrice = stock.kLineDay[currentIndex - 1].endPrice;
             double lastStart = stock.kLineDay[currentIndex - 1].startPrice;
@@ -321,8 +329,8 @@
                         {"gid", "varchar", stock.gid.Trim() }, {"base_page", "varchar", "ma5_line3_gold_cross" } });
                 }
                 catch
-                { 
-                
+                {
+
                 }
             }
 
