@@ -36,7 +36,7 @@
         dt.Columns.Add("F5");
         dt.Columns.Add("前低");
         dt.Columns.Add("买入");
-        dt.Columns.Add("今涨");
+    
         for(int i = 1; i <= days; i++)
         {
             dt.Columns.Add(i.ToString() + "日");
