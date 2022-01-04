@@ -99,6 +99,11 @@
                 continue;
             }
 
+            if (KLine.ComputeBBWidth(s.kLineDay, alertIndex, 30) >= 25)
+            {
+                continue;
+            }
+
             double buyPrice = s.kLineDay[buyIndex].startPrice;
 
             DataRow dr = dt.NewRow();
