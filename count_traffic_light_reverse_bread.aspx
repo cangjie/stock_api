@@ -43,7 +43,7 @@
         }
 
         dt.Columns.Add("总计");
-        DataTable dtOri = DBHelper.GetDataTable(" select * from limit_up where alert_date >= '"
+        DataTable dtOri = DBHelper.GetDataTable(" select * from alert_traffic_light where alert_date >= '"
             + Util.GetSafeRequestValue(Request, "start", "2021-1-1") + "'  and alert_date <= '"
             + Util.GetSafeRequestValue(Request, "end", "2021-12-20") + "' order by alert_date desc ");
         foreach (DataRow drOri in dtOri.Rows)
@@ -59,13 +59,13 @@
             }
 
 
-            if (Math.Abs(s.kLineDay[alertIndex + 1].volume - s.kLineDay[alertIndex].volume) / s.kLineDay[alertIndex].volume > 0.1)
+            if (s.kLineDay[alertIndex].volume <= s.kLineDay[alertIndex-1].volume)
             {
                 continue;
             }
 
 
-            if (Math.Max(s.kLineDay[alertIndex + 1].startPrice, s.kLineDay[alertIndex + 1].endPrice) <= s.kLineDay[alertIndex].endPrice)
+            if (s.kLineDay[alertIndex].endPrice <= s.kLineDay[alertIndex - 1].endPrice)
             {
                 continue;
             }
@@ -74,7 +74,7 @@
             double highestPrice = 0;
             int firstUnder3LineIndex = -1;
 
-            for (int i = alertIndex; i < s.kLineDay.Length && s.kLineDay[i].endPrice >= s.GetAverageSettlePrice(i, 3, 3); i++)
+            for (int i = alertIndex - 2; i < s.kLineDay.Length && s.kLineDay[i].endPrice >= s.GetAverageSettlePrice(i, 3, 3); i++)
             {
                 if (highestPrice < s.kLineDay[i].highestPrice)
                 {
