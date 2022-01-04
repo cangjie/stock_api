@@ -99,7 +99,7 @@
                 continue;
             }
 
-            if (KLine.ComputeBBWidth(s.kLineDay, alertIndex, 30) >= 25)
+            if (KLine.ComputeBBWidth(s.kLineDay, alertIndex, 20) >= 25)
             {
                 continue;
             }
