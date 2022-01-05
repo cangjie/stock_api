@@ -1294,23 +1294,27 @@ public class KLine
         return highestPrice;
     }
 
+    public static double ComputeSTD(KLine[] kArr, int index, int n)
+    {
+        double squareS = 0;
+        for (int i = 0; i < n; i++)
+        {
+            double z = (kArr[index - i].endPrice - GetAverageSettlePrice(kArr, index - 1, n, 0));
+            squareS = squareS + z * z;
+        }
+        squareS = squareS / n;
+        return Math.Sqrt(squareS);
+    }
+
     public static double[] ComputeBoll(KLine[] kArr, int index, int n)
     {
         if (kArr.Length > n && index > n)
         {
-            double squareS = 0;
-            for (int i = 0; i < n; i++)
-            {
-                double z = (kArr[index - i].endPrice - GetAverageSettlePrice(kArr, index - 1, n, 0));
-                squareS = squareS + z * z;
-            }
-            squareS = squareS / n;
-
-            double s = Math.Sqrt(squareS);
+            double std = ComputeSTD(kArr, index, n);
 
             double ma = GetAverageSettlePrice(kArr, index, n, 0);
 
-            return new double[] { ma + s * 2, ma, ma - s * 2 };
+            return new double[] { ma + std * 2, ma, ma - std * 2 };
         }
         return new double[] { 0, 0, 0 };
     }
@@ -1324,7 +1328,7 @@ public class KLine
         }
         else
         {
-            return (kArr[index].endPrice - boll[2]) / (boll[0] - boll[2]);
+            return (kArr[index].endPrice - boll[1]) / ComputeSTD(kArr, index, n);
         }
     }
 
