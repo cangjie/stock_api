@@ -381,7 +381,7 @@
             int highestIndex = -1;
             double highestPrice = Math.Max(stock.kLineDay[alertIndex].highestPrice, stock.kLineDay[alertIndex + 1].highestPrice);
 
-            for (int i = 1; i <= 10; i++)
+            for (int i = 1; i <= 10 && alertIndex + 1 + i < stock.kLineDay.Length ; i++)
             {
                 if (highestPrice <= stock.kLineDay[alertIndex + 1 + i].highestPrice)
                 {
@@ -410,31 +410,12 @@
 
 
             int currentIndex = stock.GetItemIndex(currentDate);
-            if (currentIndex < 1 || currentIndex >= stock.kLineDay.Length)
+            if (currentIndex < 1)
                 continue;
 
-            if (!stock.IsLimitUp(currentIndex - 1))
-            {
-                continue;
-            }
-
-            if (stock.kLineDay[currentIndex].startPrice >= stock.kLineDay[currentIndex].endPrice)
-            {
-                continue;
-            }
+          
 
 
-            if (3 * (stock.kLineDay[currentIndex].highestPrice - stock.kLineDay[currentIndex].endPrice) > (stock.kLineDay[currentIndex].highestPrice - stock.kLineDay[currentIndex].lowestPrice))
-            {
-                continue;
-            }
-
-
-
-            if (KLine.ComputeBBWidth(stock.kLineDay, currentIndex-1, 20) >= 0.3)
-            {
-                continue;
-            }
 
 
 
