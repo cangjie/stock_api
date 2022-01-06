@@ -645,6 +645,14 @@
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"剑鞘\" >🔪</a>";
             }
 
+            double ma20 = stock.GetAverageSettlePrice(currentIndex, 20, 0);
+
+            if (currentPrice > ma20 && (currentPrice - ma20)/ma20 <= 0.03)
+            { 
+                dr["信号"] = dr["信号"].ToString().Trim() + "<a title=\"布林线\" >B</a>";
+            }
+
+
             /*
             if (kdjWeeks >= 0 && kdjWeeks <= 2)
             {

@@ -351,6 +351,8 @@
             KLine.ComputeKDJ(stock.kLineDay);
             */
 
+
+
             int currentIndex = stock.GetItemIndex(currentDate);
             if (currentIndex < 0)
                 continue;
@@ -456,7 +458,7 @@
 
             }
 
-
+            double currentPrice = stock.kLineDay[currentIndex].endPrice;
 
 
 
@@ -576,6 +578,13 @@
                 && stock.kLineDay[currentIndex].endPrice > stock.GetAverageSettlePrice(currentIndex, 3, 3))
             { 
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"突破3线\" >📈</a>";
+            }
+
+            double ma20 = stock.GetAverageSettlePrice(currentIndex, 20, 0);
+
+            if (currentPrice > ma20 && (currentPrice - ma20)/ma20 <= 0.03)
+            { 
+                dr["信号"] = dr["信号"].ToString().Trim() + "<a title=\"布林线\" >B</a>";
             }
 
             dt.Rows.Add(dr);
