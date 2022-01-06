@@ -356,6 +356,9 @@
             }
             Stock stock = new Stock(drOri["gid"].ToString().Trim(), Util.rc);
             stock.LoadKLineDay(Util.rc);
+
+
+
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
@@ -372,6 +375,11 @@
             int currentIndex = stock.GetItemIndex(currentDate);
             if (currentIndex < 1 || currentIndex >= stock.kLineDay.Length)
                 continue;
+
+            if (!stock.IsLimitUp(currentIndex - 1))
+            {
+                continue;
+            }
 
             if (stock.kLineDay[currentIndex].startPrice >= stock.kLineDay[currentIndex].endPrice)
             {
