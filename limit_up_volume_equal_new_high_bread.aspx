@@ -383,9 +383,9 @@
 
             for (int i = 1; i <= 10 && alertIndex + 1 + i < stock.kLineDay.Length ; i++)
             {
-                if (highestPrice <= stock.kLineDay[alertIndex + 1 + i].highestPrice)
+                if (highestPrice <= stock.kLineDay[alertIndex + 1 + i].endPrice)
                 {
-                    highestPrice = stock.kLineDay[alertIndex + 1 + i].highestPrice;
+                    highestPrice = stock.kLineDay[alertIndex + 1 + i].endPrice;
                     highestIndex = alertIndex + 1 + i;
                 }
             }
@@ -784,7 +784,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title></title>
+    <title>平量新高面包</title>
 </head>
 <body>
     <form id="form2" runat="server">
