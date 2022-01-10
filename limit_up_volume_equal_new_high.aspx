@@ -341,7 +341,7 @@
         DataTable dtOri = DBHelper.GetDataTable(" select  * from limit_up where "
             + "  alert_date >= '" + Util.GetLastTransactDate(currentDate, 6).ToShortDateString() + "' and alert_date <=  '"
             + Util.GetLastTransactDate(currentDate, 2).ToShortDateString() + "'  "
-            //+ " and gid = 'sz002571' "
+            //+ " and gid = 'sz002987' "
             );
 
         foreach (DataRow drOri in dtOri.Rows)
@@ -392,11 +392,13 @@
 
             for (int i = 0; i < 5 && limitUpIndex + 2 + i < stock.kLineDay.Length; i++)
             {
+             
                 if (stock.kLineDay[limitUpIndex + i + 2].endPrice > maxPriceVolumeEqual)
                 {
                     newHighIndex = limitUpIndex + i + 2;
                     break;
                 }
+                maxPriceVolumeEqual = Math.Max(maxPriceVolumeEqual, stock.kLineDay[limitUpIndex + i + 2].highestPrice);
             }
 
             if (newHighIndex == 0 || newHighIndex != currentIndex)
