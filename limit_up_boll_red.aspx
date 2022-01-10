@@ -342,7 +342,7 @@
 
         DataTable dtOri = DBHelper.GetDataTable(" select  * from limit_up where "
             + "  alert_date = '" + Util.GetLastTransactDate(currentDate, 1).ToShortDateString() + "' "
-            //+ " and gid = 'sz002617' "
+            + " and gid = 'sh600053' "
             );
 
         foreach (DataRow drOri in dtOri.Rows)
@@ -387,7 +387,7 @@
             }
 
 
-            if (3 * (stock.kLineDay[currentIndex].highestPrice - stock.kLineDay[currentIndex].endPrice) > (stock.kLineDay[currentIndex].highestPrice - stock.kLineDay[currentIndex].lowestPrice))
+            if (2 * (stock.kLineDay[currentIndex].highestPrice - stock.kLineDay[currentIndex].endPrice) > (stock.kLineDay[currentIndex].highestPrice - stock.kLineDay[currentIndex].lowestPrice))
             {
                 continue;
             }
