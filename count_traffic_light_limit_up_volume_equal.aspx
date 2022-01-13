@@ -71,7 +71,7 @@
             }
 
 
-            int buyIndex = limitUpIndex + 1;
+            int buyIndex = alertIndex + 1;
 
             if (buyIndex + days >= s.kLineDay.Length)
             {
