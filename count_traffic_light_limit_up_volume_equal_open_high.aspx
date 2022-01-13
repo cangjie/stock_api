@@ -43,7 +43,7 @@
         dt.Columns.Add("总计");
         DataTable dtOri = DBHelper.GetDataTable(" select * from alert_traffic_light where alert_date >= '"
             + Util.GetSafeRequestValue(Request, "start", "2021-1-1") + "'  and alert_date <= '"
-            + Util.GetSafeRequestValue(Request, "end", "2021-12-20") + "' "
+            + Util.GetSafeRequestValue(Request, "end", "2021-12-31") + "' "
             + " and exists ( select 'a' from limit_up where limit_up.gid = alert_traffic_light.gid and  limit_up.alert_date = alert_traffic_light.alert_date ) "
             + "  order by alert_date desc ");
         foreach (DataRow drOri in dtOri.Rows)
