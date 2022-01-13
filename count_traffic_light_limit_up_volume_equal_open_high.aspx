@@ -83,7 +83,7 @@
             }
             if (s.kLineDay[buyIndex].startPrice < s.kLineDay[buyIndex - 1].endPrice)
             {
-                //continue;
+                continue;
             }
 
             double buyPrice = s.kLineDay[buyIndex].startPrice;
