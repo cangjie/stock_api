@@ -356,6 +356,9 @@
             }
             Stock stock = new Stock(drOri["gid"].ToString().Trim(), Util.rc);
             stock.LoadKLineDay(Util.rc);
+
+
+
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
@@ -373,7 +376,10 @@
             if (currentIndex < 1 || currentIndex >= stock.kLineDay.Length)
                 continue;
 
-
+            if (!stock.IsLimitUp(currentIndex - 1))
+            {
+                continue;
+            }
 
             double currentVolume = stock.kLineDay[currentIndex].volume;
             double prevVolume = stock.kLineDay[currentIndex - 1].volume;
@@ -577,7 +583,7 @@
 
                 if (currentIndex + i >= stock.kLineDay.Length)
                     break;
-                if (i == 1 
+                if (i == 1
                     && stock.kLineDay[currentIndex].startPrice > stock.kLineDay[currentIndex].endPrice
                     && stock.kLineDay[currentIndex + i].startPrice < stock.kLineDay[currentIndex + i].endPrice
                     && stock.kLineDay[currentIndex + i].volume > Math.Max(stock.kLineDay[currentIndex].volume, stock.kLineDay[currentIndex - 1].volume))
@@ -596,7 +602,7 @@
             }
 
             if (stock.kLineDay[currentIndex - 1].highestPrice < Math.Min(stock.kLineDay[currentIndex].startPrice, stock.kLineDay[currentIndex].endPrice))
-            { 
+            {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"剑鞘\" >🔪</a>";
             }
 
