@@ -341,20 +341,16 @@
         //DateTime limitUpStartDate = Util.GetLastTransactDate(lastTransactDate, 30);
 
         DataTable dtOri = DBHelper.GetDataTable(" select  * from limit_up where "
-            + "  alert_date >= '" + Util.GetLastTransactDate(currentDate, 10).ToShortDateString() + "' and  alert_date <= '"
+            + "  alert_date >= '" + Util.GetLastTransactDate(currentDate, 20).ToShortDateString() + "' and  alert_date <= '"
             + Util.GetLastTransactDate(currentDate, 2).ToShortDateString() + "'  "
-            //+ " and gid = 'sz002617' "
+            //+ " and gid = 'sz002641' "
             );
 
         foreach (DataRow drOri in dtOri.Rows)
         {
             bool isOver3Line = false;
             DateTime alertDate = DateTime.Parse(drOri["alert_date"].ToString().Trim());
-            DataRow[] drArrExists = dtOri.Select(" gid = '" + drOri["gid"].ToString() + "' and alert_date > '" + alertDate.ToShortDateString() + "'  ");
-            if (drArrExists.Length > 0)
-            {
-                continue;
-            }
+            
             Stock stock = new Stock(drOri["gid"].ToString().Trim(), Util.rc);
             stock.LoadKLineDay(Util.rc);
 
@@ -378,15 +374,19 @@
                 continue;
             }
 
-            int highestIndex = -1;
-            double highestPrice = Math.Max(stock.kLineDay[alertIndex].highestPrice, stock.kLineDay[alertIndex + 1].highestPrice);
+            int highestIndex = alertIndex;
+            double highestPrice = stock.kLineDay[alertIndex].highestPrice;
 
-            for (int i = 1; i <= 10 && alertIndex + 1 + i < stock.kLineDay.Length ; i++)
+            int currentIndex = stock.GetItemIndex(currentDate);
+            if (currentIndex < 1)
+                continue;
+
+            for (int i = highestIndex + 1; i < currentIndex && stock.GetAverageSettlePrice(i, 3, 3) <= stock.kLineDay[i].endPrice; i++)
             {
-                if (highestPrice <= stock.kLineDay[alertIndex + 1 + i].endPrice)
+                if (highestPrice < stock.kLineDay[i].highestPrice)
                 {
-                    highestPrice = stock.kLineDay[alertIndex + 1 + i].endPrice;
-                    highestIndex = alertIndex + 1 + i;
+                    highestPrice = stock.kLineDay[i].highestPrice;
+                    highestIndex = i;
                 }
             }
 
@@ -409,9 +409,7 @@
 
 
 
-            int currentIndex = stock.GetItemIndex(currentDate);
-            if (currentIndex < 1)
-                continue;
+            
 
           
 

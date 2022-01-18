@@ -343,17 +343,14 @@
         DataTable dtOri = DBHelper.GetDataTable(" select  * from limit_up where "
             + "  alert_date >= '" + Util.GetLastTransactDate(currentDate, 20).ToShortDateString() + "' and  alert_date <= '"
             + Util.GetLastTransactDate(currentDate, 2).ToShortDateString() + "'  "
+            //+ "  and gid = 'sz003042'  "
             );
 
         foreach (DataRow drOri in dtOri.Rows)
         {
 
             DateTime alertDate = DateTime.Parse(drOri["alert_date"].ToString().Trim());
-            DataRow[] drArrExists = dtOri.Select(" gid = '" + drOri["gid"].ToString() + "' and alert_date > '" + alertDate.ToShortDateString() + "'  ");
-            if (drArrExists.Length > 0)
-            {
-                continue;
-            }
+            
 
 
             Stock stock = new Stock(drOri["gid"].ToString().Trim(), Util.rc);

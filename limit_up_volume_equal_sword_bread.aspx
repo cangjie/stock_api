@@ -337,20 +337,16 @@
         //DateTime limitUpStartDate = Util.GetLastTransactDate(lastTransactDate, 30);
 
         DataTable dtOri = DBHelper.GetDataTable(" select  * from limit_up where "
-            + "  alert_date >= '" + Util.GetLastTransactDate(currentDate, 7).ToShortDateString() + "' and alert_date <=  '"
+            + "  alert_date >= '" + Util.GetLastTransactDate(currentDate, 20).ToShortDateString() + "' and alert_date <=  '"
             + Util.GetLastTransactDate(currentDate, 2).ToShortDateString() + "'  "
-            //+ " and gid = 'sz002571' "
+            //+ " and gid = 'sz003042' "
             );
 
         foreach (DataRow drOri in dtOri.Rows)
         {
             bool isOver3Line = false;
             DateTime alertDate = DateTime.Parse(drOri["alert_date"].ToString().Trim());
-            DataRow[] drArrExists = dtOri.Select(" gid = '" + drOri["gid"].ToString() + "' and alert_date > '" + alertDate.ToShortDateString() + "'  ");
-            if (drArrExists.Length > 0)
-            {
-                continue;
-            }
+            
             Stock stock = new Stock(drOri["gid"].ToString().Trim(), Util.rc);
             stock.LoadKLineDay(Util.rc);
 
@@ -443,18 +439,18 @@
             int f3Index = -1;
             int f5Index = -1;
 
-            for(int i = limitUpIndex; i <= currentIndex; i++)
+            for(int i = highestIndex + 1; i <= currentIndex; i++)
             { 
                 if (f3Index == -1)
                 { 
-                    if (stock.kLineDay[i].lowestPrice <= f3)
+                    if (Math.Abs(stock.kLineDay[i].lowestPrice - f3) < stock.kLineDay[i].lowestPrice * 0.01)
                     { 
                         f3Index = i;
                     }
                 }
                 else
                 { 
-                    if (stock.kLineDay[i].lowestPrice <= f5)
+                    if (Math.Abs(stock.kLineDay[i].lowestPrice - f5) < stock.kLineDay[i].lowestPrice * 0.01)
                     { 
                         f5Index = i;
                         break;
