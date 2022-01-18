@@ -343,7 +343,7 @@
         DataTable dtOri = DBHelper.GetDataTable(" select  * from limit_up where "
             + "  alert_date >= '" + Util.GetLastTransactDate(currentDate, 20).ToShortDateString() + "' and  alert_date <= '"
             + Util.GetLastTransactDate(currentDate, 2).ToShortDateString() + "'  "
-            //+ "  and gid = 'sz003042'  "
+            //+ "  and gid = 'kc688533'  "
             );
 
         foreach (DataRow drOri in dtOri.Rows)
@@ -391,10 +391,6 @@
                 }
             }
 
-
-
-
-
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
@@ -404,17 +400,6 @@
             KLine.ComputeKDJ(stock.kLineWeek);
             int klineWeekIndex = stock.GetItemIndex(currentDate.Date, "week");
             int kdjWeeks = stock.kdjWeeks(klineWeekIndex);
-
-
-
-
-
-
-
-
-
-
-
 
             int lowestIndex = 0;
             double lowestPrice = GetFirstLowestPrice(stock.kLineDay, alertIndex, out lowestIndex);
@@ -432,13 +417,19 @@
             int f3Index = 0;
             int over3LineIndex = 0;
 
-            for (int i = highestIndex + 1;  i < stock.kLineDay.Length; i++)
+            
+
+            for(int i = highestIndex + 1; i <= currentIndex; i++)
             {
                 if (f3Index == 0)
                 {
                     if (Math.Abs(stock.kLineDay[i].lowestPrice - f3) < stock.kLineDay[i].lowestPrice * 0.01)
                     {
                         f3Index = i;
+                    }
+                    if (stock.kLineDay[i].lowestPrice < f3 * 0.99)
+                    {
+                        f3Index = -1;
                     }
                 }
                 else
@@ -448,6 +439,14 @@
                         f5Index = i;
                         break;
                     }
+                    if (stock.kLineDay[i].lowestPrice < f5 * 0.99)
+                    {
+                        f5Index = -1;
+                    }
+                }
+                if (f3Index == -1 && f5Index == -1)
+                {
+                    break;
                 }
             }
 
@@ -782,7 +781,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title>平量新高面包</title>
+    <title>平量面包</title>
 </head>
 <body>
     <form id="form2" runat="server">

@@ -433,13 +433,19 @@
             int f3Index = 0;
             int over3LineIndex = 0;
 
-            for (int i = highestIndex + 1;  i < stock.kLineDay.Length; i++)
+         
+
+            for(int i = highestIndex + 1; i <= currentIndex; i++)
             {
                 if (f3Index == 0)
                 {
                     if (Math.Abs(stock.kLineDay[i].lowestPrice - f3) < stock.kLineDay[i].lowestPrice * 0.01)
                     {
                         f3Index = i;
+                    }
+                    if (stock.kLineDay[i].lowestPrice < f3 * 0.99)
+                    {
+                        f3Index = -1;
                     }
                 }
                 else
@@ -449,6 +455,14 @@
                         f5Index = i;
                         break;
                     }
+                    if (stock.kLineDay[i].lowestPrice < f5 * 0.99)
+                    {
+                        f5Index = -1;
+                    }
+                }
+                if (f3Index == -1 && f5Index == -1)
+                {
+                    break;
                 }
             }
 
