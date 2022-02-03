@@ -272,8 +272,9 @@ public class Util
             || (date.Date >= DateTime.Parse("2021-5-1") && date.Date <= DateTime.Parse("2021-5-5"))
             || (date.Date >= DateTime.Parse("2021-6-12") && date.Date <= DateTime.Parse("2021-6-14"))
             || (date.Date >= DateTime.Parse("2021-9-20") && date.Date <= DateTime.Parse("2021-9-21"))
-            || (date.Date >= DateTime.Parse("2021-10-1") && date.Date <= DateTime.Parse("2021-10-7")
-            || date.Date == DateTime.Parse("2022-1-3"))
+            || (date.Date >= DateTime.Parse("2021-10-1") && date.Date <= DateTime.Parse("2021-10-7"))
+            || date.Date == DateTime.Parse("2022-1-3")
+            | (date.Date >= DateTime.Parse("2022-1-31") && date.Date <= DateTime.Parse("2022-2-4"))
             )
             ret = false;
         return ret;
