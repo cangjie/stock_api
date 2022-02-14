@@ -75,7 +75,7 @@
 
 
             DataRow dr = dt.NewRow();
-            dr["日期"] = s.kLineDay[alertIndex + 1].endDateTime.ToShortDateString();
+            dr["日期"] = s.kLineDay[alertIndex].endDateTime.ToShortDateString();
             dr["代码"] = s.gid.Trim();
             dr["名称"] = s.Name.Trim();
             dr["量差"] = Math.Round(diff * 100, 2).ToString() + "%";
