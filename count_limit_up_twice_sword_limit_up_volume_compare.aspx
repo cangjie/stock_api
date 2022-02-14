@@ -43,8 +43,8 @@
         
         DataTable dtOri = DBHelper.GetDataTable(" select * from limit_up a where  alert_date > '2021-1-1' "
             + " and exists (select 'a' from limit_up b where a.gid = b.gid and dbo.func_GetLastTransactDate(b.alert_date, 1) = a.alert_date) "
-            + " and exists (select 'a' from limit_up c where a.gid = c.gid and dbo.func_GetLastTransactDate(c.alert_date, 2) = a.alert_date) "
-            + " and exists (select 'a' from limit_up d where a.gid = d.gid and dbo.func_GetLastTransactDate(d.alert_date, 4) = a.alert_date) "
+            + " and not exists (select 'a' from limit_up c where a.gid = c.gid and dbo.func_GetLastTransactDate(c.alert_date, 2) = a.alert_date) "
+            + " and exists (select 'a' from limit_up d where a.gid = d.gid and dbo.func_GetLastTransactDate(d.alert_date, 3) = a.alert_date) "
             + " order by alert_date desc ");
         foreach (DataRow drOri in dtOri.Rows)
         {
