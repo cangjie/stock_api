@@ -40,12 +40,7 @@
 
         dt.Columns.Add("分类");
 
-        for(int i = 1; i <= days; i++)
-        {
-            dt.Columns.Add(i.ToString() + "日");
-        }
-
-        dt.Columns.Add("总计");
+        
         DataTable dtOri = DBHelper.GetDataTable(" select * from alert_traffic_light where alert_date >= '"
             + Util.GetSafeRequestValue(Request, "start", "2019-1-1") + "'  and alert_date <= '"
             + Util.GetSafeRequestValue(Request, "end", "2022-12-20") + "' "
