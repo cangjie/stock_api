@@ -60,7 +60,7 @@
                 continue;
             }
 
-            if (!s.IsLimitUp(alertIndex) || !s.IsLimitUp(alertIndex+1) || !s.IsLimitUp(alertIndex + 3) 
+            if (!s.IsLimitUp(alertIndex) || !s.IsLimitUp(alertIndex+1) || !s.IsLimitUp(alertIndex + 3) || s.IsLimitUp(alertIndex + 2)
                 || Math.Min(s.kLineDay[alertIndex + 2].startPrice, s.kLineDay[alertIndex + 2].endPrice) <= s.kLineDay[alertIndex - 1].endPrice)
             {
                 continue;
