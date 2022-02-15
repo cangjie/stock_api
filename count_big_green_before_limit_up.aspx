@@ -62,6 +62,11 @@
                 continue;
             }
 
+            if (!s.IsLimitUp(alertIndex))
+            {
+                continue;
+            }
+
             int buyIndex = alertIndex + 1;
 
             if (buyIndex + days >= s.kLineDay.Length)
