@@ -62,7 +62,7 @@
                 continue;
             }
 
-            if (!s.IsLimitUp(alertIndex))
+            if (!s.IsLimitUp(alertIndex) || s.kLineDay[alertIndex].startPrice >= s.kLineDay[alertIndex].endPrice)
             {
                 continue;
             }
