@@ -478,6 +478,15 @@
                 memo = memo + "<br/>折返在F3之上";
             }
 
+            if (stock.GetAverageSettlePrice(currentIndex, 20, 0) < stock.GetAverageSettlePrice(currentIndex - 1, 20, 0)
+                || stock.GetAverageSettlePrice(currentIndex - 1, 20, 0) < stock.GetAverageSettlePrice(currentIndex - 2, 20, 0)
+                || stock.GetAverageSettlePrice(currentIndex - 2, 20, 0) < stock.GetAverageSettlePrice(currentIndex - 3, 20, 0)
+                || stock.GetAverageSettlePrice(currentIndex - 3, 20, 0) < stock.GetAverageSettlePrice(currentIndex - 4, 20, 0)
+                || stock.GetAverageSettlePrice(currentIndex - 4, 20, 0) < stock.GetAverageSettlePrice(currentIndex - 5, 20, 0)
+                )
+            {
+                continue;
+            }
 
 
             int limitUpNum = 0;
