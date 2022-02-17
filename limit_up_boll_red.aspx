@@ -14,7 +14,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "今涨 desc");
+        sort = Util.GetSafeRequestValue(Request, "sort", "KDJ日,布林宽");
         if (!IsPostBack)
         {
 
@@ -402,7 +402,7 @@
 
             if (KLine.ComputeBBWidth(stock.kLineDay, currentIndex-1, 20) >= 0.3)
             {
-                continue;
+                //continue;
             }
 
 
