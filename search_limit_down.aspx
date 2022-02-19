@@ -11,13 +11,16 @@
 
         DateTime endDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "end", DateTime.Now.ToShortDateString()));
 
+        startDate = DateTime.Parse("2021-1-1");
+
+
         string[] gidArr = Util.GetAllGids();
         for (int i = 0; i < gidArr.Length; i++)
         {
             try
             {
                 Stock s = new Stock(gidArr[i].Trim());
-                s.LoadKLineDay();
+                s.LoadKLineDay(Util.rc);
 
                 for (DateTime currentDate = startDate; currentDate <= endDate; currentDate = currentDate.AddDays(1))
                 {
