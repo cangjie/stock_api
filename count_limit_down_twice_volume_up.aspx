@@ -27,7 +27,7 @@
 
         //DateTime startDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "startdate", "2021-1-1").Trim());
         //DateTime endDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "enddate", DateTime.Now.ToShortDateString()));
-        int days = int.Parse(Util.GetSafeRequestValue(Request, "days", "10"));
+        int days = int.Parse(Util.GetSafeRequestValue(Request, "days", "20"));
         DataTable dt = new DataTable();
         dt.Columns.Add("日期");
         dt.Columns.Add("代码");
@@ -41,10 +41,10 @@
         }
 
         dt.Columns.Add("总计");
-        DataTable dtOri = DBHelper.GetDataTable(" select * from alert_traffic_light where alert_date >= '"
-            + Util.GetSafeRequestValue(Request, "start", "2019-1-1") + "'  and alert_date <= '"
+        DataTable dtOri = DBHelper.GetDataTable(" select * from limit_down a where alert_date >= '"
+            + Util.GetSafeRequestValue(Request, "start", "2020-11-1") + "'  and alert_date <= '"
             + Util.GetSafeRequestValue(Request, "end", "2022-12-20") + "' "
-            + " and not exists ( select 'a' from limit_up where limit_up.gid = alert_traffic_light.gid and  limit_up.alert_date = alert_traffic_light.alert_date ) "
+            + " and  exists ( select 'a' from limit_down b where a.gid = b.gid and  b.alert_date = dbo.func_GetLastTransactDate(a.alert_date, 1) ) "
             //+ " and exists ( select 'a' from limit_up where limit_up.gid = alert_traffic_light.gid and  dbo.func_GetLastTransactDate(limit_up.alert_date, 1) = alert_traffic_light.alert_date ) "
             + "  order by alert_date desc ");
         foreach (DataRow drOri in dtOri.Rows)
@@ -54,23 +54,25 @@
 
 
             int alertIndex = s.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
-            if (alertIndex < 30)
+            if (alertIndex < 2)
             {
                 continue;
             }
 
-            if (alertIndex >= s.kLineDay.Length-1)
+            if ((s.kLineDay[alertIndex].endPrice - s.kLineDay[alertIndex - 1].endPrice) / s.kLineDay[alertIndex - 1].endPrice >= -0.095
+                || (s.kLineDay[alertIndex - 1].endPrice - s.kLineDay[alertIndex - 2].endPrice) / s.kLineDay[alertIndex - 2].endPrice >= -0.095)
             {
                 continue;
             }
 
-            if (!s.IsLimitUp(alertIndex - 2) || s.IsLimitUp(alertIndex) || s.kLineDay[alertIndex - 1].startPrice <= s.kLineDay[alertIndex - 1].endPrice)
+            if (s.kLineDay[alertIndex].volume < s.kLineDay[alertIndex - 1].volume * 2)
             {
                 continue;
             }
 
-            if (Math.Min(s.kLineDay[alertIndex - 1].startPrice, s.kLineDay[alertIndex - 1].endPrice) <= s.kLineDay[alertIndex - 2].endPrice
-                || Math.Min(s.kLineDay[alertIndex].startPrice, s.kLineDay[alertIndex].endPrice) <= s.kLineDay[alertIndex - 2].endPrice)
+            int buyIndex = alertIndex+1;
+
+            if (buyIndex + days >= s.kLineDay.Length)
             {
                 continue;
             }
@@ -82,16 +84,17 @@
                 //continue;
             }
 
-            int buyIndex = alertIndex;
+            if (s.kLineDay[alertIndex].endPrice >= s.GetAverageSettlePrice(alertIndex, 20, 0))
+            {
+                //continue;
+            }
 
-            if (buyIndex + days >= s.kLineDay.Length)
+            double buyPrice = s.kLineDay[buyIndex].startPrice;
+
+            if (buyPrice <= s.kLineDay[alertIndex].endPrice)
             {
                 continue;
             }
-
-
-            double buyPrice = s.kLineDay[buyIndex].endPrice;
-
 
 
             string buyPoint = Util.GetSafeRequestValue(Request, "buypoint", "start");
@@ -179,7 +182,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>红绿灯皆剑鞘</title>
+    <title>大阴后涨停且放量，第三天开盘买</title>
 </head>
 <body>
     <form id="form1" runat="server">
