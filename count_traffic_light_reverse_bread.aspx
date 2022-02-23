@@ -36,7 +36,7 @@
         dt.Columns.Add("F5");
         dt.Columns.Add("前低");
         dt.Columns.Add("买入");
- 
+
         for(int i = 1; i <= days; i++)
         {
             dt.Columns.Add(i.ToString() + "日");
@@ -45,11 +45,11 @@
         dt.Columns.Add("总计");
         DataTable dtOri = DBHelper.GetDataTable(" select * from alert_traffic_light where alert_date >= '"
             + Util.GetSafeRequestValue(Request, "start", "2021-1-1") + "'  and alert_date <= '"
-            + Util.GetSafeRequestValue(Request, "end", "2021-12-20") + "' order by alert_date desc ");
+            + Util.GetSafeRequestValue(Request, "end", "2022-12-20") + "' order by alert_date desc ");
         foreach (DataRow drOri in dtOri.Rows)
         {
 
-           
+
             Stock s = GetStock(drOri["gid"].ToString().Trim());
 
             int alertIndex = s.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
@@ -118,6 +118,12 @@
             }
 
             if (buyIndex == -1 || buyIndex + days >= s.kLineDay.Length)
+            {
+                continue;
+            }
+
+
+            if ((s.kLineDay[buyIndex].volume - s.kLineDay[buyIndex - 1].volume) / s.kLineDay[buyIndex - 1].volume >= -0.4)
             {
                 continue;
             }
@@ -224,7 +230,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title></title>
+    <title>红绿灯反包面包缩量</title>
 </head>
 <body>
     <form id="form1" runat="server">
