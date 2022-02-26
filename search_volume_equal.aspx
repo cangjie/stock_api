@@ -39,7 +39,7 @@
                     int isLimutUp = s.IsLimitUp(limitUpIndex + 1) ? 1 : 0;
                     if (Math.Abs(currentVolume - limitUpVolume) / limitUpVolume <= 0.1)
                     {
-                        DBHelper.InsertData("alert_limit", new string[,] { {"alert_date", "datetime", s.kLineDay[limitUpIndex + 1].endDateTime.ToShortDateString() },
+                        DBHelper.InsertData("alert_volume_equal", new string[,] { {"alert_date", "datetime", s.kLineDay[limitUpIndex + 1].endDateTime.ToShortDateString() },
                         {"gid", "varchar", s.gid.Trim() }, {"is_limit_up", "int", isLimutUp.ToString() } });
                     }
                 }
