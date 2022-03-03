@@ -374,7 +374,8 @@
 
             if (currentIndex <= 20 || stock.GetAverageSettlePrice(currentIndex, 20, 0) <= stock.GetAverageSettlePrice(currentIndex - 3, 20, 0)
                 || stock.GetAverageSettlePrice(currentIndex - 3, 20, 0) <= stock.GetAverageSettlePrice(currentIndex - 5, 20, 0)
-                || stock.GetAverageSettlePrice(currentIndex - 5, 20, 0) <= stock.GetAverageSettlePrice(currentIndex - 8, 20, 0))
+                || stock.GetAverageSettlePrice(currentIndex - 5, 20, 0) <= stock.GetAverageSettlePrice(currentIndex - 8, 20, 0)
+                || stock.GetAverageSettlePrice(currentIndex - 8, 20, 0) <= stock.GetAverageSettlePrice(currentIndex - 13, 20, 0))
             {
                 continue;
             }
