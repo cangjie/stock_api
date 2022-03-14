@@ -46,6 +46,7 @@
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock s = GetStock(drOri["gid"].ToString().Trim());
+
             int alertIndex = s.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
             if (alertIndex < 1)
             {
@@ -70,6 +71,13 @@
                 continue;
             }
 
+            KLine.ComputeRSV(s.kLineDay);
+            KLine.ComputeKDJ(s.kLineDay);
+
+            if (s.kLineDay[alertIndex].k >= 50 || s.kLineDay[alertIndex].d >= 50 || s.kLineDay[alertIndex].j >= 50)
+            {
+                continue;
+            }
 
             double buyPrice = s.kLineDay[buyIndex].startPrice;
 
