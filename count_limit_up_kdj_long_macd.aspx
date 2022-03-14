@@ -74,7 +74,7 @@
             KLine.ComputeRSV(s.kLineDay);
             KLine.ComputeKDJ(s.kLineDay);
 
-            if (s.kLineDay[alertIndex].k >= 60 || s.kLineDay[alertIndex].d >= 60 || s.kLineDay[alertIndex].j >= 60)
+            if (s.kLineDay[alertIndex].k >= 70 || s.kLineDay[alertIndex].d >= 70 || s.kLineDay[alertIndex].j >= 70)
             {
                 continue;
             }
