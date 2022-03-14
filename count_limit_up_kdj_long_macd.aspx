@@ -161,7 +161,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>大阴后涨停且放量，第三天开盘买</title>
+    <title>涨停后 KDJ金叉 MACD金叉20日以上</title>
 </head>
 <body>
     <form id="form1" runat="server">
