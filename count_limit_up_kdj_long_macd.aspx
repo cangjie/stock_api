@@ -54,7 +54,7 @@
             }
 
             int macd = s.macdDays(alertIndex);
-            if (macd < 20)
+            if (macd < 15)
             {
                 continue;
             }
