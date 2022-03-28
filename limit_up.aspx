@@ -10,13 +10,13 @@
 
     public string sort = "MACD日,KDJ日,综指 desc";
 
-    
+
     protected void Page_Load(object sender, EventArgs e)
     {
         sort = Util.GetSafeRequestValue(Request, "sort", "连板 desc,高开 desc");
         if (!IsPostBack)
         {
-            
+
 
             DataTable dt = GetData();
             dg.DataSource = dt;
@@ -100,7 +100,6 @@
                         case "F5":
                         case "现高":
                         case "3线":
-                        case "无影":
                         case "压力1":
                         case "压力2":
                         case "支撑1":
@@ -290,15 +289,15 @@
             return dt;
         }
 
-        DateTime lastTransactDate = Util.GetLastTransactDate(currentDate, 1);
+        //DateTime lastTransactDate = Util.GetLastTransactDate(currentDate, 1);
         //DateTime limitUpStartDate = Util.GetLastTransactDate(lastTransactDate, 4);
 
 
 
         DataTable dtOri = DBHelper.GetDataTable(" select gid, alert_date, p1, p2, s1, s2 from limit_up where alert_date = '"
-            + lastTransactDate.ToShortDateString() + "'  order by alert_date desc ");
+            + currentDate.ToShortDateString() + "'  order by alert_date desc ");
 
-        Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+
         foreach (DataRow drOri in dtOri.Rows)
         {
             try
@@ -320,6 +319,7 @@
                 }
                 Stock stock = new Stock(drOri["gid"].ToString().Trim(), Util.rc);
                 stock.LoadKLineDay(Util.rc);
+
                 /*
                 Core.Timeline[] timelineArr = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
                 if (timelineArr.Length == 0)
@@ -332,6 +332,17 @@
                 KLine.ComputeKDJ(stock.kLineDay);
 
                 int currentIndex = stock.GetItemIndex(currentDate);
+
+                if (currentIndex < 0)
+                {
+                    continue;
+                }
+
+                if (!stock.IsLimitUp(currentIndex))
+                {
+                    continue;
+                }
+
                 /*
                 if (currentIndex < 0)
                     continue;
@@ -373,10 +384,7 @@
 
                 double volumeReduce = volumeToday / volumeYesterday;
 
-                if (lowest == 0 || line3Price == 0)
-                {
-                    continue;
-                }
+                
 
                 //buyPrice = currentIndex == -1 ? 0 :Math.Max(f3, stock.kLineDay[currentIndex].lowestPrice);
 
@@ -384,42 +392,7 @@
 
                 string memo = "";
 
-                Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
-                if (timelineArray.Length == 0)
-                {
-                    timelineArray = Core.Timeline.LoadTimelineArrayFromSqlServer(stock.gid, currentDate);
-                }
-                DateTime todayLowestTime = Core.Timeline.GetLowestTime(timelineArray);
-                if (todayLowestTime.Hour == 9 && todayLowestTime.Minute < 30)
-                {
-                    todayLowestTime = todayLowestTime.Date.AddHours(9).AddMinutes(30);
-                }
-                TimeSpan todayLowestTimeSpan;
-
-
-                if (DateTime.Now.Date == currentDate.Date && DateTime.Now.Hour < 15)
-                {
-                    todayLowestTimeSpan = DateTime.Now - todayLowestTime;
-                    if (todayLowestTime.Hour < 13)
-                    {
-                        if (DateTime.Now.Hour < 13)
-                        {
-                            todayLowestTimeSpan = todayLowestTimeSpan - (DateTime.Now - DateTime.Now.Date.AddHours(11).AddMinutes(30));
-                        }
-                        else
-                        {
-                            todayLowestTimeSpan = todayLowestTimeSpan - (DateTime.Now.AddHours(13) - DateTime.Now.Date.AddHours(11).AddMinutes(30));
-                        }
-                    }
-                }
-                else
-                {
-                    todayLowestTimeSpan = todayLowestTime.Date.AddHours(15) - todayLowestTime;
-                    if (todayLowestTime.Hour < 13)
-                    {
-                        todayLowestTimeSpan = todayLowestTimeSpan - (currentDate.Date.AddHours(13) - currentDate.Date.AddHours(11).AddMinutes(30));
-                    }
-                }
+                
 
 
 
@@ -535,7 +508,7 @@
 
             }
         }
-        rc.Dispose();
+        
         return dt;
     }
 
@@ -624,7 +597,7 @@
         return count;
     }
 
-  
+
     protected void dg_EditCommand(object source, DataGridCommandEventArgs e)
     {
         DataTable dt = GetData();
@@ -704,7 +677,7 @@
         dg.DataSource = dt;
         dg.EditItemIndex = -1;
         dg.DataBind();
-                    
+
     }
 </script>
 
