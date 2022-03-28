@@ -384,7 +384,7 @@
 
                 double volumeReduce = volumeToday / volumeYesterday;
 
-                
+
 
                 //buyPrice = currentIndex == -1 ? 0 :Math.Max(f3, stock.kLineDay[currentIndex].lowestPrice);
 
@@ -392,7 +392,7 @@
 
                 string memo = "";
 
-                
+
 
 
 
@@ -490,12 +490,19 @@
                 dr["压力1"] = double.Parse(drOri["p1"].ToString());
                 dr["压力2"] = double.Parse(drOri["p2"].ToString());
 
-
+                double limitUpPrice = stock.kLineDay[currentIndex].endPrice;
                 double maxPrice = 0;
                 for (int i = 1; i <= 5; i++)
                 {
+                    
                     if (currentIndex + i >= stock.kLineDay.Length)
                         break;
+                    if (i == 1 && stock.kLineDay[currentIndex + i].startPrice > limitUpPrice
+                        && stock.kLineDay[currentIndex + i].endPrice > limitUpPrice
+                        && !stock.IsLimitUp(currentIndex + i))
+                    {
+                        dr["信号"] = "<a title=\"剑鞘\" >🗡</a>";
+                    }
                     double highPrice = stock.kLineDay[currentIndex + i].highestPrice;
                     maxPrice = Math.Max(maxPrice, highPrice);
                     dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
@@ -508,7 +515,7 @@
 
             }
         }
-        
+
         return dt;
     }
 
@@ -679,6 +686,35 @@
         dg.DataBind();
 
     }
+
+    protected void btnDownload_Click(object sender, EventArgs e)
+    {
+        DataTable dtDownload = GetData();
+        string content = "";
+        foreach (DataRow dr in dtDownload.Rows)
+        {
+            string gid = dr["代码"].ToString().Trim();
+            try
+            {
+                gid = gid.Substring(gid.IndexOf(">"), gid.Length - gid.IndexOf(">"));
+            }
+            catch
+            {
+
+            }
+            gid = gid.Replace("</a>", "").Replace(">", "").ToUpper();
+            if (gid.Trim().Length == 8)
+            {
+                content += gid.Substring(2, 6) + "\r\n";
+            }
+        }
+        Response.Clear();
+        Response.ContentType = "text/plain";
+        Response.Headers.Add("Content-Disposition", "attachment; filename=limit_up_"
+            + currentDate.ToShortDateString() + ".txt");
+        Response.Write(content.Trim());
+        Response.End();
+    }
 </script>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -689,6 +725,9 @@
     <form id="form2" runat="server">
     <div>
         <table width="100%" >
+            <tr>
+                <td><asp:Button runat="server" ID="btnDownload" Text=" 下 载 " OnClick="btnDownload_Click"   /></td>
+            </tr>
             <tr>
                 <td><asp:Calendar runat="server" id="calendar" Width="100%" OnSelectionChanged="calendar_SelectionChanged" BackColor="White" BorderColor="Black" BorderStyle="Solid" CellSpacing="1" Font-Names="Verdana" Font-Size="9pt" ForeColor="Black" Height="250px" NextPrevFormat="ShortMonth" >
                     <DayHeaderStyle Font-Bold="True" Font-Size="8pt" ForeColor="#333333" Height="8pt" />
