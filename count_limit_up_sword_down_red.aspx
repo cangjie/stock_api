@@ -71,7 +71,8 @@
             int buyIndex = alertIndex + 2;
 
             if (s.kLineDay[buyIndex].highestPrice >= s.kLineDay[alertIndex + 1].highestPrice
-                || s.kLineDay[buyIndex].endPrice <= s.kLineDay[buyIndex].startPrice || s.IsLimitUp(buyIndex))
+                || s.kLineDay[buyIndex].endPrice <= s.kLineDay[buyIndex].startPrice || s.IsLimitUp(buyIndex)
+                || s.kLineDay[buyIndex].endPrice >= s.kLineDay[alertIndex].endPrice)
             {
                 continue;
             }
