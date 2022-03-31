@@ -86,9 +86,9 @@
         {
             DataRow dr = dt.NewRow();
             //double settle = Math.Round((double)drOri["昨收"], 2);
-            double currentPrice = Math.Round((double)drOri["现价"], 2);
-            double lowPrice = Math.Round((double)drOri["前低"], 2);
-            double hightPrice =  Math.Round((double)drOri["现高"], 2);
+            double currentPrice = Math.Round((double)drOri["买入"], 2);
+            //double lowPrice = Math.Round((double)drOri["前低"], 2);
+            //double hightPrice =  Math.Round((double)drOri["现高"], 2);
             for (int i = 0; i < drArr[0].Table.Columns.Count; i++)
             {
 
@@ -185,7 +185,7 @@
                 }
             }
             string gid = dr["代码"].ToString();
-            dr["代码"] = "<a href=\"show_K_line_day.aspx?gid=" + gid.Trim() + "&maxprice=" + hightPrice.ToString() + "&minprice=" + lowPrice.ToString() + "\" target=\"_blank\" >" + dr["代码"].ToString() + "</a>";
+            //dr["代码"] = "<a href=\"show_K_line_day.aspx?gid=" + gid.Trim() + "&maxprice=" + hightPrice.ToString() + "&minprice=" + lowPrice.ToString() + "\" target=\"_blank\" >" + dr["代码"].ToString() + "</a>";
             dr["名称"] = "<a href=\"io_volume_detail.aspx?gid=" + gid.Trim() + "&date=" + calendar.SelectedDate.ToShortDateString() + "\" target=\"_blank\" >" + dr["名称"].ToString() + "</a>";
             dt.Rows.Add(dr);
         }
@@ -321,9 +321,8 @@
             return dt;
         }
 
-        DataTable dtOri = DBHelper.GetDataTable(" select  * from alert_macd where "
-            + "  alert_time = '" + currentDate.ToShortDateString() + " 15:00' and alert_type = 'day'  "
-            );
+        DataTable dtOri = DBHelper.GetDataTable(" select  * from alert_macd_days where "
+            + "  alert_date = '" + currentDate.ToShortDateString() + "' and days >= 20 ");
 
         foreach (DataRow drOri in dtOri.Rows)
         {
@@ -375,20 +374,18 @@
             dr["名称"] = stock.Name.Trim();
             dr["KDJ日"] = stock.kdjDays(currentIndex);
             dr["MACD日"] = macdDays;
-            dr["今涨"] = (stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
+            //dr["今涨"] = (stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
 
 
             dr["KDJ金叉数"] = kdjTimes;
 
-            dr["KDJ日"] = stock.kdjDays(currentIndex);
-
-            dr["MACD日"] = stock.macdDays(currentIndex);
+            dr["3线"] = stock.GetAverageSettlePrice(currentIndex, 3, 3);
 
             double buyPrice = stock.kLineDay[currentIndex].endPrice;
          
             dr["买入"] = buyPrice;
 
-            dr["涨幅"] = (buyPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
+            dr["今涨"] = (buyPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
            
 
 
@@ -533,7 +530,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title>平量剑鞘面包</title>
+    <title>MACD金叉20天以上 KDJ两次金叉</title>
 </head>
 <body>
     <form id="form2" runat="server">
