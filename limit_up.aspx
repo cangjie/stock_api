@@ -494,15 +494,29 @@
                 double maxPrice = 0;
                 for (int i = 1; i <= 5; i++)
                 {
-                    
+
                     if (currentIndex + i >= stock.kLineDay.Length)
                         break;
-                    if (i == 1 && stock.kLineDay[currentIndex + i].startPrice > limitUpPrice
-                        && stock.kLineDay[currentIndex + i].endPrice > limitUpPrice
-                        && !stock.IsLimitUp(currentIndex + i))
+
+
+                    if (i == 1)
                     {
-                        dr["信号"] = "<a title=\"剑鞘\" >🗡</a>";
+                        if (stock.kLineDay[currentIndex + i].startPrice > limitUpPrice
+                            && stock.kLineDay[currentIndex + i].endPrice > limitUpPrice
+                            && !stock.IsLimitUp(currentIndex + i))
+                        {
+                            dr["信号"] = "<a title=\"剑鞘\" >🗡</a>";
+                        }
+
+                        double currentVol = stock.kLineDay[currentIndex + i].volume;
+                        double limitUpVol = stock.kLineDay[currentIndex].volume;
+                        if (Math.Abs(currentVol - limitUpVol) / limitUpVol <= 0.1)
+                        { 
+                            dr["信号"] = "<a title=\"平量\" >——</a>";
+                        }
+
                     }
+
                     double highPrice = stock.kLineDay[currentIndex + i].highestPrice;
                     maxPrice = Math.Max(maxPrice, highPrice);
                     dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
