@@ -324,6 +324,7 @@
         dt.Columns.Add("买入", Type.GetType("System.Double"));
         dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
+        dt.Columns.Add("MACD值", Type.GetType("System.String"));
         dt.Columns.Add("F3折返", Type.GetType("System.Double"));
 
         dt.Columns.Add("类型", Type.GetType("System.String"));
@@ -427,7 +428,7 @@
                     break;
                 }
             }
-
+            dr["MACD值"] = Math.Round(stock.kLineDay[currentIndex].dif, 2).ToString();
             dr["买入"] = buyPrice;
 
             dr["开盘"] = (stock.kLineDay[currentIndex].startPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
@@ -602,6 +603,7 @@
                    
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="MACD日" HeaderText="MACD日"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="MACD值" HeaderText="MACD值"></asp:BoundColumn>
                     <asp:BoundColumn DataField="布林宽" HeaderText="布林宽"></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号"></asp:BoundColumn>
                     
