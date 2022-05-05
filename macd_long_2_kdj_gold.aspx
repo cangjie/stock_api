@@ -303,7 +303,7 @@
         dt.Columns.Add("信号", Type.GetType("System.String"));
 
         dt.Columns.Add("KDJ金叉数", Type.GetType("System.Int32"));
-
+        dt.Columns.Add("MACD值", Type.GetType("System.String"));
 
         dt.Columns.Add("3线", Type.GetType("System.Double"));
         dt.Columns.Add("今涨", Type.GetType("System.Double"));
@@ -405,7 +405,7 @@
             dr["总计"] = (maxPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice;
 
             dr["信号"] = "";
-
+            dr["MACD值"] = Math.Round(stock.kLineDay[currentIndex].dif, 2).ToString();
             dt.Rows.Add(dr);
 
         }
@@ -560,6 +560,7 @@
                     <asp:BoundColumn DataField="MACD日" HeaderText="MACD日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ金叉数" HeaderText="KDJ金叉数"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="MACD值" HeaderText="MACD值"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
                     <asp:BoundColumn DataField="买入" HeaderText="买入"></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日" SortExpression="1日|desc" ></asp:BoundColumn>
