@@ -86,9 +86,9 @@
         {
             DataRow dr = dt.NewRow();
             //double settle = Math.Round((double)drOri["昨收"], 2);
-            double currentPrice = Math.Round((double)drOri["现价"], 2);
-            double lowPrice = Math.Round((double)drOri["前低"], 2);
-            double hightPrice =  Math.Round((double)drOri["现高"], 2);
+            double currentPrice = Math.Round((double)drOri["买入"], 2);
+            //double lowPrice = Math.Round((double)drOri["前低"], 2);
+            //double hightPrice =  Math.Round((double)drOri["现高"], 2);
             for (int i = 0; i < drArr[0].Table.Columns.Count; i++)
             {
 
@@ -185,8 +185,8 @@
                 }
             }
             string gid = dr["代码"].ToString();
-            dr["代码"] = "<a href=\"show_K_line_day.aspx?gid=" + gid.Trim() + "&maxprice=" + hightPrice.ToString() + "&minprice=" + lowPrice.ToString() + "\" target=\"_blank\" >" + dr["代码"].ToString() + "</a>";
-            dr["名称"] = "<a href=\"io_volume_detail.aspx?gid=" + gid.Trim() + "&date=" + calendar.SelectedDate.ToShortDateString() + "\" target=\"_blank\" >" + dr["名称"].ToString() + "</a>";
+            //dr["代码"] = "<a href=\"show_K_line_day.aspx?gid=" + gid.Trim() + "&maxprice=" + hightPrice.ToString() + "&minprice=" + lowPrice.ToString() + "\" target=\"_blank\" >" + dr["代码"].ToString() + "</a>";
+            //dr["名称"] = "<a href=\"io_volume_detail.aspx?gid=" + gid.Trim() + "&date=" + calendar.SelectedDate.ToShortDateString() + "\" target=\"_blank\" >" + dr["名称"].ToString() + "</a>";
             dt.Rows.Add(dr);
         }
         AddTotal(drArr, dt);
@@ -260,10 +260,10 @@
         drTotal["信号"] = "总计";
         drTotal["MACD日"] = totalCount.ToString();
 
-        DataRow drShit = dt.NewRow();
-        drShit["信号"] = "💩";
-        drShit["MACD日"] = shitCount.ToString();
-        drShit["KDJ日"] = Math.Round(100 * (double)shitCount / (double)drOriArr.Length, 2).ToString() + "%";
+        //DataRow drShit = dt.NewRow();
+        //drShit["信号"] = "💩";
+        //drShit["MACD日"] = shitCount.ToString();
+        //drShit["KDJ日"] = Math.Round(100 * (double)shitCount / (double)drOriArr.Length, 2).ToString() + "%";
 
         DataRow drRaise = dt.NewRow();
         drRaise["信号"] = "📈";
@@ -285,7 +285,7 @@
         }
 
         dt.Rows.Add(drTotal);
-        dt.Rows.Add(drShit);
+        //dt.Rows.Add(drShit);
         dt.Rows.Add(drRaise);
         dt.Rows.Add(drFire);
         dt.Rows.Add(drStar);
@@ -303,7 +303,7 @@
         dt.Columns.Add("信号", Type.GetType("System.String"));
         dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
         dt.Columns.Add("涨幅", Type.GetType("System.Int32"));
-        dt.Columns.Add("买入", Type.GetType("System.Int32"));
+        dt.Columns.Add("买入", Type.GetType("System.Double"));
 
         for (int i = 0; i <= 10; i++)
         {
@@ -399,13 +399,7 @@
 
                 if (currentIndex + i >= stock.kLineDay.Length)
                     break;
-                if (i == 1
-                    && stock.kLineDay[currentIndex].startPrice > stock.kLineDay[currentIndex].endPrice
-                    && stock.kLineDay[currentIndex + i].startPrice < stock.kLineDay[currentIndex + i].endPrice
-                    && stock.kLineDay[currentIndex + i].volume > Math.Max(stock.kLineDay[currentIndex].volume, stock.kLineDay[currentIndex - 1].volume))
-                {
-                    dr["信号"] = dr["信号"].ToString() + "<a title=\"红绿灯量反包\" >🚥</a>";
-                }
+                
                 double highPrice = stock.kLineDay[currentIndex + i].highestPrice;
                 maxPrice = Math.Max(maxPrice, highPrice);
                 dr[i.ToString() + "日"] = (highPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice;
@@ -565,21 +559,13 @@
                     
                     <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="缩量" HeaderText="缩量"></asp:BoundColumn>
+                    
                     <asp:BoundColumn DataField="MACD日" HeaderText="MACD日"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="布林宽" HeaderText="布林宽"></asp:BoundColumn>
+                   
                     <asp:BoundColumn DataField="信号" HeaderText="信号"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="现高" HeaderText="现高"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="F5" HeaderText="F5"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="前低" HeaderText="前低"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="幅度" HeaderText="幅度"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="现价" HeaderText="现价"></asp:BoundColumn>
+                    <!--asp:BoundColumn DataField="涨幅" HeaderText="涨幅"  ></!--asp:BoundColumn-->
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
-                    <asp:BoundColumn DataField="涨幅" HeaderText="涨幅"  ></asp:BoundColumn>
-                    <asp:BoundColumn DataField="今涨" HeaderText="今涨"  ></asp:BoundColumn>
+                    
                     <asp:BoundColumn DataField="0日" HeaderText="0日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="1日" HeaderText="1日" SortExpression="1日|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="2日" HeaderText="2日"></asp:BoundColumn>
