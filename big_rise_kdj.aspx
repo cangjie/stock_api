@@ -302,7 +302,7 @@
         dt.Columns.Add("名称", Type.GetType("System.String"));
         dt.Columns.Add("信号", Type.GetType("System.String"));
         dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
-        dt.Columns.Add("涨幅", Type.GetType("System.Int32"));
+        dt.Columns.Add("涨幅", Type.GetType("System.String"));
         dt.Columns.Add("买入", Type.GetType("System.Double"));
 
         for (int i = 0; i <= 10; i++)
@@ -386,7 +386,7 @@
 
             dr["MACD日"] = stock.macdDays(currentIndex);
 
-            dr["涨幅"] = (highestPrice - stock.kLineDay[lowestIndex].lowestPrice) / stock.kLineDay[lowestIndex].lowestPrice;
+            dr["涨幅"] = Math.Round(100*(highestPrice - stock.kLineDay[lowestIndex].lowestPrice) / stock.kLineDay[lowestIndex].lowestPrice, 2).ToString()+"%";
 
 
 
@@ -563,7 +563,7 @@
                     <asp:BoundColumn DataField="MACD日" HeaderText="MACD日"></asp:BoundColumn>
                    
                     <asp:BoundColumn DataField="信号" HeaderText="信号"></asp:BoundColumn>
-                    <!--asp:BoundColumn DataField="涨幅" HeaderText="涨幅"  ></!--asp:BoundColumn-->
+                    <asp:BoundColumn DataField="涨幅" HeaderText="涨幅"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
                     
                     <asp:BoundColumn DataField="0日" HeaderText="0日"></asp:BoundColumn>
