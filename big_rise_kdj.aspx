@@ -277,7 +277,7 @@
         drFire["MACD日"] = fireCount.ToString();
         DataRow drStar = dt.NewRow();
         drStar["信号"] = "🌟";
-        drStar["MACD日"] = starCount.ToString();
+        drStar["KDJ日"] = starCount.ToString();
 
         for (int i = 1; i < 7; i++)
         {
