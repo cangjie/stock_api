@@ -262,7 +262,7 @@
 
         DataRow drTotal = dt.NewRow();
         drTotal["信号"] = "总计";
-        drTotal["MACD日"] = totalCount.ToString();
+        drTotal["KDJ日"] = totalCount.ToString();
 
         //DataRow drShit = dt.NewRow();
         //drShit["信号"] = "💩";
@@ -271,10 +271,10 @@
 
         DataRow drRaise = dt.NewRow();
         drRaise["信号"] = "📈";
-        drRaise["MACD日"] = raiseCount.ToString();
+        drRaise["KDJ日"] = raiseCount.ToString();
         DataRow drFire = dt.NewRow();
         drFire["信号"] = "🔥";
-        drFire["MACD日"] = fireCount.ToString();
+        drFire["KDJ日"] = fireCount.ToString();
         DataRow drStar = dt.NewRow();
         drStar["信号"] = "🌟";
         drStar["KDJ日"] = starCount.ToString();
