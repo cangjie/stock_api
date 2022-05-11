@@ -10,11 +10,15 @@
 
     public string sort = "缩量";
 
+    public string width = "40";
+
+
 
 
     protected void Page_Load(object sender, EventArgs e)
     {
         sort = Util.GetSafeRequestValue(Request, "sort", "MACD日 desc");
+        width = Util.GetSafeRequestValue(Request, "width", "40");
         if (!IsPostBack)
         {
 
@@ -293,7 +297,7 @@
 
     }
 
-    public static DataTable GetData(DateTime currentDate, int days)
+    public  DataTable GetData(DateTime currentDate, int days)
     {
         currentDate = Util.GetDay(currentDate);
         DataTable dt = new DataTable();
@@ -386,7 +390,14 @@
 
             dr["MACD日"] = stock.macdDays(currentIndex);
 
-            dr["涨幅"] = Math.Round(100*(highestPrice - stock.kLineDay[lowestIndex].lowestPrice) / stock.kLineDay[lowestIndex].lowestPrice, 2).ToString()+"%";
+            double rise = Math.Round(100 * (highestPrice - stock.kLineDay[lowestIndex].lowestPrice) / stock.kLineDay[lowestIndex].lowestPrice, 2);
+
+            if (rise < double.Parse(width))
+            {
+                continue;
+            }
+
+            dr["涨幅"] = rise.ToString()+"%";
 
 
 
@@ -399,14 +410,14 @@
 
                 if (currentIndex + i >= stock.kLineDay.Length)
                     break;
-                
+
                 double highPrice = stock.kLineDay[currentIndex + i].highestPrice;
                 maxPrice = Math.Max(maxPrice, highPrice);
                 dr[i.ToString() + "日"] = (highPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice;
             }
             dr["总计"] = (maxPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice;
 
-            
+
 
             dt.Rows.Add(dr);
 
