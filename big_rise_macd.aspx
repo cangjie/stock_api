@@ -305,7 +305,7 @@
         dt.Columns.Add("代码", Type.GetType("System.String"));
         dt.Columns.Add("名称", Type.GetType("System.String"));
         dt.Columns.Add("信号", Type.GetType("System.String"));
-        dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
+        dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
         dt.Columns.Add("涨幅", Type.GetType("System.String"));
         dt.Columns.Add("买入", Type.GetType("System.Double"));
 
@@ -347,8 +347,8 @@
             if (currentIndex < 1 || currentIndex >= stock.kLineDay.Length)
                 continue;
 
-            int kdjDays = stock.kdjDays(currentIndex);
-            if (kdjDays != 0)
+            int macdDays = stock.macdDays(currentIndex);
+            if (macdDays != 0)
             {
                 continue;
             }
@@ -365,16 +365,16 @@
                 }
             }
 
-            int kdjChangeTimes = 0;
+            int macdChangeTimes = 0;
 
             for (int i = highestIndex + 1; i < currentIndex; i++)
             {
-                if (stock.kdjDays(i - 1) >= 0 && stock.kdjDays(i) < 0)
+                if (stock.macdDays(i - 1) >= 0 && stock.macdDays(i) < 0)
                 {
-                    kdjChangeTimes++;
+                    macdChangeTimes++;
                 }
             }
-            if (kdjChangeTimes != 1)
+            if (macdChangeTimes != 1)
             {
                 continue;
             }
@@ -386,7 +386,7 @@
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
 
-            dr["MACD日"] = stock.macdDays(currentIndex);
+            dr["KDJ日"] = stock.kdjDays(currentIndex);
 
             double rise = Math.Round(100 * (highestPrice - stock.kLineDay[lowestIndex].lowestPrice) / stock.kLineDay[lowestIndex].lowestPrice, 2);
 
@@ -542,7 +542,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title>30%以上的涨幅后，KDJ死叉后再金叉</title>
+    <title>30%以上的涨幅后，MACD死叉后再金叉</title>
 </head>
 <body>
     <form id="form2" runat="server">
@@ -570,7 +570,7 @@
                     <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                     
-                    <asp:BoundColumn DataField="MACD日" HeaderText="MACD日"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日"></asp:BoundColumn>
                    
                     <asp:BoundColumn DataField="信号" HeaderText="信号"></asp:BoundColumn>
                     <asp:BoundColumn DataField="涨幅" HeaderText="涨幅"  ></asp:BoundColumn>
