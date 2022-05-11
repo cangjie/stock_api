@@ -319,9 +319,6 @@
             return dt;
         }
 
-        //DateTime lastTransactDate = Util.GetLastTransactDate(currentDate, 2);
-        //DateTime limitUpStartDate = Util.GetLastTransactDate(lastTransactDate, 30);
-
         DataTable dtOri = DBHelper.GetDataTable(" select  * from alert_big_rise where "
             + "  alert_date >= '" + Util.GetLastTransactDate(currentDate,20).ToShortDateString() + "' "
 
@@ -403,6 +400,7 @@
 
             dr["买入"] = stock.kLineDay[currentIndex].endPrice;
 
+            dr["0日"] = (stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
 
             double maxPrice = 0;
             for (int i = 1; i <= 10; i++)
