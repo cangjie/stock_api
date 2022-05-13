@@ -262,22 +262,22 @@
 
         DataRow drTotal = dt.NewRow();
         drTotal["信号"] = "总计";
-        drTotal["KDJ日"] = totalCount.ToString();
+        drTotal["MACD日"] = totalCount.ToString();
 
         //DataRow drShit = dt.NewRow();
         //drShit["信号"] = "💩";
         //drShit["MACD日"] = shitCount.ToString();
-        //drShit["KDJ日"] = Math.Round(100 * (double)shitCount / (double)drOriArr.Length, 2).ToString() + "%";
+        //drShit["MACD日"] = Math.Round(100 * (double)shitCount / (double)drOriArr.Length, 2).ToString() + "%";
 
         DataRow drRaise = dt.NewRow();
         drRaise["信号"] = "📈";
-        drRaise["KDJ日"] = raiseCount.ToString();
+        drRaise["MACD日"] = raiseCount.ToString();
         DataRow drFire = dt.NewRow();
         drFire["信号"] = "🔥";
-        drFire["KDJ日"] = fireCount.ToString();
+        drFire["MACD日"] = fireCount.ToString();
         DataRow drStar = dt.NewRow();
         drStar["信号"] = "🌟";
-        drStar["KDJ日"] = starCount.ToString();
+        drStar["MACD日"] = starCount.ToString();
 
         for (int i = 1; i < 7; i++)
         {
