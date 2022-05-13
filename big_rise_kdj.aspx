@@ -321,7 +321,7 @@
 
         DataTable dtOri = DBHelper.GetDataTable(" select  * from alert_big_rise where "
             + "  alert_date >= '" + Util.GetLastTransactDate(currentDate, 20).ToShortDateString() + "' "
-            + " and alert_date < '" + Util.GetLastTransactDate(currentDate, 2).ToShortDateString() + "'  "
+            + " and alert_date < '" + Util.GetLastTransactDate(currentDate, 5).ToShortDateString() + "'  "
 
             );
 
