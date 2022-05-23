@@ -538,7 +538,7 @@
                 }
             }
 
-            if (dr["信号"].ToString().IndexOf("🚩") < 0 || dr["信号"].ToString().IndexOf("🆙") < 0)
+            if (dr["信号"].ToString().IndexOf("🚩") < 0 && dr["信号"].ToString().IndexOf("🆙") < 0)
             {
                 continue;
             }
