@@ -4,11 +4,11 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        DateTime startDate = DateTime.Parse("2021-1-1").Date;
+        DateTime startDate = DateTime.Parse("2022-4-11").Date;
         startDate = Util.GetLastTransactDate(startDate, 1);
-        DateTime endDate =  DateTime.Parse("2021-12-31").Date;
+        DateTime endDate =  DateTime.Parse("2022-5-17").Date;
 
-        endDate = Util.GetLastTransactDate(endDate, 1);
+        //endDate = Util.GetLastTransactDate(endDate, 1);
         double targetWidth = 0.3;
         string[] gidArr = Util.GetAllGids();
         for (int i = 0; i < gidArr.Length; i++)

@@ -5,10 +5,24 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        DateTime startDate = DateTime.Parse("2021-1-1").Date;
+        DateTime startDate = DateTime.Parse("2022-3-15").Date;
         startDate = Util.GetLastTransactDate(startDate, 1);
-        DateTime endDate =  DateTime.Parse("2022-5-10").Date;
+        DateTime endDate =  DateTime.Parse("2022-5-17").Date;
         //endDate = Util.GetLastTransactDate(endDate, 1);
+
+        startDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "start", DateTime.Now.ToShortDateString()));
+
+        if (!Util.IsTransacDay(startDate))
+        {
+            Response.End();
+        }
+
+        endDate = DateTime.Parse(Util.GetSafeRequestValue(Request, "end", startDate.ToShortDateString()));
+        if (!Util.IsTransacDay(endDate))
+        {
+            endDate = Util.GetLastTransactDate(endDate, 1);
+        }
+
 
         double targetWidth = 0.3;
 
@@ -20,7 +34,7 @@
             s.LoadKLineDay(Util.rc);
             int startIndex = s.GetItemIndex(startDate);
             int endIndex = s.GetItemIndex(endDate);
-            if (startIndex <= 5 || endIndex <= startIndex || endIndex <= 5)
+            if (startIndex <= 5 || endIndex < startIndex || endIndex <= 5)
             {
                 continue;
             }
@@ -59,7 +73,7 @@
                                 dt.Dispose();
 
                             }
-                          
+
 
                         }
 
