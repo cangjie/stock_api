@@ -322,7 +322,7 @@
         DataTable dtOri = DBHelper.GetDataTable(" select  * from alert_big_rise where "
             + "  alert_date >= '" + Util.GetLastTransactDate(currentDate, 20).ToShortDateString() + "' "
             + " and alert_date < '" + Util.GetLastTransactDate(currentDate, 5).ToShortDateString() + "'  "
-            + " and exists ( select 'a' from alert_macd where alert_macd.gid = alert_big_rise.gid and alert_macd.alert_date = '" + currentDate.ToShortDateString() + "'  ) "
+            + " and exists ( select 'a' from alert_macd where alert_macd.gid = alert_big_rise.gid and alert_macd.alert_time = '" + currentDate.ToShortDateString() + " 15:00:00'  ) "
             );
 
         foreach (DataRow drOri in dtOri.Rows)
