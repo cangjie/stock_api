@@ -51,7 +51,7 @@
 
 
             int alertIndex = s.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
-            if (alertIndex < 200)
+            if (alertIndex < 400)
             {
                 continue;
             }
@@ -63,7 +63,7 @@
 
             double highPrice = s.kLineDay[alertIndex].highestPrice;
 
-            for (int i = 1; i <= 200; i++)
+            for (int i = 1; i <= 400; i++)
             {
                 if (s.kLineDay[alertIndex - i].highestPrice > highPrice)
                 {
