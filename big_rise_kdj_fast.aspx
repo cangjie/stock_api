@@ -379,6 +379,15 @@
                 continue;
             }
 
+            bool isNewHigh = true;
+            for (int i = highestIndex - 1; i >= Math.Max(0, highestIndex - 50); i--)
+            {
+                if (stock.kLineDay[i].highestPrice > highestPrice)
+                {
+                    isNewHigh = false;
+                    break;
+                }
+            }
 
 
             DataRow dr = dt.NewRow();
@@ -416,7 +425,10 @@
             }
             dr["总计"] = (maxPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice;
 
-
+            if (isNewHigh)
+            {
+                dr["信号"] = "<a title=\"三月新高\" href=\"#\" >📈</a>";
+            }
 
             dt.Rows.Add(dr);
 
