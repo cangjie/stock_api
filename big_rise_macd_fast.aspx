@@ -106,13 +106,16 @@
                         case "KDJ率":
                             dr[i] = Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2).ToString();
                             break;
+
                         case "买入":
                             double buyPrice = Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2);
                             dr[i] = "<font color=\"" + ((buyPrice > currentPrice) ? "red" : ((buyPrice == currentPrice) ? "gray" : "green")) + "\" >" + Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2).ToString() + "</font>";
                             break;
+                        /*
                         case "F3":
                         case "F5":
                             double currentValuePrice2 = (double)drOri[i];
+                            
                             if (drOri["类型"].ToString().Trim().Equals(drArr[0].Table.Columns[i].Caption.Trim()))
                             {
                                 dr[i] = "<font color=\"red\"  >"
@@ -123,8 +126,10 @@
                                 dr[i] = "<font color=\"green\"  >"
                                 + Math.Round(currentValuePrice2, 2).ToString() + "</font>";
                             }
+                            
 
                             break;
+                        */
                         case "今开":
                         case "现价":
                         case "前低":
@@ -133,6 +138,8 @@
                         case "3线":
                         case "无影":
                         case "红绿灯价":
+                        case "F3":
+                        case "F5":
                             double currentValuePrice = (double)drOri[i];
                             dr[i] = "<font color=\"" + (currentValuePrice > currentPrice ? "red" : (currentValuePrice == currentPrice ? "gray" : "green")) + "\"  >"
                                 + Math.Round(currentValuePrice, 2).ToString() + "</font>";
@@ -309,6 +316,11 @@
         dt.Columns.Add("涨幅", Type.GetType("System.String"));
         dt.Columns.Add("买入", Type.GetType("System.Double"));
 
+        dt.Columns.Add("前低", Type.GetType("System.Double"));
+        dt.Columns.Add("F5", Type.GetType("System.Double"));
+        dt.Columns.Add("F3", Type.GetType("System.Double"));
+        dt.Columns.Add("现高", Type.GetType("System.Double"));
+
         for (int i = 0; i <= 10; i++)
         {
             dt.Columns.Add(i.ToString() + "日", Type.GetType("System.Double"));
@@ -389,6 +401,12 @@
                 }
             }
 
+            double lowestPrice = stock.kLineDay[lowestIndex].lowestPrice;
+
+            double f3 = highestPrice - (highestPrice - lowestPrice) * 0.382;
+            double f5 = highestPrice - (highestPrice - lowestPrice) * 0.618;
+
+
 
 
             DataRow dr = dt.NewRow();
@@ -407,7 +425,10 @@
 
             dr["涨幅"] = rise.ToString()+"%";
 
-
+            dr["前低"] = lowestPrice;
+            dr["F3"] = f3;
+            dr["F5"] = f5;
+            dr["现高"] = highestPrice;
 
             dr["买入"] = stock.kLineDay[currentIndex].endPrice;
 
@@ -429,6 +450,16 @@
             if (isNewHigh)
             {
                 dr["信号"] = "<a title=\"三月新高\" href=\"#\" >📈</a>";
+            }
+
+
+            for (int j = currentIndex - 1; j >= highestPrice; j--)
+            {
+                if (stock.kLineDay[j].lowestPrice <= f3)
+                { 
+                    dr["信号"] = dr["信号"].ToString() +  "<a title=\"跌破F3\" href=\"#\" >🌟</a>";
+                    break;
+                }
             }
 
             dt.Rows.Add(dr);
@@ -582,10 +613,14 @@
                     
                     <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
-                    
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日"></asp:BoundColumn>
-                   
                     <asp:BoundColumn DataField="信号" HeaderText="信号"></asp:BoundColumn>
+
+
+                    <asp:BoundColumn DataField="前低" HeaderText="前低"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="F5" HeaderText="F5"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="现高" HeaderText="现高"></asp:BoundColumn>
                     <asp:BoundColumn DataField="涨幅" HeaderText="涨幅"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
                     

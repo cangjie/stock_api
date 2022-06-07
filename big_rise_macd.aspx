@@ -17,6 +17,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
+        Response.Redirect("big_rise_macd_fast.aspx", true);
         sort = Util.GetSafeRequestValue(Request, "sort", "0日 desc");
         width = Util.GetSafeRequestValue(Request, "width", "40");
         if (!IsPostBack)
