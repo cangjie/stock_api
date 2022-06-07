@@ -449,7 +449,7 @@
 
             if (isNewHigh)
             {
-                dr["信号"] = "<a title=\"三月新高\" href=\"#\" >📈</a>";
+                dr["信号"] = "<a title=\"三月新高\"  >📈</a>";
             }
 
 
@@ -457,7 +457,7 @@
             {
                 if (stock.kLineDay[j].lowestPrice <= f3)
                 { 
-                    dr["信号"] = dr["信号"].ToString() +  "<a title=\"跌破F3\" href=\"#\" >🌟</a>";
+                    dr["信号"] = dr["信号"].ToString() +  "<a title=\"跌破F3\" >🌟</a>";
                     break;
                 }
             }
