@@ -334,7 +334,7 @@
         DataTable dtOri = DBHelper.GetDataTable(" select  * from alert_big_rise where "
             + "  alert_date >= '" + Util.GetLastTransactDate(currentDate, 40).ToShortDateString() + "' "
             + " and alert_date < '" + Util.GetLastTransactDate(currentDate, 5).ToShortDateString() + "'  "
-            + " and exists ( select 'a' from limit_up where limit_up.gid = alert_big_rise.gid and limit_up.alert_date = '" + currentDate.ToShortDateString() + "'  ) "
+            + " and exists ( select 'a' from limit_up where limit_up.gid = alert_big_rise.gid and limit_up.alert_date = '" + Util.GetLastTransactDate(currentDate, 1).ToShortDateString() + "'  ) "
             );
 
         foreach (DataRow drOri in dtOri.Rows)
@@ -359,12 +359,12 @@
             if (currentIndex < 1 || currentIndex >= stock.kLineDay.Length)
                 continue;
 
-            if (!stock.IsLimitUp(currentIndex))
+            if (!stock.IsLimitUp(currentIndex - 1))
             {
                 continue;
             }
 
-            if (stock.kLineDay[currentIndex].lowestPrice >= stock.GetAverageSettlePrice(currentIndex, 3, 3))
+            if (stock.kLineDay[currentIndex - 1].lowestPrice >= stock.GetAverageSettlePrice(currentIndex - 1, 3, 3))
             {
                 continue;
             }
@@ -372,10 +372,7 @@
 
 
             int macdDays = stock.macdDays(currentIndex);
-            if (macdDays != 0)
-            {
-                continue;
-            }
+            
 
             int lowestIndex = stock.GetItemIndex(DateTime.Parse(drOri["low_date"].ToString()));
             int highestIndex = stock.GetItemIndex(alertDate);
@@ -398,6 +395,7 @@
                     macdChangeTimes++;
                 }
             }
+           
             if (macdChangeTimes != 1)
             {
                 continue;
@@ -420,7 +418,7 @@
             double f3 = highestPrice - (highestPrice - lowestPrice) * 0.382;
             double f5 = highestPrice - (highestPrice - lowestPrice) * 0.618;
 
-
+            double buyPrice = stock.kLineDay[currentIndex].startPrice;
 
 
             DataRow dr = dt.NewRow();
@@ -444,7 +442,7 @@
             dr["F5"] = f5;
             dr["现高"] = highestPrice;
 
-            dr["买入"] = stock.kLineDay[currentIndex].endPrice;
+            dr["买入"] = buyPrice;
 
             dr["0日"] = (stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
 
@@ -457,9 +455,9 @@
 
                 double highPrice = stock.kLineDay[currentIndex + i].highestPrice;
                 maxPrice = Math.Max(maxPrice, highPrice);
-                dr[i.ToString() + "日"] = (highPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice;
+                dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
             }
-            dr["总计"] = (maxPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice;
+            dr["总计"] = (maxPrice - buyPrice) / buyPrice;
 
             if (isNewHigh)
             {
@@ -600,7 +598,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title>30%以上的涨幅后，MACD死叉后再金叉</title>
+    <title>30%以上的涨幅后下跌，继而涨停过3线</title>
 </head>
 <body>
     <form id="form2" runat="server">
