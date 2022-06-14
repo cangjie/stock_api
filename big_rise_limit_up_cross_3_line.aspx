@@ -402,7 +402,7 @@
             }
 
             bool isNewHigh = true;
-            for (int i = highestIndex - 1; i >= Math.Max(0, highestIndex - 50); i--)
+            for (int i = highestIndex - 1; i >= Math.Max(0, highestIndex - 70); i--)
             {
                 if (stock.kLineDay[i].highestPrice > highestPrice)
                 {
