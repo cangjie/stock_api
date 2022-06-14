@@ -17,7 +17,6 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        Response.Redirect("big_rise_macd_fast.aspx", true);
         sort = Util.GetSafeRequestValue(Request, "sort", "0日 desc");
         width = Util.GetSafeRequestValue(Request, "width", "40");
         if (!IsPostBack)
@@ -107,13 +106,16 @@
                         case "KDJ率":
                             dr[i] = Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2).ToString();
                             break;
+
                         case "买入":
                             double buyPrice = Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2);
                             dr[i] = "<font color=\"" + ((buyPrice > currentPrice) ? "red" : ((buyPrice == currentPrice) ? "gray" : "green")) + "\" >" + Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2).ToString() + "</font>";
                             break;
+                        /*
                         case "F3":
                         case "F5":
                             double currentValuePrice2 = (double)drOri[i];
+                            
                             if (drOri["类型"].ToString().Trim().Equals(drArr[0].Table.Columns[i].Caption.Trim()))
                             {
                                 dr[i] = "<font color=\"red\"  >"
@@ -124,8 +126,10 @@
                                 dr[i] = "<font color=\"green\"  >"
                                 + Math.Round(currentValuePrice2, 2).ToString() + "</font>";
                             }
+                            
 
                             break;
+                        */
                         case "今开":
                         case "现价":
                         case "前低":
@@ -134,6 +138,8 @@
                         case "3线":
                         case "无影":
                         case "红绿灯价":
+                        case "F3":
+                        case "F5":
                             double currentValuePrice = (double)drOri[i];
                             dr[i] = "<font color=\"" + (currentValuePrice > currentPrice ? "red" : (currentValuePrice == currentPrice ? "gray" : "green")) + "\"  >"
                                 + Math.Round(currentValuePrice, 2).ToString() + "</font>";
@@ -310,6 +316,11 @@
         dt.Columns.Add("涨幅", Type.GetType("System.String"));
         dt.Columns.Add("买入", Type.GetType("System.Double"));
 
+        dt.Columns.Add("前低", Type.GetType("System.Double"));
+        dt.Columns.Add("F5", Type.GetType("System.Double"));
+        dt.Columns.Add("F3", Type.GetType("System.Double"));
+        dt.Columns.Add("现高", Type.GetType("System.Double"));
+
         for (int i = 0; i <= 10; i++)
         {
             dt.Columns.Add(i.ToString() + "日", Type.GetType("System.Double"));
@@ -321,9 +332,9 @@
         }
 
         DataTable dtOri = DBHelper.GetDataTable(" select  * from alert_big_rise where "
-            + "  alert_date >= '" + Util.GetLastTransactDate(currentDate, 20).ToShortDateString() + "' "
+            + "  alert_date >= '" + Util.GetLastTransactDate(currentDate, 40).ToShortDateString() + "' "
             + " and alert_date < '" + Util.GetLastTransactDate(currentDate, 5).ToShortDateString() + "'  "
-
+            + " and exists ( select 'a' from limit_up where limit_up.gid = alert_big_rise.gid and limit_up.alert_date = '" + Util.GetLastTransactDate(currentDate, 1).ToShortDateString() + "'  ) "
             );
 
         foreach (DataRow drOri in dtOri.Rows)
@@ -348,11 +359,20 @@
             if (currentIndex < 1 || currentIndex >= stock.kLineDay.Length)
                 continue;
 
-            int macdDays = stock.macdDays(currentIndex);
-            if (macdDays != 0)
+            if (!stock.IsLimitUp(currentIndex - 1))
             {
                 continue;
             }
+
+            if (stock.kLineDay[currentIndex - 1].lowestPrice >= stock.GetAverageSettlePrice(currentIndex - 1, 3, 3))
+            {
+                continue;
+            }
+
+
+
+            int macdDays = stock.macdDays(currentIndex);
+            
 
             int lowestIndex = stock.GetItemIndex(DateTime.Parse(drOri["low_date"].ToString()));
             int highestIndex = stock.GetItemIndex(alertDate);
@@ -375,11 +395,30 @@
                     macdChangeTimes++;
                 }
             }
+           
             if (macdChangeTimes != 1)
             {
                 continue;
             }
 
+            bool isNewHigh = true;
+            for (int i = highestIndex - 1; i >= Math.Max(0, highestIndex - 50); i--)
+            {
+                if (stock.kLineDay[i].highestPrice > highestPrice)
+                {
+                    isNewHigh = false;
+                    break;
+                }
+            }
+
+            
+
+            double lowestPrice = stock.kLineDay[lowestIndex].lowestPrice;
+
+            double f3 = highestPrice - (highestPrice - lowestPrice) * 0.382;
+            double f5 = highestPrice - (highestPrice - lowestPrice) * 0.618;
+
+            double buyPrice = stock.kLineDay[currentIndex].startPrice;
 
 
             DataRow dr = dt.NewRow();
@@ -398,9 +437,12 @@
 
             dr["涨幅"] = rise.ToString()+"%";
 
+            dr["前低"] = lowestPrice;
+            dr["F3"] = f3;
+            dr["F5"] = f5;
+            dr["现高"] = highestPrice;
 
-
-            dr["买入"] = stock.kLineDay[currentIndex].endPrice;
+            dr["买入"] = buyPrice;
 
             dr["0日"] = (stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
 
@@ -413,11 +455,24 @@
 
                 double highPrice = stock.kLineDay[currentIndex + i].highestPrice;
                 maxPrice = Math.Max(maxPrice, highPrice);
-                dr[i.ToString() + "日"] = (highPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice;
+                dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
             }
-            dr["总计"] = (maxPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice;
+            dr["总计"] = (maxPrice - buyPrice) / buyPrice;
+
+            if (isNewHigh)
+            {
+                dr["信号"] = "<a title=\"三月新高\"  >📈</a>";
+            }
 
 
+            for (int j = currentIndex - 1; j >= highestPrice; j--)
+            {
+                if (stock.kLineDay[j].lowestPrice <= f3)
+                {
+                    dr["信号"] = dr["信号"].ToString() +  "<a title=\"跌破F3\" >🌟</a>";
+                    break;
+                }
+            }
 
             dt.Rows.Add(dr);
 
@@ -543,7 +598,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title>30%以上的涨幅后，MACD死叉后再金叉</title>
+    <title>30%以上的涨幅后下跌，继而涨停过3线</title>
 </head>
 <body>
     <form id="form2" runat="server">
@@ -570,10 +625,14 @@
                     
                     <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
-                    
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日"></asp:BoundColumn>
-                   
                     <asp:BoundColumn DataField="信号" HeaderText="信号"></asp:BoundColumn>
+
+
+                    <asp:BoundColumn DataField="前低" HeaderText="前低"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="F5" HeaderText="F5"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="现高" HeaderText="现高"></asp:BoundColumn>
                     <asp:BoundColumn DataField="涨幅" HeaderText="涨幅"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
                     
