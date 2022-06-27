@@ -312,6 +312,7 @@
         dt.Columns.Add("代码", Type.GetType("System.String"));
         dt.Columns.Add("名称", Type.GetType("System.String"));
         dt.Columns.Add("信号", Type.GetType("System.String"));
+        dt.Columns.Add("放量", Type.GetType("System.String"));
         dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
         dt.Columns.Add("涨幅", Type.GetType("System.String"));
         dt.Columns.Add("买入", Type.GetType("System.Double"));
@@ -431,7 +432,7 @@
 
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
-
+            dr["放量"] = Math.Round(100 * stock.kLineDay[currentIndex].volume/stock.kLineDay[currentIndex - 1].volume, 2).ToString() + "%";
             dr["KDJ日"] = stock.kdjDays(currentIndex);
 
             double rise = Math.Round(100 * (highestPrice - stock.kLineDay[lowestIndex].lowestPrice) / stock.kLineDay[lowestIndex].lowestPrice, 2);
@@ -610,6 +611,7 @@
     <form id="form2" runat="server">
     <div>
         <table width="100%" >
+
             <tr>
                 <td><asp:Button runat="server" ID="btnDownload" Text=" 下 载 " OnClick="btnDownload_Click" /></td>
             </tr>
@@ -634,6 +636,7 @@
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号"></asp:BoundColumn>
 
+                    <asp:BoundColumn DataField="放量" HeaderText="放量"></asp:BoundColumn>
 
                     <asp:BoundColumn DataField="前低" HeaderText="前低"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F5" HeaderText="F5"></asp:BoundColumn>
