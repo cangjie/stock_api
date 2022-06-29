@@ -36,6 +36,13 @@
             dt.Rows.Add(dr);
         }
 
+        DataRow drVolEqual = dt.NewRow();
+        drVolEqual["板数"] = "2板平量";
+        drVolEqual["数量"] = "0";
+        drVolEqual["连板数"] = "0";
+        drVolEqual["连板率"] = "0";
+        dt.Rows.Add(drVolEqual);
+
         foreach (DataRow drLimitUp in dtLimitUp.Rows)
         {
             Stock s = new Stock(drLimitUp["gid"].ToString().Trim());
@@ -60,6 +67,18 @@
             if (limitUp <= 1 || limitUp > totalLimNum)
             {
                 continue;
+            }
+            if (limitUp > 1 && (  Math.Abs(s.kLineDay[currentIndex].volume - s.kLineDay[currentIndex - 1].volume) / s.kLineDay[currentIndex - 1].volume < 0.1  ))
+            {
+                int numV = int.Parse(dt.Rows[dt.Rows.Count - 1]["数量"].ToString());
+                int sucV = int.Parse(dt.Rows[dt.Rows.Count - 1]["连板数"].ToString());
+                numV++;
+                dt.Rows[dt.Rows.Count - 1]["数量"] = numV.ToString();
+                if (s.IsLimitUp(currentIndex + 1))
+                {
+                    sucV++;
+                }
+                dt.Rows[dt.Rows.Count - 1]["连板数"] = sucV.ToString();
             }
             int num = 0;
             int suc = 0;
