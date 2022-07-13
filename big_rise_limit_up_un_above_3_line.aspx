@@ -392,7 +392,7 @@
                     highestIndex = i;
                 }
             }
-
+            /*
             int macdChangeTimes = 0;
 
             for (int i = highestIndex + 1; i < currentIndex; i++)
@@ -407,7 +407,7 @@
             {
                 continue;
             }
-
+            */
             bool isNewHigh = true;
             for (int i = highestIndex - 1; i >= Math.Max(0, highestIndex - 50); i--)
             {
