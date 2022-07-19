@@ -310,7 +310,7 @@
 
         string timeStamp = Util.GetLongTimeStamp(currentDate.AddDays(1));
 
-        DataTable dtTime = DBHelper.GetDataTable(" select max(batch_id) from pool where batch_id < '" + timeStamp + "' ");
+        DataTable dtTime = DBHelper.GetDataTable(" select max(batch_id) from pool ");// where batch_id < '" + timeStamp + "' ");
 
         if (dtTime.Rows.Count > 0)
         {
