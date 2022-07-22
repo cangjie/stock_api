@@ -351,13 +351,6 @@
 
             Stock stock = new Stock(drOri["gid"].ToString().Trim(), Util.rc);
 
-
-            if (stock.gid.Trim().Equals("sz000546"))
-            {
-                string a = "a";
-            }
-
-
             stock.LoadKLineDay(Util.rc);
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
@@ -384,8 +377,13 @@
             if (currentIndex < 1 || currentIndex >= stock.kLineDay.Length)
                 continue;
 
-            if (stock.GetAverageSettlePrice(currentIndex - 1, 3, 3) <= stock.kLineDay[currentIndex - 1].endPrice
-                || stock.GetAverageSettlePrice(currentIndex, 3, 3) >= stock.kLineDay[currentIndex].endPrice)
+            
+            if (currentIndex - 2 < anchorIndex)
+            {
+                continue;
+            }
+
+            if (!stock.IsLimitUp(currentIndex - 2) || !stock.IsLimitUp(currentIndex - 1))
             {
                 continue;
             }
@@ -401,11 +399,7 @@
                 }
             }
 
-            if (cross3LineTimes > 0)
-            {
-                continue;
-            }
-
+         
 
 
 
@@ -425,8 +419,8 @@
             dr["KDJ日"] = stock.kdjDays(currentIndex);
 
 
-
-            dr["买入"] = stock.kLineDay[currentIndex].endPrice;
+            double buyPrice = stock.kLineDay[currentIndex].startPrice;
+            dr["买入"] = buyPrice;
 
             dr["0日"] = (stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
 
@@ -439,9 +433,9 @@
 
                 double highPrice = stock.kLineDay[currentIndex + i].highestPrice;
                 maxPrice = Math.Max(maxPrice, highPrice);
-                dr[i.ToString() + "日"] = (highPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice;
+                dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
             }
-            dr["总计"] = (maxPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice;
+            dr["总计"] = (maxPrice - buyPrice) / buyPrice;
 
 
 
@@ -572,7 +566,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title>池中涨停后下3线再站上</title>
+    <title>池中2连扳</title>
 </head>
 <body>
     <form id="form2" runat="server">
