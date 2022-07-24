@@ -384,6 +384,11 @@
             if (currentIndex < 1 || currentIndex >= stock.kLineDay.Length)
                 continue;
 
+            if (anchorIndex == currentIndex)
+            {
+                continue;
+            }
+
             if (stock.GetAverageSettlePrice(currentIndex - 1, 3, 3) <= stock.kLineDay[currentIndex - 1].endPrice
                 || stock.GetAverageSettlePrice(currentIndex, 3, 3) >= stock.kLineDay[currentIndex].endPrice)
             {
