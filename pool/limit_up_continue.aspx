@@ -390,7 +390,7 @@
 
             int cross3LineTimes = 0;
 
-            for (int i = currentIndex - 1; i >= 5 && !stock.IsLimitUp(i) && cross3LineTimes == 0 && i >= anchorIndex; i--)
+            for (int i = currentIndex - 1; i >= 5 && !stock.IsLimitUp(i) && cross3LineTimes == 0 && i > anchorIndex; i--)
             {
                 if (stock.GetAverageSettlePrice(i, 3, 3) <= stock.kLineDay[i].endPrice
                     && stock.GetAverageSettlePrice(i - 1, 3, 3) >= stock.kLineDay[i - 1].endPrice)
