@@ -352,10 +352,7 @@
             Stock stock = new Stock(drOri["gid"].ToString().Trim(), Util.rc);
 
 
-            if (stock.gid.Trim().Equals("sz000601"))
-            {
-                string a = "a";
-            }
+            
 
 
             stock.LoadKLineDay(Util.rc);
@@ -395,7 +392,14 @@
                 continue;
             }
 
+
+            if (currentIndex <= anchorIndex)
+            {
+                continue;
+            }
+
             int cross3LineTimes = 0;
+
 
             for (int i = currentIndex - 1; i >= 5 && !stock.IsLimitUp(i) && cross3LineTimes == 0 && i > anchorIndex; i--)
             {
