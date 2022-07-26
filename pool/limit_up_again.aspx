@@ -426,7 +426,7 @@
             dr["KDJ日"] = stock.kdjDays(currentIndex);
 
 
-            double buyPrice = stock.kLineDay[currentIndex].startPrice;
+            double buyPrice = stock.kLineDay[currentIndex].endPrice;
             dr["买入"] = buyPrice;
 
             dr["0日"] = (stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
