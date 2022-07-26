@@ -385,14 +385,14 @@
                 continue;
             }
 
-            if (!stock.IsLimitUp(currentIndex - 1) || !stock.IsLimitUp(anchorIndex))
+            if (!stock.IsLimitUp(anchorIndex) || !stock.IsLimitUp(currentIndex - 1))
             {
                 continue;
             }
 
             bool moreLimitUp = false;
 
-            for (int i = anchorIndex + 1; i < currentIndex - 1; i++)
+            for (int i = anchorIndex + 2; i < currentIndex - 1; i++)
             {
                 if (stock.IsLimitUp(i))
                 {
@@ -404,7 +404,7 @@
 
             if (moreLimitUp)
             {
-                break;
+                continue;
             }
 
 
