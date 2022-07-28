@@ -1,7 +1,7 @@
 ﻿<%@ Page Language="C#" %>
 <script runat="server">
 
-    public DateTime startDate = DateTime.Parse("2021-1-1");
+    public DateTime startDate = DateTime.Now.Date;
 
     protected void Page_Load(object sender, EventArgs e)
     {
