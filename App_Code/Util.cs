@@ -666,4 +666,13 @@ public class Util
         return Convert.ToInt64(ts.TotalMilliseconds).ToString();
     }
 
+    public static DataTable GetPool()
+    {
+        DataTable dtTimestamp = DBHelper.GetDataTable(" select max(batch_id) from pool ");
+        string currentTimestamp = dtTimestamp.Rows[0][0].ToString().Trim();
+        dtTimestamp.Dispose();
+        DataTable dt = DBHelper.GetDataTable(" select * from pool where batch_id = '" + currentTimestamp + "' ");
+        return dt;
+    }
+
 }
