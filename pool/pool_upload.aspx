@@ -192,6 +192,14 @@
 
     protected void dg_EditCommand(object source, DataGridCommandEventArgs e)
     {
+        try
+        {
+            sort = ViewState["sort"].ToString().Trim();
+        }
+        catch
+        { 
+        
+        }
         dg.DataSource = GetData();
         dg.EditItemIndex = e.Item.ItemIndex;
         dg.DataBind();
@@ -213,6 +221,14 @@
         {
 
         }
+        try
+        {
+            sort = ViewState["sort"].ToString().Trim();
+        }
+        catch
+        { 
+        
+        }
         dg.DataSource = GetData();
         dg.EditItemIndex = -1;
         dg.DataBind();
@@ -228,6 +244,7 @@
     protected void dg_SortCommand(object source, DataGridSortCommandEventArgs e)
     {
         sort = e.SortExpression.Trim();
+        ViewState["sort"] = sort;
         dg.DataSource = GetData();
         dg.EditItemIndex = -1;
         dg.DataBind();
