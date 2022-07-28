@@ -254,7 +254,7 @@
 
         DateTime startDate = Util.GetLastTransactDate(currentDate, 1);
 
-        DataTable dtOri = DBHelper.GetDataTable(" select * from limit_up where alert_date = '" + startDate.ToShortDateString() + "' ");
+        DataTable dtOri = DBHelper.GetDataTable(" select * from alert_railway where alert_date = '" + startDate.ToShortDateString() + "' ");
         foreach (DataRow drOri in dtOri.Rows)
         {
             Stock stock = new Stock(drOri["gid"].ToString().Trim(), Util.rc);
@@ -281,11 +281,14 @@
                 continue;
             }
             */
+            
             double line3Price = stock.GetAverageSettlePrice(limitUpIndex, 3, 3);
+            /*
             if (stock.kLineDay[limitUpIndex].startPrice > line3Price)
             {
                 continue;
             }
+            */
             /*
             if ((stock.kLineDay[currentIndex].startPrice - stock.kLineDay[currentIndex].endPrice) / stock.kLineDay[currentIndex].endPrice > 0.0382)
             {
@@ -342,16 +345,16 @@
                     highIndex = i;
                 }
             }
-
+            /*
             if (stock.kLineDay[limitUpIndex].startPrice > lowest * 1.01)
             {
                 continue;
             }
-
+            */
             double f3 = highest - (highest - lowest) * 0.382;
             double f5 = highest - (highest - lowest) * 0.618;
             double currentPrice = stock.kLineDay[currentIndex].endPrice;
-            double buyPrice = stock.kLineDay[currentIndex].endPrice;
+            double buyPrice = stock.kLineDay[currentIndex].startPrice;
             
 
             DataRow dr = dt.NewRow();
@@ -360,7 +363,7 @@
             dr["名称"] = stock.Name.Trim();
             dr["信号"] = "";
             dr["现高"] = highest;
-            dr["放量"] = stock.kLineDay[currentIndex].VirtualVolume / stock.kLineDay[limitUpIndex].volume;
+            dr["放量"] = stock.kLineDay[currentIndex-2].volume / stock.kLineDay[currentIndex-3].volume;
             dr["F3"] = f3;
             dr["F5"] = f5;
             dr["前低"] = lowest;

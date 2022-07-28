@@ -353,11 +353,6 @@
             Stock stock = new Stock(drOri["gid"].ToString().Trim(), Util.rc);
 
 
-            if (stock.gid.Trim().Equals("sz000546"))
-            {
-                string a = "a";
-            }
-
 
             stock.LoadKLineDay(Util.rc);
             KLine.ComputeMACD(stock.kLineDay);
