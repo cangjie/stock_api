@@ -197,8 +197,8 @@
             sort = ViewState["sort"].ToString().Trim();
         }
         catch
-        { 
-        
+        {
+
         }
         dg.DataSource = GetData();
         dg.EditItemIndex = e.Item.ItemIndex;
@@ -226,8 +226,8 @@
             sort = ViewState["sort"].ToString().Trim();
         }
         catch
-        { 
-        
+        {
+
         }
         dg.DataSource = GetData();
         dg.EditItemIndex = -1;
@@ -236,6 +236,14 @@
 
     protected void dg_CancelCommand(object source, DataGridCommandEventArgs e)
     {
+        try
+        {
+            sort = ViewState["sort"].ToString().Trim();
+        }
+        catch
+        {
+
+        }
         dg.DataSource = GetData();
         dg.EditItemIndex = -1;
         dg.DataBind();
@@ -249,6 +257,30 @@
         dg.EditItemIndex = -1;
         dg.DataBind();
     }
+
+    protected void Button1_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            sort = ViewState["sort"].ToString().Trim();
+        }
+        catch
+        {
+
+        }
+        DataTable dt = GetData();
+        string content = "";
+        foreach (DataRow dr in dt.Rows)
+        {
+            string gid = dr["gid"].ToString().Trim();
+            content += gid + "\r\n";
+        }
+        Response.Clear();
+        Response.ContentType = "text/plain";
+        Response.Headers.Add("Content-Disposition", "attachment; filename=pool.txt");
+        Response.Write(content.Trim());
+        Response.End();
+    }
 </script>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -259,6 +291,8 @@
     <form id="form1" runat="server">
         <div>
             <input runat="server" type="file" id="uploadFile" />&nbsp;<asp:Button runat="server" ID="btn" Text=" 上 传 " OnClick="btn_Click" />
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <asp:Button runat="server" ID="Button1" Text=" 下 载 " OnClick="Button1_Click" />
         </div>
         <div><asp:Label runat="server" ID="info"  ></asp:Label></div>
         <div> </div>
