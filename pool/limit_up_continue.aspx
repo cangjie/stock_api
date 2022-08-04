@@ -377,13 +377,18 @@
             if (currentIndex < 1 || currentIndex >= stock.kLineDay.Length)
                 continue;
 
-            
-            if (currentIndex - 2 < anchorIndex)
+
+            if (currentIndex - 1 < anchorIndex)
             {
                 continue;
             }
 
-            if (!stock.IsLimitUp(currentIndex - 2) || !stock.IsLimitUp(currentIndex - 1))
+            if (!stock.IsLimitUp(currentIndex - 1) || !stock.IsLimitUp(currentIndex))
+            {
+                continue;
+            }
+
+            if (stock.IsLimitUp(currentIndex - 2))
             {
                 continue;
             }
@@ -399,7 +404,7 @@
                 }
             }
 
-         
+
 
 
 
@@ -419,7 +424,7 @@
             dr["KDJ日"] = stock.kdjDays(currentIndex);
 
 
-            double buyPrice = stock.kLineDay[currentIndex].startPrice;
+            double buyPrice = stock.kLineDay[currentIndex].endPrice;
             dr["买入"] = buyPrice;
 
             dr["0日"] = (stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
