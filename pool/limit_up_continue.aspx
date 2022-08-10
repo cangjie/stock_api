@@ -322,6 +322,7 @@
         dt.Columns.Add("名称", Type.GetType("System.String"));
         dt.Columns.Add("信号", Type.GetType("System.String"));
         dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
+        dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
         //dt.Columns.Add("涨幅", Type.GetType("System.String"));
         dt.Columns.Add("买入", Type.GetType("System.Double"));
         /*
