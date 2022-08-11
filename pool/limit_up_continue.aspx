@@ -322,6 +322,7 @@
         dt.Columns.Add("名称", Type.GetType("System.String"));
         dt.Columns.Add("信号", Type.GetType("System.String"));
         dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
+        dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
         //dt.Columns.Add("涨幅", Type.GetType("System.String"));
         dt.Columns.Add("买入", Type.GetType("System.Double"));
         /*
@@ -423,6 +424,7 @@
 
             dr["KDJ日"] = stock.kdjDays(currentIndex);
 
+            dr["MACD日"] = macdDays;
 
             double buyPrice = stock.kLineDay[currentIndex].endPrice;
             dr["买入"] = buyPrice;
@@ -598,6 +600,7 @@
                     
                     <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="MACD日" HeaderText="MACD日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号"></asp:BoundColumn>
 
