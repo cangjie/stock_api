@@ -282,9 +282,9 @@
 
 
         DataTable dtOri = DBHelper.GetDataTable(" select  * from limit_up a where exists(select 'a' from limit_up b where a.gid = b.gid and b.alert_date = dbo.func_GetLastTransactDate(a.alert_date, 1))  "
-    + " and not exists ( select 'a' from limit_up c where c.gid = a.gid and c.alert_date > dbo.func_GetLastTransactDate(a.alert_date, 20) and c.alert_date <  dbo.func_GetLastTransactDate(a.alert_date, 1) )  "
+    + " and not exists ( select 'a' from limit_up c where c.gid = a.gid and c.alert_date > dbo.func_GetLastTransactDate(a.alert_date, 4) and c.alert_date <  dbo.func_GetLastTransactDate(a.alert_date, 1) )  "
                 + " and a.alert_date = '" + currentDate.ToShortDateString() + "' "
-                //+ " and gid = 'sz002818' "
+               // + " and gid = 'sz002426' "
                 );
 
         DataTable dtRunAboveAvarage = DBHelper.GetDataTable(" select * from alert_avarage_timeline where alert_date =  '" + currentDate.Date.ToShortDateString() + "' ");
