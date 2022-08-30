@@ -387,7 +387,7 @@
             if (currentIndex < 1 || currentIndex >= stock.kLineDay.Length)
                 continue;
 
-            if (anchorIndex == currentIndex)
+            if (anchorIndex >= currentIndex)
             {
                 continue;
             }
