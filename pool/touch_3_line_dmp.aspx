@@ -321,7 +321,9 @@
         dt.Columns.Add("代码", Type.GetType("System.String"));
         dt.Columns.Add("名称", Type.GetType("System.String"));
         dt.Columns.Add("信号", Type.GetType("System.String"));
+        dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
         dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
+
         //dt.Columns.Add("涨幅", Type.GetType("System.String"));
         dt.Columns.Add("买入", Type.GetType("System.Double"));
         dt.Columns.Add("支撑", Type.GetType("System.String"));
@@ -393,18 +395,18 @@
             int macdDays = stock.macdDays(currentIndex);
 
             if (macdDays >= 0 && stock.kLineDay[currentIndex].lowestPrice <= stock.kLineDay[currentIndex - 1].endPrice )
-            { 
-                double dmp = KLine.ComputeDMP(stock.kLineDay, currentIndex);
+            {
+                double dmp = stock.dmp(currentIndex);
                 if (stock.kLineDay[currentIndex].lowestPrice < dmp * 1.01 && stock.kLineDay[currentIndex].lowestPrice > dmp * 0.99)
                 {
                     isDmp = true;
                 }
             }
 
-            
+
 
             double line3 = stock.GetAverageSettlePrice(currentIndex, 3, 3);
-           
+
             if (stock.kLineDay[currentIndex].lowestPrice < line3 * 1.01 && stock.kLineDay[currentIndex].lowestPrice > line3 * 0.99)
             {
                 isLine3 = true;
@@ -431,7 +433,7 @@
             dr["名称"] = stock.Name.Trim();
 
             dr["KDJ日"] = stock.kdjDays(currentIndex);
-
+            dr["MACD日"] = macdDays;
             if (isDmp)
             {
                 dr["支撑"] = "DMP";
@@ -615,6 +617,7 @@
                     
                     <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="MACD日" HeaderText="MACD日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="支撑" HeaderText="支撑"></asp:BoundColumn>
 
