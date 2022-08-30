@@ -392,7 +392,7 @@
 
             int macdDays = stock.macdDays(currentIndex);
 
-            if (macdDays >= 0)
+            if (macdDays >= 0 && stock.kLineDay[currentIndex].lowestPrice <= stock.kLineDay[currentIndex - 1].endPrice )
             { 
                 double dmp = KLine.ComputeDMP(stock.kLineDay, currentIndex);
                 if (stock.kLineDay[currentIndex].lowestPrice < dmp * 1.01 && stock.kLineDay[currentIndex].lowestPrice > dmp * 0.99)
