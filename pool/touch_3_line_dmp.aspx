@@ -590,7 +590,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title>池中涨停后下3线再站上</title>
+    <title>池中最低价触碰3线或DMP</title>
 </head>
 <body>
     <form id="form2" runat="server">
