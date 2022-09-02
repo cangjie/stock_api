@@ -620,8 +620,14 @@
             }
 
             if (Math.Abs(stock.kLineDay[currentIndex - 1].volume - stock.kLineDay[currentIndex - 2].volume) / stock.kLineDay[currentIndex - 2].volume <= 0.1)
-            { 
+            {
                 dr["信号"] = "<a title=\"平量\" >——</a>";
+            }
+
+            if (stock.kLineDay[currentIndex - 2].lowestPrice <= stock.GetAverageSettlePrice(currentIndex - 2, 20, 0) * 1.01
+                || Math.Min(stock.kLineDay[currentIndex - 3].highestPrice, stock.kLineDay[currentIndex - 3].lowestPrice) < stock.GetAverageSettlePrice(currentIndex - 3, 20, 0))
+            { 
+                dr["信号"] = "<a title=\"起步\" >🔥</a>";
             }
 
 
