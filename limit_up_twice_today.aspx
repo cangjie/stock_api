@@ -468,6 +468,12 @@
                 dr["信号"] = dr["信号"].ToString() + "🆙";
             }
 
+            if (stock.kLineDay[currentIndex - 1].lowestPrice <= stock.GetAverageSettlePrice(currentIndex - 1, 20, 0) * 1.01
+                || Math.Min(stock.kLineDay[currentIndex - 2].startPrice, stock.kLineDay[currentIndex].endPrice) < stock.GetAverageSettlePrice(currentIndex - 2, 20, 0))
+            { 
+                dr["信号"] = "<a title=\"起步\" >🔥</a>";
+            }
+
             dr["总计"] = (computeMaxPrice - buyPrice) / buyPrice;
             dt.Rows.Add(dr);
 
