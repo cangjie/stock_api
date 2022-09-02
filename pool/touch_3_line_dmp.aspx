@@ -397,7 +397,7 @@
             if (macdDays >= 0 )
             {
                 double dmp = stock.dmp(currentIndex);
-                if (stock.kLineDay[currentIndex].lowestPrice < dmp * 1.01 && stock.kLineDay[currentIndex].lowestPrice > dmp * 0.99)
+                if (stock.kLineDay[currentIndex].lowestPrice < dmp + 0.04 && stock.kLineDay[currentIndex].lowestPrice > dmp - 0.04)
                 {
                     isDmp = true;
                 }
@@ -407,7 +407,7 @@
 
             double line3 = stock.GetAverageSettlePrice(currentIndex, 3, 3);
 
-            if (stock.kLineDay[currentIndex].lowestPrice < line3 * 1.01 && stock.kLineDay[currentIndex].lowestPrice > line3 * 0.99)
+            if (stock.kLineDay[currentIndex].lowestPrice < line3 + 0.04 && stock.kLineDay[currentIndex].lowestPrice > line3 - 0.04 )
             {
                 isLine3 = true;
             }
