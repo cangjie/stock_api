@@ -348,6 +348,12 @@
         foreach (DataRow drOri in dtOri.Rows)
         {
 
+            if (!drOri["gid"].ToString().Equals("sz000619"))
+            {
+                continue;
+            }
+
+
             bool isDmp = false;
             bool isLine3 = false;
 
