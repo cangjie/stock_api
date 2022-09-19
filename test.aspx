@@ -9,11 +9,12 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        Stock s = new Stock("sz000615");
+        Stock s = new Stock("sz000619");
         s.LoadKLineDay(Util.rc);
+        KLine.ComputeMACD(s.kLineDay);
         int idx = s.GetItemIndex(DateTime.Parse("2022-9-19"));
-        double dmp = s.dmp(idx);
-        Response.Write(dmp);
+        //double dmp = s.dmp(idx);
+        Response.Write(s.kLineDay[idx].macd.ToString());
 
         //Response.Write(s.kLineDay[index].startDateTime.ToShortDateString() + " " + KLine.ComputeRisk(s.kLineDay, index).ToString());
 

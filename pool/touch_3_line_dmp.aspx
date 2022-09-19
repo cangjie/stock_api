@@ -347,11 +347,7 @@
 
         foreach (DataRow drOri in dtOri.Rows)
         {
-
-            if (!drOri["gid"].ToString().Equals("sz000619"))
-            {
-                continue;
-            }
+          
 
 
             bool isDmp = false;
@@ -398,9 +394,9 @@
                 continue;
             }
 
-            int macdDays = stock.macdDays(currentIndex);
+            //int macdDays = stock.macdDays(currentIndex);
 
-            if (macdDays >= 0 )
+            if (stock.kLineDay[currentIndex].macd>=0 )
             {
                 double dmp = stock.dmp(currentIndex);
                 if (stock.kLineDay[currentIndex].lowestPrice < dmp + 0.04 && stock.kLineDay[currentIndex].lowestPrice > dmp - 0.04)
@@ -439,7 +435,7 @@
             dr["名称"] = stock.Name.Trim();
 
             dr["KDJ日"] = stock.kdjDays(currentIndex);
-            dr["MACD日"] = macdDays;
+            dr["MACD日"] = stock.macdDays(currentIndex);
             if (isDmp)
             {
                 dr["支撑"] = "DMP";
