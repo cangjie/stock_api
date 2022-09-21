@@ -360,9 +360,9 @@
             double buyPrice = 0;
             //double f3Distance = 0.382 - (highest - stock.kLineDay[currentIndex].lowestPrice) / (highest - lowest);
 
-            double volumeToday = stock.kLineDay[currentIndex].VirtualVolume;//Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(currentDate.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
+            double volumeToday = stock.kLineDay[currentIndex].volume;//Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(currentDate.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
 
-            double volumeYesterday = stock.kLineDay[limitUpIndex].VirtualVolume;
+            double volumeYesterday = stock.kLineDay[limitUpIndex].volume;
             if (DateTime.Now.Date != currentDate.Date || (DateTime.Now.Hour >= 15))
             {
                 volumeYesterday = stock.kLineDay[limitUpIndex].volume;
@@ -382,7 +382,7 @@
             }
 
 
-            double volumeReduce = volumeToday / maxVolume;
+            double volumeReduce = volumeToday / volumeYesterday;
 
             if (lowest == 0 || line3Price == 0)
             {
