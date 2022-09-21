@@ -254,7 +254,7 @@
         dt.Columns.Add("缩量", Type.GetType("System.Double"));
         dt.Columns.Add("高开", Type.GetType("System.Double"));
         dt.Columns.Add("今开", Type.GetType("System.Double"));
-        dt.Columns.Add("无影", Type.GetType("System.Double"));
+        //dt.Columns.Add("无影", Type.GetType("System.Double"));
         dt.Columns.Add("现高", Type.GetType("System.Double"));
         dt.Columns.Add("F3", Type.GetType("System.Double"));
         dt.Columns.Add("F5", Type.GetType("System.Double"));
@@ -571,7 +571,7 @@
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD日|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="无影" HeaderText="无影"></asp:BoundColumn>
+                    
                     <asp:BoundColumn DataField="今开" HeaderText="今开"></asp:BoundColumn>
                     
                     <asp:BoundColumn DataField="现高" HeaderText="现高"></asp:BoundColumn>
