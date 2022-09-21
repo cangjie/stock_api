@@ -349,8 +349,7 @@
                 }
             }
             double f3 = highest - (highest - lowest) * 0.382;
-            if (stock.kLineDay[currentIndex].startPrice >= stock.kLineDay[currentIndex].endPrice )
-                continue;
+           
             if (stock.kLineDay[currentIndex].endPrice <= stock.kLineDay[limitUpIndex].highestPrice)
             {
                 continue;
