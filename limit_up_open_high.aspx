@@ -285,9 +285,11 @@
 
 
         DataTable dtOri = DBHelper.GetDataTable(" select gid, alert_date from limit_up where alert_date = '"
-            + lastTransactDate.ToShortDateString() + "'  order by alert_date desc ");
+            + lastTransactDate.ToShortDateString() + "' "
+            //+ " and gid = 'sz002336' "
+            + " order by alert_date desc ");
 
-        Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+        //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
 
 
         DataTable dtDtl = DBHelper.GetDataTable(" select gid, alert_date, price from alert_foot where alert_date > '"
@@ -347,8 +349,12 @@
                 }
             }
             double f3 = highest - (highest - lowest) * 0.382;
-            if (stock.kLineDay[currentIndex].startPrice >= stock.kLineDay[limitUpIndex].endPrice )
+            if (stock.kLineDay[currentIndex].startPrice >= stock.kLineDay[currentIndex].endPrice )
                 continue;
+            if (stock.kLineDay[currentIndex].endPrice <= stock.kLineDay[limitUpIndex].highestPrice)
+            {
+                continue;
+            }
             double f5 = highest - (highest - lowest) * 0.618;
             double line3Price = KLine.GetAverageSettlePrice(stock.kLineDay, currentIndex, 3, 3);
             double currentPrice = stock.kLineDay[currentIndex].endPrice;
@@ -392,7 +398,7 @@
 
             string memo = "";
 
-            
+
 
             memo = "";
 
@@ -454,7 +460,7 @@
             }
 
             if (stock.IsLimitUp(currentIndex))
-            { 
+            {
                 dr["信号"] = dr["信号"].ToString() + "🆙";
             }
 
@@ -469,7 +475,7 @@
             dr["3线"] = line3Price;
             dr["现价"] = currentPrice;
             dr["今开"] = stock.kLineDay[currentIndex].startPrice;
-//            dr["无影"] = timelineArr[0].todayLowestPrice;
+            //            dr["无影"] = timelineArr[0].todayLowestPrice;
             dr["评级"] = memo;
             dr["买入"] = buyPrice;
             dr["KDJ日"] = stock.kdjDays(currentIndex);
@@ -489,7 +495,7 @@
             dt.Rows.Add(dr);
 
         }
-        rc.Dispose();
+
         return dt;
     }
 
