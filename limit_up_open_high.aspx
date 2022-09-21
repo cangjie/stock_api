@@ -393,7 +393,7 @@
 
 
 
-            buyPrice = stock.kLineDay[currentIndex - 1].endPrice;
+            buyPrice = stock.kLineDay[currentIndex].endPrice;
 
             string memo = "";
 
