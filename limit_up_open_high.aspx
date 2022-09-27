@@ -254,7 +254,7 @@
         dt.Columns.Add("缩量", Type.GetType("System.Double"));
         dt.Columns.Add("高开", Type.GetType("System.Double"));
         dt.Columns.Add("今开", Type.GetType("System.Double"));
-        dt.Columns.Add("无影", Type.GetType("System.Double"));
+        //dt.Columns.Add("无影", Type.GetType("System.Double"));
         dt.Columns.Add("现高", Type.GetType("System.Double"));
         dt.Columns.Add("F3", Type.GetType("System.Double"));
         dt.Columns.Add("F5", Type.GetType("System.Double"));
@@ -285,9 +285,11 @@
 
 
         DataTable dtOri = DBHelper.GetDataTable(" select gid, alert_date from limit_up where alert_date = '"
-            + lastTransactDate.ToShortDateString() + "'  order by alert_date desc ");
+            + lastTransactDate.ToShortDateString() + "' "
+            //+ " and gid = 'sz002336' "
+            + " order by alert_date desc ");
 
-        Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
+        //Core.RedisClient rc = new Core.RedisClient("127.0.0.1");
 
 
         DataTable dtDtl = DBHelper.GetDataTable(" select gid, alert_date, price from alert_foot where alert_date > '"
@@ -347,17 +349,20 @@
                 }
             }
             double f3 = highest - (highest - lowest) * 0.382;
-            if ((stock.kLineDay[currentIndex].startPrice < stock.kLineDay[limitUpIndex].endPrice) || (stock.kLineDay[currentIndex].startPrice >  stock.kLineDay[limitUpIndex].endPrice * 1.0095 ) )
+           
+            if (stock.kLineDay[currentIndex].endPrice <= stock.kLineDay[limitUpIndex].highestPrice)
+            {
                 continue;
+            }
             double f5 = highest - (highest - lowest) * 0.618;
             double line3Price = KLine.GetAverageSettlePrice(stock.kLineDay, currentIndex, 3, 3);
             double currentPrice = stock.kLineDay[currentIndex].endPrice;
             double buyPrice = 0;
             //double f3Distance = 0.382 - (highest - stock.kLineDay[currentIndex].lowestPrice) / (highest - lowest);
 
-            double volumeToday = stock.kLineDay[currentIndex].VirtualVolume;//Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(currentDate.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
+            double volumeToday = stock.kLineDay[currentIndex].volume;//Stock.GetVolumeAndAmount(stock.gid, DateTime.Parse(currentDate.ToShortDateString() + " " + DateTime.Now.Hour.ToString() + ":" + DateTime.Now.Minute.ToString()))[0];
 
-            double volumeYesterday = stock.kLineDay[limitUpIndex].VirtualVolume;
+            double volumeYesterday = stock.kLineDay[limitUpIndex].volume;
             if (DateTime.Now.Date != currentDate.Date || (DateTime.Now.Hour >= 15))
             {
                 volumeYesterday = stock.kLineDay[limitUpIndex].volume;
@@ -377,7 +382,7 @@
             }
 
 
-            double volumeReduce = volumeToday / maxVolume;
+            double volumeReduce = volumeToday / volumeYesterday;
 
             if (lowest == 0 || line3Price == 0)
             {
@@ -388,48 +393,13 @@
 
 
 
-            buyPrice = stock.kLineDay[currentIndex - 1].endPrice;
+            buyPrice = stock.kLineDay[currentIndex].endPrice;
 
             string memo = "";
 
-            Core.Timeline[] timelineArray = Core.Timeline.LoadTimelineArrayFromRedis(stock.gid, currentDate, rc);
-            if (timelineArray.Length == 0)
-            {
-                timelineArray = Core.Timeline.LoadTimelineArrayFromSqlServer(stock.gid, currentDate);
-            }
-            DateTime todayLowestTime = Core.Timeline.GetLowestTime(timelineArray);
-            if (todayLowestTime.Hour == 9 && todayLowestTime.Minute < 30)
-            {
-                todayLowestTime = todayLowestTime.Date.AddHours(9).AddMinutes(30);
-            }
-            TimeSpan todayLowestTimeSpan;
 
 
-            if (DateTime.Now.Date == currentDate.Date && DateTime.Now.Hour < 15)
-            {
-                todayLowestTimeSpan = DateTime.Now - todayLowestTime;
-                if (todayLowestTime.Hour < 13)
-                {
-                    if (DateTime.Now.Hour < 13)
-                    {
-                        todayLowestTimeSpan = todayLowestTimeSpan - (DateTime.Now - DateTime.Now.Date.AddHours(11).AddMinutes(30));
-                    }
-                    else
-                    {
-                        todayLowestTimeSpan = todayLowestTimeSpan - (DateTime.Now.AddHours(13) - DateTime.Now.Date.AddHours(11).AddMinutes(30));
-                    }
-                }
-            }
-            else
-            {
-                todayLowestTimeSpan = todayLowestTime.Date.AddHours(15) - todayLowestTime;
-                if (todayLowestTime.Hour < 13)
-                {
-                    todayLowestTimeSpan = todayLowestTimeSpan - (currentDate.Date.AddHours(13) - currentDate.Date.AddHours(11).AddMinutes(30));
-                }
-            }
-
-            memo = todayLowestTimeSpan.Hours.ToString() + "小时" + todayLowestTimeSpan.Minutes.ToString() + "分钟";
+            memo = "";
 
 
             if (f3 >= line3Price)
@@ -489,7 +459,7 @@
             }
 
             if (stock.IsLimitUp(currentIndex))
-            { 
+            {
                 dr["信号"] = dr["信号"].ToString() + "🆙";
             }
 
@@ -504,13 +474,13 @@
             dr["3线"] = line3Price;
             dr["现价"] = currentPrice;
             dr["今开"] = stock.kLineDay[currentIndex].startPrice;
-//            dr["无影"] = timelineArr[0].todayLowestPrice;
+            //            dr["无影"] = timelineArr[0].todayLowestPrice;
             dr["评级"] = memo;
             dr["买入"] = buyPrice;
             dr["KDJ日"] = stock.kdjDays(currentIndex);
             dr["MACD日"] = stock.macdDays(currentIndex);
             dr["高开"] = openRaise;
-            dr["0日"] = (currentPrice - buyPrice) / buyPrice;
+            dr["0日"] = (buyPrice - stock.kLineDay[limitUpIndex].endPrice) / stock.kLineDay[limitUpIndex].endPrice;
             double maxPrice = 0;
             for (int i = 1; i <= 5; i++)
             {
@@ -524,7 +494,7 @@
             dt.Rows.Add(dr);
 
         }
-        rc.Dispose();
+
         return dt;
     }
 
@@ -606,7 +576,7 @@
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD日|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="无影" HeaderText="无影"></asp:BoundColumn>
+                    
                     <asp:BoundColumn DataField="今开" HeaderText="今开"></asp:BoundColumn>
                     
                     <asp:BoundColumn DataField="现高" HeaderText="现高"></asp:BoundColumn>
