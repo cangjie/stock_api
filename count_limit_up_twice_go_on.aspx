@@ -25,6 +25,7 @@
         DataTable dt = new DataTable();
         dt.Columns.Add("代码");
         dt.Columns.Add("名称");
+        dt.Columns.Add("日期");
         dt.Columns.Add("量比");
         dt.Columns.Add("次日");
 
@@ -32,7 +33,7 @@
             + " EXISTS (select 'a' from limit_up b where b.alert_date = dbo.func_getlasttransactdate(a.alert_date, 1) and a.gid = b.gid) "
             + " and not EXISTS (select 'a' from limit_up c where c.alert_date = dbo.func_getlasttransactdate(a.alert_date, 2) and c.gid = a.gid) "
             //+ " and EXISTS ( select 'a' from limit_up d where a.alert_date =  dbo.func_getlasttransactdate(d.alert_date, 1) and d.gid = a.gid) "
-            + " and a.alert_date > '2022-1-1' order by a.alert_date desc");
+            + " and a.alert_date > '2021-1-1' order by a.alert_date desc");
 
 
         for (int i = 0; i < dtOri.Rows.Count; i++)
@@ -64,6 +65,7 @@
             DataRow dr = dt.NewRow();
             dr["代码"] = s.gid;
             dr["名称"] = s.Name;
+            dr["日期"] = s.kLineDay[alertIndex].startDateTime.ToShortDateString();
             dr["量比"] = Math.Round(volDiff, 2).ToString();
             dr["次日"] = Math.Round(100 * (s.kLineDay[alertIndex + 1].endPrice - s.kLineDay[alertIndex].endPrice) / s.kLineDay[alertIndex].endPrice, 2).ToString() + "%";
             dt.Rows.Add(dr);
