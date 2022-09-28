@@ -47,7 +47,8 @@
             }
 
             if (s.kLineDay[alertIndex].highestPrice == s.kLineDay[alertIndex].endPrice
-                || s.kLineDay[alertIndex - 1].highestPrice == s.kLineDay[alertIndex - 1].endPrice)
+                || s.kLineDay[alertIndex - 1].highestPrice == s.kLineDay[alertIndex - 1].endPrice
+                || s.kLineDay[alertIndex].highestPrice != s.kLineDay[alertIndex].endPrice)
             {
                 continue;
             }
