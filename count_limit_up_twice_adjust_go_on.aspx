@@ -69,7 +69,7 @@
             dr["名称"] = s.Name;
             dr["日期"] = s.kLineDay[alertIndex].startDateTime.ToShortDateString();
             dr["量比"] = Math.Round(volDiff, 2).ToString();
-            dr["次日"] = Math.Round(100 * (s.kLineDay[alertIndex + 1].endPrice - s.kLineDay[alertIndex].endPrice) / s.kLineDay[alertIndex].endPrice, 2).ToString() + "%";
+            dr["次日"] = Math.Round(100 * (s.kLineDay[alertIndex + 2].endPrice - s.kLineDay[alertIndex].endPrice) / s.kLineDay[alertIndex].endPrice, 2).ToString() + "%";
             dt.Rows.Add(dr);
             totalCount++;
             if (s.IsLimitUp(alertIndex + 2))
