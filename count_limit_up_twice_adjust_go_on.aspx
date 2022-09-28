@@ -42,7 +42,7 @@
             Stock s = GetStock(dtOri.Rows[i]["gid"].ToString());
             DateTime alertDate = DateTime.Parse(dtOri.Rows[i]["alert_date"].ToString());
             int alertIndex = s.GetItemIndex(alertDate);
-            if (alertIndex < 1 || alertIndex >= s.kLineDay.Length - 1)
+            if (alertIndex < 1 || alertIndex >= s.kLineDay.Length - 2)
             {
                 continue;
             }
