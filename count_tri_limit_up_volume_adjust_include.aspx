@@ -42,12 +42,13 @@
             {
                 continue;
             }
-            /*
-            if (s.kLineDay[alertIndex].highestPrice == s.kLineDay[alertIndex].endPrice)
+            
+            if (s.kLineDay[alertIndex].highestPrice != s.kLineDay[alertIndex].endPrice
+                || s.kLineDay[alertIndex].lowestPrice == s.kLineDay[alertIndex].highestPrice)
             {
                 continue;
             }
-            */
+            
             double volDiff = s.kLineDay[alertIndex].volume / s.kLineDay[alertIndex-1].volume;
             if (volDiff < minDiff)
             {
