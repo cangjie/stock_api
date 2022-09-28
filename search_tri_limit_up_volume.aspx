@@ -43,7 +43,7 @@
             {
                 continue;
             }
-            if (s.kLineDay[alertIndex].highestPrice == s.kLineDay[alertIndex].endPrice)
+            if (s.kLineDay[alertIndex].highestPrice != s.kLineDay[alertIndex].endPrice)
             {
                 continue;
             }
