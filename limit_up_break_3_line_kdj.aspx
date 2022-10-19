@@ -333,6 +333,19 @@
                 }
             }
 
+
+            bool isNewHigh = true;
+            double higherPrice = stock.kLineDay[currentIndex].highestPrice;
+            for (int i = 1; i <= 20 && currentIndex - i >= 0; i++)
+            {
+                if (stock.kLineDay[i].highestPrice > higherPrice)
+                {
+                    isNewHigh = false;
+                }
+            }
+
+            
+
             double supportSettle = stock.kLineDay[currentIndex - 1].endPrice;
             int highIndex = 0;
             int lowestIndex = 0;
@@ -452,24 +465,19 @@
 
 
 
-            if (!stock.IsLimitUp(currentIndex)
-                && stock.kLineDay[currentIndex].endPrice > stock.kLineDay[currentIndex-1].highestPrice)
+            if (isNewHigh)
             {
                 dr["信号"] = dr["信号"].ToString() + "🌟";
             }
 
-           
+
 
             if (stock.IsLimitUp(currentIndex))
             {
                 dr["信号"] = dr["信号"].ToString() + "🆙";
             }
 
-            if (stock.kLineDay[currentIndex - 1].lowestPrice <= stock.GetAverageSettlePrice(currentIndex - 1, 20, 0) * 1.01
-                || Math.Min(stock.kLineDay[currentIndex - 2].startPrice, stock.kLineDay[currentIndex].endPrice) < stock.GetAverageSettlePrice(currentIndex - 2, 20, 0))
-            {
-                dr["信号"] = "<a title=\"起步\" >🔥</a>";
-            }
+            
 
             dr["总计"] = (computeMaxPrice - buyPrice) / buyPrice;
             dt.Rows.Add(dr);
