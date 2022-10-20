@@ -499,7 +499,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title></title>
+    <title>火车轨涨停</title>
 </head>
 <body>
     <form id="form2" runat="server">
