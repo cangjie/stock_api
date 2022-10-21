@@ -14,7 +14,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "布林宽");
+        sort = Util.GetSafeRequestValue(Request, "sort", "红绿灯涨");
         if (!IsPostBack)
         {
 
