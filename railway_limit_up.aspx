@@ -276,7 +276,7 @@
 
 
 
-        DataTable dtOri = DBHelper.GetDataTable(" select  * from limit_up where alert_date = '" + Util.GetLastTransactDate(currentDate, 1).ToShortDateString() + "' "
+        DataTable dtOri = DBHelper.GetDataTable(" select  * from limit_up where alert_date = '" + currentDate.ToShortDateString() + "' "
                 // + " and gid = 'sz002426' "
                 );
 
@@ -294,16 +294,16 @@
             if (currentIndex < 3)
                 continue;
 
-            if (!stock.IsLimitUp(currentIndex - 1))
+            if (!stock.IsLimitUp(currentIndex))
             {
                 continue;
             }
 
             bool isRight = false;
 
-            if ((stock.kLineDay[currentIndex - 2].endPrice - stock.kLineDay[currentIndex - 3].endPrice) / stock.kLineDay[currentIndex - 3].endPrice <= -0.05
-                && stock.kLineDay[currentIndex - 2].endPrice < stock.GetAverageSettlePrice(currentIndex - 2, 3, 3)
-                && stock.kLineDay[currentIndex - 1].volume > stock.kLineDay[currentIndex - 2].volume)
+            if ((stock.kLineDay[currentIndex - 1].endPrice - stock.kLineDay[currentIndex - 2].endPrice) / stock.kLineDay[currentIndex - 2].endPrice <= -0.05
+                && stock.kLineDay[currentIndex - 1].endPrice < stock.GetAverageSettlePrice(currentIndex - 1, 3, 3)
+                && stock.kLineDay[currentIndex].volume > stock.kLineDay[currentIndex - 1].volume)
             {
                 isRight = true;
             }
@@ -353,8 +353,15 @@
 
             double volumeReduce = volumeToday / volumeYesterday;
 
+            if (currentIndex < stock.kLineDay.Length - 1)
+            {
+                buyPrice = stock.kLineDay[currentIndex + 1].startPrice;
+            }
+            else
+            {
+                buyPrice = stock.kLineDay[currentIndex].endPrice;
+            }
 
-            buyPrice = stock.kLineDay[currentIndex].startPrice;
 
 
             /*
@@ -397,7 +404,7 @@
             bool lowThanF3 = false;
             bool haveLimitUp = false;
             double computeMaxPrice = 0;
-            for (int i = 1; i <= 15; i++)
+            for (int i = 2; i <= 16; i++)
             {
 
                 if (currentIndex + i >= stock.kLineDay.Length)
@@ -407,7 +414,7 @@
 
                 computeMaxPrice = Math.Max(computeMaxPrice, highPrice);
 
-                dr[i.ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
+                dr[(i-1).ToString() + "日"] = (highPrice - buyPrice) / buyPrice;
 
 
 
