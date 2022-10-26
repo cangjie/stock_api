@@ -277,7 +277,7 @@
 
 
         DataTable dtOri = DBHelper.GetDataTable(" select  * from limit_up where alert_date = '" + currentDate.ToShortDateString() + "' "
-                 + " and gid = 'sh603122' "
+                // + " and gid = 'sh603122' "
                 );
 
 
