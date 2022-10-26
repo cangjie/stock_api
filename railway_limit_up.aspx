@@ -277,7 +277,7 @@
 
 
         DataTable dtOri = DBHelper.GetDataTable(" select  * from limit_up where alert_date = '" + currentDate.ToShortDateString() + "' "
-                // + " and gid = 'sz002426' "
+                 + " and gid = 'sh603122' "
                 );
 
 
@@ -303,7 +303,7 @@
 
             if ((stock.kLineDay[currentIndex - 1].endPrice - stock.kLineDay[currentIndex - 2].endPrice) / stock.kLineDay[currentIndex - 2].endPrice <= -0.05
                 && stock.kLineDay[currentIndex - 1].endPrice < stock.GetAverageSettlePrice(currentIndex - 1, 3, 3)
-                && stock.kLineDay[currentIndex].volume > stock.kLineDay[currentIndex - 1].volume)
+                && stock.kLineDay[currentIndex].volume > stock.kLineDay[currentIndex - 1].volume * 0.98)
             {
                 isRight = true;
             }
