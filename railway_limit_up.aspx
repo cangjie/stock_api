@@ -502,14 +502,40 @@
         return ret;
     }
 
+    protected void btn_Click(object sender, EventArgs e)
+    {
+        DataTable dtDownload = GetData();
+        string content = "";
+        foreach (DataRow dr in dtDownload.Rows)
+        {
+            string gid = dr["代码"].ToString().Trim();
+            try
+            {
+                gid = gid.Substring(gid.IndexOf(">"), gid.Length - gid.IndexOf(">"));
+            }
+            catch
+            {
+
+            }
+            gid = gid.Replace("</a>", "").Replace(">", "").ToUpper().Replace("sh", "").Replace("sz", "");
+            content += gid + "\r\n";
+        }
+        Response.Clear();
+        Response.ContentType = "text/plain";
+        Response.Headers.Add("Content-Disposition", "attachment; filename=railway_limitup_"
+            + currentDate.ToShortDateString() + ".txt");
+        Response.Write(content.Trim());
+        Response.End();
+    }
 </script>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head runat="server">
-    <title>火车轨涨停</title>
+<html火车轨涨停</title>
 </head>
 <body>
     <form id="form2" runat="server">
+    <div>
+        <asp:Button ID="btn" runat="server" Text="下载" OnClick="btn_Click" />
+    </div>
     <div>
         <table width="100%" >
             <tr>

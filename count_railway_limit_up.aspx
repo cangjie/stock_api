@@ -58,6 +58,11 @@
 
             bool isRight = false;
 
+            if (s.kLineDay[alertIndex].highestPrice < 4)
+            {
+                continue;
+            }
+
             if ((s.kLineDay[alertIndex - 1].endPrice - s.kLineDay[alertIndex - 2].endPrice) / s.kLineDay[alertIndex - 2].endPrice < -0.05
                 && s.kLineDay[alertIndex - 1].endPrice < s.GetAverageSettlePrice(alertIndex - 1, 3, 3)
                 && s.kLineDay[alertIndex].endPrice < s.GetAverageSettlePrice(alertIndex, 3, 3)
