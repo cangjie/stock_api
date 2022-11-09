@@ -282,7 +282,7 @@
 
 
         DataTable dtOri = DBHelper.GetDataTable(" select  * from limit_up a where exists(select 'a' from limit_up b where a.gid = b.gid and b.alert_date = dbo.func_GetLastTransactDate(a.alert_date, 1))  "
-                + " and not exists ( select 'a' from limit_up c where c.gid = a.gid and c.alert_date = dbo.func_GetLastTransactDate(a.alert_date, 2) )  "
+                //+ " and not exists ( select 'a' from limit_up c where c.gid = a.gid and c.alert_date = dbo.func_GetLastTransactDate(a.alert_date, 2) )  "
                 + " and a.alert_date = '" + currentDate.ToShortDateString() + "' "
                // + " and gid = 'sz002426' "
                 );
