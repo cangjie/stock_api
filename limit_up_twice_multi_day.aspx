@@ -274,7 +274,7 @@
         dt.Columns.Add("买入", Type.GetType("System.Double"));
         dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
-
+        //dt.Columns.Add("板数", Type.GetType("System.Int32"));
         for (int i = 1; i <= 15; i++)
         {
             dt.Columns.Add(i.ToString() + "日", Type.GetType("System.Double"));
@@ -295,7 +295,7 @@
 
 
         DataTable dtOri = DBHelper.GetDataTable(" select  * from limit_up a where exists(select 'a' from limit_up b where a.gid = b.gid and b.alert_date = dbo.func_GetLastTransactDate(a.alert_date, 1))  "
-                + " and not exists ( select 'a' from limit_up c where c.gid = a.gid and c.alert_date = dbo.func_GetLastTransactDate(a.alert_date, 2) )  "
+                // + " and not exists ( select 'a' from limit_up c where c.gid = a.gid and c.alert_date = dbo.func_GetLastTransactDate(a.alert_date, 2) )  "
                 + " and a.alert_date >= '" + startDate.ToShortDateString() + "'  and a.alert_date <= '" + endDate.ToShortDateString() + "' "
                 // + " and gid = 'sz002426' "
                 );
@@ -379,6 +379,16 @@
             }
             */
 
+
+            int limitNum = 0;
+            for (int i = currentIndex; i > currentIndex - 5 && i > 0; i--)
+            {
+                if (stock.IsLimitUp(i))
+                {
+                    limitNum++;
+                }
+            }
+
             DataRow dr = dt.NewRow();
             dr["日期"] = currentDate.ToShortDateString();
             dr["代码"] = stock.gid.Trim();
@@ -401,7 +411,7 @@
             dr["买入"] = buyPrice;
             dr["KDJ日"] = stock.kdjDays(currentIndex);
             dr["MACD日"] = stock.macdDays(currentIndex);
-
+            dr["板数"] = limitNum;
             //dr["今涨"] = (stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
             dr["今涨"] = (stock.kLineDay[currentIndex].startPrice - stock.kLineDay[currentIndex-1].endPrice) / stock.kLineDay[currentIndex-1].endPrice;
             double maxPrice = Math.Max(highest, stock.kLineDay[currentIndex].highestPrice);
@@ -565,9 +575,9 @@
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号" SortExpression="信号|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="缩量" HeaderText="缩量"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="板数" HeaderText="板数"></asp:BoundColumn>
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD日|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>
-                   
                     <asp:BoundColumn DataField="现价" HeaderText="现价"></asp:BoundColumn>
                     <asp:BoundColumn DataField="今涨" HeaderText="今涨"></asp:BoundColumn>
                     <asp:BoundColumn DataField="距F3" HeaderText="距F3"></asp:BoundColumn>
