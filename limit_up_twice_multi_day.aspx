@@ -294,7 +294,11 @@
         //    + "' and alert_date <= '" + currentDate.ToShortDateString() + "' ");
 
 
-        DataTable dtOri = DBHelper.GetDataTable(" select  * from limit_up a where exists(select 'a' from limit_up b where a.gid = b.gid and b.alert_date = dbo.func_GetLastTransactDate(a.alert_date, 1))  "
+        DataTable dtOri = DBHelper.GetDataTable(" select  * from limit_up a where ( exists(select 'a' from limit_up b where a.gid = b.gid and b.alert_date = dbo.func_GetLastTransactDate(a.alert_date, 1))  "
+
+            + " or exists(select 'a' from limit_up b where a.gid = b.gid and b.alert_date = dbo.func_GetLastTransactDate(a.alert_date, 2))) "
+
+
                 // + " and not exists ( select 'a' from limit_up c where c.gid = a.gid and c.alert_date = dbo.func_GetLastTransactDate(a.alert_date, 2) )  "
                 + " and a.alert_date >= '" + startDate.ToShortDateString() + "'  and a.alert_date <= '" + endDate.ToShortDateString() + "' "
                 // + " and gid = 'sz002426' "
@@ -474,9 +478,9 @@
 
 
 
-            if (stock.IsLimitUp(currentIndex))
+            if (stock.IsLimitUp(currentIndex) && stock.IsLimitUp(currentIndex - 1) && limitNum == 2)
             {
-                dr["信号"] = dr["信号"].ToString() + "🆙";
+                dr["信号"] = dr["信号"].ToString() + "<a title=\"二连板\" >🆙</a>";
             }
 
             if (stock.kLineDay[currentIndex - 1].lowestPrice <= stock.GetAverageSettlePrice(currentIndex - 1, 20, 0) * 1.01
