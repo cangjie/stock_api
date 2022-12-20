@@ -23,6 +23,7 @@ public class KLine
     public double volume = 0;
     public double amount = 0;
     public double change = 0;
+    public double turnOver = 0;
 
     public double increaseRateOpen = 0;
     public double increaseRateHighest = 0;

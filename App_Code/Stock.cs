@@ -979,6 +979,22 @@ public class Stock
                 kArr[i].lowestPrice = double.Parse(rvItems[5].Trim());
                 kArr[i].volume = int.Parse(rvItems[6].Trim());
                 kArr[i].amount = double.Parse(rvItems[7].Trim());
+                try
+                {
+                    if (rvItems.Length == 9)
+                    {
+                        kArr[i].turnOver = double.Parse(rvItems[8].Trim());
+                    }
+                    else
+                    {
+                        kArr[i].turnOver = 0;
+                    }
+                    
+                }
+                catch
+                {
+                    kArr[i].turnOver = 0;
+                }
             }
             
             return kArr;

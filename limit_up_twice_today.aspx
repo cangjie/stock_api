@@ -106,6 +106,9 @@
                             dr[i] = "<font color=\"" + (currentValuePrice > currentPrice ? "red" : (currentValuePrice == currentPrice ? "gray" : "green")) + "\"  >"
                                 + Math.Round(currentValuePrice, 2).ToString() + "</font>";
                             break;
+                        case "换手":
+                            dr[i] = Math.Round((double)drOri[i], 2).ToString() + "%";
+                            break;
                         case "今涨":
                         default:
                             if (System.Text.RegularExpressions.Regex.IsMatch(drArr[0].Table.Columns[i].Caption.Trim(), "\\d日")
@@ -255,6 +258,7 @@
         dt.Columns.Add("F3", Type.GetType("System.Double"));
         dt.Columns.Add("F5", Type.GetType("System.Double"));
         dt.Columns.Add("前低", Type.GetType("System.Double"));
+        dt.Columns.Add("换手", Type.GetType("System.Double"));
         dt.Columns.Add("幅度", Type.GetType("System.String"));
         dt.Columns.Add("3线", Type.GetType("System.Double"));
         dt.Columns.Add("今涨", Type.GetType("System.Double"));
@@ -389,6 +393,7 @@
             dr["板数"] = limitUpNum.ToString();
             dr["缩量"] = volumeReduce;
             dr["现高"] = highest;
+            dr["换手"] = Math.Round(stock.kLineDay[currentIndex].turnOver, 2);
             dr["F3"] = f3;
             dr["F5"] = f5;
             dr["前低"] = lowest;
@@ -459,7 +464,7 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "🌟";
             }
-
+            /*
             if (dtGragonTigerList.Select(" gid = '" + stock.gid.Trim() + "' ").Length > 0)
             {
                 if (dtGragonTigerList.Select(" gid = '" + stock.gid.Trim() + "' and alert_date = '" + Util.GetLastTransactDate(currentDate, 1).ToShortDateString() + "' ").Length > 0)
@@ -476,7 +481,7 @@
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"日均线上\" >📈</a>";
             }
-
+            */
             if (stock.IsLimitUp(currentIndex) && stock.IsLimitUp(currentIndex - 1) && limitNum == 2)
             {
                 dr["信号"] = dr["信号"].ToString() + "<a title=\"二连板\" >🆙</a>";
@@ -549,6 +554,7 @@
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号" SortExpression="信号|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="缩量" HeaderText="缩量"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="换手" HeaderText="换手"></asp:BoundColumn>
                     <asp:BoundColumn DataField="板数" HeaderText="板数"></asp:BoundColumn>
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD日|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>
