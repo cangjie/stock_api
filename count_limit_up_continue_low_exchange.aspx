@@ -39,7 +39,7 @@
         DataTable dtOri = DBHelper.GetDataTable(" select * from limit_up a where  "
             + " exists ( select 'a' from limit_up b where a.gid = b.gid and b.alert_date = dbo.func_GetLastTransactDate(a.alert_date, 1) )  "
             + " and not exists ( select 'a' from limit_up c where a.gid = c.gid and a.alert_date = dbo.func_GetLastTransactDate(c.alert_date, 1) ) "
-            + " and alert_date > '2021-1-1'  order by alert_date desc ");
+            + " and alert_date > '2022-8-31'  order by alert_date desc ");
         foreach (DataRow drOri in dtOri.Rows)
         {
 
@@ -72,7 +72,7 @@
             double highestPrice = s.kLineDay[alertIndex].highestPrice;
 
 
-          
+
             int buyIndex = alertIndex + 1;
 
             if (buyIndex + days >= s.kLineDay.Length)
@@ -177,6 +177,30 @@
         return s;
     }
 
+    protected void btn_Click(object sender, EventArgs e)
+    {
+        DataTable dtDownload = GetData();
+        string content = "";
+        foreach (DataRow dr in dtDownload.Rows)
+        {
+            string gid = dr["代码"].ToString().Trim();
+            try
+            {
+                gid = gid.Substring(gid.IndexOf(">"), gid.Length - gid.IndexOf(">"));
+            }
+            catch
+            {
+
+            }
+            gid = gid.Replace("</a>", "").Replace(">", "").ToUpper();
+            content += gid + "\r\n";
+        }
+        Response.Clear();
+        Response.ContentType = "text/plain";
+        Response.Headers.Add("Content-Disposition", "attachment; filename=count_limit_up_continue.txt");
+        Response.Write(content.Trim());
+        Response.End();
+    }
 </script>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -186,6 +210,7 @@
 </head>
 <body>
     <form id="form1" runat="server">
+        <div><asp:Button ID="btn" runat="server"  Text=" 下 载 " OnClick="btn_Click" /></div>
         <div>
             总计：<%=count.ToString() %> / <%=Math.Round((double)100*suc/(double)count, 2).ToString() %>%<br />
             5%：<%=newHighSuc.ToString() %> / <%=Math.Round((double)100*newHighSuc/(double)count, 2).ToString() %>%
