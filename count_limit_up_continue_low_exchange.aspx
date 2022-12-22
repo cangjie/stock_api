@@ -57,6 +57,11 @@
                 continue;
             }
 
+            if ((s.kLineDay[alertIndex + 1].endPrice - s.kLineDay[alertIndex].endPrice) / s.kLineDay[alertIndex].endPrice <= -0.0995)
+            {
+                continue;
+            }
+
             if (s.kLineDay[alertIndex + 1].turnOver >= 20)
             {
                 continue;
