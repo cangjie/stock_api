@@ -308,6 +308,12 @@
                 isRight = true;
             }
 
+            if (stock.kLineDay[currentIndex - 1].startPrice <= stock.kLineDay[currentIndex - 1].endPrice)
+            {
+                continue;
+            }
+
+
             if (!isRight)
             {
                 continue;
