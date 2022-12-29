@@ -528,8 +528,10 @@
         Response.End();
     }
 </script>
-
-<title>火车轨涨停</title>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server" >
+   <title>火车轨涨停</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 </head>
 <body>
     <form id="form2" runat="server">
