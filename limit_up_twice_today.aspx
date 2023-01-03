@@ -267,6 +267,8 @@
         dt.Columns.Add("买入", Type.GetType("System.Double"));
         dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
+        dt.Columns.Add("KDJ周", Type.GetType("System.Int32"));
+        dt.Columns.Add("MACD周", Type.GetType("System.Int32"));
         //dt.Columns.Add("板数", Type.GetType("System.Int32"));
         for (int i = 1; i <= 15; i++)
         {
@@ -291,7 +293,7 @@
 
                 //+ " and not exists ( select 'a' from limit_up c where c.gid = a.gid and c.alert_date = dbo.func_GetLastTransactDate(a.alert_date, 2) )  "
                 + " and a.alert_date = '" + currentDate.ToShortDateString() + "' "
-               // + " and gid = 'sz002426' "
+                // + " and gid = 'sz002426' "
                 );
 
         DataTable dtRunAboveAvarage = DBHelper.GetDataTable(" select * from alert_avarage_timeline where alert_date =  '" + currentDate.Date.ToShortDateString() + "' ");
@@ -305,6 +307,9 @@
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
 
+
+
+
             int currentIndex = stock.GetItemIndex(currentDate);
             if (currentIndex < 1)
                 continue;
@@ -314,7 +319,18 @@
                 continue;
             }
 
-            
+            stock.LoadKLineWeek(Util.rc);
+            stock.kArr = stock.kLineWeek;
+            KLine.ComputeMACD(stock.kLineWeek);
+            KLine.ComputeRSV(stock.kLineWeek);
+            KLine.ComputeKDJ(stock.kLineWeek);
+
+            int currentWeekIndex = stock.GetItemIndex(currentDate, "week");
+
+
+            int macdWeek = stock.macdWeeks(currentWeekIndex);
+            int kdjWeek =  stock.kdjWeeks(currentWeekIndex);
+            stock.kArr = stock.kLineDay;
 
 
 
@@ -404,6 +420,10 @@
             dr["买入"] = buyPrice;
             dr["KDJ日"] = stock.kdjDays(currentIndex);
             dr["MACD日"] = stock.macdDays(currentIndex);
+
+            dr["MACD周"] = macdWeek;
+            dr["KDJ周"] = kdjWeek;
+
             dr["板数"] = limitNum;
             //dr["今涨"] = (stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
             dr["今涨"] = (stock.kLineDay[currentIndex].startPrice - stock.kLineDay[currentIndex-1].endPrice) / stock.kLineDay[currentIndex-1].endPrice;
@@ -489,7 +509,7 @@
 
             if (stock.kLineDay[currentIndex - 1].lowestPrice <= stock.GetAverageSettlePrice(currentIndex - 1, 20, 0) * 1.01
                 || Math.Min(stock.kLineDay[currentIndex - 2].startPrice, stock.kLineDay[currentIndex].endPrice) < stock.GetAverageSettlePrice(currentIndex - 2, 20, 0))
-            { 
+            {
                 dr["信号"] = "<a title=\"起步\" >🔥</a>";
             }
 
@@ -556,9 +576,11 @@
                     <asp:BoundColumn DataField="缩量" HeaderText="缩量"></asp:BoundColumn>
                     <asp:BoundColumn DataField="换手" HeaderText="换手"></asp:BoundColumn>
                     <asp:BoundColumn DataField="板数" HeaderText="板数"></asp:BoundColumn>
-					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD日|asc"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>
-                   
+					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="MACD周" HeaderText="MACD周" ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="KDJ周" HeaderText="KDJ周" ></asp:BoundColumn>
+
                     <asp:BoundColumn DataField="现价" HeaderText="现价"></asp:BoundColumn>
                     <asp:BoundColumn DataField="今涨" HeaderText="今涨"></asp:BoundColumn>
                     <asp:BoundColumn DataField="距F3" HeaderText="距F3"></asp:BoundColumn>

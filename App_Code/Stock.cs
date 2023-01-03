@@ -170,6 +170,8 @@ public class Stock
         return k;
     }
 
+  
+
     public int GetItemIndex(DateTime currentDate, string type)
     {
         KLine[] kLineToBeDeal = kLineDay;
