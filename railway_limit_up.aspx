@@ -263,7 +263,8 @@
         dt.Columns.Add("买入", Type.GetType("System.Double"));
         dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
-
+        dt.Columns.Add("KDJ周", Type.GetType("System.Int32"));
+        dt.Columns.Add("MACD周", Type.GetType("System.Int32"));
         for (int i = 1; i <= 15; i++)
         {
             dt.Columns.Add(i.ToString() + "日", Type.GetType("System.Double"));
@@ -293,6 +294,26 @@
             int currentIndex = stock.GetItemIndex(currentDate);
             if (currentIndex < 3)
                 continue;
+
+
+            stock.LoadKLineWeek(Util.rc);
+            stock.kArr = stock.kLineWeek;
+            KLine.ComputeMACD(stock.kLineWeek);
+            KLine.ComputeRSV(stock.kLineWeek);
+            KLine.ComputeKDJ(stock.kLineWeek);
+
+            int currentWeekIndex = stock.GetItemIndex(currentDate, "week");
+
+
+            int macdWeek = stock.macdWeeks(currentWeekIndex);
+            int kdjWeek =  stock.kdjWeeks(currentWeekIndex);
+            stock.kArr = stock.kLineDay;
+
+
+
+
+
+
 
             if (!stock.IsLimitUp(currentIndex))
             {
@@ -402,7 +423,8 @@
             dr["买入"] = buyPrice;
             dr["KDJ日"] = stock.kdjDays(currentIndex);
             dr["MACD日"] = stock.macdDays(currentIndex);
-
+            dr["MACD周"] = macdWeek;
+            dr["KDJ周"] = kdjWeek;
             //dr["今涨"] = (stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
             dr["今涨"] = (stock.kLineDay[currentIndex].startPrice - stock.kLineDay[currentIndex-1].endPrice) / stock.kLineDay[currentIndex-1].endPrice;
             double maxPrice = Math.Max(highest, stock.kLineDay[currentIndex].highestPrice);
@@ -567,7 +589,8 @@
                     <asp:BoundColumn DataField="缩量" HeaderText="缩量"></asp:BoundColumn>
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD日|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>
-                   
+                    <asp:BoundColumn DataField="MACD周" HeaderText="MACD周" ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="KDJ周" HeaderText="KDJ周" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="现价" HeaderText="现价"></asp:BoundColumn>
                     <asp:BoundColumn DataField="今涨" HeaderText="今涨"></asp:BoundColumn>
                     <asp:BoundColumn DataField="距F3" HeaderText="距F3"></asp:BoundColumn>
