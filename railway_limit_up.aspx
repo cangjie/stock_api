@@ -605,11 +605,7 @@
                     <asp:BoundColumn DataField="8日" HeaderText="8日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="9日" HeaderText="9日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="10日" HeaderText="10日"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="11日" HeaderText="11日"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="12日" HeaderText="12日"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="13日" HeaderText="13日"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="14日" HeaderText="14日"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="15日" HeaderText="15日"></asp:BoundColumn>
+                  
                     <asp:BoundColumn DataField="总计" HeaderText="总计" SortExpression="总计|desc" ></asp:BoundColumn>
                 </Columns>
                 <FooterStyle BackColor="#CCCCCC" ForeColor="Black" />
