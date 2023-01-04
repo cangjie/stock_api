@@ -14,7 +14,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "红绿灯涨");
+        sort = Util.GetSafeRequestValue(Request, "sort", "MACD周,MACD日");
         if (!IsPostBack)
         {
 
