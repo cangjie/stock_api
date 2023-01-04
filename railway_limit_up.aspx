@@ -324,7 +324,7 @@
 
             if ((stock.kLineDay[currentIndex - 1].endPrice - stock.kLineDay[currentIndex - 2].endPrice) / stock.kLineDay[currentIndex - 2].endPrice <= -0.03
                 && stock.kLineDay[currentIndex - 1].endPrice < stock.GetAverageSettlePrice(currentIndex - 1, 3, 3)
-                && stock.kLineDay[currentIndex].volume > stock.kLineDay[currentIndex - 1].volume * 0.98)
+                && stock.kLineDay[currentIndex].volume >= stock.kLineDay[currentIndex - 1].volume * 0.9)
             {
                 isRight = true;
             }
