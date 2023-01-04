@@ -318,6 +318,8 @@
         dt.Columns.Add("买入", Type.GetType("System.Double"));
         dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
+        dt.Columns.Add("KDJ周", Type.GetType("System.Int32"));
+        dt.Columns.Add("MACD周", Type.GetType("System.Int32"));
         dt.Columns.Add("F3折返", Type.GetType("System.Double"));
         dt.Columns.Add("无影时", Type.GetType("System.DateTime"));
         dt.Columns.Add("无影", Type.GetType("System.Double"));
@@ -375,6 +377,18 @@
             if (currentIndex < 0)
                 continue;
 
+            stock.LoadKLineWeek(Util.rc);
+            stock.kArr = stock.kLineWeek;
+            KLine.ComputeMACD(stock.kLineWeek);
+            KLine.ComputeRSV(stock.kLineWeek);
+            KLine.ComputeKDJ(stock.kLineWeek);
+
+            int currentWeekIndex = stock.GetItemIndex(currentDate, "week");
+
+
+            int macdWeek = stock.macdWeeks(currentWeekIndex);
+            int kdjWeek =  stock.kdjWeeks(currentWeekIndex);
+            stock.kArr = stock.kLineDay;
 
 
             int limitUpIndex = stock.GetItemIndex(DateTime.Parse(drOri["alert_date"].ToString()));
@@ -568,6 +582,9 @@
             dr["KDJ日"] = stock.kdjDays(currentIndex);
 
             dr["MACD日"] = stock.macdDays(currentIndex);
+
+            dr["MACD周"] = macdWeek;
+            dr["KDJ周"] = kdjWeek;
 
             dr["无影时"] = footTime;
             dr["无影"] = todayLowestPrice;
@@ -789,6 +806,8 @@
                     <asp:BoundColumn DataField="布林宽" HeaderText="布林宽"></asp:BoundColumn>
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD日|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="MACD周" HeaderText="MACD周" SortExpression="MACD日|asc"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="KDJ周" HeaderText="KDJ周" SortExpression="KDJ率|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
                     <asp:BoundColumn DataField="现高" HeaderText="现高"></asp:BoundColumn>
                     <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>

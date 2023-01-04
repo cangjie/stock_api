@@ -8,7 +8,7 @@
 
     public DateTime currentDate = Util.GetDay(DateTime.Now);
 
-    public string sort = "MACD日,KDJ日,综指 desc";
+    public string sort = "MACD周,MACD日";
 
 
 
@@ -17,7 +17,7 @@
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        sort = Util.GetSafeRequestValue(Request, "sort", "缩量");
+        sort = Util.GetSafeRequestValue(Request, "sort", "MACD周,MACD日");
         if (!IsPostBack)
         {
             DataTable dt = GetData();
