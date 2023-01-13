@@ -251,6 +251,7 @@
         dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
         dt.Columns.Add("KDJ周", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD周", Type.GetType("System.Int32"));
+        dt.Columns.Add("总计", Type.GetType("System.Double"));
         for (int i = 0; i <= 10; i++)
         {
             dt.Columns.Add(i.ToString() + "日", Type.GetType("System.Double"));
