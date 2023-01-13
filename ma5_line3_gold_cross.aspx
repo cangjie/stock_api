@@ -12,7 +12,7 @@
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        sort = Util.GetSafeRequestValue(Request, "sort", "幅度 desc");
+        sort = Util.GetSafeRequestValue(Request, "sort", "MACD周,MACD日");
         if (!IsPostBack)
         {
             dg.DataSource = GetData();
