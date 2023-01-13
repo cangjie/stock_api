@@ -215,6 +215,8 @@
         dt.Columns.Add("日差", Type.GetType("System.Int32"));
         dt.Columns.Add("幅度", Type.GetType("System.Double"));
         dt.Columns.Add("买入", Type.GetType("System.Double"));
+        dt.Columns.Add("KDJ周", Type.GetType("System.Int32"));
+        dt.Columns.Add("MACD周", Type.GetType("System.Int32"));
         for (int i = 0; i <= 10; i++)
         {
             dt.Columns.Add(i.ToString() + "日", Type.GetType("System.Double"));
@@ -296,6 +298,16 @@
                 isTrafficLight = true;
             }
 
+            stock.LoadKLineWeek(Util.rc);
+            stock.kArr = stock.kLineWeek;
+            KLine.ComputeMACD(stock.kLineWeek);
+            KLine.ComputeRSV(stock.kLineWeek);
+            KLine.ComputeKDJ(stock.kLineWeek);
+            int currentWeekIndex = stock.GetItemIndex(currentDate, "week");
+            int macdWeek = stock.macdWeeks(currentWeekIndex);
+            int kdjWeek =  stock.kdjWeeks(currentWeekIndex);
+            stock.kArr = stock.kLineDay;
+
             DataRow dr = dt.NewRow();
             dr["代码"] = stock.gid.Trim();
             dr["名称"] = stock.Name.Trim();
@@ -309,6 +321,8 @@
             dr["放量"] = 0;
             dr["日差"] = 0;
             dr["幅度"] = width;
+            dr["MACD周"] = macdWeek;
+            dr["KDJ周"] = kdjWeek;
             double maxPrice = 0;
             dr["0日"] = (buyPrice - currentPrice) / currentPrice;
             for (int i = 1; i <= 10; i++)
@@ -397,7 +411,8 @@
                     <asp:BoundColumn DataField="KDJ" HeaderText="KDJ" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="MACD" HeaderText="MACD" ></asp:BoundColumn>
                     
-
+                    <asp:BoundColumn DataField="MACD周" HeaderText="MACD周" ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="KDJ周" HeaderText="KDJ周" ></asp:BoundColumn>
                     
                     <asp:BoundColumn DataField="幅度" HeaderText="幅度" ></asp:BoundColumn>
                    			
