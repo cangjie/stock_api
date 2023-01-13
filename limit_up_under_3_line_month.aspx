@@ -36,9 +36,9 @@
         {
             DataRow dr = dt.NewRow();
             //double settle = Math.Round((double)drOri["昨收"], 2);
-            double currentPrice = Math.Round((double)drOri["现价"], 2);
-            double lowPrice = Math.Round((double)drOri["前低"], 2);
-            double hightPrice =  Math.Round((double)drOri["现高"], 2);
+            //double currentPrice = Math.Round((double)drOri["现价"], 2);
+            //double lowPrice = Math.Round((double)drOri["前低"], 2);
+            //double hightPrice =  Math.Round((double)drOri["现高"], 2);
             for (int i = 0; i < drArr[0].Table.Columns.Count; i++)
             {
 
@@ -55,7 +55,7 @@
                             break;
                         case "买入":
                             double buyPrice = Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2);
-                            dr[i] = "<font color=\"" + ((buyPrice > currentPrice) ? "red" : ((buyPrice == currentPrice) ? "gray" : "green")) + "\" >" + Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2).ToString() + "</font>";
+                            dr[i] = Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2).ToString() ;
                             break;
                         case "F3":
                         case "F5":
@@ -69,11 +69,7 @@
                         case "F1":
                         case "现高":
                         case "3线":
-                        case "无影":
-                            double currentValuePrice = (double)drOri[i];
-                            dr[i] = "<font color=\"" + (currentValuePrice > currentPrice ? "red" : (currentValuePrice == currentPrice ? "gray" : "green")) + "\"  >"
-                                + Math.Round(currentValuePrice, 2).ToString() + "</font>";
-                            break;
+                        
 
                         case "价差":
                             double currentValuePrice1 = (double)drOri[i];
