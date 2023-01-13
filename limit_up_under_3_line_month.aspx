@@ -69,7 +69,7 @@
                         case "F1":
                         case "现高":
                         case "3线":
-                        
+
 
                         case "价差":
                             double currentValuePrice1 = (double)drOri[i];
@@ -347,6 +347,36 @@
         dg.DataSource = dt;
         dg.DataBind();
     }
+
+    protected void btn_Click(object sender, EventArgs e)
+    {
+        DateTime nowDate = DateTime.Parse(monthSelector.SelectedValue);
+        DataTable dtDownload = GetData(nowDate);
+        string content = "";
+        foreach (DataRow dr in dtDownload.Rows)
+        {
+            string gid = dr["代码"].ToString().Trim();
+            try
+            {
+                gid = gid.Substring(gid.IndexOf(">"), gid.Length - gid.IndexOf(">"));
+            }
+            catch
+            {
+
+            }
+            gid = gid.Replace("</a>", "").Replace(">", "").ToUpper();
+            if (gid.Trim().Length == 8)
+            {
+                content += gid.Substring(2, 6) + "\r\n";
+            }
+        }
+        Response.Clear();
+        Response.ContentType = "text/plain";
+        Response.Headers.Add("Content-Disposition", "attachment; filename=traffic_light_"
+            + nowDate.ToShortDateString() + ".txt");
+        Response.Write(content.Trim());
+        Response.End();
+    }
 </script>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -360,6 +390,7 @@
 
 
             </asp:DropDownList>
+            <asp:Button runat="server" ID="btn" Text=" 下 载 " OnClick="btn_Click" />
         </div>
         <div>
             <asp:DataGrid ID="dg" runat="server" BackColor="White" BorderColor="#999999" BorderStyle="None" BorderWidth="1px" CellPadding="3" GridLines="Vertical" Width="100%" AutoGenerateColumns="False"  AllowSorting="True" >
