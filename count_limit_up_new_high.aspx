@@ -67,7 +67,7 @@
             double preHighestPrice = 0;
             int below3LineIndex = 0;
 
-            for (int i = 1; i <= 100 && alertIndex - i >= 0; i++)
+            for (int i = 1; i <= 200 && alertIndex - i >= 0; i++)
             {
                 if (s.kLineDay[alertIndex - i].endPrice < s.GetAverageSettlePrice(alertIndex - i, 3, 3))
                 {
