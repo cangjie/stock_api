@@ -20,7 +20,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "缩量");
+        sort = Util.GetSafeRequestValue(Request, "sort", "MACD日");
         if (!IsPostBack)
         {
             try
