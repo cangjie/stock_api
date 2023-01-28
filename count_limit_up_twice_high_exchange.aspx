@@ -38,7 +38,7 @@
         dt.Columns.Add("总计");
         DataTable dtOri = DBHelper.GetDataTable(" select a.alert_date, a.gid from limit_up a "
             + " where exists( select 'a' from limit_up b where a.gid = b.gid and dbo.func_GetLastTransactDate(a.alert_date, 1) = b.alert_date) "
-            + " and not exists ( select 'a' from limit_up c where a.gid = c.gid and dbo.func_GetNextTransactDate(a.alert_date, 1) = c.alert_date ) "
+            + " and not exists ( select 'a' from limit_up c where a.gid = c.gid and dbo.func_GetLastTransactDate(a.alert_date, 2) = c.alert_date ) "
             + " and alert_date >= '2021-1-1' "
             + " order by a.alert_date desc ");
         foreach (DataRow drOri in dtOri.Rows)
