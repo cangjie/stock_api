@@ -38,8 +38,10 @@
         dt.Columns.Add("总计");
         DataTable dtOri = DBHelper.GetDataTable(" select a.alert_date, a.gid from limit_up a "
             + " where exists( select 'a' from limit_up b where a.gid = b.gid and dbo.func_GetLastTransactDate(a.alert_date, 1) = b.alert_date) "
-            + " and not exists ( select 'a' from limit_up c where a.gid = c.gid and dbo.func_GetLastTransactDate(a.alert_date, 2) = c.alert_date ) "
+            //+ " and not exists ( select 'a' from limit_up c where a.gid = c.gid and dbo.func_GetLastTransactDate(a.alert_date, 2) = c.alert_date ) "
+            + " and not exists ( select 'a' from limit_up d where a.gid = d.gid and dbo.func_GetNextTransactDate(a.alert_date, 1) = d.alert_date ) "
             + " and alert_date >= '2021-1-1' "
+            //+ " and a.gid = 'sz000711'"
             + " order by a.alert_date desc ");
         foreach (DataRow drOri in dtOri.Rows)
         {
@@ -52,7 +54,7 @@
             {
                 continue;
             }
-            int buyIndex = alertIndex;
+            int buyIndex = alertIndex + 2;
 
             if (buyIndex + days >= s.kLineDay.Length)
             {
@@ -62,12 +64,23 @@
             {
                 continue;
             }
-            if (s.kLineDay[alertIndex].turnOver < 40 || s.kLineDay[alertIndex - 1].turnOver < 40)
+            if (s.kLineDay[alertIndex + 1].turnOver >= 25)
             {
                 continue;
             }
 
-            double buyPrice = s.kLineDay[buyIndex].endPrice;
+            if (s.kLineDay[alertIndex + 1].startPrice <= s.kLineDay[alertIndex].endPrice
+                || s.kLineDay[alertIndex + 1].endPrice <= s.kLineDay[alertIndex].endPrice)
+            {
+                continue;
+            }
+
+            if ((s.kLineDay[buyIndex].endPrice - s.kLineDay[alertIndex + 1].endPrice)/s.kLineDay[alertIndex + 1].endPrice  >= -0.095)
+            {
+                continue;
+            }
+
+            double buyPrice = s.kLineDay[buyIndex].startPrice;
             DataRow dr = dt.NewRow();
             dr["日期"] = s.kLineDay[buyIndex].endDateTime.ToShortDateString();
             dr["代码"] = s.gid.Trim();

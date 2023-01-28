@@ -52,7 +52,7 @@
             {
                 continue;
             }
-            int buyIndex = alertIndex;
+            int buyIndex = alertIndex + 1;
 
             if (buyIndex + days >= s.kLineDay.Length)
             {
@@ -67,7 +67,12 @@
                 continue;
             }
 
-            double buyPrice = s.kLineDay[buyIndex].endPrice;
+            if (s.kLineDay[buyIndex].startPrice <= s.kLineDay[alertIndex].endPrice)
+            {
+                continue;
+            }
+
+            double buyPrice = s.kLineDay[buyIndex].startPrice;
             DataRow dr = dt.NewRow();
             dr["日期"] = s.kLineDay[buyIndex].endDateTime.ToShortDateString();
             dr["代码"] = s.gid.Trim();
