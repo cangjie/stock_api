@@ -6,10 +6,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (!Util.IsTransacDay(DateTime.Now))
-        {
-            Response.End();
-        }
+        
         string[] gidArr = Util.GetAllGids();
         for (int i = 0; i < gidArr.Length; i++)
         {
