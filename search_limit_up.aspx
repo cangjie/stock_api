@@ -14,9 +14,10 @@
         for (int i = 0; i < gidArr.Length; i++)
         {
             Stock s = new Stock(gidArr[i].Trim());
+            s.LoadKLineDay(Util.rc);
             s.kLineDay = Stock.LoadLocalKLineFromDB(s.gid.Trim(), "day");
             s.kArr = s.kLineDay;
-            for (int j = 0; j < 1; j++)
+            for (int j = 0; j < 5; j++)
             {
                 try
                 {

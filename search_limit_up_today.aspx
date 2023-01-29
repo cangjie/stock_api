@@ -13,21 +13,40 @@
         string[] gidArr = Util.GetAllGids();
         for (int i = 0; i < gidArr.Length; i++)
         {
-            Stock s = new Stock(gidArr[i].Trim());
-            s.LoadKLineDay(Util.rc);
-            s.kArr = s.kLineDay;
-            int currentIndex = s.kLineDay.Length - 1;
-            if (s.kLineDay.Length >= 17)
+            try
             {
-                StockWatcher.SearchFolks(s.gid, "day", s.kLineDay, s.kLineDay.Length - 1);
+                Stock s = new Stock(gidArr[i].Trim());
+                s.LoadKLineDay(Util.rc);
+                s.kArr = s.kLineDay;
+                int currentIndex = s.kLineDay.Length - 1;
+                if (s.kLineDay.Length >= 17)
+                {
+                    StockWatcher.SearchFolks(s.gid, "day", s.kLineDay, s.kLineDay.Length - 1);
+                }
+                for (int j = 0; j < 5; j++)
+                {
+                    currentIndex = s.kLineDay.Length - 1 - j;
+                    if (Util.IsTransacDay(s.kLineDay[currentIndex].endDateTime) && s.IsLimitUp(currentIndex))
+                    {
+                        try
+                        {
+                            LimitUp.SaveLimitUp(s.gid.Trim(), DateTime.Parse(s.kLineDay[currentIndex].startDateTime.ToShortDateString()),
+                                 s.kLineDay[currentIndex].endPrice, s.kLineDay[currentIndex].startPrice,
+                                 s.kLineDay[currentIndex].highestPrice, s.kLineDay[currentIndex].volume);
+                        }
+                        catch
+                        { 
+                        
+                        }
+
+                    }
+                }
             }
-            if (s.IsLimitUp(s.kLineDay.Length - 1))
+            catch
             {
-                LimitUp.SaveLimitUp(s.gid.Trim(), DateTime.Parse(s.kLineDay[currentIndex].startDateTime.ToShortDateString()),
-                             s.kLineDay[currentIndex].endPrice, s.kLineDay[currentIndex].startPrice,
-                             s.kLineDay[currentIndex].highestPrice, s.kLineDay[currentIndex].volume);
 
             }
+
         }
     }
 </script>
