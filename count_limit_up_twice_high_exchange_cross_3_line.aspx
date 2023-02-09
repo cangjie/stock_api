@@ -72,6 +72,11 @@
                 continue;
             }
 
+            if (s.kLineDay[alertIndex - 1].lowestPrice > s.GetAverageSettlePrice(alertIndex - 1, 3, 3))
+            {
+                continue;
+            }
+
             double buyPrice = s.kLineDay[buyIndex].startPrice;
             DataRow dr = dt.NewRow();
             dr["日期"] = s.kLineDay[buyIndex].endDateTime.ToShortDateString();
