@@ -352,7 +352,7 @@
             {
                 continue;
             }
-
+            /*
             int highestIndex = -1;
             double highestPrice = 0;
 
@@ -373,7 +373,7 @@
 
             if (highestIndex == -1)
             {
-                continue;
+                //continue;
             }
 
             int lowestIndex = -1;
@@ -387,7 +387,7 @@
             {
                 //continue;
             }
-
+            */
             KLine.ComputeMACD(stock.kLineDay);
             KLine.ComputeRSV(stock.kLineDay);
             KLine.ComputeKDJ(stock.kLineDay);
@@ -399,8 +399,8 @@
 
             double volumeReduce = (stock.kLineDay[currentIndex].volume - stock.kLineDay[currentIndex - 1].volume) / stock.kLineDay[currentIndex - 1].volume;
 
-            double f3 = highestPrice - (highestPrice - lowestPrice) * 0.382;
-            double f5 = highestPrice - (highestPrice - lowestPrice) * 0.618;
+            //double f3 = highestPrice - (highestPrice - lowestPrice) * 0.382;
+            //double f5 = highestPrice - (highestPrice - lowestPrice) * 0.618;
 
 
             DataRow dr = dt.NewRow();
@@ -409,10 +409,12 @@
 
 
             dr["缩量"] = volumeReduce;
+            /*
             dr["现高"] = highestPrice;
             dr["F3"] = f3;
             dr["F5"] = f5;
             dr["前低"] = lowestPrice;
+            
             dr["幅度"] = Math.Round(100 * width, 2).ToString() + "%";
             try
             {
@@ -422,7 +424,7 @@
             {
                 dr["风险"] = 120;
             }
-
+            */
 
 
             dr["3线"] = stock.GetAverageSettlePrice(currentIndex, 3, 3);
@@ -622,14 +624,11 @@
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号" SortExpression="信号|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="缩量" HeaderText="缩量"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="风险" HeaderText="风险"></asp:BoundColumn>
+                   
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD日|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ日" HeaderText="KDJ日" SortExpression="KDJ率|asc"></asp:BoundColumn>
                     <asp:BoundColumn DataField="3线" HeaderText="3线"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="现高" HeaderText="现高"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="F3" HeaderText="F3"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="F5" HeaderText="F5"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="前低" HeaderText="前低"></asp:BoundColumn>
+                    
                  
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
                     

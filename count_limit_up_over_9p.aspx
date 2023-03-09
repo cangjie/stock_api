@@ -39,7 +39,7 @@
         }
 
         dt.Columns.Add("总计");
-        DataTable dtOri = DBHelper.GetDataTable(" select * from limit_up where alert_date >= '"
+        DataTable dtOri = DBHelper.GetDataTable(" select * from limit_up where  gid not like 'kc%' and gid not like 'sz3%' and  alert_date >= '"
             + Util.GetSafeRequestValue(Request, "start", "2022-1-1") + "'  and alert_date <= '"
             + Util.GetSafeRequestValue(Request, "end", DateTime.Now.ToShortDateString()) + "' order by alert_date desc ");
         foreach (DataRow drOri in dtOri.Rows)
@@ -112,9 +112,10 @@
             if (s.kLineDay[alertIndex].highestPrice == s.kLineDay[alertIndex].lowestPrice)
             {
                 dr["一字板"] = "是";
+                continue;
             }
             else
-            { 
+            {
                 dr["一字板"] = "否";
             }
 
