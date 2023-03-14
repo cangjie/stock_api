@@ -272,6 +272,7 @@
         dt.Columns.Add("现价", Type.GetType("System.Double"));
         dt.Columns.Add("距F3", Type.GetType("System.Double"));
         dt.Columns.Add("买入", Type.GetType("System.Double"));
+        dt.Columns.Add("筹码", Type.GetType("System.Double"));
         dt.Columns.Add("KDJ日", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
         //dt.Columns.Add("板数", Type.GetType("System.Int32"));
@@ -383,6 +384,18 @@
             }
             */
 
+            double chip = 0;
+
+            DataTable dtChip = DBHelper.GetDataTable(" select * from chip where gid =  '" + stock.gid.Trim() + "' and alert_date = '" + currentDate.ToShortDateString() + "' ");
+            if (dtChip.Rows.Count > 0)
+            {
+                double pct95 = double.Parse(dt.Rows[0]["cost_95pct"].ToString());
+                double pct5 = double.Parse(dt.Rows[0]["cost_5pct"].ToString());
+                chip = (pct95 - pct5) / (pct95 + pct5);
+
+            }
+            
+
 
             int limitNum = 0;
             for (int i = currentIndex; i > currentIndex - 5 && i > 0; i--)
@@ -418,6 +431,7 @@
             dr["板数"] = limitNum;
             //dr["今涨"] = (stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
             dr["今涨"] = (stock.kLineDay[currentIndex].startPrice - stock.kLineDay[currentIndex-1].endPrice) / stock.kLineDay[currentIndex-1].endPrice;
+            dr["筹码"] = Math.Round(chip, 2);
             double maxPrice = Math.Max(highest, stock.kLineDay[currentIndex].highestPrice);
             bool lowThanF5 = false;
             bool lowThanF3 = false;
@@ -577,7 +591,7 @@
                     <asp:BoundColumn DataField="日期" HeaderText="代码"></asp:BoundColumn>
                     <asp:BoundColumn DataField="代码" HeaderText="代码"></asp:BoundColumn>
                     <asp:BoundColumn DataField="名称" HeaderText="名称"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="信号" HeaderText="信号" SortExpression="信号|desc" ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="筹码" HeaderText="筹码" SortExpression="信号|desc" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="缩量" HeaderText="缩量"></asp:BoundColumn>
                     <asp:BoundColumn DataField="板数" HeaderText="板数"></asp:BoundColumn>
 					<asp:BoundColumn DataField="MACD日" HeaderText="MACD日" SortExpression="MACD日|asc"></asp:BoundColumn>
