@@ -17,7 +17,7 @@
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        sort = Util.GetSafeRequestValue(Request, "sort", "MACD周,MACD日");
+        sort = Util.GetSafeRequestValue(Request, "sort", "筹码");
         width = Util.GetSafeRequestValue(Request, "width", "40");
         if (!IsPostBack)
         {
@@ -104,6 +104,7 @@
                         case "昨收":
                         case "MACD率":
                         case "KDJ率":
+                        case "筹码":
                             dr[i] = Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2).ToString();
                             break;
                         case "买入":
@@ -310,7 +311,7 @@
         dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
         dt.Columns.Add("涨幅", Type.GetType("System.String"));
         dt.Columns.Add("买入", Type.GetType("System.Double"));
-
+        dt.Columns.Add("筹码", Type.GetType("System.Double"));
         for (int i = 0; i <= 10; i++)
         {
             dt.Columns.Add(i.ToString() + "日", Type.GetType("System.Double"));
@@ -441,7 +442,34 @@
 
             if (isNewHigh)
             {
-                dr["信号"] = "<a title=\"三月新高\" href=\"#\" >📈</a>";
+                //dr["信号"] = "<a title=\"三月新高\" href=\"#\" >📈</a>";
+            }
+
+            double chipCurrent = 0;
+
+            DataTable dtChip = DBHelper.GetDataTable(" select * from chip where gid =  '" + stock.gid.Trim() + "' and alert_date = '" + currentDate.ToShortDateString() + "' ");
+            if (dtChip.Rows.Count > 0)
+            {
+                double pct95 = double.Parse(dtChip.Rows[0]["cost_95pct"].ToString());
+                double pct5 = double.Parse(dtChip.Rows[0]["cost_5pct"].ToString());
+                chipCurrent = (pct95 - pct5) / (pct95 + pct5);
+
+            }
+            dr["筹码"] = chipCurrent;
+            double chipTop = 0;
+
+            dtChip = DBHelper.GetDataTable(" select * from chip where gid =  '" + stock.gid.Trim() + "' and alert_date = '" + stock.kLineDay[highestIndex].startDateTime.ToShortDateString() + "' ");
+            if (dtChip.Rows.Count > 0)
+            {
+                double pct95 = double.Parse(dtChip.Rows[0]["cost_95pct"].ToString());
+                double pct5 = double.Parse(dtChip.Rows[0]["cost_5pct"].ToString());
+                chipTop = (pct95 - pct5) / (pct95 + pct5);
+
+            }
+
+            if (chipTop > chipCurrent)
+            { 
+                dr["信号"] = "<a title=\"筹码集中\" href=\"#\" >📈</a>";
             }
 
             dt.Rows.Add(dr);
@@ -600,7 +628,7 @@
                     <asp:BoundColumn DataField="MACD周" HeaderText="MACD周" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="KDJ周" HeaderText="KDJ周" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号"></asp:BoundColumn>
-                    <asp:BoundColumn DataField="涨幅" HeaderText="涨幅"  ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="筹码" HeaderText="筹码"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
                     
                     <asp:BoundColumn DataField="0日" HeaderText="0日"></asp:BoundColumn>
