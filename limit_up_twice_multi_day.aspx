@@ -389,8 +389,8 @@
             DataTable dtChip = DBHelper.GetDataTable(" select * from chip where gid =  '" + stock.gid.Trim() + "' and alert_date = '" + currentDate.ToShortDateString() + "' ");
             if (dtChip.Rows.Count > 0)
             {
-                double pct95 = double.Parse(dt.Rows[0]["cost_95pct"].ToString());
-                double pct5 = double.Parse(dt.Rows[0]["cost_5pct"].ToString());
+                double pct95 = double.Parse(dtChip.Rows[0]["cost_95pct"].ToString());
+                double pct5 = double.Parse(dtChip.Rows[0]["cost_5pct"].ToString());
                 chip = (pct95 - pct5) / (pct95 + pct5);
 
             }
