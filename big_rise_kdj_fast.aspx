@@ -105,6 +105,7 @@
                         case "MACD率":
                         case "KDJ率":
                         case "筹码":
+                        case "MACD值":
                             dr[i] = Math.Round((double)drOri[drArr[0].Table.Columns[i].Caption.Trim()], 2).ToString();
                             break;
                         case "买入":
@@ -309,6 +310,7 @@
         dt.Columns.Add("KDJ周", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD周", Type.GetType("System.Int32"));
         dt.Columns.Add("MACD日", Type.GetType("System.Int32"));
+        dt.Columns.Add("MACD值", Type.GetType("System.Double"));
         dt.Columns.Add("涨幅", Type.GetType("System.String"));
         dt.Columns.Add("买入", Type.GetType("System.Double"));
         dt.Columns.Add("筹码", Type.GetType("System.Double"));
@@ -410,7 +412,7 @@
             dr["名称"] = stock.Name.Trim();
 
             dr["MACD日"] = stock.macdDays(currentIndex);
-
+            dr["MACD值"] = stock.kLineDay[currentIndex].macd;
             double rise = Math.Round(100 * (highestPrice - stock.kLineDay[lowestIndex].lowestPrice) / stock.kLineDay[lowestIndex].lowestPrice, 2);
 
             if (rise < double.Parse(width))
@@ -629,6 +631,7 @@
                     <asp:BoundColumn DataField="KDJ周" HeaderText="KDJ周" ></asp:BoundColumn>
                     <asp:BoundColumn DataField="信号" HeaderText="信号"></asp:BoundColumn>
                     <asp:BoundColumn DataField="筹码" HeaderText="筹码"  ></asp:BoundColumn>
+                    <asp:BoundColumn DataField="MACD值" HeaderText="MACD值"  ></asp:BoundColumn>
                     <asp:BoundColumn DataField="买入" HeaderText="买入"  ></asp:BoundColumn>
                     
                     <asp:BoundColumn DataField="0日" HeaderText="0日"></asp:BoundColumn>
