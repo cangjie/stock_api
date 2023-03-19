@@ -314,7 +314,7 @@
         dt.Columns.Add("涨幅", Type.GetType("System.String"));
         dt.Columns.Add("买入", Type.GetType("System.Double"));
         dt.Columns.Add("筹码", Type.GetType("System.Double"));
-        for (int i = 0; i <= 10; i++)
+        for (int i = 0; i <= 15; i++)
         {
             dt.Columns.Add(i.ToString() + "日", Type.GetType("System.Double"));
         }
@@ -430,7 +430,7 @@
             dr["0日"] = (stock.kLineDay[currentIndex].endPrice - stock.kLineDay[currentIndex - 1].endPrice) / stock.kLineDay[currentIndex - 1].endPrice;
 
             double maxPrice = 0;
-            for (int i = 1; i <= 10; i++)
+            for (int i = 1; i <= 15; i++)
             {
 
                 if (currentIndex + i >= stock.kLineDay.Length)
@@ -649,6 +649,11 @@
                     <asp:BoundColumn DataField="8日" HeaderText="8日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="9日" HeaderText="9日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="10日" HeaderText="10日"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="11日" HeaderText="11日"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="12日" HeaderText="12日"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="13日" HeaderText="13日"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="14日" HeaderText="14日"></asp:BoundColumn>
+                    <asp:BoundColumn DataField="15日" HeaderText="15日"></asp:BoundColumn>
                     <asp:BoundColumn DataField="总计" HeaderText="总计" SortExpression="总计|desc" ></asp:BoundColumn>
                 </Columns>
                 <FooterStyle BackColor="#CCCCCC" ForeColor="Black" />
