@@ -469,7 +469,11 @@
 
             }
 
-            if (chipTop > chipCurrent)
+            double ma20Top = stock.GetAverageSettlePrice(highestIndex, 20, 0);
+            double ma20Buy = stock.GetAverageSettlePrice(currentIndex, 20, 0);
+
+
+            if (chipTop > chipCurrent && ma20Top < ma20Buy && ma20Buy < stock.kLineDay[currentIndex].endPrice)
             { 
                 dr["信号"] = "<a title=\"筹码集中\" href=\"#\" >📈</a>";
             }
