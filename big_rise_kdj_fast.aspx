@@ -405,6 +405,12 @@
             int kdjWeek =  stock.kdjWeeks(currentWeekIndex);
             stock.kArr = stock.kLineDay;
 
+            //int lowestIndex = 0;
+
+            double lowestPrice = GetFirstLowestPrice(stock.kLineDay, highestIndex, out lowestIndex);
+
+            double f3 = highestPrice - (highestPrice - lowestPrice) * 0.382;
+
 
             DataRow dr = dt.NewRow();
 
@@ -473,7 +479,7 @@
             double ma20Buy = stock.GetAverageSettlePrice(currentIndex, 20, 0);
 
 
-            if (chipTop > chipCurrent && ma20Top < ma20Buy && ma20Buy < stock.kLineDay[currentIndex].endPrice)
+            if (chipTop > chipCurrent && ma20Top < ma20Buy && ma20Buy < stock.kLineDay[currentIndex].endPrice && stock.kLineDay[currentIndex].endPrice < f3)
             { 
                 dr["信号"] = "<a title=\"筹码集中\" href=\"#\" >📈</a>";
             }
