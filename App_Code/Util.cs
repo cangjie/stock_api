@@ -282,6 +282,7 @@ public class Util
             || date.Date == DateTime.Parse("2023-1-2") || date.Date == DateTime.Parse("2023-4-5")
             || (date.Date >= DateTime.Parse("2023-1-23") && date.Date <= DateTime.Parse("2023-1-27"))
             || (date.Date >= DateTime.Parse("2023-5-1") && date.Date <= DateTime.Parse("2023-5-3"))
+            || (date.Date >= DateTime.Parse("2023-6-22") && date.Date <= DateTime.Parse("2023-6-23"))
             )
             ret = false;
         return ret;
